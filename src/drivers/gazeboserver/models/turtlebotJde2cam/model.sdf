@@ -2,6 +2,41 @@
 <sdf version="1.4">
 
 <model name='turtlebot'>
+<plugin name='turtlebotplugin' filename='libturtlebotplugin.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>rack</bodyName>
+      <!--control configuration -->
+      <velocityXYLimit>3</velocityXYLimit>
+      <velocityZLimit>5</velocityZLimit>
+      <takeoffSpeed>3</takeoffSpeed>
+      <takeoffCompletedAt>1.5</takeoffCompletedAt>
+      <landSpeed>1</landSpeed>
+      <landCompletedAt>0.2</landCompletedAt>
+      <!-- motion noise -->
+      <offset>0</offset>
+      <drift>0.1</drift>
+      <motionSmallNoise>0</motionSmallNoise>
+      <motionDriftNoise>0</motionDriftNoise>
+      <motionDriftNoiseTime>1.0</motionDriftNoiseTime>
+      <!-- PID control params -->
+      <rollpitchProportionalGain>10.0</rollpitchProportionalGain>
+      <rollpitchDifferentialGain>5.0</rollpitchDifferentialGain>
+      <rollpitchLimit>0.5</rollpitchLimit>
+      <yawProportionalGain>2.0</yawProportionalGain>
+      <yawDifferentialGain>1.0</yawDifferentialGain>
+      <yawLimit>1.5</yawLimit>
+	<left_joint>create::left_wheel_hinge</left_joint>
+        <right_joint>create::right_wheel_hinge</right_joint>
+      <velocityXYProportionalGain>5.0</velocityXYProportionalGain>
+      <velocityXYDifferentialGain>1.0</velocityXYDifferentialGain>
+      <velocityZProportionalGain>4.5</velocityZProportionalGain>
+      <velocityZDifferentialGain>0.5</velocityZDifferentialGain>
+      <velocityZIntegralGain>0.0</velocityZIntegralGain>
+      <!-- Ice configuration -->
+      <iceConfigFile>turtlebotplugin.cfg</iceConfigFile>
+      <!--iceAdapterPort>9000</iceAdapterPort-->
+    </plugin>
 
       <link name='rack'>
         <inertial>
@@ -732,7 +767,7 @@
             </range>
           </ray>
           <update_rate>20.000000</update_rate>
-          <plugin name='laser' filename='liblaserTurtlebotJde.so'/>
+
           <always_on>1</always_on>
           <visualize>1</visualize>
         </sensor>
@@ -873,7 +908,7 @@
               <far>15.000000</far>
             </clip>
           </camera>
-          <plugin name='camera_dump' filename='libcamera_dumpTurtlebotJde.so'/>
+
         </sensor>
         <visual name='visual'>
           <geometry>
@@ -1043,7 +1078,7 @@
               <far>15.000000</far>
             </clip>
           </camera>
-          <plugin name='camera_dump' filename='libcamera_dumpTurtlebotJde.so'/>
+
         </sensor>
         <visual name='visual'>
           <geometry>
@@ -1418,13 +1453,7 @@
           </limit>
         </axis>
       </joint>
-      <plugin name='motors' filename='libmotorsTurtlebotJde.so'>
-        <left_joint>create::left_wheel_hinge</left_joint>
-        <right_joint>create::right_wheel_hinge</right_joint>
-        <torque>5</torque>
-      </plugin>
-      <plugin name='encoders' filename='libencodersTurtlebotJde.so'/>
-      <plugin name="pose3d" filename="libpose3dTurtlebotJde.so"/> 
+ 
       <link name='kinect_model::kinect'>
         <inertial>
           <mass>0.300000</mass>
@@ -1475,7 +1504,6 @@
               <far>3.000000</far>
             </clip>
           </camera>
-          <plugin name='depth_camera_plugin' filename='libkinectPluginTurtlebotJde.so'/>
         </sensor>
         <velocity_decay>
           <linear>0.000000</linear>
@@ -1591,13 +1619,7 @@
           </limit>
         </axis>
       </joint>
-      <plugin name='pose3dencoders' filename='libpose3dencodersTurtlebotJde.so'>
-        <left_joint_pose3dencoders_pan>pan_joint_right</left_joint_pose3dencoders_pan>
-        <left_joint_pose3dencoders_tilt>tilt_joint_right</left_joint_pose3dencoders_tilt>
-        <right_joint_pose3dencoders_pan>pan_joint_left</right_joint_pose3dencoders_pan>
-        <right_joint_pose3dencoders_tilt>tilt_joint_left</right_joint_pose3dencoders_tilt>
-        <torque>5</torque>
-      </plugin>
+     
       <static>0</static>
     </model>
 
