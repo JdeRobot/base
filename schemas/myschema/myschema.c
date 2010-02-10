@@ -18,17 +18,10 @@
  *  Authors : José María Cañas Plaza <jmplaza@gsyc.escet.urjc.es>
  */
 
-#include <jde.h>
-#include <forms.h>
-#include <graphics_xforms.h>
-#include <myschemagui.h>
-#include <myschema.h>
-
-/*Gui callbacks*/
-registerbuttons myregister_buttonscallback;
-registerdisplay myregister_displaycallback;
-deletebuttons mydelete_buttonscallback;
-deletedisplay mydelete_displaycallback;
+#include "jde.h"
+#include "jdegui.h"
+#include "myschemagui.h"
+/*#include "perceptive1.h"*/
 
 int myschema_id=0; 
 int myschema_brothers[MAX_SCHEMAS];
@@ -36,95 +29,43 @@ arbitration myschema_callforarbitration;
 
 enum myschema_states {init,t1,r1,t2,r2,t3,r3,t4,end};
 static int myschema_state;
-FD_myschemagui *fd_myschemagui=NULL;
+FD_myschemagui *fd_myschemagui;
 
 /* exported variables */
 int myschema_cycle=100; /* ms */
-int valor=0;
 
-void myschema_iteration(){  
-  static int d=0;
+/*imported variables */
+int *myc=NULL;
+
+void myschema_iteration()
+{  
+  static int d;
   speedcounter(myschema_id);
-  if (d==15)
-  {
-     valor=15;
-  }
-  else if (d==25)
-  {
-     valor=25;
-  }
-  else if (d==80)
-  {
-     valor=100;
-  }
-  d++;
+  /*  printf("myschema iteration %d: a=%d c=%d\n",d++,a,c);*/
+  /*
+  if (myc==NULL) printf("myschema: c=NULL\n");
+  else printf("myschema: c=%d\n",*myc);
+  */
 }
 
 
-/*Importar símbolos*/
-void myschema_imports(){
-
-}
-
-/*Exportar símbolos*/
-void myschema_exports(){
-
-   myexport("myschema","cycle",&myschema_cycle);
-   myexport("myschema","run",(void *)myschema_run);
-   myexport("myschema","stop",(void *)myschema_stop);
-   myexport("myschema", "valor", &valor);
-}
-
-/*Las inicializaciones van en esta parte*/
-void myschema_guiinit(){
-   if (myregister_buttonscallback==NULL){
-      if ((myregister_buttonscallback=(registerbuttons)myimport ("graphics_xforms", "register_buttonscallback"))==NULL){
-         printf ("I can't fetch register_buttonscallback from graphics_xforms\n");
-         jdeshutdown(1);
-      }
-      if ((mydelete_buttonscallback=(deletebuttons)myimport ("graphics_xforms", "delete_buttonscallback"))==NULL){
-         printf ("I can't fetch delete_buttonscallback from graphics_xforms\n");
-         jdeshutdown(1);
-      }
-      if ((myregister_displaycallback=(registerdisplay)myimport ("graphics_xforms", "register_displaycallback"))==NULL){
-         printf ("I can't fetch register_displaycallback from graphics_xforms\n");
-         jdeshutdown(1);
-      }
-      if ((mydelete_displaycallback=(deletedisplay)myimport ("graphics_xforms", "delete_displaycallback"))==NULL){
-         jdeshutdown(1);
-         printf ("I can't fetch delete_displaycallback from graphics_xforms\n");
-      }
-   }
-}
-
-void myschema_terminate(){
- if (fd_myschemagui!=NULL)
-    {
-      if (all[myschema_id].guistate==on) 
-	fl_hide_form(fd_myschemagui->myschemagui);
-      fl_free_form(fd_myschemagui->myschemagui);
-    }
-  printf ("myschema terminated\n");
-}
-
-
-void myschema_stop()
+void myschema_suspend()
 {
-  /* printf("myschema: cojo-stop\n");*/
+  /* printf("myschema: cojo-suspend\n");*/
   pthread_mutex_lock(&(all[myschema_id].mymutex));
   put_state(myschema_id,slept);
   printf("myschema: off\n");
   pthread_mutex_unlock(&(all[myschema_id].mymutex));
-  /*  printf("myschema: suelto-stop\n");*/
+  /*  printf("myschema: suelto-suspend\n");*/
 }
 
 
-void myschema_run(int father, int *brothers, arbitration fn)
+void myschema_resume(int father, int *brothers, arbitration fn)
 {
   int i;
 
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN)
+  if (father!=GUIHUMAN) 
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[myschema_id]=TRUE;
@@ -132,7 +73,7 @@ void myschema_run(int father, int *brothers, arbitration fn)
     }
 
   pthread_mutex_lock(&(all[myschema_id].mymutex));
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[myschema_id].children[i]=FALSE;
   all[myschema_id].father=father;
   if (brothers!=NULL)
@@ -146,130 +87,117 @@ void myschema_run(int father, int *brothers, arbitration fn)
   printf("myschema: on\n");
   pthread_cond_signal(&(all[myschema_id].condition));
   pthread_mutex_unlock(&(all[myschema_id].mymutex));
-  myschema_imports();
 }
 
-void *myschema_thread(void *not_used)
+void *myschema_thread(void *not_used) 
 {
-   struct timeval a,b;
-   long n=0; /* iteration */
-   long next,bb,aa;
+  struct timeval a,b;
+  long diff, next;
 
-   for(;;)
-   {
+  for(;;)
+    {
+      /* printf("myschema: iteration-cojo\n");*/
       pthread_mutex_lock(&(all[myschema_id].mymutex));
 
-      if (all[myschema_id].state==slept)
-      {
-	 myschema_state=init;
-	 pthread_cond_wait(&(all[myschema_id].condition),&(all[myschema_id].mymutex));
-	 pthread_mutex_unlock(&(all[myschema_id].mymutex));
-      }
-      else
-      {
-	 /* check preconditions. For now, preconditions are always satisfied*/
-	 if (all[myschema_id].state==notready)
-	    put_state(myschema_id,ready);
-	 /* check brothers and arbitrate. For now this is the only winner */
-	 if (all[myschema_id].state==ready)
-	 {put_state(myschema_id,winner);
-	 gettimeofday(&a,NULL);
-	 aa=a.tv_sec*1000000+a.tv_usec;
-	 n=0;
-	 }
+      if (all[myschema_id].state==slept) 
+	{
+	  /*printf("myschema: off\n");*/
+	  v=0; w=0;
+	  /*  printf("myschema: suelto para dormirme en condicional\n");*/
+	  pthread_cond_wait(&(all[myschema_id].condition),&(all[myschema_id].mymutex));
+	  /*  printf("myschema: cojo tras dormirme en condicional\n");*/
+	  /*printf("myschema: on\n");*/
+	  myschema_state=init; 
+	  /* esto es para la aplicación, no tiene que ver con infraestrucura */
+	  pthread_mutex_unlock(&(all[myschema_id].mymutex));
+	  /* printf("myschema: iteration-suelto1\n");*/
+	}
+      else 
+	{
+	  /* check preconditions. For now, preconditions are always satisfied*/
+	  if (all[myschema_id].state==notready) put_state(myschema_id,ready);
+	  else all[myschema_id].state=ready;
+	  /* check brothers and arbitrate. For now this is the only winner */
+	  if (all[myschema_id].state==ready) put_state(myschema_id,winner);
 
-	 if (all[myschema_id].state==winner)
+
+	  if (all[myschema_id].state==winner)
 	    /* I'm the winner and must execute my iteration */
-	 {
-	    pthread_mutex_unlock(&(all[myschema_id].mymutex));
-	    /*      gettimeofday(&a,NULL);*/
-	    n++;
-	    myschema_iteration();
-	    gettimeofday(&b,NULL);
-	    bb=b.tv_sec*1000000+b.tv_usec;
-	    next=aa+(n+1)*(long)myschema_cycle*1000-bb;
-
-	    if (next>5000)
 	    {
-	       usleep(next-5000);
-	       /* discounts 5ms taken by calling usleep itself, on average */
+	      pthread_mutex_unlock(&(all[myschema_id].mymutex));
+	      /*printf("myschema: iteration-suelto2\n");*/
+
+	      gettimeofday(&a,NULL);
+	      myschema_iteration();
+	      gettimeofday(&b,NULL);  
+
+	      diff = (b.tv_sec-a.tv_sec)*1000000+b.tv_usec-a.tv_usec;
+	      next = myschema_cycle*1000-diff-10000; 
+	      /* discounts 10ms taken by calling usleep itself */
+	      if (next>0) usleep(myschema_cycle*1000-diff);
+	      else 
+		{printf("time interval violated: myschema\n"); usleep(myschema_cycle*1000);
+		}
 	    }
-	    else  ;
-	 }
-	 else
+	  else 
 	    /* just let this iteration go away. overhead time negligible */
-	 {
-	    pthread_mutex_unlock(&(all[myschema_id].mymutex));
-	    usleep(myschema_cycle*1000);
-	 }
-      }
-   }
+	    {
+	      pthread_mutex_unlock(&(all[myschema_id].mymutex));
+	      /*printf("myschema: iteration-suelto3\n");*/
+	      usleep(myschema_cycle*1000);
+	    }
+	}
+    }
 }
 
-void myschema_init(char *configfile)
+void myschema_startup()
 {
   pthread_mutex_lock(&(all[myschema_id].mymutex));
   printf("myschema schema started up\n");
-  myschema_exports();
+  myexport("myschema","myschema_cycle",&myschema_cycle);
+  myexport("myschema","myschema_resume",(void *)myschema_resume);
+  myexport("myschema","myschema_suspend",(void *)myschema_suspend);
+  myc=(int *)myimport("myperceptive","c");
+  if (myc==NULL) printf("myschema: Warning c symbol not resolved\n");
   put_state(myschema_id,slept);
   pthread_create(&(all[myschema_id].mythread),NULL,myschema_thread,NULL);
   pthread_mutex_unlock(&(all[myschema_id].mymutex));
-  myschema_guiinit();
 }
 
-void myschema_guibuttons(void *obj){
+void myschema_guibuttons(FL_OBJECT *obj)
+{
+  /*  printf("schema: guibuttons\n");*/
 }
 
-void myschema_guidisplay(){
+void myschema_guidisplay()
+{
   char text[80]="";
   static float k=0;
   k=k+1.;
   sprintf(text,"it %.1f",k);
   fl_set_object_label(fd_myschemagui->fps,text);
+  /* printf("schema: guidisplay\n");*/
 }
 
 
-void myschema_hide_aux(void){
-
-  all[myschema_id].guistate=off;
-  mydelete_buttonscallback(myschema_guibuttons);
-  mydelete_displaycallback(myschema_guidisplay);
+void myschema_guisuspend(void)
+{
+  delete_buttonscallback(myschema_guibuttons);
+  delete_displaycallback(myschema_guidisplay);
   fl_hide_form(fd_myschemagui->myschemagui);
 }
 
-void myschema_hide(){
-   callback fn;
-   if ((fn=(callback)myimport ("graphics_xforms", "suspend_callback"))!=NULL){
-      fn ((gui_function)myschema_hide_aux);
-   }
-}
-
-int myclose_form(FL_FORM *form, void *an_argument)
+void myschema_guiresume(void)
 {
-  myschema_hide();
-  return FL_IGNORE;
-}
-
-
-void myschema_show_aux(void){
   static int k=0;
 
-  all[myschema_id].guistate=on;
   if (k==0) /* not initialized */
     {
       k++;
       fd_myschemagui = create_form_myschemagui();
       fl_set_form_position(fd_myschemagui->myschemagui,400,50);
-      fl_set_form_atclose(fd_myschemagui->myschemagui,myclose_form,0);
     }
-  myregister_buttonscallback(myschema_guibuttons);
-  myregister_displaycallback(myschema_guidisplay);
+  register_buttonscallback(myschema_guibuttons);
+  register_displaycallback(myschema_guidisplay);
   fl_show_form(fd_myschemagui->myschemagui,FL_PLACE_POSITION,FL_FULLBORDER,"myschema");
-}
-
-void myschema_show(){
-   callback fn;
-   if ((fn=(callback)myimport ("graphics_xforms", "resume_callback"))!=NULL){
-      fn ((gui_function)myschema_show_aux);
-   }
 }

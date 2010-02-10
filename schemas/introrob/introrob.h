@@ -17,35 +17,10 @@
  *
  *  Authors : José María Cañas Plaza <jmplaza@gsyc.escet.urjc.es>
  */
-#include "pioneer.h"
 
-extern void introrob_init(char *configfile);
-extern void introrob_terminate();
+extern void introrob_startup();
+extern void introrob_suspend();
+extern void introrob_resume(int father, int *brothers, arbitration fn);
+extern void introrob_guiresume();
+extern void introrob_guisuspend();
 
-extern void introrob_stop();
-extern void introrob_run(int father, int *brothers, arbitration fn);
-
-extern void introrob_show();
-extern void introrob_hide();
-
-#define MOUSELEFT 1
-#define MOUSEMIDDLE 2
-#define MOUSERIGHT 3
-#define MOUSEWHEELUP 4
-#define MOUSEWHEELDOWN 5
-
-#define PI 3.14159265
-
-extern float introrob_mouse_x, introrob_mouse_y;
-/* absolute position of the point clicked with the central mouse button */
-
-extern int absolutas2relativas(Tvoxel in, Tvoxel *out);
-extern int relativas2absolutas(Tvoxel in, Tvoxel *out);
-extern int pintaSegmento(Tvoxel a, Tvoxel b, int color);
-
-
-extern float v;
-extern float w;
-extern float robot[5];
-extern float laser[NUM_LASER];
-extern char imagenRGB[SIFNTSC_COLUMNS*SIFNTSC_ROWS*3];
