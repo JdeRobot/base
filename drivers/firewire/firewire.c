@@ -1,28 +1,22 @@
 /*
+ *  Copyright (C) 2006 Antonio Pineda Cabello
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : David Lobato <dav.lobato@gmail.com>
- *            Antonio Pineda Cabello <apineda@gsyc.escet.urjc.es>
- *            José Antonio Santos <santoscadenas@gmail.com>
- *            Jose Maria Cañas <jmplaza@gsyc.escet.urjc.es>
- *
- *
+ *  Authors : David Lobato <dlobato@gsyc.escet.urjc.es>, Antonio Pineda Cabello <apineda@gsyc.escet.urjc.es>, JoseMaria Cañas <jmplaza@gsyc.escet.urjc.es>, José Antonio Santos <santoscadenas@gmail.com>
  */
-
 
 /**
  * jdec firewire driver provides video images to color variables from firewire
@@ -41,8 +35,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
-#include <jde.h>
-#include <interfaces/varcolor.h>
+#include "jde.h"
 
 /** Max number of cameras detected by firewire driver.*/
 #define MAXCAM 8
@@ -129,7 +122,7 @@ int firewire_cleaned_up=0;
 /** variable to detect when firewire driver was setup.*/
 int firewire_setup=0;
 /** variable to detect when pthread must end execution.*/
-int firewire_terminate_command=0;
+int firewire_close_command=0;
 
 /* firewire driver API options */
 /** firewire driver name.*/
@@ -184,7 +177,26 @@ char *colorD; /* sifntsc image itself */
 /** 'colorD' schema clock*/
 unsigned long int imageD_clock;
 
-Varcolor myA,myB,myC,myD;
+/** 'varcolorA' schema image data*/
+char *varcolorA; /* sifntsc image itself */
+/** 'varcolorA' schema clock*/
+unsigned long int varimageA_clock;
+
+/** 'varcolorB' schema image data*/
+char *varcolorB; /* sifntsc image itself */
+/** 'varcolorB' schema clock*/
+unsigned long int varimageB_clock;
+
+/** 'varcolorC' schema image data*/
+char *varcolorC; /* sifntsc image itself */
+/** 'varcolorC' schema clock*/
+unsigned long int varimageC_clock;
+
+/** 'varcolorD' schema image data*/
+char *varcolorD; /* sifntsc image itself */
+/** 'varcolorD' schema clock*/
+unsigned long int varimageD_clock;
+
 
 /*Contadores de referencias*/
 /** colorA ref counter*/
@@ -252,9 +264,9 @@ void firewire_clean_up() {
 }
 
 /** firewire driver closing function invoked when stopping driver.*/
-void firewire_terminate(){
+void firewire_close(){
 
-  firewire_terminate_command=1;
+  firewire_close_command=1;
   firewire_clean_up();
   printf("driver firewire off\n");
 }
@@ -272,12 +284,12 @@ void set_default_firewire_camera_config(void){
   }
 }
 
-/** colorA run function following jdec platform API schemas.
+/** colorA resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int mycolorA_run(int father, int *brothers, arbitration fn){
+int mycolorA_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (colorA_refs>0){
       colorA_refs++;
@@ -288,7 +300,7 @@ int mycolorA_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[0]==1)&&(color_active[0]==0)){
          color_active[0]=1;
-         printf("colorA schema run (firewire driver)\n");
+         printf("colorA schema resume (firewire driver)\n");
          all[colorA_schema_id].father = father;
          all[colorA_schema_id].fps = 0.;
          all[colorA_schema_id].k =0;
@@ -304,9 +316,9 @@ int mycolorA_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorA stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int mycolorA_stop(){
+/** colorA suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int mycolorA_suspend(){
 
    pthread_mutex_lock(&refmutex);
    if (colorA_refs>1){
@@ -319,7 +331,7 @@ int mycolorA_stop(){
       if((serve_color[0]==1)&&(color_active[0]==1)){
          color_active[0]=0;
          put_state(colorA_schema_id,slept);
-         printf("colorA schema stop (firewire driver)\n");
+         printf("colorA schema suspend (firewire driver)\n");
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[0]);
          state[0]=slept;
@@ -329,12 +341,12 @@ int mycolorA_stop(){
    return 0;
 }
 
-/** colorB run function following jdec platform API schemas.
+/** colorB resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int mycolorB_run(int father, int *brothers, arbitration fn){
+int mycolorB_resume(int father, int *brothers, arbitration fn){
 
    pthread_mutex_lock(&refmutex);
    if (colorB_refs>0){
@@ -346,7 +358,7 @@ int mycolorB_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[1]==1)&&(color_active[1]==0)){
          color_active[1]=1;
-         printf("colorB schema run (firewire driver)\n");
+         printf("colorB schema resume (firewire driver)\n");
          all[colorB_schema_id].father = father;
          all[colorB_schema_id].fps = 0.;
          all[colorB_schema_id].k =0;
@@ -363,9 +375,9 @@ int mycolorB_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorB stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int mycolorB_stop(){
+/** colorB suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int mycolorB_suspend(){
 
    pthread_mutex_lock(&refmutex);
    if (colorB_refs>1){
@@ -377,7 +389,7 @@ int mycolorB_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[1]==1)&&(color_active[1]==1)){
          color_active[1]=0;
-         printf("colorB schema stop (firewire driver)\n");
+         printf("colorB schema suspend (firewire driver)\n");
          put_state(colorB_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[1]);
@@ -388,12 +400,12 @@ int mycolorB_stop(){
    return 0;
 }
 
-/** colorC run function following jdec platform API schemas.
+/** colorC resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int mycolorC_run(int father, int *brothers, arbitration fn){
+int mycolorC_resume(int father, int *brothers, arbitration fn){
 
    pthread_mutex_lock(&refmutex);
    if (colorC_refs>0){
@@ -405,7 +417,7 @@ int mycolorC_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[2]==1)&&(color_active[2]==0)){
          color_active[2]=1;
-         printf("colorC schema run (firewire driver)\n");
+         printf("colorC schema resume (firewire driver)\n");
          all[colorC_schema_id].father = father;
          all[colorC_schema_id].fps = 0.;
          all[colorC_schema_id].k =0;
@@ -420,9 +432,9 @@ int mycolorC_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorC stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int mycolorC_stop(){
+/** colorC suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int mycolorC_suspend(){
    
    pthread_mutex_lock(&refmutex);
    if (colorC_refs>1){
@@ -434,7 +446,7 @@ int mycolorC_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[2]==1)&&(color_active[2]==1)){
          color_active[2]=0;
-         printf("colorC schema stop (firewire driver)\n");
+         printf("colorC schema suspend (firewire driver)\n");
          put_state(colorC_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[2]);
@@ -445,12 +457,12 @@ int mycolorC_stop(){
    return 0;
 }
 
-/** colorD run function following jdec platform API schemas.
+/** colorD resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int mycolorD_run(int father, int *brothers, arbitration fn){
+int mycolorD_resume(int father, int *brothers, arbitration fn){
 
    pthread_mutex_lock(&refmutex);
    if (colorD_refs>0){
@@ -462,7 +474,7 @@ int mycolorD_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[3]==1)&&(color_active[3]==0)){
          color_active[3]=1;
-         printf("colorD schema run (firewire driver)\n");
+         printf("colorD schema resume (firewire driver)\n");
          all[colorD_schema_id].father = father;
          all[colorD_schema_id].fps = 0.;
          all[colorD_schema_id].k =0;
@@ -477,9 +489,9 @@ int mycolorD_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorD stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int mycolorD_stop(){
+/** colorD suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int mycolorD_suspend(){
    
    pthread_mutex_lock(&refmutex);
    if (colorD_refs>1){
@@ -491,7 +503,7 @@ int mycolorD_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[3]==1)&&(color_active[3]==1)){
          color_active[3]=0;
-         printf("colorD schema stop (firewire driver)\n");
+         printf("colorD schema suspend (firewire driver)\n");
          put_state(colorD_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[3]);
@@ -502,12 +514,12 @@ int mycolorD_stop(){
    return 0;
 }
 
-/** varcolorA run function following jdec platform API schemas.
+/** varcolorA resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int myvarcolorA_run(int father, int *brothers, arbitration fn){
+int myvarcolorA_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorA_refs>0){
       varcolorA_refs++;
@@ -518,7 +530,7 @@ int myvarcolorA_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[4]==1)&&(color_active[4]==0)){
          color_active[4]=1;
-         printf("varcolorA schema run (firewire driver)\n");
+         printf("varcolorA schema resume (firewire driver)\n");
          all[varcolorA_schema_id].father = father;
          all[varcolorA_schema_id].fps = 0.;
          all[varcolorA_schema_id].k =0;
@@ -533,9 +545,9 @@ int myvarcolorA_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorA stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int myvarcolorA_stop(){
+/** varcolorA suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int myvarcolorA_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorA_refs>1){
       varcolorA_refs--;
@@ -546,7 +558,7 @@ int myvarcolorA_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[4]==1)&&(color_active[4]==1)){
          color_active[4]=0;
-         printf("varcolorA schema stop (firewire driver)\n");
+         printf("varcolorA schema suspend (firewire driver)\n");
          put_state(varcolorA_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[4]);
@@ -557,12 +569,12 @@ int myvarcolorA_stop(){
    return 0;
 }
 
-/** varcolorB run function following jdec platform API schemas.
+/** varcolorB resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int myvarcolorB_run(int father, int *brothers, arbitration fn){
+int myvarcolorB_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorB_refs>0){
       varcolorB_refs++;
@@ -573,7 +585,7 @@ int myvarcolorB_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[5]==1)&&(color_active[5]==0)){
          color_active[5]=1;
-         printf("varcolorB schema run (firewire driver)\n");
+         printf("varcolorB schema resume (firewire driver)\n");
          all[varcolorB_schema_id].father = father;
          all[varcolorB_schema_id].fps = 0.;
          all[varcolorB_schema_id].k =0;
@@ -588,9 +600,9 @@ int myvarcolorB_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorB stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int myvarcolorB_stop(){
+/** varcolorB suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int myvarcolorB_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorB_refs>1){
       varcolorB_refs--;
@@ -601,7 +613,7 @@ int myvarcolorB_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[5]==1)&&(color_active[5]==1)){
          color_active[5]=0;
-         printf("varcolorB schema stop (firewire driver)\n");
+         printf("varcolorB schema suspend (firewire driver)\n");
          put_state(varcolorB_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[5]);
@@ -612,12 +624,12 @@ int myvarcolorB_stop(){
    return 0;
 }
 
-/** varcolorC run function following jdec platform API schemas.
+/** varcolorC resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int myvarcolorC_run(int father, int *brothers, arbitration fn){
+int myvarcolorC_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorC_refs>0){
       varcolorC_refs++;
@@ -628,7 +640,7 @@ int myvarcolorC_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[6]==1)&&(color_active[6]==0)){
          color_active[6]=1;
-         printf("varcolorC schema run (firewire driver)\n");
+         printf("varcolorC schema resume (firewire driver)\n");
          all[varcolorC_schema_id].father = father;
          all[varcolorC_schema_id].fps = 0.;
          all[varcolorC_schema_id].k =0;
@@ -643,9 +655,9 @@ int myvarcolorC_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorC stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int myvarcolorC_stop(){
+/** varcolorC suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int myvarcolorC_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorC_refs>1){
       varcolorC_refs--;
@@ -656,7 +668,7 @@ int myvarcolorC_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[6]==1)&&(color_active[6]==1)){
          color_active[6]=0;
-         printf("varcolorC schema stop (firewire driver)\n");
+         printf("varcolorC schema suspend (firewire driver)\n");
          put_state(varcolorC_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[6]);
@@ -667,12 +679,12 @@ int myvarcolorC_stop(){
    return 0;
 }
 
-/** varcolorD run function following jdec platform API schemas.
+/** varcolorD resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int myvarcolorD_run(int father, int *brothers, arbitration fn){
+int myvarcolorD_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorD_refs>0){
       varcolorD_refs++;
@@ -683,7 +695,7 @@ int myvarcolorD_run(int father, int *brothers, arbitration fn){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[7]==1)&&(color_active[7]==0)){
          color_active[7]=1;
-         printf("varcolorD schema run (firewire driver)\n");
+         printf("varcolorD schema resume (firewire driver)\n");
          all[varcolorD_schema_id].father = father;
          all[varcolorD_schema_id].fps = 0.;
          all[varcolorD_schema_id].k =0;
@@ -698,9 +710,9 @@ int myvarcolorD_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorD stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int myvarcolorD_stop(){
+/** varcolorD suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int myvarcolorD_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorD_refs>1){
       varcolorD_refs--;
@@ -711,7 +723,7 @@ int myvarcolorD_stop(){
       pthread_mutex_unlock(&refmutex);
       if((serve_color[7]==1)&&(color_active[7]==1)){
          color_active[7]=0;
-         printf("varcolorD schema stop (firewire driver)\n");
+         printf("varcolorD schema suspend (firewire driver)\n");
          put_state(varcolorD_schema_id,slept);
          /* firewire thread goes sleep */
          pthread_mutex_lock(&mymutex[7]);
@@ -855,47 +867,47 @@ void *firewire_thread(void *id)
       }
 
       if((color_active[4])&&(capturedvarA==TRUE)){
-         uyvy2rgb((unsigned char*)cameras[number_color[4]].capture_buffer,(unsigned char*)myA.img,width[4]*height[4]);
+         uyvy2rgb((unsigned char*)cameras[number_color[4]].capture_buffer,(unsigned char*)varcolorA,width[4]*height[4]);
          if(dc1394_dma_done_with_buffer(&cameras[number_color[4]])==DC1394_FAILURE) perror("firewire_thread");
          else {
             speedcounter(varcolorA_schema_id);
-            myA.clock=lastimage;
+            varimageA_clock=lastimage;
          }
          capturedvarA=FALSE;
       }
 
       if((color_active[5])&&(capturedvarB==TRUE)){
-         uyvy2rgb((unsigned char*)cameras[number_color[5]].capture_buffer,(unsigned char*)myB.img,width[5]*height[5]);
+         uyvy2rgb((unsigned char*)cameras[number_color[5]].capture_buffer,(unsigned char*)varcolorB,width[5]*height[5]);
          if(dc1394_dma_done_with_buffer(&cameras[number_color[5]])==DC1394_FAILURE) perror("firewire_thread");
          else {
             speedcounter(varcolorB_schema_id);
-            myB.clock=lastimage;
+            varimageB_clock=lastimage;
          }
          capturedvarB=FALSE;
       }
 
       if((color_active[6])&&(capturedvarC==TRUE)){
-         uyvy2rgb((unsigned char*)cameras[number_color[6]].capture_buffer,(unsigned char*)myC.img,width[6]*height[6]);
+         uyvy2rgb((unsigned char*)cameras[number_color[6]].capture_buffer,(unsigned char*)varcolorC,width[6]*height[6]);
          if(dc1394_dma_done_with_buffer(&cameras[number_color[6]])==DC1394_FAILURE) perror("firewire_thread");
          else {
             speedcounter(varcolorC_schema_id);
-            myC.clock=lastimage;
+            varimageC_clock=lastimage;
          }
          capturedvarC=FALSE;
       }
 
       if((color_active[7])&&(capturedvarD==TRUE)){
-         uyvy2rgb((unsigned char*)cameras[number_color[7]].capture_buffer,(unsigned char*)myD.img,width[7]*height[7]);
+         uyvy2rgb((unsigned char*)cameras[number_color[7]].capture_buffer,(unsigned char*)varcolorD,width[7]*height[7]);
          if(dc1394_dma_done_with_buffer(&cameras[number_color[7]])==DC1394_FAILURE) perror("firewire_thread");
          else {
             speedcounter(varcolorD_schema_id);
-            myD.clock=lastimage;
+            varimageD_clock=lastimage;
          }
          capturedvarD=FALSE;
       }
       lastimage++;
     }
-  }while(firewire_terminate_command==0);
+  }while(firewire_close_command==0);
 
   pthread_exit(0);
 }
@@ -1235,7 +1247,7 @@ int firewire_parseconf(char *configfile){
 /** firewire driver init function. It will start all firewire required devices
  *  and setting them the default configuration.
  *  @return 0 if initialitation was successful or -1 if something went wrong.*/
-void firewire_deviceinit(){
+void firewire_init(){
 
   int p,i;
   raw1394handle_t raw_handle;
@@ -1358,9 +1370,9 @@ void firewire_deviceinit(){
   firewire_setup=1;
 }
 
-/** firewire driver init function following jdec platform API for drivers.
+/** firewire driver startup function following jdec platform API for drivers.
  *  @param configfile path and name to the config file of this driver.*/
-void firewire_init(char *configfile)
+void firewire_startup(char *configfile)
 {
   int i;
 
@@ -1382,7 +1394,7 @@ void firewire_init(char *configfile)
   }
 
   /* firewire initialitation */
-  if(firewire_setup==0) firewire_deviceinit();
+  if(firewire_setup==0) firewire_init();
 
   for (i=0; i<MAXCAM; i++){
      if(firewire_thread_created[i]!=1){
@@ -1408,14 +1420,14 @@ void firewire_init(char *configfile)
 
       all[num_schemas].id = (int *) &colorA_schema_id;
       strcpy(all[num_schemas].name,"colorA");
-      all[num_schemas].run = (runFn) mycolorA_run;
-      all[num_schemas].stop = (stopFn) mycolorA_stop;
+      all[num_schemas].resume = (resumeFn) mycolorA_resume;
+      all[num_schemas].suspend = (suspendFn) mycolorA_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport("colorA","id",&colorA_schema_id);
@@ -1423,8 +1435,8 @@ void firewire_init(char *configfile)
       myexport("colorA","clock", &imageA_clock);
       myexport("colorA","width",&width[0]);
       myexport("colorA","height",&height[0]);
-      myexport("colorA","run",(void *)mycolorA_run);
-      myexport("colorA","stop",(void *)mycolorA_stop);
+      myexport("colorA","resume",(void *)mycolorA_resume);
+      myexport("colorA","suspend",(void *)mycolorA_suspend);
 
       colorA=(char *)malloc (width[0]*height[0]*3);
     }else{
@@ -1442,14 +1454,14 @@ void firewire_init(char *configfile)
       
       all[num_schemas].id = (int *) &colorB_schema_id;
       strcpy(all[num_schemas].name,"colorB");
-      all[num_schemas].run = (runFn) mycolorB_run;
-      all[num_schemas].stop = (stopFn) mycolorB_stop;
+      all[num_schemas].resume = (resumeFn) mycolorB_resume;
+      all[num_schemas].suspend = (suspendFn) mycolorB_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport("colorB","id",&colorB_schema_id);
@@ -1457,8 +1469,8 @@ void firewire_init(char *configfile)
       myexport("colorB","clock", &imageB_clock);
       myexport("colorB","width",&width[1]);
       myexport("colorB","height",&height[1]);
-      myexport("colorB","run",(void *)mycolorB_run);
-      myexport("colorB","stop",(void *)mycolorB_stop);
+      myexport("colorB","resume",(void *)mycolorB_resume);
+      myexport("colorB","suspend",(void *)mycolorB_suspend);
 
       colorB=(char *)malloc (width[1]*height[1]*3);
     }else{
@@ -1476,14 +1488,14 @@ void firewire_init(char *configfile)
 
       all[num_schemas].id = (int *) &colorC_schema_id;
       strcpy(all[num_schemas].name,"colorC");
-      all[num_schemas].run = (runFn) mycolorC_run;
-      all[num_schemas].stop = (stopFn) mycolorC_stop;
+      all[num_schemas].resume = (resumeFn) mycolorC_resume;
+      all[num_schemas].suspend = (suspendFn) mycolorC_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport("colorC","id",&colorC_schema_id);
@@ -1491,8 +1503,8 @@ void firewire_init(char *configfile)
       myexport("colorC","clock", &imageC_clock);
       myexport("colorC","width",&width[2]);
       myexport("colorC","height",&height[2]);
-      myexport("colorC","run",(void *)mycolorC_run);
-      myexport("colorC","stop",(void *)mycolorC_stop);
+      myexport("colorC","resume",(void *)mycolorC_resume);
+      myexport("colorC","suspend",(void *)mycolorC_suspend);
 
       colorC=(char *)malloc (width[2]*height[2]*3);
     }else{
@@ -1510,14 +1522,14 @@ void firewire_init(char *configfile)
 
       all[num_schemas].id = (int *) &colorD_schema_id;
       strcpy(all[num_schemas].name,"colorD");
-      all[num_schemas].run = (runFn) mycolorD_run;
-      all[num_schemas].stop = (stopFn) mycolorD_stop;
+      all[num_schemas].resume = (resumeFn) mycolorD_resume;
+      all[num_schemas].suspend = (suspendFn) mycolorD_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport("colorD","id",&colorD_schema_id);
@@ -1525,8 +1537,8 @@ void firewire_init(char *configfile)
       myexport("colorD","clock", &imageD_clock);
       myexport("colorD","width",&width[3]);
       myexport("colorD","height",&height[3]);
-      myexport("colorD","run",(void *)mycolorD_run);
-      myexport("colorD","stop",(void *)mycolorD_stop);
+      myexport("colorD","resume",(void *)mycolorD_resume);
+      myexport("colorD","suspend",(void *)mycolorD_suspend);
 
       colorD=(char *)malloc (width[3]*height[3]*3);
     }else{
@@ -1544,25 +1556,25 @@ void firewire_init(char *configfile)
         
         all[num_schemas].id = (int *) &varcolorA_schema_id;
         strcpy(all[num_schemas].name,"varcolorA");
-        all[num_schemas].run = (runFn) myvarcolorA_run;
-        all[num_schemas].stop = (stopFn) myvarcolorA_stop;
+        all[num_schemas].resume = (resumeFn) myvarcolorA_resume;
+        all[num_schemas].suspend = (suspendFn) myvarcolorA_suspend;
         printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
         (*(all[num_schemas].id)) = num_schemas;
         all[num_schemas].fps = 0.;
         all[num_schemas].k =0;
         all[num_schemas].state=slept;
-        all[num_schemas].terminate = NULL;
+        all[num_schemas].close = NULL;
         all[num_schemas].handle = NULL;
         num_schemas++;
-	
-	myA.img=(char *)malloc (width[4]*height[4]*3);
-	myA.width=width[4];
-	myA.height=height[4];
-	myA.clock=0;
-        myexport("varcolorA","varcolorA",&myA);
         myexport("varcolorA","id",&varcolorA_schema_id);
-        myexport("varcolorA","run",(void *)myvarcolorA_run);
-        myexport("varcolorA","stop",(void *)myvarcolorA_stop);
+        myexport("varcolorA","varcolorA",&varcolorA);
+        myexport("varcolorA","clock", &varimageA_clock);
+        myexport("varcolorA","resume",(void *)myvarcolorA_resume);
+        myexport("varcolorA","suspend",(void *)myvarcolorA_suspend);
+        myexport("varcolorA","width",&width[4]);
+        myexport("varcolorA","height",&height[4]);
+        
+        varcolorA=(char *)malloc (width[4]*height[4]*3);
      }else{
         serve_color[4]=0;
         printf("cannot find firewire camera for varcolorA\n");
@@ -1578,25 +1590,25 @@ void firewire_init(char *configfile)
 
         all[num_schemas].id = (int *) &varcolorB_schema_id;
         strcpy(all[num_schemas].name,"varcolorB");
-        all[num_schemas].run = (runFn) myvarcolorB_run;
-        all[num_schemas].stop = (stopFn) myvarcolorB_stop;
+        all[num_schemas].resume = (resumeFn) myvarcolorB_resume;
+        all[num_schemas].suspend = (suspendFn) myvarcolorB_suspend;
         printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
         (*(all[num_schemas].id)) = num_schemas;
         all[num_schemas].fps = 0.;
         all[num_schemas].k =0;
         all[num_schemas].state=slept;
-        all[num_schemas].terminate = NULL;
+        all[num_schemas].close = NULL;
         all[num_schemas].handle = NULL;
         num_schemas++;
-
-        myB.img=(char *)malloc (width[5]*height[5]*3);
-	myB.width=width[5];
-	myB.height=height[5];
-	myB.clock=0;
-        myexport("varcolorB","varcolorB",&myB);
         myexport("varcolorB","id",&varcolorB_schema_id);
-        myexport("varcolorB","run",(void *)myvarcolorB_run);
-        myexport("varcolorB","stop",(void *)myvarcolorB_stop);
+        myexport("varcolorB","varcolorB",&varcolorB);
+        myexport("varcolorB","clock", &varimageB_clock);
+        myexport("varcolorB","resume",(void *)myvarcolorB_resume);
+        myexport("varcolorB","suspend",(void *)myvarcolorB_suspend);
+        myexport("varcolorB","width",&width[5]);
+        myexport("varcolorB","height",&height[5]);
+
+        varcolorB=(char *)malloc (width[5]*height[5]*3);
      }else{
         serve_color[5]=0;
         printf("cannot find firewire camera for varcolorB\n");
@@ -1613,25 +1625,25 @@ void firewire_init(char *configfile)
 
         all[num_schemas].id = (int *) &varcolorC_schema_id;
         strcpy(all[num_schemas].name,"varcolorC");
-        all[num_schemas].run = (runFn) myvarcolorC_run;
-        all[num_schemas].stop = (stopFn) myvarcolorC_stop;
+        all[num_schemas].resume = (resumeFn) myvarcolorC_resume;
+        all[num_schemas].suspend = (suspendFn) myvarcolorC_suspend;
         printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
         (*(all[num_schemas].id)) = num_schemas;
         all[num_schemas].fps = 0.;
         all[num_schemas].k =0;
         all[num_schemas].state=slept;
-        all[num_schemas].terminate = NULL;
+        all[num_schemas].close = NULL;
         all[num_schemas].handle = NULL;
         num_schemas++;
-
-	myC.img=(char *)malloc (width[6]*height[6]*3);
-	myC.width=width[6];
-	myC.height=height[6];
-	myC.clock=0;
-        myexport("varcolorC","varcolorC",&myC);
         myexport("varcolorC","id",&varcolorC_schema_id);
-        myexport("varcolorC","run",(void *)myvarcolorC_run);
-        myexport("varcolorC","stop",(void *)myvarcolorC_stop);
+        myexport("varcolorC","varcolorC",&varcolorC);
+        myexport("varcolorC","clock", &varimageC_clock);
+        myexport("varcolorC","resume",(void *)myvarcolorC_resume);
+        myexport("varcolorC","suspend",(void *)myvarcolorC_suspend);
+        myexport("varcolorC","width",&width[6]);
+        myexport("varcolorC","height",&height[6]);
+
+        varcolorC=(char *)malloc (width[6]*height[6]*3);
      }else{
         serve_color[6]=0;
         printf("cannot find firewire camera for varcolorC\n");
@@ -1648,25 +1660,25 @@ void firewire_init(char *configfile)
 
         all[num_schemas].id = (int *) &varcolorD_schema_id;
         strcpy(all[num_schemas].name,"varcolorD");
-        all[num_schemas].run = (runFn) myvarcolorD_run;
-        all[num_schemas].stop = (stopFn) myvarcolorD_stop;
+        all[num_schemas].resume = (resumeFn) myvarcolorD_resume;
+        all[num_schemas].suspend = (suspendFn) myvarcolorD_suspend;
         printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
         (*(all[num_schemas].id)) = num_schemas;
         all[num_schemas].fps = 0.;
         all[num_schemas].k =0;
         all[num_schemas].state=slept;
-        all[num_schemas].terminate = NULL;
+        all[num_schemas].close = NULL;
         all[num_schemas].handle = NULL;
         num_schemas++;
-
-	myD.img=(char *)malloc (width[7]*height[7]*3);
-	myD.width=width[7];
-	myD.height=height[7];
-	myD.clock=0;
-        myexport("varcolorD","varcolorD",&myD);
         myexport("varcolorD","id",&varcolorD_schema_id);
-        myexport("varcolorD","run",(void *)myvarcolorD_run);
-        myexport("varcolorD","stop",(void *)myvarcolorD_stop);
+        myexport("varcolorD","varcolorD",&varcolorD);
+        myexport("varcolorD","clock", &varimageD_clock);
+        myexport("varcolorD","resume",(void *)myvarcolorD_resume);
+        myexport("varcolorD","suspend",(void *)myvarcolorD_suspend);
+        myexport("varcolorD","width",&width[7]);
+        myexport("varcolorD","height",&height[7]);
+
+        varcolorD=(char *)malloc (width[7]*height[7]*3);
      }else{
         serve_color[7]=0;
         printf("cannot find firewire camera for varcolorD\n");

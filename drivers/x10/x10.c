@@ -1,23 +1,22 @@
 /*
+ *  Copyright (C) 2007 Javier Martin Ramos, Jose Antonio Santos Cadenas
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : Javier Martin Ramos <xaverbrennt@yahoo.es>
- *            Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
- *
+ *  Authors :  Javier Martin Ramos <xaverbrennt@yahoo.es>
+ *             Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
  */
 
 /**
@@ -32,15 +31,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
-#include <jde.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "jde.h"
 #include <unistd.h>
 #include <errno.h>
 
 #include <stdarg.h>
+
+#include <sys/types.h>
 #include <sys/wait.h>
 
 #include "x10.h"
@@ -112,12 +109,12 @@ int set_property(char *unit, char *property, ...){
 }
 
 /*DRIVER FUNCTIONS*/
-/** x10 run function following jdec platform schemas API.
+/** x10 resume function following jdec platform schemas API.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int x10_run(int father, int *brothers, arbitration fn){
+int x10_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    x10_active++;
    if ((all[x10_id].father==GUIHUMAN) ||
@@ -126,7 +123,7 @@ int x10_run(int father, int *brothers, arbitration fn){
    if(x10_active==1)
    {
       pthread_mutex_unlock(&refmutex);
-      /*printf("colorA schema run (mplayer driver)\n");*/
+      /*printf("colorA schema resume (mplayer driver)\n");*/
       all[x10_id].father = father;
       all[x10_id].fps = 0.;
       all[x10_id].k =0;
@@ -137,9 +134,9 @@ int x10_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** x10 stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int x10_stop(){
+/** x10 suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int x10_suspend(){
    pthread_mutex_lock(&refmutex);
    x10_active--;
    if(x10_active==0){
@@ -152,31 +149,31 @@ int x10_stop(){
 }
 
 /** x10 driver function to finish the driver*/
-void x10_terminate(){
+void x10_close(){
    printf("driver %s off\n", driver_name);
 }
 
-/** x10 driver init function following jdec platform API for drivers.
+/** x10 driver startup function following jdec platform API for drivers.
  *  @param configfile path and name to the config file of this driver.*/
-void x10_init(char *configfile)
+void x10_startup(char *configfile)
 {
    interface.set_property=set_property;
 
    /*Activate the schema*/
    all[num_schemas].id = (int *) &x10_id;
    strcpy(all[num_schemas].name,"x10");
-   all[num_schemas].run = (runFn) x10_run;
-   all[num_schemas].stop = (stopFn) x10_stop;
+   all[num_schemas].resume = (resumeFn) x10_resume;
+   all[num_schemas].suspend = (suspendFn) x10_suspend;
    printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
    (*(all[num_schemas].id)) = num_schemas;
    all[num_schemas].fps = 0.;
    all[num_schemas].k =0;
    all[num_schemas].state=slept;
-   all[num_schemas].terminate = NULL;
+   all[num_schemas].close = NULL;
    all[num_schemas].handle = NULL;
    num_schemas++;
    myexport(all[x10_id].name,"id",&x10_id);
-   myexport(all[x10_id].name,"run",(void *)x10_run);
-   myexport(all[x10_id].name,"stop",(void *)x10_stop);
+   myexport(all[x10_id].name,"resume",(void *)x10_resume);
+   myexport(all[x10_id].name,"suspend",(void *)x10_suspend);
    myexport(all[x10_id].name,"x10", (void*)&interface);
 }

@@ -1,22 +1,21 @@
 /*
+ *  Copyright (C) 2007 Roberto Calvo Palomino
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/. 
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : Roberto Calvo Palomino <rocapal@gsyc.es>
- *
+ *  Authors : Roberto Calvo Palomino <rocapal@gsyc.es> , Jose Maria Caas Plaza <jmplaza@gsyc.es>
  */
 
 #include <stdio.h>
@@ -26,11 +25,11 @@
 
 #include "colorspaces.h"
 
+struct HSV * LUT_RGB2HSV [64][64][64];
+
 const int MAX_BITS = 8;
 const int SIGNIFICATIVE_BITS = 6;
 const int MAX_RGB = 255;
-
-struct HSV * LUT_RGB2HSV [64][64][64];
 
 /* Condicional variable:
  *   0: The table RGB2HSV don't exists.
@@ -130,7 +129,7 @@ void hsv2rgb(double H, double S, double V, double *r, double *g, double *b)
 }
 
 /// \brief Function to print unsiged int in binary
-void print_status_YUV(unsigned long status)
+void print_status(unsigned long status)
 {
 
 	//const int BITS_PACK = 4;
@@ -193,7 +192,7 @@ void RGB2HSV_init()
         }
         pthread_mutex_unlock(&mutex);
 
-	printf("Init %s v%s ... \n",NAME,COLORSPACES_VERSION);
+	printf("Init %s v%s ... \n",NAME,VERSION);
 	pthread_mutex_lock(&mutex);
 	isInitTableHSV = 0;
 	pthread_mutex_unlock(&mutex);
@@ -291,4 +290,3 @@ void RGB2HSV_test (void)
 
 	}
 }
-

@@ -20,15 +20,13 @@
 
 #include "jde.h"
 #include "wiimote_viewer.h"
-#include <graphics_gtk.h>
+#include "graphics_gtk.h"
 
-#include <sys/time.h>
-#include <time.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
-#include <interfaces/wiimote.h>
+#include "wiimote.h"
 
 int wiimote_viewer_id=0;
 int wiimote_viewer_brothers[MAX_SCHEMAS];
@@ -46,14 +44,14 @@ int *buttons_id=NULL;
 int *acc_id=NULL;
 int *nunchuk_id=NULL;
 
-runFn buttons_run=NULL;
-stopFn buttons_stop=NULL;
+resumeFn buttons_resume=NULL;
+suspendFn buttons_suspend=NULL;
 
-runFn acc_run=NULL;
-stopFn acc_stop=NULL;
+resumeFn acc_resume=NULL;
+suspendFn acc_suspend=NULL;
 
-runFn nunchuk_run=NULL;
-stopFn nunchuk_stop=NULL;
+resumeFn nunchuk_resume=NULL;
+suspendFn nunchuk_suspend=NULL;
 
 int buttons_ok=0;
 int acc_ok=0;
@@ -82,13 +80,13 @@ gboolean on_delete_window (GtkWidget *widget, GdkEvent *event, gpointer user_dat
 void on_active_buttons_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
    if (buttons_ok){
       if (gtk_check_menu_item_get_active(menu_item)){
-         buttons_run(wiimote_viewer_id, NULL, NULL);
+         buttons_resume(wiimote_viewer_id, NULL, NULL);
          show_buttons=1;
          gtk_widget_show(glade_xml_get_widget(xml, "buttons"));
          gtk_widget_show(glade_xml_get_widget(xml, "buttons2"));
       }
       else{
-         buttons_stop();
+         buttons_suspend();
          show_buttons=0;
          gtk_widget_hide(glade_xml_get_widget(xml, "buttons"));
          gtk_widget_hide(glade_xml_get_widget(xml, "buttons2"));
@@ -99,13 +97,13 @@ void on_active_buttons_toggled (GtkCheckMenuItem *menu_item, gpointer user_data)
 void on_active_accs_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
    if (acc_ok){
       if (gtk_check_menu_item_get_active(menu_item)){
-         acc_run(wiimote_viewer_id, NULL, NULL);
+         acc_resume(wiimote_viewer_id, NULL, NULL);
          show_acc=1;
          gtk_widget_show(glade_xml_get_widget(xml, "acc"));
          gtk_widget_show(glade_xml_get_widget(xml, "acc2"));
       }
       else{
-         acc_stop();
+         acc_suspend();
          show_acc=0;
          gtk_widget_hide(glade_xml_get_widget(xml, "acc"));
          gtk_widget_hide(glade_xml_get_widget(xml, "acc2"));
@@ -116,13 +114,13 @@ void on_active_accs_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
 void on_active_nunchuk_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
    if (nunchuk_ok){
       if (gtk_check_menu_item_get_active(menu_item)){
-         nunchuk_run(wiimote_viewer_id, NULL, NULL);
+         nunchuk_resume(wiimote_viewer_id, NULL, NULL);
          show_nunchuck=1;
          gtk_widget_show(glade_xml_get_widget(xml, "nunchuk"));
          gtk_widget_show(glade_xml_get_widget(xml, "nunchuk2"));
       }
       else{
-         nunchuk_stop();
+         nunchuk_suspend();
          show_nunchuck=0;
          gtk_widget_hide(glade_xml_get_widget(xml, "nunchuk"));
          gtk_widget_hide(glade_xml_get_widget(xml, "nunchuk2"));
@@ -152,24 +150,24 @@ void wiimote_viewer_imports(){
    acc_id=(int *)myimport("wii_accel", "id");
    nunchuk_id=(int *)myimport("wii_nunchuk", "id");
    
-   buttons_run=(runFn)myimport("wii_buttons", "run");
-   buttons_stop=(stopFn)myimport("wii_buttons", "stop");
+   buttons_resume=(resumeFn)myimport("wii_buttons", "resume");
+   buttons_suspend=(suspendFn)myimport("wii_buttons", "suspend");
    
-   acc_run=(runFn )myimport("wii_accel", "run");
-   acc_stop=(stopFn )myimport("wii_accel", "stop");
+   acc_resume=(resumeFn )myimport("wii_accel", "resume");
+   acc_suspend=(suspendFn )myimport("wii_accel", "suspend");
    
-   nunchuk_run=(runFn )myimport("wii_nunchuk", "run");
-   nunchuk_stop=(stopFn )myimport("wii_nunchuk", "stop");
+   nunchuk_resume=(resumeFn )myimport("wii_nunchuk", "resume");
+   nunchuk_suspend=(suspendFn )myimport("wii_nunchuk", "suspend");
    
-   buttons_ok=!(buttons_run==NULL || buttons_stop==NULL || buttons==NULL || buttons_id==NULL);
+   buttons_ok=!(buttons_resume==NULL || buttons_suspend==NULL || buttons==NULL || buttons_id==NULL);
    if (!buttons_ok){
       printf ("Buttons will not be displayed\n");
    }
-   acc_ok=!(acc_run==NULL || acc_stop==NULL || acc==NULL || acc_id==NULL);
+   acc_ok=!(acc_resume==NULL || acc_suspend==NULL || acc==NULL || acc_id==NULL);
    if (!acc_ok){
       printf ("Accelerators will not be displayed\n");
    }
-   nunchuk_ok=!(nunchuk_run==NULL || nunchuk_stop==NULL || nunchuk==NULL || nunchuk_id==NULL);
+   nunchuk_ok=!(nunchuk_resume==NULL || nunchuk_suspend==NULL || nunchuk==NULL || nunchuk_id==NULL);
    if (!nunchuk_ok){
       printf ("Accelerators will not be displayed\n");
    }
@@ -179,12 +177,12 @@ void wiimote_viewer_imports(){
 void wiimote_viewer_exports(){
 
    myexport("wiimote_viewer","cycle",&wiimote_viewer_cycle);
-   myexport("wiimote_viewer","run",(void *)wiimote_viewer_run);
-   myexport("wiimote_viewer","stop",(void *)wiimote_viewer_stop);
+   myexport("wiimote_viewer","resume",(void *)wiimote_viewer_resume);
+   myexport("wiimote_viewer","suspend",(void *)wiimote_viewer_suspend);
 }
 
 /*Las inicializaciones van en esta parte*/
-void wiimote_viewer_guiinit(){
+void wiimote_viewer_init(){
    if (myregister_displaycallback==NULL){
       if ((myregister_displaycallback=
            (registerdisplay)myimport ("graphics_gtk",
@@ -203,20 +201,24 @@ void wiimote_viewer_guiinit(){
    }
 }
 
-
-void wiimote_viewer_terminate(){
+/*Al suspender el esquema*/
+void wiimote_viewer_end(){
 }
 
-void wiimote_viewer_stop()
+void wiimote_viewer_stop(){
+}
+
+void wiimote_viewer_suspend()
 {
   pthread_mutex_lock(&(all[wiimote_viewer_id].mymutex));
   put_state(wiimote_viewer_id,slept);
   printf("wiimote_viewer: off\n");
   pthread_mutex_unlock(&(all[wiimote_viewer_id].mymutex));
+  wiimote_viewer_end();
 }
 
 
-void wiimote_viewer_run(int father, int *brothers, arbitration fn)
+void wiimote_viewer_resume(int father, int *brothers, arbitration fn)
 {
   int i;
 
@@ -229,7 +231,7 @@ void wiimote_viewer_run(int father, int *brothers, arbitration fn)
     }
 
   pthread_mutex_lock(&(all[wiimote_viewer_id].mymutex));
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[wiimote_viewer_id].children[i]=FALSE;
   all[wiimote_viewer_id].father=father;
   if (brothers!=NULL)
@@ -302,7 +304,7 @@ void *wiimote_viewer_thread(void *not_used)
    }
 }
 
-void wiimote_viewer_init(char *configfile)
+void wiimote_viewer_startup(char *configfile)
 {
   pthread_mutex_lock(&(all[wiimote_viewer_id].mymutex));
   printf("wiimote_viewer schema started up\n");
@@ -310,7 +312,7 @@ void wiimote_viewer_init(char *configfile)
   put_state(wiimote_viewer_id,slept);
   pthread_create(&(all[wiimote_viewer_id].mythread),NULL,wiimote_viewer_thread,NULL);
   pthread_mutex_unlock(&(all[wiimote_viewer_id].mymutex));
-  wiimote_viewer_guiinit();
+  wiimote_viewer_init();
 }
 
 void wiimote_viewer_guidisplay(){
@@ -419,7 +421,7 @@ void wiimote_viewer_guidisplay(){
 }
 
 
-void wiimote_viewer_hide(void){
+void wiimote_viewer_guisuspend(void){
    if (win!=NULL){
       gdk_threads_enter();
       gtk_widget_hide(win);
@@ -428,7 +430,7 @@ void wiimote_viewer_hide(void){
    mydelete_displaycallback(wiimote_viewer_guidisplay);
 }
 
-void wiimote_viewer_show(void){
+void wiimote_viewer_guiresume(void){
    static int cargado=0;
    static pthread_mutex_t wiimote_viewer_gui_mutex;
 

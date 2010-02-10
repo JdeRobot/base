@@ -1,31 +1,37 @@
 /*
+ *  Copyright (C) 2007 Jose Antonio Santos Cadenas
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : Jose Antonio Santos Cadenas <santoscadenas@gmail.com>
- *            Jose Maria Cañas <jmplaza@gsyc.escet.urjc.es>
- *
- *
+ *  Authors :   Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
+ *              Jose Maria Cañas Plaza <jmplaza@gsyc.es>
  */
 
+/**
+ *  jdec graphics_gtk driver provides support for GTK window manager.
+ *
+ *  @file graphics_gtk.c
+ *  @author Jose Antonio Santos Cadenas <santoscadenas@gmail.com> and Jose Maria Cañas Plaza <jmplaza@gsyc.es>
+ *  @version 1.0
+ *  @date 2007-11-21
+ */
 
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
-#include <jde.h>
+#include "jde.h"
 #include <graphics_gtk.h>
 #include <unistd.h>
 #include <errno.h>
@@ -63,11 +69,8 @@ static char path[PATH_SIZE];
  * This callbacks are used to refresh the schema's display
  */
 guidisplay displaycallbacks[MAX_SCHEMAS];
-/* The number of subscribed buttons callbacks*/
-
+/** The number of subscribed display callbacks*/
 int num_displaycallbacks=0;
-
-
 /**
  * @brief This fuction is used to subscribe a display callback.
  *
@@ -129,8 +132,8 @@ int delete_displaycallback(guidisplay f)
 /** \brief graphics_gtk driver function to finish driver execution.
  * This function kills driver threads
  */
-void graphics_gtk_terminate(){
-   printf("service graphics_gtk off\n");
+void graphics_gtk_close(){
+   printf("driver graphics_gtk off\n");
 }
 
 /**
@@ -147,18 +150,15 @@ void *graphics_gtk_thread(void *arg){
  * The thread iteration. It refresh the displays of every subscribed schemas
  * @see register_displaycallback, delete_displaycallback
  */
-gboolean graphics_gtk_iteration(gpointer user_data){
+void graphics_gtk_iteration(){
    int i;
 
    /* display iteration */
    for(i=0;i<num_displaycallbacks;i++)
    {
-
       if (displaycallbacks[i]!=NULL)
          (displaycallbacks[i])();
    }
-
-   return FALSE;
 }
 
 /** graphics_gtk driver internal thread.*/
@@ -166,14 +166,10 @@ void *graphics_gtk_thread2(void *arg){
    struct timeval a,b;
    long diff, next;
 
-
    for(;;)
    {
       gettimeofday(&a,NULL);
-
-     g_idle_add_full (G_PRIORITY_HIGH, (GSourceFunc)  graphics_gtk_iteration,
-                      NULL, NULL); 
-
+      graphics_gtk_iteration();
       gettimeofday(&b,NULL);
       diff = (b.tv_sec-a.tv_sec)*1000000+b.tv_usec-a.tv_usec;
       next = graphics_gtk_cycle*1000-diff-10000;
@@ -212,13 +208,13 @@ GladeXML* load_glade (char * file_name){
 }
 
 /**
- * @brief graphics_gtk driver init function following jdec platform API for drivers.
+ * @brief graphics_gtk driver startup function following jdec platform API for drivers.
  *
  * It initializates the driver and exports the requiered functions.
  * 
  *  @param configfile path and name to the config file of this driver.
  */
-void graphics_gtk_init(char *configfile)
+void graphics_gtk_startup(char *configfile)
 {
    FILE *c_file=NULL;
    int find=0;

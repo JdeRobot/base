@@ -1,24 +1,22 @@
 /*
+ *  Copyright (C) 2007 Jose Antonio Santos Cadenas
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : Jose Antonio Santos Cadenas <santoscadenas@gmail.com>
- *            Jose Maria Cañas <jmplaza@gsyc.escet.urjc.es>
- *
- *
+ *  Authors :   Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
+ *              Jose Maria Cañas Plaza <jmplaza@gsyc.es>
  */
 
 /**
@@ -33,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
-#include <jde.h>
+#include "jde.h"
 #include <unistd.h>
 #include <errno.h>
 #include <signal.h>
@@ -47,7 +45,6 @@
 #include <X11/Xos.h>
 #include <X11/Xatom.h>
 #include <forms.h>
-#include <gtk/gtk.h>
 
 #include "graphics_xforms.h"
 
@@ -89,11 +86,6 @@ typedef struct fifo{
 
 /** Queue containing all the display callbacks. @see gui_callback*/
 t_fifo gui_callbacks;
-
-/*Imported variables*/
-registerdisplay myregister_displaycallback;
-deletedisplay mydelete_displaycallback;
-
 
 /**
  * This function inserts new data in a queue
@@ -159,7 +151,7 @@ int new_fifo (t_fifo *fifo){
    /*The initializate the straucture.*/
    fifo->init=NULL;
    fifo->end=NULL;
-   pthread_mutex_init(&(fifo->fifo_mutex),NULL);
+   pthread_mutex_init(&(fifo->fifo_mutex),PTHREAD_MUTEX_TIMED_NP);
    return 0;
 }
 
@@ -192,7 +184,6 @@ void gui_callback(gui_function f){
 guibuttons buttonscallbacks[MAX_SCHEMAS];
 /** The number of subscribed buttons callbacks*/
 int num_buttonscallbacks=0;
-
 /**
  * @brief This fuction is used to subscribe a buttons callback.
  *
@@ -303,7 +294,6 @@ int register_displaycallback(guidisplay f)
  */
 int delete_displaycallback(guidisplay f)
 {
-	
    int i;
    if (f!=NULL)
    {
@@ -314,7 +304,6 @@ int delete_displaycallback(guidisplay f)
          break;
       }
    }
-	
    return 1;
 }
 
@@ -325,7 +314,7 @@ int delete_displaycallback(guidisplay f)
  * calls every registered display callbacks to refresh it. And finally
  * extract every gui functions from the queue and calls it.
  */
-static gboolean graphics_xforms_iteration(gpointer user_data)
+static void graphics_xforms_iteration()
 {
    FL_OBJECT *obj;
    int i;
@@ -350,14 +339,12 @@ static gboolean graphics_xforms_iteration(gpointer user_data)
    while ((fn=(gui_function)extract(&gui_callbacks))!=NULL){
       fn();
    }
-
-   return FALSE;
 }
 
 /** graphics_xforms driver function finalize.*/
-void graphics_xforms_terminate(){
+void graphics_xforms_close(){
   /*  pthread_kill (graphics_xforms_id, 15);*/
-   printf("service graphics_xforms off\n");
+   printf("driver graphics_xforms off\n");
 }
 
 /** graphics_xforms driver internal thread.
@@ -369,10 +356,7 @@ void *graphics_xforms_thread(void *id){
    for(;;)
    {
       gettimeofday(&a,NULL);
-
-	  g_idle_add_full (G_PRIORITY_HIGH, (GSourceFunc)graphics_xforms_iteration,
-	  				   NULL, NULL);
-	  
+      graphics_xforms_iteration();
       gettimeofday(&b,NULL);
       diff = (b.tv_sec-a.tv_sec)*1000000+b.tv_usec-a.tv_usec;
       next = graphics_xforms_cycle*1000-diff-10000;
@@ -384,9 +368,9 @@ void *graphics_xforms_thread(void *id){
    }
 }
 
-/** graphics_xforms driver init function following jdec platform API for drivers.
+/** graphics_xforms driver startup function following jdec platform API for drivers.
  *  @param configfile path and name to the config file of this driver.*/
-void graphics_xforms_init(char *configfile)
+void graphics_xforms_startup(char *configfile)
 {
    int myargc=1;
    char **myargv;
@@ -409,17 +393,6 @@ void graphics_xforms_init(char *configfile)
    myexport ("graphics_xforms", "resume_callback", (void *)gui_callback);
    myexport ("graphics_xforms", "suspend_callback", (void *)gui_callback);
 
-
-   /* gtk import variables */
-   if (myregister_displaycallback==NULL){
-	   myregister_displaycallback=(registerdisplay)myimport ("graphics_gtk", "register_displaycallback");
-	   mydelete_displaycallback=(deletedisplay)myimport ("graphics_gtk", "delete_displaycallback");
-	   if (myregister_displaycallback==NULL || mydelete_displaycallback==NULL){
-		   printf ("I can't fetch GTK functions from graphics_xforms, please first load graphics_gtk driver\n");
-		   jdeshutdown(1);
-	   }
-   }
-   
    
    pthread_create(&graphics_xforms_id,NULL,graphics_xforms_thread,NULL);
    printf ("Xforms support loaded.\n");

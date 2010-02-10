@@ -114,7 +114,7 @@ gboolean on_delete_window (GtkWidget *widget,
                            gpointer user_data)
 {
    gdk_threads_leave();
-   mastergui_hide();
+   mastergui_guisuspend();
    gdk_threads_enter();
    return TRUE;
 }
@@ -134,29 +134,29 @@ void on_start_gui_toggled (GtkCellRendererToggle   *cell_renderer,
    id=atoi(s_id);
 
    if (all[id].guistate==on || all[id].guistate==pending_on){
-      /*hide gui*/
-      if (all[id].hide!=NULL){
+      /*suspend gui*/
+      if (all[id].guisuspend!=NULL){
          gdk_threads_leave();
-         all[id].hide();
+         all[id].guisuspend();
          gdk_threads_enter();
       }
       all[id].guistate=off;
       gtk_tree_store_set(GTK_TREE_STORE(model), &iter, COL_SHOW, FALSE, -1);
    }
    else{
-      /*show gui*/
-      if (all[id].show!=NULL){
+      /*resume gui*/
+      if (all[id].guiresume!=NULL){
          if (all[id].state!=winner && all[id].state!=ready &&
-             all[id].run!=NULL)
+             all[id].resume!=NULL)
          {
             /*Start schema*/
             gdk_threads_leave();
-            all[id].run(GUIHUMAN,NULL,null_arbitration);
+            all[id].resume(GUIHUMAN,NULL,null_arbitration);
             gdk_threads_enter();
             gtk_tree_store_set(GTK_TREE_STORE(model), &iter, COL_PLAY, TRUE, -1);
          }
          gdk_threads_leave();
-         all[id].show();
+         all[id].guiresume();
          gdk_threads_enter();
          all[id].guistate=on;
          gtk_tree_store_set(GTK_TREE_STORE(model), &iter, COL_SHOW, TRUE, -1);
@@ -183,16 +183,16 @@ void on_start_schema_toggled (GtkCellRendererToggle   *cell_renderer,
    id=atoi(s_id);
 
    if (all[id].state==winner || all[id].state==ready){
-      /*hide gui*/
-      if (all[id].stop!=NULL){
+      /*suspend gui*/
+      if (all[id].suspend!=NULL){
          gdk_threads_leave();
-         all[id].stop();
+         all[id].suspend();
          gdk_threads_enter();
          if (all[id].guistate==on || all[id].guistate==pending_on){
-            /*hide gui*/
-            if (all[id].hide!=NULL){
+            /*suspend gui*/
+            if (all[id].guisuspend!=NULL){
                gdk_threads_leave();
-               all[id].hide();
+               all[id].guisuspend();
                gdk_threads_enter();
             }
             all[id].guistate=off;
@@ -202,10 +202,10 @@ void on_start_schema_toggled (GtkCellRendererToggle   *cell_renderer,
       gtk_tree_store_set(GTK_TREE_STORE(model), &iter, COL_PLAY, FALSE, -1);
    }
    else{
-      /*show gui*/
-      if (all[id].run!=NULL){
+      /*resume gui*/
+      if (all[id].resume!=NULL){
          gdk_threads_leave();
-         all[id].run(GUIHUMAN,NULL,null_arbitration);
+         all[id].resume(GUIHUMAN,NULL,null_arbitration);
          gdk_threads_enter();
 
          gtk_tree_store_set(GTK_TREE_STORE(model), &iter, COL_PLAY, TRUE, -1);
@@ -224,12 +224,12 @@ void mastergui_imports(){
 void mastergui_exports(){
    myexport("mastergui","id",&mastergui_id);
    myexport("mastergui","cycle",&mastergui_cycle);
-   myexport("mastergui","run",(void *)mastergui_run);
-   myexport("mastergui","stop",(void *)mastergui_stop);
+   myexport("mastergui","resume",(void *)mastergui_resume);
+   myexport("mastergui","suspend",(void *)mastergui_suspend);
 }
 
 /*Las inicializaciones van en esta parte*/
-void mastergui_guiinit(){
+void mastergui_init(){
    if (myregister_displaycallback==NULL){
       myregister_displaycallback=(registerdisplay)myimport ("graphics_gtk", "register_displaycallback");
       mydelete_displaycallback=(deletedisplay)myimport ("graphics_gtk", "delete_displaycallback");
@@ -240,36 +240,36 @@ void mastergui_guiinit(){
    }
 }
 
-
-void mastergui_terminate(){
+/*Al suspender el esquema*/
+void mastergui_stop(){
    if (win){
-      mastergui_hide();
+      mastergui_guisuspend();
    }
-  printf ("mastergui terminated\n");
+  printf ("mastergui close\n");
 }
 
 
-void mastergui_stop()
+void mastergui_suspend()
 {
-   mastergui_hide();
+   mastergui_guisuspend();
    put_state(mastergui_id, slept);
 }
 
 
-void mastergui_run(int father, int *brothers, arbitration fn)
+void mastergui_resume(int father, int *brothers, arbitration fn)
 {
-   mastergui_show();
+   mastergui_guiresume();
    put_state(mastergui_id, winner);
 }
 
-void mastergui_init(char *configfile)
+void mastergui_startup(char *configfile)
 {
    pthread_mutex_lock(&(all[mastergui_id].mymutex));
    printf("mastergui schema started up\n");
    mastergui_exports();
    put_state(mastergui_id,slept);
    pthread_mutex_unlock(&(all[mastergui_id].mymutex));
-   mastergui_guiinit();
+   mastergui_init();
 }
 
 int is_father(int father, int child){
@@ -426,7 +426,7 @@ void mastergui_guidisplay_gtk(){
    speedcounter(mastergui_id);
 }
 
-void mastergui_hide(){
+void mastergui_guisuspend(){
    mydelete_displaycallback(mastergui_guidisplay_gtk);
    if (win!=NULL){
       gdk_threads_enter();
@@ -696,7 +696,7 @@ static void startTreeView() {
    /* --- Column #5 --- */
    col = gtk_tree_view_column_new();
    renderer = gtk_cell_renderer_text_new();
-   gtk_tree_view_column_set_title(col, "Iterations/sec");
+   gtk_tree_view_column_set_title(col, "Cycle time (milliseconds)");
    gtk_tree_view_column_set_resizable(col, TRUE);
    gtk_tree_view_column_set_max_width(col, 5);
    gtk_tree_view_column_pack_start(col, renderer, TRUE);
@@ -705,7 +705,7 @@ static void startTreeView() {
 
 }
 
-void mastergui_show(){
+void mastergui_guiresume(){
    static int cargado=0;
    static pthread_mutex_t imgrectifier_gui_mutex;
 

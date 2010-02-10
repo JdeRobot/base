@@ -17,14 +17,13 @@
  *
  *  
  */
-#include <stdlib.h>
-#include <forms.h>
-#include <math.h>
-#include <unistd.h>
+
 #include <jde.h>
-#include <hsvtunergui.h>
+#include <forms.h>
+#include "hsvtunergui.h"
+#include <math.h>
 #include <colorspaces.h>
-#include <graphics_xforms.h>
+#include "graphics_xforms.h"
 
 #define HSVtunerVer "hsvtuner 2.8"
 
@@ -106,8 +105,8 @@ double s_min, s_max, h_min, h_max, v_min, v_max;
 int hsimap_threshold;
 
 char **mycolorA;
-runFn colorArun;
-stopFn colorAstop;
+resumeFn colorAresume;
+suspendFn colorAsuspend;
 
 void draw_hsvmap(char *buffer, int size){
    int i,j,ind; 
@@ -512,7 +511,7 @@ void hsvtuner_iteration()
 }
 
 
-void hsvtuner_stop()
+void hsvtuner_suspend()
 {
   pthread_mutex_lock(&(all[hsvtuner_id].mymutex));
   put_state(hsvtuner_id,slept);
@@ -521,12 +520,12 @@ void hsvtuner_stop()
 }
 
 
-void hsvtuner_run(int father, int *brothers, arbitration fn)
+void hsvtuner_resume(int father, int *brothers, arbitration fn)
 {
   int i;
 
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN) 
+  if (father!=GUIHUMAN) 
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[hsvtuner_id]=TRUE;
@@ -534,7 +533,7 @@ void hsvtuner_run(int father, int *brothers, arbitration fn)
     }
 
   pthread_mutex_lock(&(all[hsvtuner_id].mymutex));
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[hsvtuner_id].children[i]=FALSE;
   all[hsvtuner_id].father=father;
   if (brothers!=NULL)
@@ -546,10 +545,10 @@ void hsvtuner_run(int father, int *brothers, arbitration fn)
 
   /* Importamos colorA and launch the colorA child schema */
   mycolorA=myimport ("colorA", "colorA");
-  colorArun=myimport("colorA", "run");
-  colorAstop=myimport("colorA", "stop");  
-  if (colorArun!=NULL)
-	colorArun(hsvtuner_id, NULL, NULL);
+  colorAresume=myimport("colorA", "resume");
+  colorAsuspend=myimport("colorA", "suspend");  
+  if (colorAresume!=NULL)
+	colorAresume(hsvtuner_id, NULL, NULL);
 
   hsvtuner_callforarbitration=fn;
   put_state(hsvtuner_id,notready);
@@ -612,7 +611,7 @@ void *hsvtuner_thread(void *not_used)
     }
 }
 
-void hsvtuner_guiinit(){
+void hsvtuner_init(){
    if ((mydisplay= (Display *)myimport("graphics_xforms", "display"))==NULL){
       fprintf (stderr, "hsvtuner: I can't fetch display from graphics_xforms\n");
       jdeshutdown(1);
@@ -642,12 +641,12 @@ void hsvtuner_guiinit(){
    }
 }
 
-void hsvtuner_terminate()
+void hsvtuner_stop()
 {
 
   /*
   pthread_mutex_lock(&(all[hsvtuner_id].mymutex));
-  hsvtuner_stop();  
+  hsvtuner_suspend();  
   pthread_mutex_unlock(&(all[hsvtuner_id].mymutex));
   sleep(2);
   */
@@ -657,11 +656,11 @@ void hsvtuner_terminate()
 	fl_hide_form(fd_hsvtunergui->hsvtunergui);
       fl_free_form(fd_hsvtunergui->hsvtunergui);
     }
-  printf ("hsvtuner terminate\n");
+  printf ("hsvtuner close\n");
 }
 
 
-void hsvtuner_init(char *configfile)
+void hsvtuner_startup(char *configfile)
 {
 
   printf("Hsvtuner schema loaded with '%s' as configuration file\n",configfile);
@@ -673,12 +672,12 @@ void hsvtuner_init(char *configfile)
 
   pthread_mutex_lock(&(all[hsvtuner_id].mymutex));
   myexport("hsvtuner","id",&hsvtuner_id);
-  myexport("hsvtuner","run",(void *) &hsvtuner_run);
-  myexport("hsvtuner","stop",(void *) &hsvtuner_stop);
+  myexport("hsvtuner","resume",(void *) &hsvtuner_resume);
+  myexport("hsvtuner","suspend",(void *) &hsvtuner_suspend);
   
   printf("hsvtuner schema started up\n");
   put_state(hsvtuner_id,slept);
-  hsvtuner_guiinit();
+  hsvtuner_init();
   pthread_create(&(all[hsvtuner_id].mythread),NULL,hsvtuner_thread,NULL);
   pthread_mutex_unlock(&(all[hsvtuner_id].mymutex));
 }
@@ -787,45 +786,36 @@ void hsvtuner_guidisplay()
 }
 
 
-void hsvtuner_hide_aux(void)
+void hsvtuner_guisuspend_aux(void)
 {
-   all[hsvtuner_id].guistate=off;
    mydelete_buttonscallback(hsvtuner_guibuttons);
    mydelete_displaycallback(hsvtuner_guidisplay);
    fl_hide_form(fd_hsvtunergui->hsvtunergui);
 }
 
-void hsvtuner_hide(void)
+void hsvtuner_guisuspend(void)
 {
    static callback fn=NULL;
    if (fn==NULL){
       if ((fn=(callback)myimport ("graphics_xforms", "suspend_callback"))!=NULL){
-         fn ((gui_function)hsvtuner_hide_aux);
+         fn ((gui_function)hsvtuner_guisuspend_aux);
       }
    }
    else{
-      fn ((gui_function)hsvtuner_hide_aux);
+      fn ((gui_function)hsvtuner_guisuspend_aux);
    }
 }
 
-int myclose_form(FL_FORM *form, void *an_argument)
-{
-  hsvtuner_hide();
-  return FL_IGNORE;
-}
-
-void hsvtuner_show_aux(void)
+void hsvtuner_guiresume_aux(void)
 {
   static int k=0;
 
-  all[hsvtuner_id].guistate=on;
   if (k==0) /* not initialized */
     {
       k++;
       fd_hsvtunergui = create_form_hsvtunergui();
       fl_set_form_position(fd_hsvtunergui->hsvtunergui,400,50);
       fl_show_form(fd_hsvtunergui->hsvtunergui,FL_PLACE_POSITION,FL_FULLBORDER,HSVtunerVer);
-      fl_set_form_atclose(fd_hsvtunergui->hsvtunergui,myclose_form,0);
       hsvtuner_win= FL_ObjWin(fd_hsvtunergui->oculo_orig);
       hsvtunergui_setupDisplay();
     }
@@ -854,16 +844,16 @@ void hsvtuner_show_aux(void)
   fl_set_slider_value(fd_hsvtunergui->Smax,s_max);
 }
 
-void hsvtuner_show(void)
+void hsvtuner_guiresume(void)
 {
    static callback fn=NULL;
    if (fn==NULL){
       if ((fn=(callback)myimport ("graphics_xforms", "resume_callback"))!=NULL){
-         fn ((gui_function)hsvtuner_show_aux);
+         fn ((gui_function)hsvtuner_guiresume_aux);
       }
    }
    else{
-      fn ((gui_function)hsvtuner_show_aux);
+      fn ((gui_function)hsvtuner_guiresume_aux);
    }
 }
 

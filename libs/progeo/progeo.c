@@ -1,27 +1,15 @@
-/*
- *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/. 
- *
- *  Authors : Jose María Cañas Plaza <jmplaza@gsyc.es>
- *            Antonio Pineda
- */
-
+/* progeo 0.2 modified by Antonio Pineda
+   
+PROJECT and BACKPROJECT functions not implemented yet for stereocameras
+	
+*/
 #include "progeo.h"
 #include <math.h>
 #include <stdio.h>
+
+/* SIF image size */
+#define SIFNTSC_ROWS 240
+#define SIFNTSC_COLUMNS 320
 
 #define PI 3.141592654
 
@@ -34,8 +22,6 @@ void update_camera_matrix(TPinHoleCamera *camera)
   float r;
   /* a very small value but not infinite!! */
   float SMALL=0.0001;
-  double t;
-  float ux,uy,uz,vx,vy,vz,wx,wy,wz;
 	
   camera->foa.H=1.;
   camera->position.H=1;
@@ -47,32 +33,9 @@ void update_camera_matrix(TPinHoleCamera *camera)
   r=(float)sqrt((double)(rab31*rab31+rab32*rab32+rab33*rab33)); 
   rab31=rab31/r; rab32=rab32/r; rab33=rab33/r;
 
-  /* Second method:*/
-  wx=rab31;
-  wy=rab32;
-  wz=rab33;
-  t = atan2(-wx,wy);
-  vx=(float)cos(t);
-  vy=(float)sin(t);
-  vz=0.;
-  ux=vy*wz-wy*vz;
-  uy=-vx*wz+wx*vz;
-  uz=vx*wy-wx*vy;
-  if (uz<0.)
-    {vx=-vx; vy=-vy; vz=-vz; 
-      ux=-ux; uy=-uy; uz=-uz;}      
-  rab11=ux;
-  rab12=uy;
-  rab13=uz;
-  rab21=vx;
-  rab22=vy;
-  rab23=vz;
-
-  /* First method:
-   * this was commented in the previous version. only else branch of this if was valid. test it!!*	
-  
+  /* this was commented in the previous version. only else branch of this if was valid. test it!!*/	
   if ((rab31<SMALL) && (rab31>-SMALL) && (rab32<SMALL) && (rab32>-SMALL))
-    * u3 = OZ or FA=camera position *
+    /* u3 = OZ or FA=camera position */
     {
       rab11=1.; rab12=0.; rab13=0.;
       rab21=0.; rab22=1.; rab23=0.;
@@ -87,7 +50,6 @@ void update_camera_matrix(TPinHoleCamera *camera)
     r=(float)sqrt((double)(rab21*rab21+rab22*rab22+rab23*rab23));
     rab21=rab21/r; rab22=rab22/r; rab23=rab23/r;
   }
-  */
 		
   rc11=cos(camera->roll); rc12=sin(camera->roll); rc13=0.;
   rc21=-sin(camera->roll); rc22=cos(camera->roll); rc23=0.;
@@ -102,7 +64,6 @@ void update_camera_matrix(TPinHoleCamera *camera)
   camera->rt31=rc31*rab11+rc32*rab21+rc33*rab31;
   camera->rt32=rc31*rab12+rc32*rab22+rc33*rab32;
   camera->rt33=rc31*rab13+rc32*rab23+rc33*rab33;
-
   camera->rt14=-camera->position.X*camera->rt11-camera->position.Y*camera->rt12-camera->position.Z*camera->rt13;
   camera->rt24=-camera->position.X*camera->rt21-camera->position.Y*camera->rt22-camera->position.Z*camera->rt23;
   camera->rt34=-camera->position.X*camera->rt31-camera->position.Y*camera->rt32-camera->position.Z*camera->rt33;
@@ -112,13 +73,13 @@ void update_camera_matrix(TPinHoleCamera *camera)
   camera->rt44=1.;
 	
   /* intrinsics parameters */
-  camera->k11=camera->fdistx;  camera->k12=camera->skew*camera->fdisty; camera->k13=camera->u0; camera->k14=0.; 
-  camera->k21=0.; camera->k22=camera->fdisty;  camera->k23=camera->v0; camera->k24=0.;
+  camera->k11=camera->fdist;  camera->k12=0.; camera->k13=camera->u0; camera->k14=0.;
+  camera->k21=0.; camera->k22=camera->fdist;  camera->k23=camera->v0; camera->k24=0.;
   camera->k31=0.; camera->k32=0.; camera->k33=1.; camera->k34=0.;
 		 		
   if (debug==1) printf("Camera %s Located at (%.f,%.f,%.f)\n",camera->name,camera->position.X,camera->position.Y,camera->position.Z);
   if (debug==1) printf("Camera %s Orientation: pointing towards FocusOfAtention (%.f,%.f,%.f), roll (%.f)\n",camera->name,camera->foa.X,camera->foa.Y,camera->foa.Z,camera->roll*360./(2*PI));
-  if (debug==1) printf("Camera %s fx= %.5f fy= %.5f skew= %.5f y0=%d x0=%d\n",camera->name, camera->fdistx, camera->fdisty, camera->skew,(int)camera->v0,(int)camera->u0);
+  if (debug==1) printf("Camera %s f= %.5f y0=%d x0=%d\n",camera->name,camera->fdist,(int)camera->v0,(int)camera->u0);
   if (debug==1) printf("Camera %s K matrix\n %.3f %.1f %.1f %.1f\n %.1f %.3f %.1f %.1f\n %.1f %.1f %.1f %.1f\n",camera->name,camera->k11,camera->k12,camera->k13,camera->k14,camera->k21,camera->k22,camera->k23,camera->k24,camera->k31,camera->k32,camera->k33,camera->k34);
   if (debug==1) printf("Camera %s RT matrix\n %.1f %.1f %.1f %.1f\n %.1f %.1f %.1f %.1f\n %.1f %.1f %.1f %.1f\n %.1f %.1f %.1f %.1f\n",camera->name,camera->rt11,camera->rt12,camera->rt13,camera->rt14,camera->rt21,camera->rt22,camera->rt23,camera->rt24,camera->rt31,camera->rt32,camera->rt33,camera->rt34,camera->rt41,camera->rt42,camera->rt43,camera->rt44);	
 }
@@ -239,9 +200,7 @@ int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera)
       myin.x=in.x*camera.k11/in.h;
       myin.y=in.y*camera.k11/in.h;
 	
-      ik11=(1./camera.k11); 
-      ik12=-camera.k12/(camera.k11*camera.k22);
-      ik13=(camera.k12*camera.k23-camera.k13*camera.k22)/(camera.k22*camera.k11); 
+      ik11=(1./camera.k11); ik12=0.; ik13=-(camera.k13/camera.k11);
       ik21=0.; ik22=(1./camera.k22); ik23=-(camera.k23/camera.k22);
       ik31=0.; ik32=0.; ik33=1.;
 	
@@ -282,9 +241,9 @@ int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera)
   return(output);
 }
 
-/* if p1 and p2 can't be drawed in a camera.cols X camera.rows image, then it will return 0.
+/* if p1 and p2 can't be drawed in a 320x240 image, then it will return 0.
    otherwise it will return 1 and gooda & goodb will be the correct points in the image to be drawn */
-int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera)
+int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b)
 /* it takes care of important features: before/behind the focal plane, inside/outside the image frame */
 {
   
@@ -294,8 +253,8 @@ int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCame
   float Xmax,Xmin,Ymax,Ymin;
   float papb=0.;
   
-  Xmin=0.; Xmax=camera.rows-1.; Ymin=0.; Ymax=camera.columns-1.;
-  /* Watchout!: they can't reach camera.rows or camera.columns, their are not valid values for the pixels */
+  Xmin=0.; Xmax=SIFNTSC_ROWS-1.; Ymin=0.; Ymax=SIFNTSC_COLUMNS-1.;
+  /* Watchout!: they can't reach 240 or 320, their are not valid values for the pixels */
   
   l0.x=0.; l0.y=1.; l0.h=-Ymin;
   l1.x=0.; l1.y=1.; l1.h=-Ymax;
@@ -545,9 +504,7 @@ void display_camerainfo(TPinHoleCamera camera){
   printf("Camera %s\n\n",camera.name);
   printf("     Position: (X,Y,Z,H)=(%.1f,%.1f,%.1f,%.1f)\n",camera.position.X,camera.position.Y,camera.position.Z,camera.position.H);
   printf("     Focus of Attention: (x,y,z,h)=(%.1f,%.1f,%.1f,%.1f)\n\n",camera.foa.X,camera.foa.Y,camera.foa.Z,camera.foa.H);
-  printf("     Focus DistanceX(vertical): %.1f mm\n",camera.fdistx);
-  printf("     Focus DistanceY(horizontal): %.1f mm\n",camera.fdisty);
-  printf("     Skew: %.5f \n",camera.skew);
+  printf("     Focus Distance: %.1f mm\n",camera.fdist);
   printf("     Optical Center: (x,y)=(%.1f,%.1f)\n\n",camera.u0,camera.v0);
   printf("     K Matrix: | %.1f %.1f %.1f %.1f |\n",camera.k11,camera.k12,camera.k13,camera.k14);
   printf("               | %.1f %.1f %.1f %.1f |\n",camera.k21,camera.k22,camera.k23,camera.k24);
