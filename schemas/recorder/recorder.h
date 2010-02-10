@@ -18,14 +18,12 @@
  *  Authors : José Antonio Santos Cadenas <santoscadenas@gmail.com>
  */
 
-extern void recorder_init(char *configfile);
-extern void recorder_terminate();
-
+extern void recorder_startup();
 extern void recorder_stop();
-extern void recorder_run(int father, int *brothers, arbitration fn);
-
-extern void recorder_show();
-extern void recorder_hide();
+extern void recorder_suspend();
+extern void recorder_resume(int father, int *brothers, arbitration fn);
+extern void recorder_guiresume();
+extern void recorder_guisuspend();
 
 extern int recorder_id; /* schema identifier */
 extern int recorder_cycle; /* ms */

@@ -1,23 +1,22 @@
 /*
+ *  Copyright (C) 2007 Javier Martin Ramos, Jose Antonio Santos Cadenas
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *  Authors : Javier Martin Ramos <xaverbrennt@yahoo.es>
- *            Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
- *
+ *  Authors :  Javier Martin Ramos <xaverbrennt@yahoo.es>
+ *             Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
  */
 
 /**
@@ -32,12 +31,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
+#include "jde.h"
 #include <unistd.h>
 #include <errno.h>
 
 #include <cwiid.h>
-#include <jde.h>
-/* #include <interfaces/wiimote.h>*/
 
 /* wiimote driver API options */
 /** wiimote driver name.*/
@@ -95,12 +93,12 @@ unsigned long int nunchuk_clock=0;
 cwiid_wiimote_t ** wiimotes;
 
 /*DRIVER FUNCTIONS*/
-/** wii_buttons run function following jdec platform API schemas.
+/** wii_buttons resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int buttons_run(int father, int *brothers, arbitration fn){
+int buttons_resume(int father, int *brothers, arbitration fn){
    if(provide_buttons==1){
       pthread_mutex_lock(&refmutex);
       buttons_active++;
@@ -111,7 +109,7 @@ int buttons_run(int father, int *brothers, arbitration fn){
       {
          int i=0;
          pthread_mutex_unlock(&refmutex);
-         /*printf("colorA schema run (mplayer driver)\n");*/
+         /*printf("colorA schema resume (mplayer driver)\n");*/
          all[buttons_id].father = father;
          all[buttons_id].fps = 0.;
          all[buttons_id].k =0;
@@ -132,9 +130,9 @@ int buttons_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** wii_buttons stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int buttons_stop(){
+/** wii_buttons suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int buttons_suspend(){
    pthread_mutex_lock(&refmutex);
    buttons_active--;
    if((provide_buttons==1)&&(buttons_active==0)){
@@ -153,12 +151,12 @@ int buttons_stop(){
    return 0;
 }
 
-/** wii_accel run function following jdec platform API schemas.
+/** wii_accel resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int accel_run(int father, int *brothers, arbitration fn){
+int accel_resume(int father, int *brothers, arbitration fn){
    if(provide_accel==1){
       pthread_mutex_lock(&refmutex);
       accel_active++;
@@ -169,7 +167,7 @@ int accel_run(int father, int *brothers, arbitration fn){
       {
          int i;
          pthread_mutex_unlock(&refmutex);
-         /*printf("colorA schema run (mplayer driver)\n");*/
+         /*printf("colorA schema resume (mplayer driver)\n");*/
          all[accel_id].father = father;
          all[accel_id].fps = 0.;
          all[accel_id].k =0;
@@ -193,9 +191,9 @@ int accel_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** wii_accel stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int accel_stop(){
+/** wii_accel suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int accel_suspend(){
    pthread_mutex_lock(&refmutex);
    accel_active--;
    if((provide_accel==1)&&(accel_active==0)){
@@ -214,12 +212,12 @@ int accel_stop(){
    return 0;
 }
 
-/** wii_ir run function following jdec platform API schemas.
+/** wii_ir resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int ir_run(int father, int *brothers, arbitration fn){
+int ir_resume(int father, int *brothers, arbitration fn){
    if(provide_ir==1){
       pthread_mutex_lock(&refmutex);
       ir_active++;
@@ -230,7 +228,7 @@ int ir_run(int father, int *brothers, arbitration fn){
       {
          int i;
          pthread_mutex_unlock(&refmutex);
-         /*printf("colorA schema run (mplayer driver)\n");*/
+         /*printf("colorA schema resume (mplayer driver)\n");*/
          all[ir_id].father = father;
          all[ir_id].fps = 0.;
          all[ir_id].k =0;
@@ -254,9 +252,9 @@ int ir_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** wii_ir stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int ir_stop(){
+/** wii_ir suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int ir_suspend(){
    pthread_mutex_lock(&refmutex);
    ir_active--;
    if((provide_ir==1)&&(ir_active==0)){
@@ -275,12 +273,12 @@ int ir_stop(){
    return 0;
 }
 
-/** wii_nunchuk run function following jdec platform API schemas.
+/** wii_nunchuk resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int nunchuk_run(int father, int *brothers, arbitration fn){
+int nunchuk_resume(int father, int *brothers, arbitration fn){
    if(provide_nunchuk==1){
       pthread_mutex_lock(&refmutex);
       nunchuk_active++;
@@ -291,7 +289,7 @@ int nunchuk_run(int father, int *brothers, arbitration fn){
       {
          int i;
          pthread_mutex_unlock(&refmutex);
-         /*printf("colorA schema run (mplayer driver)\n");*/
+         /*printf("colorA schema resume (mplayer driver)\n");*/
          all[nunchuk_id].father = father;
          all[nunchuk_id].fps = 0.;
          all[nunchuk_id].k =0;
@@ -318,9 +316,9 @@ int nunchuk_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** wii_nunchuk stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int nunchuk_stop(){
+/** wii_nunchuk suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int nunchuk_suspend(){
    pthread_mutex_lock(&refmutex);
    nunchuk_active--;
    if((provide_nunchuk==1)&&(nunchuk_active==0)){
@@ -411,7 +409,7 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 }
 
 /** wiimote driver function to kill every wiimote and mencoder called.*/
-void wiimote_terminate(){
+void wiimote_close(){
    int i;
    for (i=0; i<started_wiimotes; i++){
       if (cwiid_close(wiimotes[i])) {
@@ -583,7 +581,7 @@ int wiimote_parseconf(char *configfile){
 
 /** wiimote driver startup function following jdec platform API for drivers.
  *  @param configfile path and name to the config file of this driver.*/
-void wiimote_init(char *configfile)
+void wiimote_startup(char *configfile)
 {
    int i;
    unsigned char leds[5]={CWIID_LED1_ON, CWIID_LED2_ON, CWIID_LED3_ON,
@@ -635,19 +633,19 @@ void wiimote_init(char *configfile)
    if (provide_buttons){
       all[num_schemas].id = (int *) &buttons_id;
       strcpy(all[num_schemas].name,"wii_buttons");
-      all[num_schemas].run = (runFn) buttons_run;
-      all[num_schemas].stop = (stopFn) buttons_stop;
+      all[num_schemas].resume = (resumeFn) buttons_resume;
+      all[num_schemas].suspend = (suspendFn) buttons_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport(all[buttons_id].name,"id",&buttons_id);
-      myexport(all[buttons_id].name,"run",(void *)buttons_run);
-      myexport(all[buttons_id].name,"stop",(void *)buttons_stop);
+      myexport(all[buttons_id].name,"resume",(void *)buttons_resume);
+      myexport(all[buttons_id].name,"suspend",(void *)buttons_suspend);
       for (i=0; i<n_wiimotes; i++){
          char sbuttons[30];
          char sclock[30];
@@ -662,19 +660,19 @@ void wiimote_init(char *configfile)
    if (provide_accel){
       all[num_schemas].id = (int *) &accel_id;
       strcpy(all[num_schemas].name,"wii_accel");
-      all[num_schemas].run = (runFn) accel_run;
-      all[num_schemas].stop = (stopFn) accel_stop;
+      all[num_schemas].resume = (resumeFn) accel_resume;
+      all[num_schemas].suspend = (suspendFn) accel_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport(all[accel_id].name,"id",&accel_id);
-      myexport(all[accel_id].name,"run",(void *)accel_run);
-      myexport(all[accel_id].name,"stop",(void *)accel_stop);
+      myexport(all[accel_id].name,"resume",(void *)accel_resume);
+      myexport(all[accel_id].name,"suspend",(void *)accel_suspend);
       for (i=0; i<n_wiimotes; i++){
          char saccel[30];
          char sclock[30];
@@ -689,19 +687,19 @@ void wiimote_init(char *configfile)
    if (provide_ir){
       all[num_schemas].id = (int *) &ir_id;
       strcpy(all[num_schemas].name,"wii_ir");
-      all[num_schemas].run = (runFn) ir_run;
-      all[num_schemas].stop = (stopFn) ir_stop;
+      all[num_schemas].resume = (resumeFn) ir_resume;
+      all[num_schemas].suspend = (suspendFn) ir_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport(all[ir_id].name,"id",&ir_id);
-      myexport(all[ir_id].name,"run",(void *)ir_run);
-      myexport(all[ir_id].name,"stop",(void *)ir_stop);
+      myexport(all[ir_id].name,"resume",(void *)ir_resume);
+      myexport(all[ir_id].name,"suspend",(void *)ir_suspend);
       for (i=0; i<n_wiimotes; i++){
          char sir[30];
          char sclock[30];
@@ -716,19 +714,19 @@ void wiimote_init(char *configfile)
    if (provide_nunchuk){
       all[num_schemas].id = (int *) &nunchuk_id;
       strcpy(all[num_schemas].name,"wii_nunchuk");
-      all[num_schemas].run = (runFn) nunchuk_run;
-      all[num_schemas].stop = (stopFn) nunchuk_stop;
+      all[num_schemas].resume = (resumeFn) nunchuk_resume;
+      all[num_schemas].suspend = (suspendFn) nunchuk_suspend;
       printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
       (*(all[num_schemas].id)) = num_schemas;
       all[num_schemas].fps = 0.;
       all[num_schemas].k =0;
       all[num_schemas].state=slept;
-      all[num_schemas].terminate = NULL;
+      all[num_schemas].close = NULL;
       all[num_schemas].handle = NULL;
       num_schemas++;
       myexport(all[nunchuk_id].name,"id",&nunchuk_id);
-      myexport(all[nunchuk_id].name,"run",(void *)nunchuk_run);
-      myexport(all[nunchuk_id].name,"stop",(void *)nunchuk_stop);
+      myexport(all[nunchuk_id].name,"resume",(void *)nunchuk_resume);
+      myexport(all[nunchuk_id].name,"suspend",(void *)nunchuk_suspend);
       for (i=0; i<n_wiimotes; i++){
          char snunchuk[30];
          char sclock[30];

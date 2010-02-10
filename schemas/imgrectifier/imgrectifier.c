@@ -20,11 +20,11 @@
  *  Authors : José Antonio Santos Cadenas <santoscadenas@gmail.com>
  */
 
-#include <jde.h>
-#include <limits.h>
-#include <graphics_gtk.h>
+#include "jde.h"
+#include "limits.h"
+#include "graphics_gtk.h"
 #include <imgrectifier.h>
-#include <string.h>
+
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -70,8 +70,8 @@ int imgrectifier_cycle=100; /* ms */
 
 /*imported variables */
 unsigned char **mycolor=NULL;
-runFn myrun=NULL;
-stopFn mystop=NULL;
+resumeFn myresume=NULL;
+suspendFn mysuspend=NULL;
 pthread_mutex_t colorchange_mutex;
 
 /*Para el gui con gtk*/
@@ -99,7 +99,7 @@ Tpoint pnts_elegidos_en_img_rectificada[NUMPUNTOS];
 
 /** 
     Sistema de ecuaciones lineales. Se le alojara memoria en la
-    funciona init
+    funciona startup
 */
 int **sistema_lineal_ecuaciones;/*[NUMEC][9]*/
 
@@ -335,24 +335,24 @@ void rectificar_imagen(){
   }
 }
 
-void imgrectifier_stop()
+void imgrectifier_suspend()
 {
-  /* printf("imgrectifier: cojo-stop\n");*/
+  /* printf("imgrectifier: cojo-suspend\n");*/
   pthread_mutex_lock(&(all[imgrectifier_id].mymutex));
   put_state(imgrectifier_id,slept);
   printf("imgrectifier: off\n");
-  if (mystop!=NULL)
-     mystop();
+  if (mysuspend!=NULL)
+     mysuspend();
   pthread_mutex_unlock(&(all[imgrectifier_id].mymutex));
-  /*  printf("imgrectifier: suelto-stop\n");*/
+  /*  printf("imgrectifier: suelto-suspend\n");*/
 }
 
-void imgrectifier_run(int father, int *brothers, arbitration fn)
+void imgrectifier_resume(int father, int *brothers, arbitration fn)
 {
   int i;
 
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN)
+  if (father!=GUIHUMAN)
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[imgrectifier_id]=TRUE;
@@ -361,7 +361,7 @@ void imgrectifier_run(int father, int *brothers, arbitration fn)
 
   pthread_mutex_lock(&(all[imgrectifier_id].mymutex));
 
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[imgrectifier_id].children[i]=FALSE;
   all[imgrectifier_id].father=father;
   if (brothers!=NULL)
@@ -485,7 +485,7 @@ void reset(){
   /* ============================================================== */
 }
 
-void imgrectifier_guiinit(){
+void imgrectifier_init(){
    if (myregister_displaycallback==NULL){
       if ((myregister_displaycallback=(registerdisplay)myimport ("graphics_gtk", "register_displaycallback"))==NULL){
          printf ("I can't fetch register_displaycallback from graphics_gtk\n");
@@ -498,26 +498,26 @@ void imgrectifier_guiinit(){
    }
 }
 
-void imgrectifier_terminate()
+void imgrectifier_stop()
 {
-  printf ("imgrectifier terminate\n");
+  printf ("imgrectifier close\n");
 }
 
 
-void imgrectifier_init(char *configfile)
+void imgrectifier_startup()
 {
   pthread_mutex_lock(&(all[imgrectifier_id].mymutex));
   printf("imgrectifier schema started up\n");
-  imgrectifier_guiinit();
+  imgrectifier_init();
 
   myexport("imgrectifier","id",&imgrectifier_id);
   myexport("imgrectifier","cycle",&imgrectifier_cycle);
-  myexport("imgrectifier","run",(void *)imgrectifier_run);
-  myexport("imgrectifier","stop",(void *)imgrectifier_stop);
+  myexport("imgrectifier","resume",(void *)imgrectifier_resume);
+  myexport("imgrectifier","suspend",(void *)imgrectifier_suspend);
   put_state(imgrectifier_id,slept);
 
   /* == inicializamos las variables globales y el display== */
-  pthread_mutex_init(&colorchange_mutex,NULL);
+  pthread_mutex_init(&colorchange_mutex,PTHREAD_MUTEX_TIMED_NP);
 
   reset();
 
@@ -531,7 +531,7 @@ void imgrectifier_init(char *configfile)
 
 gboolean on_delete_window (GtkWidget *widget, GdkEvent *event, gpointer user_data){
    gdk_threads_leave();
-   imgrectifier_hide();
+   imgrectifier_guisuspend();
    gdk_threads_enter();
    return TRUE;
 }
@@ -545,14 +545,14 @@ void on_image_sel_changed(GtkComboBoxEntry *img_sel, gpointer user_data){
    color=myimport(value,value);
    if (color!=NULL){
       pthread_mutex_lock(&colorchange_mutex);
-      if (mystop!=NULL)
-         mystop();
+      if (mysuspend!=NULL)
+         mysuspend();
       mycolor=(unsigned char **)color;
-      myrun=(runFn)myimport(value, "run");
-      mystop=(runFn)myimport(value, "stop");
+      myresume=(resumeFn)myimport(value, "resume");
+      mysuspend=(resumeFn)myimport(value, "suspend");
       width=(int *)myimport(value,"width");
       height=(int *)myimport(value,"height");
-      myrun(imgrectifier_id,NULL,NULL);
+      myresume(imgrectifier_id,NULL,NULL);
       if (imagen_capturada)
          free(imagen_capturada);
       imagen_capturada=NULL;
@@ -972,7 +972,7 @@ void imgrectifier_guidisplay()
 }
 
 
-void imgrectifier_hide(void){
+void imgrectifier_guisuspend(void){
    mydelete_displaycallback(imgrectifier_guidisplay);
    if (win!=NULL){
       gdk_threads_enter();
@@ -980,12 +980,12 @@ void imgrectifier_hide(void){
       gtk_widget_queue_draw(win);
       gdk_threads_leave();
    }
-   if (mystop!=NULL)
-      mystop();
+   if (mysuspend!=NULL)
+      mysuspend();
    all[imgrectifier_id].guistate=pending_off;
 }
 
-void imgrectifier_show(void){
+void imgrectifier_guiresume(void){
    static int cargado=0;
    static pthread_mutex_t imgrectifier_gui_mutex;
 
@@ -1054,7 +1054,7 @@ void imgrectifier_show(void){
       gdk_threads_leave();
    }
 
-   if (myrun !=NULL)
-      myrun(imgrectifier_id,NULL,NULL);
+   if (myresume !=NULL)
+      myresume(imgrectifier_id,NULL,NULL);
    myregister_displaycallback(imgrectifier_guidisplay);
 }

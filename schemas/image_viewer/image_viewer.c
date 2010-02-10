@@ -18,10 +18,6 @@
  *  Authors : José Antonio Santos Cadenas <santoscadenas@gmail.com>
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "jde.h"
 #include "image_viewer.h"
 #include "graphics_gtk.h"
@@ -29,7 +25,6 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <interfaces/varcolor.h>
 
 int image_viewer_id=0;
 int image_viewer_brothers[MAX_SCHEMAS];
@@ -37,16 +32,11 @@ arbitration image_viewer_callforarbitration;
 
 #define MAX_COLOR 8
 /*Imported variables*/
-Varcolor *myAA;
-Varcolor *myBB;
-Varcolor *myCC;
-Varcolor *myDD;
-
 int* width[MAX_COLOR];
 int* height[MAX_COLOR];
 char** mycolor[MAX_COLOR];
-runFn myrun[MAX_COLOR];
-stopFn mystop[MAX_COLOR];
+resumeFn myresume[MAX_COLOR];
+suspendFn mysuspend[MAX_COLOR];
 char *mensajes[MAX_COLOR]={"Mostrando colorA","Mostrando colorB","Mostrando colorC","Mostrando colorD","Mostrando varcolorA","Mostrando varcolorB","Mostrando varcolorC","Mostrando varcolorD"};
 
 registerdisplay myregister_displaycallback;
@@ -68,16 +58,15 @@ GtkWidget *win; /*Ventana*/
 
 void cambiar_imagen(int i){
    if ((width[i]!=NULL) && (height[i]!=NULL) && (mycolor[i]!=NULL) &&
-        (myrun[i]!=NULL) && (mystop[i]!=NULL))
+        (myresume[i]!=NULL) && (mysuspend[i]!=NULL))
    {
       pthread_mutex_lock(&main_mutex);
       if (image_selected!=-1){
-         mystop[image_selected]();
+         mysuspend[image_selected]();
          free(image);
       }
       image_selected=i;
-      myrun[image_selected](image_viewer_id,NULL,NULL);
-
+      myresume[image_selected](image_viewer_id,NULL,NULL);
       image=(char *)malloc(width[image_selected][0]*height[image_selected][0]*3);
       {
          GdkPixbuf *imgBuff;
@@ -101,7 +90,7 @@ void cambiar_imagen(int i){
 /*Callbacks*/
 gboolean on_delete_window (GtkWidget *widget, GdkEvent *event, gpointer user_data){
    gdk_threads_leave();
-   image_viewer_hide();
+   image_viewer_guisuspend();
    gdk_threads_enter();
    return TRUE;
 }
@@ -111,14 +100,15 @@ void on_img_sel_changed(GtkComboBoxEntry *img_sel, gpointer user_data){
    char *valor;
    valor=(char *)gtk_combo_box_get_active_text((GtkComboBox *)img_sel);
    /*Importar los valores oportunos y modificar la selección*/
-   printf ("image_viewer: %s\n",valor);
+   printf (valor);
+   printf("\n");
    if (strcmp(valor,"colorA")==0){
       if (image_selected!=0){
          width[0]=myimport("colorA","width");
          height[0]=myimport("colorA","height");
          mycolor[0]=myimport("colorA","colorA");
-         myrun[0]=(runFn)myimport("colorA","run");
-         mystop[0]=(stopFn)myimport("colorA","stop");
+         myresume[0]=(resumeFn)myimport("colorA","resume");
+         mysuspend[0]=(suspendFn)myimport("colorA","suspend");
          cambiar_imagen(0);
       }
    }
@@ -127,8 +117,8 @@ void on_img_sel_changed(GtkComboBoxEntry *img_sel, gpointer user_data){
          width[1]=myimport("colorB","width");
          height[1]=myimport("colorB","height");
          mycolor[1]=myimport("colorB","colorB");
-         myrun[1]=(runFn)myimport("colorB","run");
-         mystop[1]=(stopFn)myimport("colorB","stop");
+         myresume[1]=(resumeFn)myimport("colorB","resume");
+         mysuspend[1]=(suspendFn)myimport("colorB","suspend");
          cambiar_imagen(1);
       }
    }
@@ -137,8 +127,8 @@ void on_img_sel_changed(GtkComboBoxEntry *img_sel, gpointer user_data){
          width[2]=myimport("colorC","width");
          height[2]=myimport("colorC","height");
          mycolor[2]=myimport("colorC","colorC");
-         myrun[2]=(runFn)myimport("colorC","run");
-         mystop[2]=(stopFn)myimport("colorC","stop");
+         myresume[2]=(resumeFn)myimport("colorC","resume");
+         mysuspend[2]=(suspendFn)myimport("colorC","suspend");
          cambiar_imagen(2);
       }
    }
@@ -147,53 +137,49 @@ void on_img_sel_changed(GtkComboBoxEntry *img_sel, gpointer user_data){
          width[3]=myimport("colorD","width");
          height[3]=myimport("colorD","height");
          mycolor[3]=myimport("colorD","colorD");
-         myrun[3]=(runFn)myimport("colorD","run");
-         mystop[3]=(stopFn)myimport("colorD","stop");
+         myresume[3]=(resumeFn)myimport("colorD","resume");
+         mysuspend[3]=(suspendFn)myimport("colorD","suspend");
          cambiar_imagen(3);
       }
    }
    else if (strcmp(valor,"varcolorA")==0){
       if (image_selected!=4){
-	myAA=(Varcolor *)myimport("varcolorA","varcolorA");
-	width[4]=&((*myAA).width);
-	height[4]=&((*myAA).height);
-	mycolor[4]=&((*myAA).img);
-	myrun[4]=(runFn)myimport("varcolorA","run");
-	mystop[4]=(stopFn)myimport("varcolorA","stop");
-	cambiar_imagen(4);
+         width[4]=myimport("varcolorA","width");
+         height[4]=myimport("varcolorA","height");
+         mycolor[4]=myimport("varcolorA","varcolorA");
+         myresume[4]=(resumeFn)myimport("varcolorA","resume");
+         mysuspend[4]=(suspendFn)myimport("varcolorA","suspend");
+         cambiar_imagen(4);
       }
    }
    else if (strcmp(valor,"varcolorB")==0){
       if (image_selected!=5){
-	myBB=(Varcolor *)myimport("varcolorB","varcolorB");
-	width[5]=&((*myBB).width);
-	height[5]=&((*myBB).height);
-	mycolor[5]=&((*myBB).img);
-	myrun[5]=(runFn)myimport("varcolorB","run");
-	mystop[5]=(stopFn)myimport("varcolorB","stop");
-	cambiar_imagen(5);
+         width[5]=myimport("varcolorB","width");
+         height[5]=myimport("varcolorB","height");
+         mycolor[5]=myimport("varcolorB","varcolorB");
+         myresume[5]=(resumeFn)myimport("varcolorB","resume");
+         mysuspend[5]=(suspendFn)myimport("varcolorB","suspend");
+         cambiar_imagen(5);
       }
    }
    else if (strcmp(valor,"varcolorC")==0){
       if (image_selected!=6){
-	myCC=(Varcolor *)myimport("varcolorC","varcolorC");
-	width[6]=&((*myCC).width);
-	height[6]=&((*myCC).height);
-	mycolor[6]=&((*myCC).img);
-	myrun[6]=(runFn)myimport("varcolorC","run");
-	mystop[6]=(stopFn)myimport("varcolorC","stop");
-	cambiar_imagen(6);
+         width[6]=myimport("varcolorC","width");
+         height[6]=myimport("varcolorC","height");
+         mycolor[6]=myimport("varcolorC","varcolorC");
+         myresume[6]=(resumeFn)myimport("varcolorC","resume");
+         mysuspend[6]=(suspendFn)myimport("varcolorC","suspend");
+         cambiar_imagen(6);
       }
    }
    else if (strcmp(valor,"varcolorD")==0){
       if (image_selected!=7){
-	myDD=(Varcolor *)myimport("varcolorD","varcolorD");
-	width[7]=&((*myDD).width);
-	height[7]=&((*myDD).height);
-	mycolor[7]=&((*myDD).img);
-	myrun[7]=(runFn)myimport("varcolorD","run");
-	mystop[7]=(stopFn)myimport("varcolorD","stop");
-	cambiar_imagen(7);
+         width[7]=myimport("varcolorD","width");
+         height[7]=myimport("varcolorD","height");
+         mycolor[7]=myimport("varcolorD","varcolorD");
+         myresume[7]=(resumeFn)myimport("varcolorD","resume");
+         mysuspend[7]=(suspendFn)myimport("varcolorD","suspend");
+         cambiar_imagen(7);
       }
    }
 }
@@ -225,12 +211,12 @@ void image_viewer_exports(){
 
    myexport("image_viewer", "id", &image_viewer_id);
    myexport("image_viewer","cycle",&image_viewer_cycle);
-   myexport("image_viewer","run",(void *)image_viewer_run);
-   myexport("image_viewer","stop",(void *)image_viewer_stop);
+   myexport("image_viewer","resume",(void *)image_viewer_resume);
+   myexport("image_viewer","suspend",(void *)image_viewer_suspend);
 }
 
 /*Las inicializaciones van en esta parte*/
-void image_viewer_guiinit(){
+void image_viewer_init(){
    if (myregister_displaycallback==NULL){
       if ((myregister_displaycallback=
            (registerdisplay)myimport ("graphics_gtk",
@@ -249,20 +235,24 @@ void image_viewer_guiinit(){
    }
 }
 
-/*Al terminar/cerrar el esquema*/
-void image_viewer_terminate(){
+/*Al suspender el esquema*/
+void image_viewer_end(){
 }
 
-void image_viewer_stop()
+void image_viewer_stop(){
+}
+
+void image_viewer_suspend()
 {
   pthread_mutex_lock(&(all[image_viewer_id].mymutex));
   put_state(image_viewer_id,slept);
   printf("image_viewer: off\n");
   pthread_mutex_unlock(&(all[image_viewer_id].mymutex));
+  image_viewer_end();
 }
 
 
-void image_viewer_run(int father, int *brothers, arbitration fn)
+void image_viewer_resume(int father, int *brothers, arbitration fn)
 {
   int i;
 
@@ -275,7 +265,7 @@ void image_viewer_run(int father, int *brothers, arbitration fn)
     }
 
   pthread_mutex_lock(&(all[image_viewer_id].mymutex));
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[image_viewer_id].children[i]=FALSE;
   all[image_viewer_id].father=father;
   if (brothers!=NULL)
@@ -348,7 +338,7 @@ void *image_viewer_thread(void *not_used)
    }
 }
 
-void image_viewer_init(char *configfile)
+void image_viewer_startup()
 {
   pthread_mutex_lock(&(all[image_viewer_id].mymutex));
   printf("image_viewer schema started up\n");
@@ -356,7 +346,7 @@ void image_viewer_init(char *configfile)
   put_state(image_viewer_id,slept);
   pthread_create(&(all[image_viewer_id].mythread),NULL,image_viewer_thread,NULL);
   pthread_mutex_unlock(&(all[image_viewer_id].mymutex));
-  image_viewer_guiinit();
+  image_viewer_init();
 }
 
 void image_viewer_guidisplay(){
@@ -372,7 +362,7 @@ void image_viewer_guidisplay(){
 }
 
 
-void image_viewer_hide(void){
+void image_viewer_guisuspend(void){
    mydelete_displaycallback(image_viewer_guidisplay);
    if (win!=NULL){
       gdk_threads_enter();
@@ -382,7 +372,7 @@ void image_viewer_hide(void){
    all[image_viewer_id].guistate=pending_off;
 }
 
-void image_viewer_show(void){
+void image_viewer_guiresume(void){
    static int cargado=0;
    static pthread_mutex_t image_viewer_gui_mutex;
 

@@ -20,21 +20,21 @@
 
 #define DEBUG 1
 
-#include <forms.h>
-#include <math.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <jde.h>
-#include <graphics_xforms.h>
-#include <teleoperatorgui.h>
-#include <pioneer.h>
-#include <pioneeropengl.h>
+#include "jde.h"
+#include "forms.h"
+#include "graphics_xforms.h"
+#include "teleoperatorgui.h"
+#include "pioneer.h"
 
 #define v3f glVertex3f
 #include <GL/gl.h>              
 #include <GL/glx.h>
 #include <GL/glu.h>
+
+#include <forms.h>
 #include <glcanvas.h>
+#include "pioneeropengl.h"
+
 int finish_flag=0;
 
 #define MOUSELEFT 1
@@ -44,7 +44,7 @@ int finish_flag=0;
 #define MOUSEWHEELDOWN 5
 
 #define DISPLAY_ROBOT 0x01UL
-#define DISPLAY_PANTILTENCODERS 0x02UL
+#define DISPLAY_PANTILTENCODERS 0x20UL
 #define DISPLAY_SONARS 0x04UL
 #define DISPLAY_LASER 0x08UL
 #define DISPLAY_COLORIMAGEA 0x10UL
@@ -53,8 +53,6 @@ int finish_flag=0;
 #define DISPLAY_COLORIMAGED 0x80UL
 #define BASE_TELEOPERATOR 0x100UL
 #define PANTILT_TELEOPERATOR 0x200UL
-#define DISPLAY_ZOOMENCODERS 0x400UL
-#define ZOOM_TELEOPERATOR 0x800UL
 
 #define PI 3.141592654
 #define MAXWORLD 30.
@@ -104,51 +102,40 @@ int teleoperator_cycle=100; /* ms */
 #define joystick_maxRotVel 30 /* deg/sec */
 #define joystick_maxTranVel 500 /* mm/sec */
 float joystick_x, joystick_y;
-float pt_joystick_x, pt_joystick_y, pt_joystick_z;
+float pt_joystick_x, pt_joystick_y;
 int back=0;
 
 float *mysonars=NULL;
 int *mylaser=NULL;
 float *myencoders=NULL;
-runFn laserrun, sonarsrun, encodersrun;
-stopFn laserstop, sonarsstop, encodersstop;
+resumeFn laserresume, sonarsresume, encodersresume;
+suspendFn lasersuspend, sonarssuspend, encoderssuspend;
 
 float *myv=NULL;
 float *myw=NULL;
-runFn motorsrun;
-stopFn motorsstop;
+resumeFn motorsresume;
+suspendFn motorssuspend;
 
-float *pan_angle=NULL, *tilt_angle=NULL;  /* degs */
+float *mypan_angle=NULL, *mytilt_angle=NULL;  /* degs */
 float *mylongitude=NULL; /* degs, pan angle */
-float *longitude_max=NULL, *longitude_min=NULL;
 float *mylatitude=NULL; /* degs, tilt angle */
-float *latitude_max=NULL, *latitude_min=NULL;
-float *longitude_speed=NULL;
-float *longitude_speed_max=NULL;
-float *latitude_speed=NULL;
-runFn ptmotorsrun, ptencodersrun;
-stopFn ptmotorsstop, ptencodersstop;
-
-float *myzoom_position=NULL;
-float *myzoom=NULL;
-float *myzoom_max=NULL, *myzoom_min=NULL;
-float *myzoom_speed=NULL;
-float *myzoom_speed_max=NULL;
-runFn zmotorsrun, zencodersrun;
-stopFn zmotorsstop, zencodersstop;
+float *mylongitude_speed=NULL;
+float *mylatitude_speed=NULL;
+resumeFn ptmotorsresume, ptencodersresume;
+suspendFn ptmotorssuspend, ptencoderssuspend;
 
 char **mycolorA;
-runFn colorArun;
-stopFn colorAstop;
+resumeFn colorAresume;
+suspendFn colorAsuspend;
 char **mycolorB;
-runFn colorBrun;
-stopFn colorBstop;
+resumeFn colorBresume;
+suspendFn colorBsuspend;
 char **mycolorC;
-runFn colorCrun;
-stopFn colorCstop;
+resumeFn colorCresume;
+suspendFn colorCsuspend;
 char **mycolorD;
-runFn colorDrun;
-stopFn colorDstop;
+resumeFn colorDresume;
+suspendFn colorDsuspend;
 
 
 FD_teleoperatorgui *fd_teleoperatorgui=NULL;
@@ -167,6 +154,7 @@ void teleoperator_iteration()
   if ((display_state & BASE_TELEOPERATOR)!=0)
     {
       /* ROTACION=ejeX: Ajusta a un % de joystick_maxRotVel. OJO no funcion lineal del desplazamiento visual, sino con el al cuadrado, para aplanarla en el origen y evitar cabeceos, conseguir suavidad en la teleoperacion */
+      
       delta = (joystick_x-0.5)*2; /* entre +-1 */
       deltapos = fabs(delta); /* Para que no moleste el signo de delta en el factor de la funcion de control */
 
@@ -184,28 +172,19 @@ void teleoperator_iteration()
   if ((display_state & PANTILT_TELEOPERATOR)!=0)      
     {
       /* pt_joystick_x and pt_joystick_y fall in [0,1], the default limits from Xforms */  
-      *mylatitude=pt_joystick_y*((*latitude_max)-(*latitude_min))+(*latitude_min);
-      *mylongitude=pt_joystick_x*((*longitude_max)-(*longitude_min))+(*longitude_min);
+      *mylatitude=MIN_TILT_ANGLE+pt_joystick_y*(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
+      *mylongitude=MAX_PAN_ANGLE-pt_joystick_x*(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
       
       speed_coef = fl_get_slider_value(fd_teleoperatorgui->ptspeed);
-      *longitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
-      *latitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
+      *mylongitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
+      *mylatitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
+      /*printf("teleoperator: longitude speed %.2f, latitude speed %.2f\n",longitude_speed,latitude_speed);*/
     }
-
-   if ((display_state & ZOOM_TELEOPERATOR)!=0){
-      if (myzoom && myzoom_max && myzoom_min){
-         *myzoom=(*myzoom_min)+pt_joystick_z*((*myzoom_max)-(*myzoom_min));
-      }
-      
-      if (myzoom_speed && myzoom_speed_max){
-         *myzoom_speed=(1.-speed_coef)*(*myzoom_speed_max);
-      }
-   }
   
 }
 
 
-void teleoperator_stop()
+void teleoperator_suspend()
 {
   pthread_mutex_lock(&(all[teleoperator_id].mymutex));
   put_state(teleoperator_id,slept);
@@ -213,42 +192,34 @@ void teleoperator_stop()
   pthread_mutex_unlock(&(all[teleoperator_id].mymutex));
   
   if ((display_state & DISPLAY_SONARS)!=0)
-     sonarsstop();
+     sonarssuspend();
   if ((display_state & DISPLAY_LASER)!=0)
-     laserstop();
+     lasersuspend();
   if ((display_state & DISPLAY_ROBOT)!=0)
-     encodersstop();
+     encoderssuspend();
   if ((display_state & BASE_TELEOPERATOR)!=0)
-     motorsstop();
+     motorssuspend();
   if ((display_state & DISPLAY_COLORIMAGEA)!=0)
-     colorAstop();
+     colorAsuspend();
   if ((display_state & DISPLAY_COLORIMAGEB)!=0)
-     colorBstop();
+     colorBsuspend();
   if ((display_state & DISPLAY_COLORIMAGEC)!=0)
-     colorCstop();
+     colorCsuspend();
   if ((display_state & DISPLAY_COLORIMAGED)!=0)
-     colorDstop();
+     colorDsuspend();
   if ((display_state & DISPLAY_PANTILTENCODERS)!=0)
-     ptencodersstop();
+     ptencoderssuspend();
   if ((display_state & PANTILT_TELEOPERATOR)!=0)
-     ptmotorsstop();
+     ptmotorssuspend();
 }
 
 
-void teleoperator_run(int father, int *brothers, arbitration fn)
+void teleoperator_resume(int father, int *brothers, arbitration fn)
 {
   int i;
  
-  /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN)
-    {
-      pthread_mutex_lock(&(all[father].mymutex));
-      all[father].children[teleoperator_id]=TRUE;
-      pthread_mutex_unlock(&(all[father].mymutex));
-    }
-
   pthread_mutex_lock(&(all[teleoperator_id].mymutex));
-  /* this schema runs its execution with no children at all */
+  /* this schema resumes its execution with no children at all */
   for(i=0;i<MAX_SCHEMAS;i++) all[teleoperator_id].children[i]=FALSE;
  
   all[teleoperator_id].father=father;
@@ -294,9 +265,9 @@ void *teleoperator_thread(void *not_used)
 	      if ((display_state & DISPLAY_SONARS)!=0) 
 		{
 		  mysonars=(float *)myimport("sonars","us");
-		  sonarsrun=(runFn)myimport("sonars","run");
-		  sonarsstop=(stopFn)myimport("sonars","stop");
-		  sonarsrun(teleoperator_id,NULL,NULL);
+		  sonarsresume=(resumeFn)myimport("sonars","resume");
+		  sonarssuspend=(suspendFn)myimport("sonars","suspend");
+		  sonarsresume(teleoperator_id,NULL,NULL);
                   if (myv!=NULL)
                      *myv=0;
                   if (myw!=NULL)
@@ -306,26 +277,26 @@ void *teleoperator_thread(void *not_used)
 	      if ((display_state & DISPLAY_LASER)!=0) 
 		{
 		  mylaser=(int *)myimport("laser","laser");
-		  laserrun=(runFn)myimport("laser","run");
-		  laserstop=(stopFn)myimport("laser","stop");
-		  laserrun(teleoperator_id,NULL,NULL);
+		  laserresume=(resumeFn)myimport("laser","resume");
+		  lasersuspend=(suspendFn)myimport("laser","suspend");
+		  laserresume(teleoperator_id,NULL,NULL);
 		}
 	      
 	      if ((display_state & DISPLAY_ROBOT)!=0)
 		{
 		  myencoders=(float *)myimport("encoders","jde_robot");
-		  encodersrun=(runFn)myimport("encoders","run");
-		  encodersstop=(stopFn)myimport("encoders","stop");
-		  encodersrun(teleoperator_id,NULL,NULL);
+		  encodersresume=(resumeFn)myimport("encoders","resume");
+		  encoderssuspend=(suspendFn)myimport("encoders","suspend");
+		  encodersresume(teleoperator_id,NULL,NULL);
 		}
 	      
 	      if ((display_state & BASE_TELEOPERATOR)!=0)
 		{
 		  myv=(float *)myimport("motors","v");
 		  myw=(float *)myimport("motors","w");
-		  motorsrun=(runFn)myimport("motors","run");
-		  motorsstop=(stopFn)myimport("motors","stop");
-		  motorsrun(teleoperator_id,NULL,NULL);
+		  motorsresume=(resumeFn)myimport("motors","resume");
+		  motorssuspend=(suspendFn)myimport("motors","suspend");
+		  motorsresume(teleoperator_id,NULL,NULL);
 		}*/
 	    }
 	  else if (all[teleoperator_id].state==winner);
@@ -356,28 +327,24 @@ void *teleoperator_thread(void *not_used)
 	    }
 	}
     }
-  return NULL;
 }
 
-
-void teleoperator_hide();
-
-void teleoperator_terminate()
+void teleoperator_stop()
 {
   /*
   pthread_mutex_lock(&(all[teleoperator_id].mymutex));
-  teleoperator_stop();  
+  teleoperator_suspend();  
   pthread_mutex_unlock(&(all[teleoperator_id].mymutex));
   sleep(2);
   */
  if (fd_teleoperatorgui!=NULL)
  {
     if (all[teleoperator_id].guistate==on){
-       teleoperator_hide();
+       teleoperator_guisuspend();
        all[teleoperator_id].guistate=off;
     }
  }
- teleoperator_stop();
+ teleoperator_suspend();
  finish_flag=1;
  printf ("teleoperator close\n");
 
@@ -388,7 +355,7 @@ void teleoperator_terminate()
 }
 
 
-void teleoperator_init(char *configfile)
+void teleoperator_startup()
 {
   samplesource=NULL;
   virtualcam.posx=-150;
@@ -401,8 +368,8 @@ void teleoperator_init(char *configfile)
   init_pioneer();
   pthread_mutex_lock(&(all[teleoperator_id].mymutex));
   myexport("teleoperator","id",&teleoperator_id);
-  myexport("teleoperator","run",(void *) &teleoperator_run);
-  myexport("teleoperator","stop",(void *) &teleoperator_stop);
+  myexport("teleoperator","resume",(void *) &teleoperator_resume);
+  myexport("teleoperator","suspend",(void *) &teleoperator_suspend);
   printf("teleoperator schema started up\n");
   put_state(teleoperator_id,slept);
   pthread_create(&(all[teleoperator_id].mythread),NULL,teleoperator_thread,NULL);
@@ -607,9 +574,11 @@ int freeobj_ventanaDD_handle(FL_OBJECT *obj, int event, FL_Coord mx, FL_Coord my
 }
 
 
+extern void teleoperator_guisuspend(void);
+
 void teleoperator_guibuttons(void *obj1){
    FL_OBJECT *obj;
-   float speed_coef;
+   float dpan=0.5,dtilt=0.5, speed_coef;
    float r,lati,longi,guix,guiy,guiz;
    float dx,dy,dz;
    obj=(FL_OBJECT *)obj1;
@@ -819,7 +788,7 @@ void teleoperator_guibuttons(void *obj1){
    }
 
    else if (obj == fd_teleoperatorgui->hide) {
-      teleoperator_hide();
+      teleoperator_guisuspend();
       all[teleoperator_id].guistate=off;
       /* it stops the robot when the teleoperatorGUI is disabled */
       if ((display_state & BASE_TELEOPERATOR)!=0){
@@ -834,6 +803,7 @@ void teleoperator_guibuttons(void *obj1){
          else
             joystick_y=0.5-0.5*fl_get_positioner_yvalue(fd_teleoperatorgui->joystick);
          joystick_x=fl_get_positioner_xvalue(fd_teleoperatorgui->joystick);
+         fl_redraw_object(fd_teleoperatorgui->joystick);
       }
    }
    else if (obj == fd_teleoperatorgui->back) {
@@ -842,6 +812,7 @@ void teleoperator_guibuttons(void *obj1){
       else
          joystick_y=0.5-0.5*fl_get_positioner_yvalue(fd_teleoperatorgui->joystick);
       joystick_x=fl_get_positioner_xvalue(fd_teleoperatorgui->joystick);
+      fl_redraw_object(fd_teleoperatorgui->joystick);
    }
    else if (obj == fd_teleoperatorgui->stop){
       fl_set_positioner_xvalue(fd_teleoperatorgui->joystick,0.5);
@@ -851,48 +822,47 @@ void teleoperator_guibuttons(void *obj1){
    }
    else if (obj == fd_teleoperatorgui->pantilt_joystick){
       if ((display_state & PANTILT_TELEOPERATOR)!=0){
-	pt_joystick_y=fl_get_positioner_yvalue(fd_teleoperatorgui->pantilt_joystick);
-	pt_joystick_x=fl_get_positioner_xvalue(fd_teleoperatorgui->pantilt_joystick);
+         pt_joystick_y=fl_get_positioner_yvalue(fd_teleoperatorgui->pantilt_joystick);
+         pt_joystick_x=fl_get_positioner_xvalue(fd_teleoperatorgui->pantilt_joystick);
+         /*  fl_redraw_object(fd_teleoperatorgui->pantilt_joystick);*/
       }
    }
    else if (obj == fd_teleoperatorgui->pantilt_origin){
-     if ((display_state & PANTILT_TELEOPERATOR)!=0){
-       if (((*longitude_max) - (*longitude_min)) > 0.05)
-	 pt_joystick_x= (0.-(*longitude_min))/((*longitude_max)-(*longitude_min));
-       if (((*latitude_max) - (*latitude_min)) > 0.05)
-	 pt_joystick_y= (0.-(*latitude_min))/((*latitude_max)-(*latitude_min));
-     }
+      if ((MAX_PAN_ANGLE - MIN_PAN_ANGLE) > 0.05)
+         pt_joystick_x= 1.-(0.-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
+      if ((MAX_TILT_ANGLE - MIN_TILT_ANGLE) > 0.05)
+         pt_joystick_y= (0.-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
    }
    else if (obj == fd_teleoperatorgui->pantilt_stop) {
-     if ((display_state & PANTILT_TELEOPERATOR)!=0){
-       /* current pantilt position as initial command, to avoid any movement */
-       if (((*longitude_max) - (*longitude_min)) > 0.05)
-	 pt_joystick_x= ((*pan_angle)-(*longitude_min))/((*longitude_max)-(*longitude_min));
-       if (((*latitude_max) - (*latitude_min)) > 0.05)
-	 pt_joystick_y= ((*tilt_angle)-(*latitude_min))/((*latitude_max)-(*latitude_min));
-     }
+      /* current pantilt position as initial command, to avoid any movement */
+      if ((MAX_PAN_ANGLE - MIN_PAN_ANGLE) > 0.05){
+         if (mypan_angle!=NULL)
+            pt_joystick_x= 1.-(*mypan_angle-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
+         else
+            pt_joystick_x= 1.-(0-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
+      }
+      if ((MAX_TILT_ANGLE - MIN_TILT_ANGLE) > 0.05){
+         if (mytilt_angle!=NULL)
+            pt_joystick_y= (*mytilt_angle-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
+         else
+            pt_joystick_y= (0-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
+      }
    }
    else if (obj == fd_teleoperatorgui->ptspeed){
       speed_coef = fl_get_slider_value(fd_teleoperatorgui->ptspeed);
-      if (longitude_speed!=NULL)
-         *longitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
-      if (latitude_speed!=NULL)
-         *latitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
-      if (myzoom_speed && myzoom_speed_max)
-         *myzoom_speed=(1.-speed_coef)*(*myzoom_speed_max);
-   }
-   else if (obj == fd_teleoperatorgui->zoom){
-     if ((display_state & ZOOM_TELEOPERATOR)!=0)
-       pt_joystick_z = fl_get_slider_value(obj);
+      if (mylongitude_speed!=NULL)
+         *mylongitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
+      if (mylatitude_speed!=NULL)
+         *mylatitude_speed=(1.-speed_coef)*MAX_SPEED_PANTILT;
    }
    else if (obj == fd_teleoperatorgui->sonars){
       if (fl_get_button(fd_teleoperatorgui->sonars)==PUSHED){
          display_state = display_state | DISPLAY_SONARS;
          mysonars=(float *)myimport("sonars","us");
-         sonarsrun=(runFn)myimport("sonars","run");
-         sonarsstop=(stopFn)myimport("sonars","stop");
-         if (sonarsrun!=NULL){
-            sonarsrun(teleoperator_id,NULL,NULL);
+         sonarsresume=(resumeFn)myimport("sonars","resume");
+         sonarssuspend=(suspendFn)myimport("sonars","suspend");
+         if (sonarsresume!=NULL){
+            sonarsresume(teleoperator_id,NULL,NULL);
          }
          else{
             display_state = display_state & ~DISPLAY_SONARS;
@@ -901,18 +871,18 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_SONARS;
-         if (sonarsstop!=NULL)
-            sonarsstop();
+         if (sonarssuspend!=NULL)
+            sonarssuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->laser){
       if (fl_get_button(fd_teleoperatorgui->laser)==PUSHED){
          display_state = display_state | DISPLAY_LASER;
          mylaser=(int *)myimport("laser","laser");
-         laserrun=(runFn )myimport("laser","run");
-         laserstop=(stopFn)myimport("laser","stop");
-         if (laserrun!=NULL){
-            laserrun(teleoperator_id,NULL,NULL);
+         laserresume=(resumeFn )myimport("laser","resume");
+         lasersuspend=(suspendFn)myimport("laser","suspend");
+         if (laserresume!=NULL){
+            laserresume(teleoperator_id,NULL,NULL);
          }
          else{
             fl_set_button(obj, RELEASED);
@@ -921,8 +891,8 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_LASER;
-         if (laserstop!=NULL)
-            laserstop();
+         if (lasersuspend!=NULL)
+            lasersuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->encoders)
@@ -931,10 +901,10 @@ void teleoperator_guibuttons(void *obj1){
       {
          display_state = display_state | DISPLAY_ROBOT;
          myencoders=(float *)myimport("encoders","jde_robot");
-         encodersrun=(runFn)myimport("encoders","run");
-         encodersstop=(stopFn)myimport("encoders","stop");
-         if (encodersrun!=NULL)
-            encodersrun(teleoperator_id,NULL,NULL);
+         encodersresume=(resumeFn)myimport("encoders","resume");
+         encoderssuspend=(suspendFn)myimport("encoders","suspend");
+         if (encodersresume!=NULL)
+            encodersresume(teleoperator_id,NULL,NULL);
          else{
             fl_set_button(obj, RELEASED);
             display_state = display_state & ~DISPLAY_ROBOT;
@@ -943,8 +913,8 @@ void teleoperator_guibuttons(void *obj1){
       else
       {
          display_state = display_state & ~DISPLAY_ROBOT;
-         if (encodersstop!=NULL)
-            encodersstop();
+         if (encoderssuspend!=NULL)
+            encoderssuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->motors)
@@ -954,10 +924,10 @@ void teleoperator_guibuttons(void *obj1){
          display_state = display_state | BASE_TELEOPERATOR;
          myv=(float *)myimport("motors","v");
          myw=(float *)myimport("motors","w");
-         motorsrun=(runFn)myimport("motors","run");
-         motorsstop=(stopFn)myimport("motors","stop");
-         if (motorsrun!=NULL)
-            motorsrun(teleoperator_id,NULL,NULL);
+         motorsresume=(resumeFn)myimport("motors","resume");
+         motorssuspend=(suspendFn)myimport("motors","suspend");
+         if (motorsresume!=NULL)
+            motorsresume(teleoperator_id,NULL,NULL);
          else{
             fl_set_button(fd_teleoperatorgui->motors, RELEASED);
             display_state = display_state & ~BASE_TELEOPERATOR;
@@ -971,37 +941,21 @@ void teleoperator_guibuttons(void *obj1){
          if (myw!=NULL)
             *myw=0.;
          display_state = display_state & ~BASE_TELEOPERATOR;
-         if (motorsstop!=NULL)
-            motorsstop();
+         if (motorssuspend!=NULL)
+            motorssuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->PTmotors){
       if (fl_get_button(fd_teleoperatorgui->PTmotors)==PUSHED){
          mylongitude=myimport("ptmotors", "longitude");
-	 longitude_max=myimport("ptmotors", "max_longitude");
-	 longitude_min=myimport("ptmotors", "min_longitude");
          mylatitude=myimport ("ptmotors", "latitude");
-	 latitude_max=myimport ("ptmotors", "max_latitude");
-	 latitude_min=myimport ("ptmotors", "min_latitude");
-         longitude_speed=myimport("ptmotors", "longitude_speed");
-         latitude_speed=myimport("ptmotors","latitude_speed");
-	 if((mylongitude==NULL)||(mylatitude==NULL)||
-	    (longitude_max==NULL)||(longitude_min==NULL)||
-	    (latitude_max==NULL)||(latitude_min==NULL)||
-	    (longitude_speed==NULL)||(latitude_speed==NULL))
-	   printf("Teleoperator can't import all relevant PTmotors symbols\n");
-         ptmotorsrun=(runFn)myimport("ptmotors","run");
-         ptmotorsstop=(stopFn)myimport("ptmotors","stop");
-
-	 /* initial value to pt_positioner in the GUI */
-	 if (((*longitude_max) - (*longitude_min)) > 0.05)
-	   pt_joystick_x= (0.-(*longitude_min))/((*longitude_max)-(*longitude_min));
-	 if (((*latitude_max) - (*latitude_min)) > 0.05)
-	   pt_joystick_y= (0.-(*latitude_min))/((*latitude_max)-(*latitude_min));
-
-         if (ptmotorsrun!=NULL){
+         mylongitude_speed=myimport("ptmotors", "longitude_speed");
+         mylatitude_speed=myimport("ptmotors","latitude_speed");
+         ptmotorsresume=(resumeFn)myimport("ptmotors","resume");
+         ptmotorssuspend=(suspendFn)myimport("ptmotors","suspend");
+         if (ptmotorsresume!=NULL){
             display_state = display_state | PANTILT_TELEOPERATOR;
-            ptmotorsrun(teleoperator_id, NULL, NULL);
+            ptmotorsresume(teleoperator_id, NULL, NULL);
          }
          else{
             display_state = display_state & ~PANTILT_TELEOPERATOR;
@@ -1010,34 +964,33 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          /*safety stop when disabling the teleoperator */
-         /* current pantilt position as initial command, to avoid any movement *
-         if (((*longitude_max) - (*longitude_min)) > 0.05){
-            if (pan_angle!=NULL)
-               pt_joystick_x= 1.-(*pan_angle-(*longitude_min))/((*longitude_max)-(*longitude_min));
+         /* current pantilt position as initial command, to avoid any movement */
+         if ((MAX_PAN_ANGLE - MIN_PAN_ANGLE) > 0.05){
+            if (mypan_angle!=NULL)
+               pt_joystick_x= 1.-(*mypan_angle-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
             else
-               pt_joystick_x= 1.-(0-(*longitude_min))/((*longitude_max)-(*longitude_min));
+               pt_joystick_x= 1.-(0-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
          }
-         if (((*latitude_max) - (*latitude_min)) > 0.05){
-            if (tilt_angle!=NULL)
-               pt_joystick_y= (*tilt_angle-(*latitude_min))/((*latitude_max)-(*latitude_min));
+         if ((MAX_TILT_ANGLE - MIN_TILT_ANGLE) > 0.05){
+            if (mytilt_angle!=NULL)
+               pt_joystick_y= (*mytilt_angle-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
             else
-               pt_joystick_y= (0-(*latitude_min))/((*latitude_max)-(*latitude_min));
+               pt_joystick_y= (0-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
          }
-	 */
-         if (ptmotorsstop!=NULL){
-            ptmotorsstop();
+         if (ptmotorssuspend!=NULL){
+            ptmotorssuspend();
          }
          display_state = display_state & ~PANTILT_TELEOPERATOR;
       }
    }
    else if (obj == fd_teleoperatorgui->PTencoders){
       if (fl_get_button(fd_teleoperatorgui->PTencoders)==PUSHED){
-         pan_angle=myimport("ptencoders", "pan_angle");
-         tilt_angle=myimport("ptencoders", "tilt_angle");
-         ptencodersrun=(runFn)myimport("ptencoders", "run");
-         ptencodersstop=(stopFn)(stopFn)myimport("ptencoders", "stop");
-         if (ptencodersrun!=NULL){
-            ptencodersrun(teleoperator_id, NULL, NULL);
+         mypan_angle=myimport("ptencoders", "pan_angle");
+         mytilt_angle=myimport("ptencoders", "tilt_angle");
+         ptencodersresume=(resumeFn)myimport("ptencoders", "resume");
+         ptencoderssuspend=(suspendFn)(suspendFn)myimport("ptencoders", "suspend");
+         if (ptencodersresume!=NULL){
+            ptencodersresume(teleoperator_id, NULL, NULL);
             display_state = display_state | DISPLAY_PANTILTENCODERS;
          }
          else{
@@ -1047,69 +1000,18 @@ void teleoperator_guibuttons(void *obj1){
       }
       else{
          display_state = display_state & ~DISPLAY_PANTILTENCODERS;
-         if (ptencodersstop!=NULL)
-            ptencodersstop();
-      }
-   }
-   else if (obj == fd_teleoperatorgui->Zmotors){
-      if (fl_get_button(obj)==PUSHED){
-         myzoom=myimport("zmotors", "zoom");
-         myzoom_speed=myimport("zmotors", "zoom_speed");
-         zmotorsrun=(runFn)myimport("zmotors","run");
-         zmotorsstop=(stopFn)myimport("zmotors","stop");
-         myzoom_speed_max=(float *)myimport("zmotors", "max_zoom_speed");
-         myzoom_max=(float *)myimport("zmotors", "max_zoom");
-         myzoom_min=(float *)myimport("zmotors", "min_zoom");
-
-         if (zmotorsrun!=NULL || myzoom!=NULL || myzoom_speed!=NULL ||
-             zmotorsstop!=NULL || myzoom_speed_max!=NULL ||
-             myzoom_max!=NULL || myzoom_min!=NULL)
-         {
-            display_state = display_state | ZOOM_TELEOPERATOR;
-            zmotorsrun(teleoperator_id, NULL, NULL);
-         }
-         else{
-            display_state = display_state & ~ZOOM_TELEOPERATOR;
-            fl_set_button(obj, RELEASED);
-         }
-      }
-      else {
-         /*safety stop when disabling the teleoperator */
-         /* current pantilt position as initial command, to avoid any movement */
-         if (zmotorsstop!=NULL){
-            zmotorsstop();
-         }
-         display_state = display_state & ~ZOOM_TELEOPERATOR;
-      }
-   }
-   else if (obj == fd_teleoperatorgui->Zencod){
-      if (fl_get_button(obj)==PUSHED){
-         myzoom_position=myimport("zencoders", "zoom_position");
-         zencodersrun=(runFn)myimport("zencoders", "run");
-         zencodersstop=(stopFn)(stopFn)myimport("zencoders", "stop");
-         if (zencodersrun!=NULL){
-            zencodersrun(teleoperator_id, NULL, NULL);
-            display_state = display_state | DISPLAY_ZOOMENCODERS;
-         }
-         else{
-            fl_set_button(obj, RELEASED);
-            display_state = display_state & ~DISPLAY_ZOOMENCODERS;
-         }
-      }
-      else{
-         display_state = display_state & ~DISPLAY_ZOOMENCODERS;
-         if (zencodersstop!=NULL)
-            zencodersstop();
+         if (ptencoderssuspend!=NULL)
+            ptencoderssuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->colorA){
       if (fl_get_button(fd_teleoperatorgui->colorA)==PUSHED){
          mycolorA=myimport ("colorA", "colorA");
-         colorArun=(runFn)myimport("colorA", "run");
-         colorAstop=(stopFn)myimport("colorA", "stop");
-         if (colorArun!=NULL){
+         colorAresume=(resumeFn)myimport("colorA", "resume");
+         colorAsuspend=(suspendFn)myimport("colorA", "suspend");
+         if (colorAresume!=NULL){
             display_state = display_state | DISPLAY_COLORIMAGEA;
-            colorArun(teleoperator_id, NULL, NULL);
+            colorAresume(teleoperator_id, NULL, NULL);
          }
          else{
             display_state = display_state & ~DISPLAY_COLORIMAGEA;
@@ -1118,18 +1020,18 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_COLORIMAGEA;
-         if (colorAstop!=NULL)
-            colorAstop();
+         if (colorAsuspend!=NULL)
+            colorAsuspend();
       }
    }
    else if (obj == fd_teleoperatorgui->colorB){
       if (fl_get_button(fd_teleoperatorgui->colorB)==PUSHED){
          mycolorB=myimport ("colorB", "colorB");
-         colorBrun=(runFn)myimport("colorB", "run");
-         colorBstop=(stopFn)myimport("colorB", "stop");
-         if (colorBrun!=NULL){
+         colorBresume=(resumeFn)myimport("colorB", "resume");
+         colorBsuspend=(suspendFn)myimport("colorB", "suspend");
+         if (colorBresume!=NULL){
             display_state = display_state | DISPLAY_COLORIMAGEB;
-            colorBrun(teleoperator_id, NULL, NULL);
+            colorBresume(teleoperator_id, NULL, NULL);
          }
          else{
             display_state = display_state & ~DISPLAY_COLORIMAGEB;
@@ -1138,19 +1040,19 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_COLORIMAGEB;
-         if (colorBstop!=NULL)
-            colorBstop();
+         if (colorBsuspend!=NULL)
+            colorBsuspend();
       }
    }
 
    else if (obj == fd_teleoperatorgui->colorC){
       if (fl_get_button(fd_teleoperatorgui->colorC)==PUSHED){
          mycolorC=myimport ("colorC", "colorC");
-         colorCrun=(runFn)myimport("colorC", "run");
-         colorCstop=(stopFn)myimport("colorC", "stop");
-         if (colorCrun!=NULL){
+         colorCresume=(resumeFn)myimport("colorC", "resume");
+         colorCsuspend=(suspendFn)myimport("colorC", "suspend");
+         if (colorCresume!=NULL){
             display_state = display_state | DISPLAY_COLORIMAGEC;
-            colorCrun(teleoperator_id, NULL, NULL);
+            colorCresume(teleoperator_id, NULL, NULL);
          }
          else{
             display_state = display_state & ~DISPLAY_COLORIMAGEC;
@@ -1159,8 +1061,8 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_COLORIMAGEC;
-         if (colorCstop!=NULL)
-            colorCstop();
+         if (colorCsuspend!=NULL)
+            colorCsuspend();
       }
    }
 
@@ -1168,11 +1070,11 @@ void teleoperator_guibuttons(void *obj1){
     {
       if (fl_get_button(fd_teleoperatorgui->colorD)==PUSHED){
          mycolorD=myimport ("colorD", "colorD");
-         colorDrun=(runFn)myimport("colorD", "run");
-         colorDstop=(stopFn)myimport("colorD", "stop");
-         if (colorDrun!=NULL){
+         colorDresume=(resumeFn)myimport("colorD", "resume");
+         colorDsuspend=(suspendFn)myimport("colorD", "suspend");
+         if (colorDresume!=NULL){
             display_state = display_state | DISPLAY_COLORIMAGED;
-            colorDrun(teleoperator_id, NULL, NULL);
+            colorDresume(teleoperator_id, NULL, NULL);
          }
          else{
             display_state = display_state & ~DISPLAY_COLORIMAGED;
@@ -1181,10 +1083,33 @@ void teleoperator_guibuttons(void *obj1){
       }
       else {
          display_state = display_state & ~DISPLAY_COLORIMAGED;
-         if (colorDstop!=NULL)
-            colorDstop();
+         if (colorDsuspend!=NULL)
+            colorDsuspend();
       }
-    } 
+    }
+  
+  /* modifies pantilt positioner to follow pantilt angles. 
+     It tracks the pantilt movement. It should be at
+     display_poll, but there it causes a weird display behavior. */
+    if (mypan_angle!=NULL){
+       if ((MAX_PAN_ANGLE - MIN_PAN_ANGLE) > 0.05)
+          dpan= 1.-(*mypan_angle-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
+    }
+    else{
+       if ((MAX_PAN_ANGLE - MIN_PAN_ANGLE) > 0.05)
+          dpan= 1.-(0-MIN_PAN_ANGLE)/(MAX_PAN_ANGLE-MIN_PAN_ANGLE);
+    }
+    if (mytilt_angle!=NULL){
+       if ((MAX_TILT_ANGLE - MIN_TILT_ANGLE) > 0.05)
+          dtilt= (*mytilt_angle-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
+    }
+    else{
+       if ((MAX_TILT_ANGLE - MIN_TILT_ANGLE) > 0.05)
+          dtilt= (0-MIN_TILT_ANGLE)/(MAX_TILT_ANGLE-MIN_TILT_ANGLE);
+    }
+  fl_set_positioner_xvalue(fd_teleoperatorgui->pantilt_joystick,dpan);
+  fl_set_positioner_yvalue(fd_teleoperatorgui->pantilt_joystick,dtilt);
+  /*fl_redraw_object(fd_teleoperatorgui->pantilt_joystick);*/
 }
 
 void teleoperator_guidisplay()    
@@ -1194,37 +1119,7 @@ void teleoperator_guidisplay()
   float r,lati,longi,dx,dy,dz;
   float matColors[4];
   float  Xp_sensor, Yp_sensor;
-  float dpan=0.5,dtilt=0.5;
 
-  if (((display_state&DISPLAY_PANTILTENCODERS)!=0)&&
-      ((display_state&PANTILT_TELEOPERATOR)!=0))
-    {  
-      if (pan_angle!=NULL){
-	if (((*longitude_max) - (*longitude_min)) > 0.05)
-	  dpan= (*pan_angle-(*longitude_min))/((*longitude_max)-(*longitude_min));
-      }
-      else{
-	if (((*longitude_max) - (*longitude_min)) > 0.05)
-	  dpan= (0-(*longitude_min))/((*longitude_max)-(*longitude_min));
-      }
-      fl_set_positioner_xvalue(fd_teleoperatorgui->pantilt_joystick,dpan);
-      if (tilt_angle!=NULL){
-	if (((*latitude_max) - (*latitude_min)) > 0.05)
-	  dtilt= (*tilt_angle-(*latitude_min))/((*latitude_max)-(*latitude_min));
-      }
-      else{
-	if (((*latitude_max) - (*latitude_min)) > 0.05)
-	  dtilt= (0-(*latitude_min))/((*latitude_max)-(*latitude_min));
-      }
-      fl_set_positioner_yvalue(fd_teleoperatorgui->pantilt_joystick,dtilt);
-      
-      if (latitude_speed!=NULL)
-	fl_set_slider_value(fd_teleoperatorgui->ptspeed,(double)(1.-(*latitude_speed)/MAX_SPEED_PANTILT));
-    }
-
-  fl_redraw_object(fd_teleoperatorgui->joystick);
-  fl_redraw_object(fd_teleoperatorgui->pantilt_joystick);
-  fl_redraw_object(fd_teleoperatorgui->latlong);
 
   fl_activate_glcanvas(fd_teleoperatorgui->canvas);
   /* Set the OpenGL state machine to the right context for this display */
@@ -1672,9 +1567,8 @@ void teleoperator_guidisplay()
 }
 
 
-void teleoperator_hide_aux(void)
+void teleoperator_guisuspend_aux(void)
 {
-  all[teleoperator_id].guistate=off;
   if ((display_state & BASE_TELEOPERATOR)!=0)
     {
       (*myv)=0; 
@@ -1686,45 +1580,36 @@ void teleoperator_hide_aux(void)
   fl_hide_form(fd_teleoperatorgui->teleoperatorgui);
 }
 
-void teleoperator_hide(){
+void teleoperator_guisuspend(){
    static callback fn=NULL;
    if (fn==NULL){
       if ((fn=(callback)myimport ("graphics_xforms", "suspend_callback"))!=NULL){
-         fn ((gui_function)teleoperator_hide_aux);
+         fn ((gui_function)teleoperator_guisuspend_aux);
       }
    }
    else{
-      fn ((gui_function)teleoperator_hide_aux);
+      fn ((gui_function)teleoperator_guisuspend_aux);
    }
 }
 
-int myclose_form(FL_FORM *form, void *an_argument)
-{
-  teleoperator_hide();
-  return FL_IGNORE;
-}
-
-void teleoperator_show_aux(void)
+void teleoperator_guiresume_aux(void)
 {
   static int k=0;
   float r,lati,longi,guix,guiy,guiz;
 
-  all[teleoperator_id].guistate=on;
   if (k==0) /* not initialized */
     {
       k++;
       fd_teleoperatorgui = create_form_teleoperatorgui();
       fl_set_form_position(fd_teleoperatorgui->teleoperatorgui,400,50);
       fl_show_form(fd_teleoperatorgui->teleoperatorgui,FL_PLACE_POSITION,FL_FULLBORDER,"teleoperator");
-      fl_set_form_atclose(fd_teleoperatorgui->teleoperatorgui,myclose_form,0);
       image_displaysetup(); /* Tiene que ir despues de la inicializacion de Forms, pues hace uso de informacion que la libreria rellena en tiempo de ejecucion al iniciarse */
       fl_add_canvas_handler(fd_teleoperatorgui->canvas,Expose,InitOGL,0);
+      
     }
   else 
     {
       fl_show_form(fd_teleoperatorgui->teleoperatorgui,FL_PLACE_POSITION,FL_FULLBORDER,"teleoperator");
-      teleoperatorgui_win= FL_ObjWin(fd_teleoperatorgui->ventanaA);
-      /* the window (teleoperatorgui_win) changes every time the form is hided and showed again. They need to be updated before displaying anything again */
     }
 
   fl_set_slider_bounds(fd_teleoperatorgui->posX,MAXWORLD*10,-MAXWORLD*10);
@@ -1759,6 +1644,8 @@ void teleoperator_show_aux(void)
   fl_set_positioner_yvalue(fd_teleoperatorgui->joystick,0.);
   joystick_x=0.5;
   joystick_y=0.5;
+  if (mylatitude_speed!=NULL)
+     fl_set_slider_value(fd_teleoperatorgui->ptspeed,(double)(1.-(*mylatitude_speed)/MAX_SPEED_PANTILT));
 
   if (myregister_buttonscallback!=NULL){
      myregister_buttonscallback(teleoperator_guibuttons);
@@ -1770,14 +1657,14 @@ void teleoperator_show_aux(void)
   }
 }
 
-void teleoperator_show(){
+void teleoperator_guiresume(){
    static callback fn=NULL;
    if (fn==NULL){
       if ((fn=(callback)myimport ("graphics_xforms", "resume_callback"))!=NULL){
-         fn ((gui_function)teleoperator_show_aux);
+         fn ((gui_function)teleoperator_guiresume_aux);
       }
    }
    else{
-      fn ((gui_function)teleoperator_show_aux);
+      fn ((gui_function)teleoperator_guiresume_aux);
    }
 }

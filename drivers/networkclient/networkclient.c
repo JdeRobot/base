@@ -1,26 +1,24 @@
 /*
+ *  Copyright (C) 2006 Antonio Pineda Cabello
  *
- *  Copyright (C) 1997-2008 JDE Developers Team
- *
- *  This program is free software: you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  Authors : Antonio Pineda Cabello <apineda@gsyc.escet.urjc.es>
- *            Jose Maria Cañas <jmplaza@gsyc.escet.urjc.es>
- *            Jose Antonio Santos Cadenas  <santoscadenas@gmail.com>
- *
+              Jose Maria Cañas <jmplaza@gsyc.escet.urjc.es>
+              Jose Antonio Santos Cadenas <santoscadenas@gmail.com>
  */
-
 
 /**
  *  jdec networkclient driver provides sensorial information to platform variables such as color, laser or us, from remote jdec networkservers drivers, or oculo and otos servers.
@@ -32,21 +30,13 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <math.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <string.h>
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <jde.h>
-#include <interfaces/varcolor.h>
-#include <jdemessages.h>
+#include "jde.h"
+#include "jdemessages.h"
 
 /** networkclient driver oneimage socket read mode.*/
 #define ONEIMAGE 0
@@ -141,7 +131,7 @@ int serve_device[MAXDEVICE];
 /** networkclient devices active at each moment.*/
 int device_active[MAXDEVICE];
 /** networkclient variable to detect when the pthreads must end its execution.*/
-int networkclient_terminate_command=0;
+int networkclient_close_command=0;
 
 /** id for colorA schema.*/
 int colorA_schema_id;
@@ -246,7 +236,25 @@ char *colorD=NULL; /* sifntsc image itself */
 /** 'colorD' schema clock*/
 unsigned long int imageD_clock;
 
-Varcolor myA,myB,myC,myD;
+/** 'varcolorA' schema image data*/
+char *varcolorA=NULL; /* sifntsc image itself */
+/** 'varcolorA' schema clock*/
+unsigned long int varimageA_clock;
+
+/** 'varcolorB' schema image data*/
+char *varcolorB=NULL; /* sifntsc image itself */
+/** 'varcolorB' schema clock*/
+unsigned long int varimageB_clock;
+
+/** 'varcolorC' schema image data*/
+char *varcolorC=NULL; /* sifntsc image itself */
+/** 'varcolorC' schema clock*/
+unsigned long int varimageC_clock;
+
+/** 'varcolorD' schema image data*/
+char *varcolorD=NULL; /* sifntsc image itself */
+/** 'varcolorD' schema clock*/
+unsigned long int varimageD_clock;
 
 /** width of each served video**/
 int width[MAXCAM];
@@ -320,12 +328,12 @@ int zencoders_refs=0;
 pthread_mutex_t refmutex;
 
 /** networkclient function to end execution of the driver, closing file descriptors and stopping devices.*/
-void networkclient_terminate(){
+void networkclient_close(){
 
   char last_message[MAX_MESSAGE];
 
   /* this will stop all the client threads */
-  networkclient_terminate_command=1;
+  networkclient_close_command=1;
 
   /* closing all the device sockets */
   if(serve_device[COLORA_DEVICE]){
@@ -418,12 +426,12 @@ void networkclient_terminate(){
   printf("driver networkclient off\n");
 }
 
-/** zencoders run function following jdec platform API schemas.
+/** zencoders resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_zencoders_run(int father, int *brothers, arbitration fn){
+int networkclient_zencoders_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (zencoders_refs>0){
       zencoders_refs++;
@@ -432,10 +440,10 @@ int networkclient_zencoders_run(int father, int *brothers, arbitration fn){
    else{
       zencoders_refs=1;
       pthread_mutex_unlock(&refmutex);
-      if((device_active[ZOOM_ENCODERS_DEVICE]==0)&&(serve_device[ZOOM_ENCODERS_DEVICE])){
+      if((device_active[ZOOM_ENCODERS_DEVICE==0])&&(serve_device[ZOOM_ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
       
-         printf("zencoders schema run (networkclient driver)\n");
+         printf("zencoders schema resume (networkclient driver)\n");
          all[zencoders_schema_id].father = father;
          all[zencoders_schema_id].fps = 0.;
          all[zencoders_schema_id].k =0;
@@ -453,9 +461,9 @@ int networkclient_zencoders_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** zencoders stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_zencoders_stop(){
+/** zencoders suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_zencoders_suspend(){
    pthread_mutex_lock(&refmutex);
    if (zencoders_refs>1){
       zencoders_refs--;
@@ -467,7 +475,7 @@ int networkclient_zencoders_stop(){
       if((device_active[ZOOM_ENCODERS_DEVICE])&&(serve_device[ZOOM_ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("zencoders schema stop (networkclient driver)\n");
+         printf("zencoders schema suspend (networkclient driver)\n");
          device_active[ZOOM_ENCODERS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[ZOOM_ENCODERS_DEVICE]);
          sprintf(message_out,"%d\n",NETWORKSERVER_unsubscribe_zoom_encoders);
@@ -480,12 +488,12 @@ int networkclient_zencoders_stop(){
    return 0;
 }
 
-/** zmotors run function following jdec platform API schemas.
+/** zmotors resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_zoommotors_run(int father, int *brothers, arbitration fn){
+int networkclient_zoommotors_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (zmotors_refs>0){
       zmotors_refs++;
@@ -494,8 +502,8 @@ int networkclient_zoommotors_run(int father, int *brothers, arbitration fn){
    else{
       zmotors_refs=1;
       pthread_mutex_unlock(&refmutex);
-      if((device_active[ZOOM_MOTORS_DEVICE]==0)&&(serve_device[ZOOM_MOTORS_DEVICE])){
-         printf("zmotors schema run (networkclient driver)\n");
+      if((device_active[ZOOM_MOTORS_DEVICE==0])&&(serve_device[ZOOM_MOTORS_DEVICE])){
+         printf("zmotors schema resume (networkclient driver)\n");
          all[zmotors_schema_id].father = father;
          all[zmotors_schema_id].fps = 0.;
          all[zmotors_schema_id].k =0;
@@ -510,9 +518,9 @@ int networkclient_zoommotors_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** zoommotors stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_zoommotors_stop(){
+/** zoommotors suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_zoommotors_suspend(){
    pthread_mutex_lock(&refmutex);
    if (zmotors_refs>1){
       zmotors_refs--;
@@ -522,7 +530,7 @@ int networkclient_zoommotors_stop(){
       zmotors_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[ZOOM_MOTORS_DEVICE])&&(serve_device[ZOOM_MOTORS_DEVICE])){
-         printf("zmotors schema stop (networkclient driver)\n");
+         printf("zmotors schema suspend (networkclient driver)\n");
          device_active[ZOOM_MOTORS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[ZOOM_MOTORS_DEVICE]);
          put_state(zmotors_schema_id,slept);
@@ -533,12 +541,12 @@ int networkclient_zoommotors_stop(){
    return 0;
 }
 
-/** pantiltencoders run function following jdec platform API schemas.
+/** pantiltencoders resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_pantiltencoders_run(int father, int *brothers, arbitration fn){
+int networkclient_pantiltencoders_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (ptencoders_refs>0){
       ptencoders_refs++;
@@ -547,10 +555,10 @@ int networkclient_pantiltencoders_run(int father, int *brothers, arbitration fn)
    else{
       ptencoders_refs=1;
       pthread_mutex_unlock(&refmutex);
-      if((device_active[PANTILT_ENCODERS_DEVICE]==0)&&(serve_device[PANTILT_ENCODERS_DEVICE])){
+      if((device_active[PANTILT_ENCODERS_DEVICE==0])&&(serve_device[PANTILT_ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
       
-         printf("ptencoders schema run (networkclient driver)\n");
+         printf("ptencoders schema resume (networkclient driver)\n");
          all[ptencoders_schema_id].father = father;
          all[ptencoders_schema_id].fps = 0.;
          all[ptencoders_schema_id].k =0;
@@ -568,9 +576,9 @@ int networkclient_pantiltencoders_run(int father, int *brothers, arbitration fn)
    return 0;
 }
 
-/** pantiltencoders stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_pantiltencoders_stop(){
+/** pantiltencoders suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_pantiltencoders_suspend(){
    pthread_mutex_lock(&refmutex);
    if (ptencoders_refs>1){
       ptencoders_refs--;
@@ -582,7 +590,7 @@ int networkclient_pantiltencoders_stop(){
       if((device_active[PANTILT_ENCODERS_DEVICE])&&(serve_device[PANTILT_ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("ptencoders schema stop (networkclient driver)\n");
+         printf("ptencoders schema suspend (networkclient driver)\n");
          device_active[PANTILT_ENCODERS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[PANTILT_ENCODERS_DEVICE]);
          sprintf(message_out,"%d\n",NETWORKSERVER_unsubscribe_pantilt_encoders);
@@ -595,12 +603,12 @@ int networkclient_pantiltencoders_stop(){
    return 0;
 }
 
-/** pantiltmotors run function following jdec platform API schemas.
+/** pantiltmotors resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_pantiltmotors_run(int father, int *brothers, arbitration fn){
+int networkclient_pantiltmotors_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (ptmotors_refs>0){
       ptmotors_refs++;
@@ -609,8 +617,8 @@ int networkclient_pantiltmotors_run(int father, int *brothers, arbitration fn){
    else{
       ptmotors_refs=1;
       pthread_mutex_unlock(&refmutex);
-      if((device_active[PANTILT_MOTORS_DEVICE]==0)&&(serve_device[PANTILT_MOTORS_DEVICE])){
-         printf("ptmotors schema run (networkclient driver)\n");
+      if((device_active[PANTILT_MOTORS_DEVICE==0])&&(serve_device[PANTILT_MOTORS_DEVICE])){
+         printf("ptmotors schema resume (networkclient driver)\n");
          all[ptmotors_schema_id].father = father;
          all[ptmotors_schema_id].fps = 0.;
          all[ptmotors_schema_id].k =0;
@@ -625,9 +633,9 @@ int networkclient_pantiltmotors_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** pantiltmotors stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_pantiltmotors_stop(){
+/** pantiltmotors suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_pantiltmotors_suspend(){
    pthread_mutex_lock(&refmutex);
    if (ptmotors_refs>1){
       ptmotors_refs--;
@@ -637,7 +645,7 @@ int networkclient_pantiltmotors_stop(){
       ptmotors_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[PANTILT_MOTORS_DEVICE])&&(serve_device[PANTILT_MOTORS_DEVICE])){
-         printf("ptmotors schema stop (networkclient driver)\n");
+         printf("ptmotors schema suspend (networkclient driver)\n");
          device_active[PANTILT_MOTORS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[PANTILT_MOTORS_DEVICE]);
          put_state(ptmotors_schema_id,slept);
@@ -648,12 +656,12 @@ int networkclient_pantiltmotors_stop(){
    return 0;
 }
 
-/** laser run function following jdec platform API schemas.
+/** laser resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_laser_run(int father, int *brothers, arbitration fn){
+int networkclient_laser_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (laser_refs>0){
       laser_refs++;
@@ -665,7 +673,7 @@ int networkclient_laser_run(int father, int *brothers, arbitration fn){
       if((device_active[LASER_DEVICE]==0)&&(serve_device[LASER_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("laser schema run (networkclient driver)\n");
+         printf("laser schema resume (networkclient driver)\n");
          all[laser_schema_id].father = father;
          all[laser_schema_id].fps = 0.;
          all[laser_schema_id].k = 0;
@@ -682,9 +690,9 @@ int networkclient_laser_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** laser stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_laser_stop(){
+/** laser suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_laser_suspend(){
    pthread_mutex_lock(&refmutex);
    if (laser_refs>1){
       laser_refs--;
@@ -696,7 +704,7 @@ int networkclient_laser_stop(){
       if((device_active[LASER_DEVICE])&&(serve_device[LASER_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("laser schema stop (networking driver)\n");
+         printf("laser schema suspend (networking driver)\n");
          device_active[LASER_DEVICE]=0;
          pthread_mutex_lock(&mymutex[LASER_DEVICE]);
          sprintf(message_out,"%d\n",NETWORKSERVER_unsubscribe_laser);
@@ -709,12 +717,12 @@ int networkclient_laser_stop(){
    return 0;
 }
 
-/** encoders run function following jdec platform API schemas.
+/** encoders resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_encoders_run(int father, int *brothers, arbitration fn){
+int networkclient_encoders_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (encoders_refs>0){
       encoders_refs++;
@@ -726,7 +734,7 @@ int networkclient_encoders_run(int father, int *brothers, arbitration fn){
       if((device_active[ENCODERS_DEVICE]==0)&&(serve_device[ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("encoders schema run (networking driver)\n");
+         printf("encoders schema resume (networking driver)\n");
          all[encoders_schema_id].father = father;
          all[encoders_schema_id].fps = 0.;
          all[encoders_schema_id].k =0;
@@ -743,9 +751,9 @@ int networkclient_encoders_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** encoders stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_encoders_stop(){
+/** encoders suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_encoders_suspend(){
    pthread_mutex_lock(&refmutex);
    if (encoders_refs>1){
       encoders_refs--;
@@ -757,7 +765,7 @@ int networkclient_encoders_stop(){
       if((device_active[ENCODERS_DEVICE])&&(serve_device[ENCODERS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("laser schema stop (networkclient driver)\n");
+         printf("laser schema suspend (networkclient driver)\n");
          device_active[ENCODERS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[ENCODERS_DEVICE]);
          sprintf(message_out,"%d\n", NETWORKSERVER_unsubscribe_encoders);
@@ -770,12 +778,12 @@ int networkclient_encoders_stop(){
    return 0;
 }
 
-/** sonars run function following jdec platform API schemas.
+/** sonars resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_sonars_run(int father, int *brothers, arbitration fn){
+int networkclient_sonars_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (sonars_refs>0){
       sonars_refs++;
@@ -787,7 +795,7 @@ int networkclient_sonars_run(int father, int *brothers, arbitration fn){
       if((device_active[SONARS_DEVICE]==0)&&(serve_device[SONARS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("sonars schema run (networkclient driver)\n");
+         printf("sonars schema resume (networkclient driver)\n");
          all[sonars_schema_id].father = father;
          all[sonars_schema_id].fps = 0.;
          all[sonars_schema_id].k =0;
@@ -804,9 +812,9 @@ int networkclient_sonars_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** sonars stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_sonars_stop(){
+/** sonars suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_sonars_suspend(){
    pthread_mutex_lock(&refmutex);
    if (sonars_refs>1){
       sonars_refs--;
@@ -818,7 +826,7 @@ int networkclient_sonars_stop(){
             if((device_active[SONARS_DEVICE])&&(serve_device[SONARS_DEVICE])){
          char message_out[MAX_MESSAGE];
 
-         printf("sonars schema stop (networkclient driver)\n");
+         printf("sonars schema suspend (networkclient driver)\n");
          device_active[SONARS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[SONARS_DEVICE]);
          sprintf(message_out,"%d\n",NETWORKSERVER_unsubscribe_us);
@@ -831,12 +839,12 @@ int networkclient_sonars_stop(){
    return 0;
 }
 
-/** motors run function following jdec platform API schemas.
+/** motors resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_motors_run(int father, int *brothers, arbitration fn){
+int networkclient_motors_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (motors_refs>0){
       motors_refs++;
@@ -846,7 +854,7 @@ int networkclient_motors_run(int father, int *brothers, arbitration fn){
       motors_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[MOTORS_DEVICE]==0)&&(serve_device[MOTORS_DEVICE])){
-         printf("motors schema run (networkclient driver)\n");
+         printf("motors schema resume (networkclient driver)\n");
          all[motors_schema_id].father = father;
          all[motors_schema_id].fps = 0.;
          all[motors_schema_id].k =0;
@@ -861,9 +869,9 @@ int networkclient_motors_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** motors stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_motors_stop(){
+/** motors suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_motors_suspend(){
    pthread_mutex_lock(&refmutex);
    if (motors_refs>1){
       motors_refs--;
@@ -873,7 +881,7 @@ int networkclient_motors_stop(){
       motors_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[MOTORS_DEVICE])&&(serve_device[MOTORS_DEVICE])){
-         printf("motors schema stop (networkclient driver)\n");
+         printf("motors schema suspend (networkclient driver)\n");
          device_active[MOTORS_DEVICE]=0;
          pthread_mutex_lock(&mymutex[MOTORS_DEVICE]);
          state[MOTORS_DEVICE]=slept;
@@ -884,12 +892,12 @@ int networkclient_motors_stop(){
    return 0;
 }
 
-/** colorA run function following jdec platform API schemas.
+/** colorA resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_colorA_run(int father, int *brothers, arbitration fn){
+int networkclient_colorA_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (colorA_refs>0){
       colorA_refs++;
@@ -899,7 +907,7 @@ int networkclient_colorA_run(int father, int *brothers, arbitration fn){
       colorA_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORA_DEVICE]==0)&&(serve_device[COLORA_DEVICE])){
-         printf("colorA schema run (networkclient driver)\n");
+         printf("colorA schema resume (networkclient driver)\n");
          all[colorA_schema_id].father = father;
          all[colorA_schema_id].fps = 0.;
          all[colorA_schema_id].k =0;
@@ -914,9 +922,9 @@ int networkclient_colorA_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorA stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_colorA_stop(){
+/** colorA suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_colorA_suspend(){
    pthread_mutex_lock(&refmutex);
    if (colorA_refs>1){
       colorA_refs--;
@@ -926,7 +934,7 @@ int networkclient_colorA_stop(){
       colorA_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORA_DEVICE])&&(serve_device[COLORA_DEVICE])){
-         printf("colorA schema stop (networkclient driver)\n");
+         printf("colorA schema suspend (networkclient driver)\n");
          device_active[COLORA_DEVICE]=0;
          pthread_mutex_lock(&mymutex[COLORA_DEVICE]);
          state[COLORA_DEVICE]=slept;
@@ -937,12 +945,12 @@ int networkclient_colorA_stop(){
    return 0;
 }
 
-/** colorB run function following jdec platform API schemas.
+/** colorB resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_colorB_run(int father, int *brothers, arbitration fn){
+int networkclient_colorB_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (colorB_refs>0){
       colorB_refs++;
@@ -952,7 +960,7 @@ int networkclient_colorB_run(int father, int *brothers, arbitration fn){
       colorB_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORB_DEVICE]==0)&&(serve_device[COLORB_DEVICE])){
-         printf("colorB schema run (networkclient driver)\n");
+         printf("colorB schema resume (networkclient driver)\n");
          all[colorB_schema_id].father = father;
          all[colorB_schema_id].fps = 0.;
          all[colorB_schema_id].k =0;
@@ -967,9 +975,9 @@ int networkclient_colorB_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorB stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_colorB_stop(){
+/** colorB suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_colorB_suspend(){
    pthread_mutex_lock(&refmutex);
    if (colorB_refs>1){
       colorB_refs--;
@@ -979,7 +987,7 @@ int networkclient_colorB_stop(){
       colorB_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORB_DEVICE])&&(serve_device[COLORB_DEVICE])){
-         printf("colorB schema stop (networkclient driver)\n");
+         printf("colorB schema suspend (networkclient driver)\n");
          device_active[COLORB_DEVICE]=0;
          pthread_mutex_lock(&mymutex[COLORB_DEVICE]);
          state[COLORB_DEVICE]=slept;
@@ -990,12 +998,12 @@ int networkclient_colorB_stop(){
    return 0;
 }
 
-/** colorC run function following jdec platform API schemas.
+/** colorC resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_colorC_run(int father, int *brothers, arbitration fn){
+int networkclient_colorC_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (colorC_refs>0){
       colorC_refs++;
@@ -1005,7 +1013,7 @@ int networkclient_colorC_run(int father, int *brothers, arbitration fn){
       colorC_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORC_DEVICE]==0)&&(serve_device[COLORC_DEVICE])){
-         printf("colorC schema run (networkclient driver)\n");
+         printf("colorC schema resume (networkclient driver)\n");
          all[colorC_schema_id].father = father;
          all[colorC_schema_id].fps = 0.;
          all[colorC_schema_id].k =0;
@@ -1020,9 +1028,9 @@ int networkclient_colorC_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorC stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_colorC_stop(){
+/** colorC suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_colorC_suspend(){
    pthread_mutex_lock(&refmutex);
    if (colorC_refs>1){
       colorC_refs--;
@@ -1032,7 +1040,7 @@ int networkclient_colorC_stop(){
       colorC_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORC_DEVICE])&&(serve_device[COLORC_DEVICE])){
-         printf("colorC schema stop (networkclient driver)\n");
+         printf("colorC schema suspend (networkclient driver)\n");
          device_active[COLORC_DEVICE]=0;
          pthread_mutex_lock(&mymutex[COLORC_DEVICE]);
          state[COLORC_DEVICE]=slept;
@@ -1043,12 +1051,12 @@ int networkclient_colorC_stop(){
    return 0;
 }
 
-/** colorD run function following jdec platform API schemas.
+/** colorD resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_colorD_run(int father, int *brothers, arbitration fn){
+int networkclient_colorD_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (colorD_refs>0){
       colorD_refs++;
@@ -1058,7 +1066,7 @@ int networkclient_colorD_run(int father, int *brothers, arbitration fn){
       colorD_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORD_DEVICE]==0)&&(serve_device[COLORD_DEVICE])){
-         printf("colorD schema run (networkclient driver)\n");
+         printf("colorD schema resume (networkclient driver)\n");
          all[colorD_schema_id].father = father;
          all[colorD_schema_id].fps = 0.;
          all[colorD_schema_id].k =0;
@@ -1073,9 +1081,9 @@ int networkclient_colorD_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** colorD stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_colorD_stop(){
+/** colorD suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_colorD_suspend(){
    pthread_mutex_lock(&refmutex);
    if (colorD_refs>1){
       colorD_refs--;
@@ -1085,7 +1093,7 @@ int networkclient_colorD_stop(){
       colorD_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[COLORD_DEVICE])&&(serve_device[COLORD_DEVICE])){
-         printf("colorD schema stop (networkclient driver)\n");
+         printf("colorD schema suspend (networkclient driver)\n");
          device_active[COLORD_DEVICE]=0;
          pthread_mutex_lock(&mymutex[COLORD_DEVICE]);
          state[COLORD_DEVICE]=slept;
@@ -1096,12 +1104,12 @@ int networkclient_colorD_stop(){
    return 0;
 }
 
-/** varcolorA run function following jdec platform API schemas.
+/** varcolorA resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_varcolorA_run(int father, int *brothers, arbitration fn){
+int networkclient_varcolorA_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorA_refs>0){
       varcolorA_refs++;
@@ -1111,7 +1119,7 @@ int networkclient_varcolorA_run(int father, int *brothers, arbitration fn){
       varcolorA_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORA_DEVICE]==0)&&(serve_device[VARCOLORA_DEVICE])){
-         printf("varcolorA schema run (networkclient driver)\n");
+         printf("varcolorA schema resume (networkclient driver)\n");
          all[varcolorA_schema_id].father = father;
          all[varcolorA_schema_id].fps = 0.;
          all[varcolorA_schema_id].k =0;
@@ -1126,9 +1134,9 @@ int networkclient_varcolorA_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorA stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_varcolorA_stop(){
+/** varcolorA suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_varcolorA_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorA_refs>1){
       varcolorA_refs--;
@@ -1138,7 +1146,7 @@ int networkclient_varcolorA_stop(){
       varcolorA_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORA_DEVICE])&&(serve_device[VARCOLORA_DEVICE])){
-         printf("varcolorA schema stop (networkclient driver)\n");
+         printf("varcolorA schema suspend (networkclient driver)\n");
          device_active[VARCOLORA_DEVICE]=0;
          pthread_mutex_lock(&mymutex[VARCOLORA_DEVICE]);
          state[VARCOLORA_DEVICE]=slept;
@@ -1149,12 +1157,12 @@ int networkclient_varcolorA_stop(){
    return 0;
 }
 
-/** varcolorB run function following jdec platform API schemas.
+/** varcolorB resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_varcolorB_run(int father, int *brothers, arbitration fn){
+int networkclient_varcolorB_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorB_refs>0){
       varcolorB_refs++;
@@ -1164,7 +1172,7 @@ int networkclient_varcolorB_run(int father, int *brothers, arbitration fn){
       varcolorB_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORB_DEVICE]==0)&&(serve_device[VARCOLORB_DEVICE])){
-         printf("varcolorB schema run (networkclient driver)\n");
+         printf("varcolorB schema resume (networkclient driver)\n");
          all[varcolorB_schema_id].father = father;
          all[varcolorB_schema_id].fps = 0.;
          all[varcolorB_schema_id].k =0;
@@ -1179,9 +1187,9 @@ int networkclient_varcolorB_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorB stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_varcolorB_stop(){
+/** varcolorB suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_varcolorB_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorB_refs>1){
       varcolorB_refs--;
@@ -1191,7 +1199,7 @@ int networkclient_varcolorB_stop(){
       varcolorB_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORB_DEVICE])&&(serve_device[VARCOLORB_DEVICE])){
-         printf("varcolorB schema stop (networkclient driver)\n");
+         printf("varcolorB schema suspend (networkclient driver)\n");
          device_active[VARCOLORB_DEVICE]=0;
          pthread_mutex_lock(&mymutex[VARCOLORB_DEVICE]);
          state[VARCOLORB_DEVICE]=slept;
@@ -1202,12 +1210,12 @@ int networkclient_varcolorB_stop(){
    return 0;
 }
 
-/** varcolorC run function following jdec platform API schemas.
+/** varcolorC resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_varcolorC_run(int father, int *brothers, arbitration fn){
+int networkclient_varcolorC_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorC_refs>0){
       varcolorC_refs++;
@@ -1217,7 +1225,7 @@ int networkclient_varcolorC_run(int father, int *brothers, arbitration fn){
       varcolorC_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORC_DEVICE]==0)&&(serve_device[VARCOLORC_DEVICE])){
-         printf("varcolorC schema run (networkclient driver)\n");
+         printf("varcolorC schema resume (networkclient driver)\n");
          all[varcolorC_schema_id].father = father;
          all[varcolorC_schema_id].fps = 0.;
          all[varcolorC_schema_id].k =0;
@@ -1232,9 +1240,9 @@ int networkclient_varcolorC_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorC stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_varcolorC_stop(){
+/** varcolorC suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_varcolorC_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorC_refs>1){
       varcolorC_refs--;
@@ -1244,7 +1252,7 @@ int networkclient_varcolorC_stop(){
       varcolorC_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORC_DEVICE])&&(serve_device[VARCOLORC_DEVICE])){
-         printf("varcolorC schema stop (networkclient driver)\n");
+         printf("varcolorC schema suspend (networkclient driver)\n");
          device_active[VARCOLORC_DEVICE]=0;
          pthread_mutex_lock(&mymutex[VARCOLORC_DEVICE]);
          state[VARCOLORC_DEVICE]=slept;
@@ -1255,12 +1263,12 @@ int networkclient_varcolorC_stop(){
    return 0;
 }
 
-/** varcolorD run function following jdec platform API schemas.
+/** varcolorD resume function following jdec platform API schemas.
  *  @param father Father id for this schema.
  *  @param brothers Brothers for this schema.
  *  @param fn arbitration function for this schema.
  *  @return integer resuming result.*/
-int networkclient_varcolorD_run(int father, int *brothers, arbitration fn){
+int networkclient_varcolorD_resume(int father, int *brothers, arbitration fn){
    pthread_mutex_lock(&refmutex);
    if (varcolorD_refs>0){
       varcolorD_refs++;
@@ -1270,7 +1278,7 @@ int networkclient_varcolorD_run(int father, int *brothers, arbitration fn){
       varcolorD_refs=1;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORD_DEVICE]==0)&&(serve_device[VARCOLORD_DEVICE])){
-         printf("varcolorD schema run (networkclient driver)\n");
+         printf("varcolorD schema resume (networkclient driver)\n");
          all[varcolorD_schema_id].father = father;
          all[varcolorD_schema_id].fps = 0.;
          all[varcolorD_schema_id].k =0;
@@ -1285,9 +1293,9 @@ int networkclient_varcolorD_run(int father, int *brothers, arbitration fn){
    return 0;
 }
 
-/** varcolorD stop function following jdec platform API schemas.
- *  @return integer stopping result.*/
-int networkclient_varcolorD_stop(){
+/** varcolorD suspend function following jdec platform API schemas.
+ *  @return integer suspending result.*/
+int networkclient_varcolorD_suspend(){
    pthread_mutex_lock(&refmutex);
    if (varcolorD_refs>1){
       varcolorD_refs--;
@@ -1297,7 +1305,7 @@ int networkclient_varcolorD_stop(){
       varcolorD_refs=0;
       pthread_mutex_unlock(&refmutex);
       if((device_active[VARCOLORD_DEVICE])&&(serve_device[VARCOLORD_DEVICE])){
-         printf("varcolorD schema stop (networkclient driver)\n");
+         printf("varcolorD schema suspend (networkclient driver)\n");
          device_active[VARCOLORD_DEVICE]=0;
          pthread_mutex_lock(&mymutex[VARCOLORD_DEVICE]);
          state[VARCOLORD_DEVICE]=slept;
@@ -1368,7 +1376,7 @@ void *networkclient_zoomencoders_thread(void *not_used){
                }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -1422,8 +1430,8 @@ void *networkclient_zoommotors_thread(void *not_used){
 
          gettimeofday(&a,NULL);
          sprintf(zoommotors_out,"%ld %1.1f %1.1f\n",
-                 (long int)NETWORKSERVER_zoom_position,zoom,
-                  zoom_speed);
+                 (long int)NETWORKSERVER_zoom_position,zoom_position,
+                  zoom_position);
          write(device_socket[ZOOM_MOTORS_DEVICE],zoommotors_out,strlen(zoommotors_out));
          pthread_mutex_unlock(&mymutex[ZOOM_MOTORS_DEVICE]);
          gettimeofday(&b,NULL);
@@ -1437,7 +1445,7 @@ void *networkclient_zoommotors_thread(void *not_used){
             usleep(zmotors_cycle*1000);
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -1501,7 +1509,7 @@ void *networkclient_pantiltencoders_thread(void *not_used){
 	}
       }
     }
-  }while(networkclient_terminate_command==0);
+  }while(networkclient_close_command==0);
   pthread_exit(0);
 }
 
@@ -1569,7 +1577,7 @@ void *networkclient_pantiltmotors_thread(void *not_used){
             usleep(pantiltmotors_cycle*1000);
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -1670,7 +1678,7 @@ void *networkclient_laser_thread(void *not_used){
 	}
       }
     }
-  }while(networkclient_terminate_command==0);
+  }while(networkclient_close_command==0);
   pthread_exit(0);
 }
 
@@ -1789,7 +1797,7 @@ void *networkclient_encoders_thread(void *not_used){
 	}
       }
     }
-  }while(networkclient_terminate_command==0);
+  }while(networkclient_close_command==0);
   pthread_exit(0);
 }
 
@@ -1886,7 +1894,7 @@ void *networkclient_sonars_thread(void *not_used){
            }
         }
      }
-  }while(networkclient_terminate_command==0);
+  }while(networkclient_close_command==0);
   pthread_exit(0);
 }
 
@@ -1930,7 +1938,7 @@ void *networkclient_motors_thread(void *not_used){
             usleep(motors_cycle*1000);
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -1984,10 +1992,9 @@ void *networkclient_colorA_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[COLORA_DEVICE]);
          /*Write petition*/
          fprintf(buffer_colorA,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[COLORA_DEVICE]);
          fflush(buffer_colorA);
-
          /*Read message*/
          {
             int i2,i3,i4,i5,type;
@@ -2000,7 +2007,7 @@ void *networkclient_colorA_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2041,7 +2048,7 @@ void *networkclient_colorA_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2069,7 +2076,7 @@ void *networkclient_colorB_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[COLORB_DEVICE]);
          /*Write petition*/
          fprintf(buffer_colorB,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[COLORB_DEVICE]);
          fflush(buffer_colorB);
          /*Read message*/
@@ -2084,7 +2091,7 @@ void *networkclient_colorB_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2125,7 +2132,7 @@ void *networkclient_colorB_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2153,7 +2160,7 @@ void *networkclient_colorC_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[COLORC_DEVICE]);
          /*Write petition*/
          fprintf(buffer_colorC,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[COLORC_DEVICE]);
          fflush(buffer_colorC);
          /*Read message*/
@@ -2168,7 +2175,7 @@ void *networkclient_colorC_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2209,7 +2216,7 @@ void *networkclient_colorC_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2237,7 +2244,7 @@ void *networkclient_colorD_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[COLORD_DEVICE]);
          /*Write petition*/
          fprintf(buffer_colorD,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[COLORD_DEVICE]);
          fflush(buffer_colorD);
          /*Read message*/
@@ -2252,7 +2259,7 @@ void *networkclient_colorD_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2293,7 +2300,7 @@ void *networkclient_colorD_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2321,7 +2328,7 @@ void *networkclient_varcolorA_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[VARCOLORA_DEVICE]);
          /*Write petition*/
          fprintf(buffer_varcolorA,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[VARCOLORA_DEVICE]);
          fflush(buffer_varcolorA);
          /*Read message*/
@@ -2336,7 +2343,7 @@ void *networkclient_varcolorA_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2363,10 +2370,10 @@ void *networkclient_varcolorA_thread(void *not_used){
                         jdeshutdown(1);
                      }
                      else{
-                        memcpy(myA.img, mmbuf, width[4]*height[4]*i5);
+                        memcpy (varcolorA, mmbuf, width[4]*height[4]*i5);
                         free(mmbuf);
                         speedcounter(varcolorA_schema_id);
-                        myA.clock=network_clock;
+                        imageB_clock=network_clock;
                      }
                   }
                }
@@ -2377,7 +2384,7 @@ void *networkclient_varcolorA_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2405,7 +2412,7 @@ void *networkclient_varcolorB_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[VARCOLORB_DEVICE]);
          /*Write petition*/
          fprintf(buffer_varcolorB,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[VARCOLORB_DEVICE]);
          fflush(buffer_varcolorB);
          /*Read message*/
@@ -2420,7 +2427,7 @@ void *networkclient_varcolorB_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2447,10 +2454,10 @@ void *networkclient_varcolorB_thread(void *not_used){
                         jdeshutdown(1);
                      }
                      else{
-                        memcpy(myB.img, mmbuf, width[5]*height[5]*i5);
+                        memcpy (varcolorB, mmbuf, width[5]*height[5]*i5);
                         free(mmbuf);
                         speedcounter(varcolorB_schema_id);
-                        myB.clock=network_clock;
+                        imageB_clock=network_clock;
                      }
                   }
                }
@@ -2461,7 +2468,7 @@ void *networkclient_varcolorB_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2489,7 +2496,7 @@ void *networkclient_varcolorC_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[VARCOLORC_DEVICE]);
          /*Write petition*/
          fprintf(buffer_varcolorC,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[VARCOLORC_DEVICE]);
          fflush(buffer_varcolorC);
          /*Read message*/
@@ -2504,7 +2511,7 @@ void *networkclient_varcolorC_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2531,10 +2538,10 @@ void *networkclient_varcolorC_thread(void *not_used){
                         jdeshutdown(1);
                      }
                      else{
-                        memcpy(myC.img, mmbuf, width[6]*height[6]*i5);
+                        memcpy (varcolorC, mmbuf, width[6]*height[6]*i5);
                         free(mmbuf);
                         speedcounter(varcolorC_schema_id);
-                        myC.clock=network_clock;
+                        imageB_clock=network_clock;
                      }
                   }
                }
@@ -2545,7 +2552,7 @@ void *networkclient_varcolorC_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2573,7 +2580,7 @@ void *networkclient_varcolorD_thread(void *not_used){
          pthread_mutex_unlock(&mymutex[VARCOLORD_DEVICE]);
          /*Write petition*/
          fprintf(buffer_varcolorD,"%d %d\n",
-                 NETWORKSERVER_rgb24bpp_image_query,
+                 NETWORKSERVER_rgb24bpp_sifntsc_image_query,
                  device_network_id[VARCOLORD_DEVICE]);
          fflush(buffer_varcolorD);
          /*Read message*/
@@ -2588,7 +2595,7 @@ void *networkclient_varcolorD_thread(void *not_used){
                          buffer_lectura);
                }
                else{
-                  if (type == NETWORKSERVER_rgb24bpp_image) {
+                  if (type == NETWORKSERVER_rgb24bpp_sifntsc_image) {
                      int total=0;
                      int actual=0;
                      /*Read image*/
@@ -2615,10 +2622,10 @@ void *networkclient_varcolorD_thread(void *not_used){
                         jdeshutdown(1);
                      }
                      else{
-                        memcpy(myD.img, mmbuf, width[7]*height[7]*i5);
+                        memcpy (varcolorD, mmbuf, width[7]*height[7]*i5);
                         free(mmbuf);
                         speedcounter(varcolorD_schema_id);
-                        myD.clock=network_clock;
+                        imageB_clock=network_clock;
                      }
                   }
                }
@@ -2629,7 +2636,7 @@ void *networkclient_varcolorD_thread(void *not_used){
             }
          }
       }
-   }while(networkclient_terminate_command==0);
+   }while(networkclient_close_command==0);
    pthread_exit(0);
 }
 
@@ -2922,7 +2929,7 @@ int networkclient_parseconf(char *configfile){
 
 /** networkclient driver init function.
  *  @return 0 if initialitation was successful or -1 if something went wrong.*/
-int networkclient_deviceinit(){
+int networkclient_init(){
 
   int i;
 
@@ -3097,7 +3104,7 @@ int networkclient_deviceinit(){
 
 /** networkclient driver startup function following jdec platform API for drivers.
  *  @param configfile path and name to the config file of this driver.*/
-void networkclient_init(char *configfile)
+void networkclient_startup(char *configfile)
 {
   int i;
 
@@ -3116,23 +3123,23 @@ void networkclient_init(char *configfile)
   }
 
   /* networkclient driver init */
-  if(networkclient_deviceinit()!=0){
+  if(networkclient_init()!=0){
     printf("networkclient: cannot initiate driver. devices or net sockets not ready.\n");
     exit(-1);
   }
 
-  /* run and stop asignments */
+  /* resume and suspend asignments */
   if(serve_device[COLORA_DEVICE]){
     all[num_schemas].id = (int *) &colorA_schema_id;
     strcpy(all[num_schemas].name,"colorA");
-    all[num_schemas].run = (runFn) networkclient_colorA_run;
-    all[num_schemas].stop = (stopFn) networkclient_colorA_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_colorA_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_colorA_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     colorA=malloc(sizeof(char)*width[0]*height[0]*3);
@@ -3141,20 +3148,20 @@ void networkclient_init(char *configfile)
     myexport("colorA", "width", &(width[0]));
     myexport("colorA", "height", &(height[0]));
     myexport("colorA","clock", &imageA_clock);
-    myexport("colorA","run",(void *) &networkclient_colorA_run);
-    myexport("colorA","stop",(void *) &networkclient_colorA_stop);
+    myexport("colorA","resume",(void *) &networkclient_colorA_resume);
+    myexport("colorA","suspend",(void *) &networkclient_colorA_suspend);
   }
   if(serve_device[COLORB_DEVICE]){
     all[num_schemas].id = (int *) &colorB_schema_id;
     strcpy(all[num_schemas].name,"colorB");
-    all[num_schemas].run = (runFn) networkclient_colorB_run;
-    all[num_schemas].stop = (stopFn) networkclient_colorB_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_colorB_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_colorB_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     colorB=malloc(sizeof(char)*width[1]*height[1]*3);
@@ -3163,20 +3170,20 @@ void networkclient_init(char *configfile)
     myexport("colorB", "width", &(width[1]));
     myexport("colorB", "height", &(height[1]));
     myexport("colorB","clock", &imageB_clock);
-    myexport("colorB","run",(void *) &networkclient_colorB_run);
-    myexport("colorB","stop",(void *) &networkclient_colorB_stop);
+    myexport("colorB","resume",(void *) &networkclient_colorB_resume);
+    myexport("colorB","suspend",(void *) &networkclient_colorB_suspend);
   }
   if(serve_device[COLORC_DEVICE]){
     all[num_schemas].id = (int *) &colorC_schema_id;
     strcpy(all[num_schemas].name,"colorC");
-    all[num_schemas].run = (runFn) networkclient_colorC_run;
-    all[num_schemas].stop = (stopFn) networkclient_colorC_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_colorC_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_colorC_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     colorC=malloc(sizeof(char)*width[2]*height[2]*3);
@@ -3185,20 +3192,20 @@ void networkclient_init(char *configfile)
     myexport("colorC", "width", &(width[2]));
     myexport("colorC", "height", &(height[2]));
     myexport("colorC","clock", &imageC_clock);
-    myexport("colorC","run",(void *) &networkclient_colorC_run);
-    myexport("colorC","stop",(void *) &networkclient_colorC_stop);
+    myexport("colorC","resume",(void *) &networkclient_colorC_resume);
+    myexport("colorC","suspend",(void *) &networkclient_colorC_suspend);
   }
   if(serve_device[COLORD_DEVICE]){
     all[num_schemas].id = (int *) &colorD_schema_id;
     strcpy(all[num_schemas].name,"colorD");
-    all[num_schemas].run = (runFn) networkclient_colorD_run;
-    all[num_schemas].stop = (stopFn) networkclient_colorD_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_colorD_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_colorD_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     colorD=malloc(sizeof(char)*width[3]*height[3]*3);
@@ -3207,128 +3214,128 @@ void networkclient_init(char *configfile)
     myexport("colorD", "width", &(width[3]));
     myexport("colorD", "height",&(height[3]));
     myexport("colorD","clock", &imageD_clock);
-    myexport("colorD","run",(void *) &networkclient_colorD_run);
-    myexport("colorD","stop",(void *) &networkclient_colorD_stop);
+    myexport("colorD","resume",(void *) &networkclient_colorD_resume);
+    myexport("colorD","suspend",(void *) &networkclient_colorD_suspend);
   }
   if(serve_device[VARCOLORA_DEVICE]){
      all[num_schemas].id = (int *) &varcolorA_schema_id;
      strcpy(all[num_schemas].name,"varcolorA");
-     all[num_schemas].run = (runFn) networkclient_varcolorA_run;
-     all[num_schemas].stop = (stopFn) networkclient_varcolorA_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_varcolorA_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_varcolorA_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
-     myA.img=malloc(sizeof(char)*width[4]*height[4]*3);
-     myA.width=width[4];
-     myA.height=height[4];
-     myA.clock=0;
+     varcolorA=malloc(sizeof(char)*width[4]*height[4]*3);
      myexport("varcolorA", "id", &varcolorA_schema_id);
-     myexport("varcolorA", "varcolorA", &myA);
-     myexport("varcolorA","run",(void *) &networkclient_varcolorA_run);
-     myexport("varcolorA","stop",(void *) &networkclient_varcolorA_stop);
+     myexport("varcolorA", "varcolorA", &varcolorA);
+     myexport("varcolorA", "width", &(width[4]));
+     myexport("varcolorA", "height", &(height[4]));
+     myexport("varcolorA","clock", &varimageA_clock);
+     myexport("varcolorA","resume",(void *) &networkclient_varcolorA_resume);
+     myexport("varcolorA","suspend",(void *) &networkclient_varcolorA_suspend);
   }
   if(serve_device[VARCOLORB_DEVICE]){
      all[num_schemas].id = (int *) &varcolorB_schema_id;
      strcpy(all[num_schemas].name,"varcolorB");
-     all[num_schemas].run = (runFn) networkclient_varcolorB_run;
-     all[num_schemas].stop = (stopFn) networkclient_varcolorB_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_varcolorB_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_varcolorB_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
-     myB.img=malloc(sizeof(char)*width[5]*height[5]*3);
-     myB.width=width[5];
-     myB.height=height[5];
-     myB.clock=0;
+     varcolorB=malloc(sizeof(char)*width[5]*height[5]*3);
      myexport("varcolorB", "id", &varcolorB_schema_id);
-     myexport("varcolorB", "varcolorB", &myB);
-     myexport("varcolorB","run",(void *) &networkclient_varcolorB_run);
-     myexport("varcolorB","stop",(void *) &networkclient_varcolorB_stop);
+     myexport("varcolorB", "varcolorB", &varcolorB);
+     myexport("varcolorB", "width", &(width[5]));
+     myexport("varcolorB", "height", &(height[5]));
+     myexport("varcolorB","clock", &varimageB_clock);
+     myexport("varcolorB","resume",(void *) &networkclient_varcolorB_resume);
+     myexport("varcolorB","suspend",(void *) &networkclient_varcolorB_suspend);
   }
   if(serve_device[VARCOLORC_DEVICE]){
      all[num_schemas].id = (int *) &varcolorC_schema_id;
      strcpy(all[num_schemas].name,"varcolorC");
-     all[num_schemas].run = (runFn) networkclient_varcolorC_run;
-     all[num_schemas].stop = (stopFn) networkclient_varcolorC_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_varcolorC_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_varcolorC_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
-     myC.img=malloc(sizeof(char)*width[6]*height[6]*3);
-     myC.width=width[6];
-     myC.height=height[6];
-     myC.clock=0;
+     varcolorC=malloc(sizeof(char)*width[6]*height[6]*3);
      myexport("varcolorC", "id", &varcolorC_schema_id);
-     myexport("varcolorC", "varcolorC", &myC);
-     myexport("varcolorC","run",(void *) &networkclient_varcolorC_run);
-     myexport("varcolorC","stop",(void *) &networkclient_varcolorC_stop);
+     myexport("varcolorC", "varcolorC", &varcolorC);
+     myexport("varcolorC", "width", &(width[6]));
+     myexport("varcolorC", "height", &(height[6]));
+     myexport("varcolorC","clock", &varimageC_clock);
+     myexport("varcolorC","resume",(void *) &networkclient_varcolorC_resume);
+     myexport("varcolorC","suspend",(void *) &networkclient_varcolorC_suspend);
   }
   if(serve_device[VARCOLORD_DEVICE]){
      all[num_schemas].id = (int *) &varcolorD_schema_id;
      strcpy(all[num_schemas].name,"varcolorD");
-     all[num_schemas].run = (runFn) networkclient_varcolorD_run;
-     all[num_schemas].stop = (stopFn) networkclient_varcolorD_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_varcolorD_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_varcolorD_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
-     myD.img=malloc(sizeof(char)*width[7]*height[7]*3);
-     myD.width=width[7];
-     myD.height=height[7];
-     myD.clock=0;
+     varcolorD=malloc(sizeof(char)*width[7]*height[7]*3);
      myexport("varcolorD", "id", &varcolorD_schema_id);
-     myexport("varcolorD", "varcolorD", &myD);
-     myexport("varcolorD","run",(void *) &networkclient_varcolorD_run);
-     myexport("varcolorD","stop",(void *) &networkclient_varcolorD_stop);
+     myexport("varcolorD", "varcolorD", &varcolorD);
+     myexport("varcolorD", "width", &(width[7]));
+     myexport("varcolorD", "height", &(height[7]));
+     myexport("varcolorD","clock", &varimageD_clock);
+     myexport("varcolorD","resume",(void *) &networkclient_varcolorD_resume);
+     myexport("varcolorD","suspend",(void *) &networkclient_varcolorD_suspend);
   }
   if(serve_device[PANTILT_ENCODERS_DEVICE]){
     all[num_schemas].id = (int *) &ptencoders_schema_id;
     strcpy(all[num_schemas].name,"ptencoders");
-    all[num_schemas].run = (runFn) networkclient_pantiltencoders_run;
-    all[num_schemas].stop = (stopFn) networkclient_pantiltencoders_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_pantiltencoders_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_pantiltencoders_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     myexport("ptencoders","id",&ptencoders_schema_id);
     myexport("ptencoders","pan_angle",&pan_angle);
     myexport("ptencoders","tilt_angle",&tilt_angle);
     myexport("ptencoders", "clock", &pantiltencoders_clock);
-    myexport("ptencoders","run",(void *)&networkclient_pantiltencoders_run);
-    myexport("ptencoders","stop",(void *)&networkclient_pantiltencoders_stop);
+    myexport("ptencoders","resume",(void *)&networkclient_pantiltencoders_resume);
+    myexport("ptencoders","suspend",(void *)&networkclient_pantiltencoders_suspend);
   }
   if(serve_device[PANTILT_MOTORS_DEVICE]){
     all[num_schemas].id = (int *) &ptmotors_schema_id;
     strcpy(all[num_schemas].name,"ptmotors");
-    all[num_schemas].run = (runFn) networkclient_pantiltmotors_run;
-    all[num_schemas].stop = (stopFn) networkclient_pantiltmotors_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_pantiltmotors_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_pantiltmotors_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     pantiltmotors_cycle=150; /*Ajusta el ciclo de envío de órdenes a los motores*/
@@ -3338,8 +3345,8 @@ void networkclient_init(char *configfile)
     myexport("ptmotors","longitude_speed",&longitude_speed);
     myexport("ptmotors","latitude_speed",&latitude_speed);
     myexport("ptmotors","cycle", &pantiltmotors_cycle);
-    myexport("ptmotors","run",(void *)&networkclient_pantiltmotors_run);
-    myexport("ptmotors","stop",(void *)&networkclient_pantiltmotors_stop);
+    myexport("ptmotors","resume",(void *)&networkclient_pantiltmotors_resume);
+    myexport("ptmotors","suspend",(void *)&networkclient_pantiltmotors_suspend);
     myexport("ptmotors", "max_longitude", &max_longitude);
     myexport("ptmotors", "max_latitude", &max_latitude);
     myexport("ptmotors", "min_longitude", &min_longitude);
@@ -3350,74 +3357,74 @@ void networkclient_init(char *configfile)
   if(serve_device[LASER_DEVICE]){
     all[num_schemas].id = (int *) &laser_schema_id;
     strcpy(all[num_schemas].name,"laser");
-    all[num_schemas].run = (runFn) networkclient_laser_run;
-    all[num_schemas].stop = (stopFn) networkclient_laser_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_laser_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_laser_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     myexport("laser","id",&laser_schema_id);
     myexport("laser","laser",&jde_laser);
     myexport("laser","clock", &laser_clock);
     myexport("laser","number", &laser_number);
-    myexport("laser","run",(void *) &networkclient_laser_run);
-    myexport("laser","stop",(void *) &networkclient_laser_stop);
+    myexport("laser","resume",(void *) &networkclient_laser_resume);
+    myexport("laser","suspend",(void *) &networkclient_laser_suspend);
   }
   if(serve_device[ENCODERS_DEVICE]){
     all[num_schemas].id = (int *) &encoders_schema_id;
     strcpy(all[num_schemas].name,"encoders");
-    all[num_schemas].run = (runFn) networkclient_encoders_run;
-    all[num_schemas].stop = (stopFn) networkclient_encoders_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_encoders_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_encoders_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     myexport("encoders","id",&encoders_schema_id);
     myexport("encoders","jde_robot",&jde_robot);
     myexport("encoders", "clock", &encoders_clock);
     myexport("encoders", "number", &encoders_number);
-    myexport("encoders","run",(void *) &networkclient_encoders_run);
-    myexport("encoders","stop",(void *) &networkclient_encoders_stop);
+    myexport("encoders","resume",(void *) &networkclient_encoders_resume);
+    myexport("encoders","suspend",(void *) &networkclient_encoders_suspend);
   }
   if(serve_device[SONARS_DEVICE]){
     all[num_schemas].id = (int *) &sonars_schema_id;
     strcpy(all[num_schemas].name,"sonars");
-    all[num_schemas].run = (runFn) networkclient_sonars_run;
-    all[num_schemas].stop = (stopFn) networkclient_sonars_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_sonars_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_sonars_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     myexport("sonars","id",&sonars_schema_id);
     myexport("sonars","us",&us);
     myexport("sonars", "clock", &us_clock);
     myexport("sonars","number", &sonar_number);
-    myexport("sonars","run",(void *)&networkclient_sonars_run);
-    myexport("sonars","stop",(void *)&networkclient_sonars_stop);
+    myexport("sonars","resume",(void *)&networkclient_sonars_resume);
+    myexport("sonars","suspend",(void *)&networkclient_sonars_suspend);
   }
   if(serve_device[MOTORS_DEVICE]){
     all[num_schemas].id = (int *) &motors_schema_id;
     strcpy(all[num_schemas].name,"motors");
-    all[num_schemas].run = (runFn) networkclient_motors_run;
-    all[num_schemas].stop = (stopFn) networkclient_motors_stop;
+    all[num_schemas].resume = (resumeFn) networkclient_motors_resume;
+    all[num_schemas].suspend = (suspendFn) networkclient_motors_suspend;
     printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
     (*(all[num_schemas].id)) = num_schemas;
     all[num_schemas].fps = 0.;
     all[num_schemas].k =0;
     all[num_schemas].state=slept;
-    all[num_schemas].terminate = NULL;
+    all[num_schemas].close = NULL;
     all[num_schemas].handle = NULL;
     num_schemas++;
     motors_cycle=150; /*Ajusta el ciclo de envío a los motores, cada 150 ms*/
@@ -3425,39 +3432,39 @@ void networkclient_init(char *configfile)
     myexport("motors","v",&v);
     myexport("motors","w",&w);
     myexport("motors","cycle",&motors_cycle);
-    myexport("motors","run",(void *)&networkclient_motors_run);
-    myexport("motors","stop",(void *)&networkclient_motors_stop);
+    myexport("motors","resume",(void *)&networkclient_motors_resume);
+    myexport("motors","suspend",(void *)&networkclient_motors_suspend);
   }
   if(serve_device[ZOOM_ENCODERS_DEVICE]){
      all[num_schemas].id = (int *) &zencoders_schema_id;
      strcpy(all[num_schemas].name,"zencoders");
-     all[num_schemas].run = (runFn) networkclient_zencoders_run;
-     all[num_schemas].stop = (stopFn) networkclient_zencoders_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_zencoders_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_zencoders_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
      myexport("zencoders","id",&zencoders_schema_id);
      myexport("zencoders","zoom_position",&zoom_position);
      myexport("zencoders", "clock", &zencoders_clock);
-     myexport("zencoders","run",(void *)&networkclient_zencoders_run);
-     myexport("zencoders","stop",(void *)&networkclient_zencoders_stop);
+     myexport("zencoders","resume",(void *)&networkclient_zencoders_resume);
+     myexport("zencoders","suspend",(void *)&networkclient_zencoders_suspend);
   }
   if(serve_device[ZOOM_MOTORS_DEVICE]){
      all[num_schemas].id = (int *) &zmotors_schema_id;
      strcpy(all[num_schemas].name,"zmotors");
-     all[num_schemas].run = (runFn) networkclient_zoommotors_run;
-     all[num_schemas].stop = (stopFn) networkclient_zoommotors_stop;
+     all[num_schemas].resume = (resumeFn) networkclient_zoommotors_resume;
+     all[num_schemas].suspend = (suspendFn) networkclient_zoommotors_suspend;
      printf("%s schema loaded (id %d)\n",all[num_schemas].name,num_schemas);
      (*(all[num_schemas].id)) = num_schemas;
      all[num_schemas].fps = 0.;
      all[num_schemas].k =0;
      all[num_schemas].state=slept;
-     all[num_schemas].terminate = NULL;
+     all[num_schemas].close = NULL;
      all[num_schemas].handle = NULL;
      num_schemas++;
      zmotors_cycle=100; /*Ajusta el ciclo de envío de órdenes a los motores*/
@@ -3465,8 +3472,8 @@ void networkclient_init(char *configfile)
      myexport("zmotors","zoom",&zoom);
      myexport("zmotors","zoom_speed",&zoom_speed);
      myexport("zmotors","cycle", &zmotors_cycle);
-     myexport("zmotors","run",(void *)&networkclient_zoommotors_run);
-     myexport("zmotors","stop",(void *)&networkclient_zoommotors_stop);
+     myexport("zmotors","resume",(void *)&networkclient_zoommotors_resume);
+     myexport("zmotors","suspend",(void *)&networkclient_zoommotors_suspend);
      myexport("zmotors", "max_zoom", &max_zoom);
      myexport("zmotors", "min_zoom", &min_zoom);
      myexport("zmotors", "max_zoom_speed", &max_zoom_speed);
