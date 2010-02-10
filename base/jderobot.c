@@ -21,19 +21,14 @@
 
 #define thisrelease "jderobot 4.3-svn"
 
-#include "jde.h"
-//#include "jde_private.h"
-#include "loader.h"
+#include <jde.h>
+#include <jde_private.h>
 #include "dlfcn.h"
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
-
-#include <sys/time.h>
-#include <time.h>
-
 
 /** Concurrency control when shutting down*/
 pthread_mutex_t shuttingdown_mutex;
@@ -77,7 +72,7 @@ char path[MAX_BUFFER];
  * @param numschema Schema's index in the schema's array
  * @return void
  */
-void put_state(const int numschema, const int newstate)
+void put_state(int numschema, int newstate)
 {
   all[numschema].state=newstate;
   /* only some changes are relevant. For instance change of one motor schema from active to ready is not, because it happens every iteration */
@@ -95,7 +90,7 @@ void put_state(const int numschema, const int newstate)
  * @param numschema Schema's identifier
  * @return void
  */
-void speedcounter(const int numschema)
+void speedcounter(int numschema)
 {
   if ((numschema>=0)&&(numschema<num_schemas))
     all[numschema].k++;
@@ -109,7 +104,7 @@ void speedcounter(const int numschema)
  * @param p Pointer to the variable or function casted to (void *)
  * @return 1 if the variables was correctly exported, othewise 0
  */
-int myexport(const char *schema, const char *name, void *p)
+int myexport(char *schema, char *name, void *p)
      /* publishes the variable, to make it available to other schemas */
 {
   Tsharedname * next;
@@ -157,7 +152,7 @@ int myexport(const char *schema, const char *name, void *p)
  * @param name String containing the exported variable's names
  * @return The pointer to the variable casted to (void *)
  */
-void *myimport(const char *schema, const char *name)
+void *myimport(char *schema, char *name)
      /* returns NULL in case of not finding the requested variable */
 {
    Tsharedname *this;
@@ -222,12 +217,11 @@ void *cronos_thread(void *not_used)
 
 }
 
-int jdeinit(int argc, char** argv, const char* cf){
+/* Doc in jde_private.h */
+int jdeinit(const char* cf){
   char s[MAX_BUFFER];
 
   pthread_mutex_init(&shuttingdown_mutex,NULL);
-  fprintf(stdout,"Starting python...\n");
-  init_py(argc,argv);
 
   /* read the configuration file: load drivers and schemas */
   if (cf == 0 || *cf == 0) {/*no configfile give,try default ones*/ 
@@ -263,7 +257,7 @@ int jdeinit(int argc, char** argv, const char* cf){
  * @param sig The same as the status argument at exit function
  * @return void
  */
-void jdeshutdown(const int sig)
+void jdeshutdown(int sig)
 {
   static int shuttingdown=0;
   int shutdown=0;
@@ -307,7 +301,7 @@ void jdeshutdown(const int sig)
  * @param module_name String containing the name of the module
  * @return A pointer to the handler
  */
-void* load_module(const char* module_name){
+void* load_module(char* module_name){
    char *path2;
    char path_cp[MAX_BUFFER];
    char *directorio;
@@ -334,7 +328,7 @@ void* load_module(const char* module_name){
  * @param name The schema's name
  * @return pointer to the loaded schema or null
  */
-JDESchema* jde_loadschema(const char *name)
+JDESchema* jde_loadschema(char *name)
 {
   char n[MAX_BUFFER];
   char *error;
@@ -418,7 +412,7 @@ JDESchema* jde_loadschema(const char *name)
  * @param name The drivers's name
  * @return pointer to the loaded driver or null
  */
-JDEDriver* jde_loaddriver(const char *name)
+JDEDriver* jde_loaddriver(char *name)
 {
   char n[MAX_BUFFER];
   char *error;
@@ -621,7 +615,9 @@ int jde_readline(FILE *myfile)
           j++;
        sscanf(&buffer_file[j],"%s",word);
        strncpy(path, word, MAX_BUFFER);
-    }else{
+    }    
+    
+    else{
       if ((driver_configuration_section==0) &&
 	  (service_configuration_section==0) &&
 	  (schema_configuration_section==0))
@@ -651,13 +647,6 @@ int parse_configfile(const char* cf) {
 
 char * get_configfile(){
   return configfile;
-}
-
-JDESchema* get_schema(const int id){
-  if (id < num_schemas)
-    return &all[id];
-  else
-    return 0;
 }
 
 JDESchema *find_schema (const char *name){

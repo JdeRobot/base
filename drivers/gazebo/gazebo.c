@@ -1393,9 +1393,6 @@ gazebo_camera_callback (int camnum)
 {
   unsigned char *destination=NULL;
   unsigned char *origen=NULL;
-  float *origendisparity=NULL;
-  float scalefactor = 4;
-  /* 4 is a ad hoc scale factor to avoid dark disparity images */
   int myrows=0,mycolumns=0;
   int i=0;
 
@@ -1457,11 +1454,11 @@ gazebo_camera_callback (int camnum)
       origen = stereo->data->right_image;
       break;
     case 4:
-      origendisparity = stereo->data->left_disparity;
+      origen = stereo->data->left_disparity;
       /* left_disparity contains float values */
       break;
     case 5:
-      origendisparity = stereo->data->right_disparity;
+      origen = stereo->data->right_disparity;
       /* left_disparity contains float values */
       break;
     }
@@ -1474,14 +1471,18 @@ gazebo_camera_callback (int camnum)
 	 por tanto damos el cambiazo aqui */
       for (i = 0; i < myrows*mycolumns*3; i += 3)
 	{
+	  /*
+	    destination[i] = camera[camnum]->data->image[i + 2];
+	    destination[i + 1] = camera[camnum]->data->image[i + 1];
+	    destination[i + 2] = camera[camnum]->data->image[i];
+	  */
 	  destination[i] = origen[i + 2];
 	  destination[i + 1] = origen[i + 1];
 	  destination[i + 2] = origen[i];
 	}
       gz_camera_unlock (camera[camnum]);
     }
-  else if (((color_name[camnum].tipo)==2) ||
-	  ((color_name[camnum].tipo)==3))
+  else /* ((color_name[camnum].tipo)>1) */
     {
       gz_stereo_lock (stereo, 1);
       for (i = 0; i < myrows*mycolumns*3; i += 3)
@@ -1489,18 +1490,6 @@ gazebo_camera_callback (int camnum)
 	  destination[i] = origen[i + 2];
 	  destination[i + 1] = origen[i + 1];
 	  destination[i + 2] = origen[i];
-	}
-      gz_stereo_unlock (stereo);
-    }
-  else if  (((color_name[camnum].tipo)==4) ||
-	    ((color_name[camnum].tipo)==5))
-    {
-      gz_stereo_lock (stereo,1);
-      for (i = 0; i < myrows*mycolumns; i++)
-	{
-	  destination[3*i] = (unsigned char)(int)(scalefactor*origendisparity[i]);
-	  destination[3*i + 1] = (unsigned char)(int)(scalefactor*origendisparity[i]);
-	  destination[3*i + 2] = (unsigned char)(int)(scalefactor*origendisparity[i]);
 	}
       gz_stereo_unlock (stereo);
     }
@@ -1645,7 +1634,7 @@ gazebo_parseconf (char *configfile)
     return (-1);
   while (!feof (conf))
     {
-      fgets (cpLinea, MAX_BUFFER, conf);
+      fgets (cpLinea, 160, conf);
       i = 0;
       while (isspace (cpLinea[i++]));
       if (cpLinea[i - 1] == '#')
@@ -1671,27 +1660,23 @@ gazebo_parseconf (char *configfile)
 	      for (i = 0; isspace (pLine2[0]); pLine2++);	//salto blancos
 	      
 	      if (strstr (pLine2, "leftd"))
-		{		/*Stereo left disparity */
+		{		/*Stereo left dispsrity */
 		  pLine1 = strstr (pLine2, " ");
-		  for (i = 0; isspace (pLine1[0]); pLine1++);	//salto blancos 
-		  pLine2 = strstr(pLine1,"\n");
-		  if (pLine2) pLine2[0] = (char) 0; /* Changes \n for \0 */
+		  pLine1[0] = (char) 0;
 		  /* printf ("Nombre del estero leftd:%s:\n", pLine2); */
 		  serve_color[colors]=1;
-		  strcpy (color_name[colors].name, pLine1);
+		  strcpy (color_name[colors].name, pLine2);
 		  color_name[colors].tipo = 4;	/*left disparity */
 		  puts(color_name[colors].name);
 		  break;
 		}
 	      
 	      else if (strstr (pLine2, "rightd"))
-		{		/*Stereo right disparity */
+		{		/*Stereo right dispsrity */
 		  pLine1 = strstr (pLine2, " ");
-		  for (i = 0; isspace (pLine1[0]); pLine1++);	//salto blancos 
-		  pLine2 = strstr(pLine1,"\n");
-		  if (pLine2) pLine2[0] = (char) 0; /* Changes \n for \0 */
+		  pLine1[0] = (char) 0;
 		  serve_color[colors]=1;
-		  strcpy (color_name[colors].name, pLine1);	/*stereo id */
+		  strcpy (color_name[colors].name, pLine2);	/*stereo id */
 		  /* printf ("Nombre del estero rightd:%s:\n", pLine2); */
 		  color_name[colors].tipo = 5;	/*right disparity */
 		  puts(color_name[colors].name);
@@ -1701,12 +1686,11 @@ gazebo_parseconf (char *configfile)
 	      else if (strstr (pLine2, "left"))
 		{		/*Stereo left */
 		  pLine1 = strstr (pLine2, " ");
-		  for (i = 0; isspace (pLine1[0]); pLine1++);	//salto blancos 
-		  pLine2 = strstr(pLine1,"\n");
-		  if (pLine2) pLine2[0] = (char) 0; /* Changes \n for \0 */
+		  if (pLine1)
+		    pLine1[0] = (char) 0;
 		  serve_color[colors]=1;
 		  /* printf ("Nombre de stereo encontrado en left:%s:\n", pLine2); */
-		  strcpy(color_name[colors].name, pLine1);	/*stereo id */
+		  strcpy(color_name[colors].name, pLine2);	/*stereo id */
 		  color_name[colors].tipo = 2;	/* left */
 		  puts(color_name[colors].name);
 		  break;
@@ -1715,9 +1699,8 @@ gazebo_parseconf (char *configfile)
 	      else if (strstr (pLine2, "right"))
 		{		/*Stereo right */
 		  pLine1 = strstr (pLine2, " ");
-		  for (i = 0; isspace (pLine1[0]); pLine1++);	//salto blancos 
-		  pLine2 = strstr(pLine1,"\n");
-		  if (pLine2) pLine2[0] = (char) 0; /* Changes \n for \0 */
+		  if (pLine1)
+		    pLine1[0] = (char) 0;
 		  serve_color[colors]=1;
 		  /* printf ("Nombre de stereo encontrado en right:%s:\n", pLine2);*/
 		  strcpy(color_name[colors].name, pLine2);	/*stereo id */
@@ -1729,7 +1712,7 @@ gazebo_parseconf (char *configfile)
 	      else
 		{		/*Se trata de una camara mono */
 		  pLine1 = strstr (pLine2, "\n");
-		  if (pLine1) pLine1[0] = (char) 0; /* Changes \n for \0 */
+		  pLine1[0] = (char) 0;
 		  serve_color[colors]=1;
 		  strcpy(color_name[colors].name, pLine2);	/*camera id */
 		  color_name[colors].tipo = 1;	/*camara mono */

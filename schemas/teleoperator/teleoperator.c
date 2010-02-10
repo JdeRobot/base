@@ -24,6 +24,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <glcanvas.h>
 #include <jde.h>
 #include <graphics_xforms.h>
 #include <teleoperatorgui.h>
@@ -34,7 +35,7 @@
 #include <GL/gl.h>              
 #include <GL/glx.h>
 #include <GL/glu.h>
-#include <glcanvas.h>
+
 int finish_flag=0;
 
 #define MOUSELEFT 1

@@ -1,26 +1,20 @@
 lib_LTLIBRARIES = libjde.la
 bin_PROGRAMS = jderobot
 
+AM_CPPFLAGS = -D CONFIGDIR=\"$(confdir)\" @CPPFLAGS@
+
 # See http://www.gnu.org/software/libtool/manual/libtool.html#Versioning
 # for versioning policy.
-libjde_la_SOURCES = jderobot.c hierarchy.c loader.c schema.c interface.c
+libjde_la_SOURCES = jderobot.c
 #libjde_la_LDFLAGS = $(JDE_LIBS) -rdynamic -version-info 0:0:0
-libjde_la_LDFLAGS = $(JDE_LIBS) $(PYTHON_LDFLAGS) -version-info 0:0:0
-libjde_la_CPPFLAGS = $(PYTHON_CPPFLAGS) -D CONFIGDIR=\"$(confdir)\" @CPPFLAGS@
-libjde_la_CFLAGS = -I$(top_srcdir)/libs/simclist
-libjde_la_LIBADD = $(top_srcdir)/libs/simclist/libsimclist.la
+libjde_la_LDFLAGS = $(JDE_LIBS) -version-info 0:0:0
 jderobot_SOURCES = jdeshell.c
 nodist_jderobot_SOURCES = jderobot.conf
 jderobot_LDFLAGS = $(JDESHELL_LIBS)
 jderobot_LDADD = libjde.la
 dist_conf_DATA = jderobot.conf
 
-jderobot4_4_SOURCES = jdeshell4.4.c
-jderobot4_4_LDFLAGS = $(JDESHELL_LIBS)
-jderobot4_4_CFLAGS = -I$(top_srcdir)/libs/simclist
-jderobot4_4_LDADD = libjde.la $(top_srcdir)/libs/simclist/libsimclist.la
-
-include_HEADERS = jde.h hierarchy.h loader.h schema.h interface.h
+include_HEADERS = jde.h jde_private.h
 
 edit = sed \
 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
@@ -36,11 +30,6 @@ jderobot.conf: Makefile
 
 jderobot.conf: jderobot.conf.in
 
-#built always to avoid problems if new swig version installed
-swigpyrun.h:
-	$(SWIG) -python -external-runtime swigpyrun.h
-
-SUBDIRS = . swig
-BUILT_SOURCES = jderobot.conf swigpyrun.h
-CLEANFILES = $(BUILT_SOURCES)
+BUILTSOURCES = jderobot.conf
+CLEANFILES = jderobot.conf
 MAINTAINERCLEANFILES = Makefile.in Makefile

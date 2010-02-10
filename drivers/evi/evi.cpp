@@ -28,15 +28,13 @@
  *  @date 2008.01.21
  */
 
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 #include <pthread.h>
 #include "camera.h"
 #include <jde.h>
 #include "evi.h"
-#include <cmath>
-#include <sys/time.h>
-#include <ctime>
+#include <math.h>
 
 #define EVILIB_OFF                   1
 #define EVILIB_ON                    2

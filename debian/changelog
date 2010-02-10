@@ -1,9 +1,3 @@
-  * Fix Bug #155 (salons)
-  * New naooperator schema (frivas)
-  * New colortuner schema (pmiangolarra)
-  * Fix yuv at libcolorspaces #246 (pmiangolarra)
-  * Fix Bug #248 (jmplaza) 
-
 jderobot (4.3.0-1) unstable; urgency=low
 
   * JDEROBOT 4.3.0 released :-)

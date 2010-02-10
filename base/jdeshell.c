@@ -15,13 +15,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/. 
  *
- *  Authors : Josï¿½ Marï¿½a Caï¿½as Plaza <jmplaza@gsyc.escet.urjc.es>
+ *  Authors : José María Cañas Plaza <jmplaza@gsyc.escet.urjc.es>
  *            David Lobato Bravo <dav.lobato@gmail.com>
  *
  */
 
 #include <jde.h>
-#include <loader.h>
+#include <jde_private.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
@@ -64,7 +64,6 @@ int com_list(char *);
 int com_dir(char *);
 int com_load_driver(char *);
 int com_load_schema(char *);
-int com_load_schema2(char*);
 int com_ps(char *);
 int com_pwd(char *);
 int com_exit(char *);
@@ -88,7 +87,6 @@ COMMAND bcommands[] = {
   { "load_driver", com_load_driver, "Load driver" },
   { "load_service", com_load_driver, "Load service" },
   { "load_schema", com_load_schema, "Load schema" },
-  { "load_schema2", com_load_schema2, "Load schema. New implementation" },
   { "ps", com_ps, "Print schemas states" },
   { "run", com_run, "Run schema" },
   { "stop", com_stop, "Stop schema" },
@@ -127,9 +125,6 @@ COMMAND scommands[] = {
 const char *bprompt = "jderobot $> ";
 const char *sprompt = "jderobot[%s] $> ";
 
-/*history file*/
-const char *histfile_name = ".jderobot";
-
 /* When non-zero, this global means the user is done using this program. */
 int done;
 SHELLSTATE shstate;
@@ -145,8 +140,7 @@ int main(int argc, char** argv) {
   char *line, *s;/* shell buffers*/
   int n=1; /* argument number in the console for the configuration file parameter */
   char configfile[MAX_BUFFER] = {'\0'};
-  char histfile_path[MAX_BUFFER];
-
+ 
   signal(SIGTERM, &jdeshutdown); /* kill interrupt handler */
   signal(SIGINT, &jdeshutdown); /* control-C interrupt handler */
   signal(SIGABRT, &jdeshutdown); /* failed assert handler */
@@ -165,14 +159,6 @@ int main(int argc, char** argv) {
 
   
   printf("%s\n\n",thisrelease);
-
-  /*histfile path*/
-  strncpy(histfile_path,getenv("HOME"),MAX_BUFFER-1);
-  histfile_path[MAX_BUFFER-1] = '\0';
-  strncat(histfile_path,"/",MAX_BUFFER-1);
-  histfile_path[MAX_BUFFER-1] = '\0';
-  strncat(histfile_path,histfile_name,MAX_BUFFER-1);
-  histfile_path[MAX_BUFFER-1] = '\0';
 
   n=1;
   while(argv[n]!=NULL) {
@@ -195,7 +181,7 @@ int main(int argc, char** argv) {
     n++;
   }
   
-  if (jdeinit(argc,argv,configfile) == 0){
+  if (jdeinit(configfile) == 0){
     fprintf(stdout,"Initialization failed...\n");
     jdeshutdown(-1);
   }
@@ -203,7 +189,6 @@ int main(int argc, char** argv) {
   /* read commands from keyboard */
   fprintf(stdout,"Starting shell...\n");
   initialize_readline ();	/* Bind our completer. */
-  read_history(histfile_path);
 
   /*initialize shstate*/
   shstate.state = BASE;
@@ -232,7 +217,6 @@ int main(int argc, char** argv) {
       free (line);
     }
   }
-  write_history(histfile_path);
   jdeshutdown(0);
   pthread_exit(0); 
   /* If we don't need this thread anymore, 
@@ -371,12 +355,9 @@ command_completion (const char *text,int start, int end){
 	  (strcmp (cmd,"hide") == 0) ||
 	  (strcmp (cmd,"zoom") == 0) )
 	generator_state = SCHEMAS;
-      else
-	generator_state = 0;/*reset state*/
     }
   }
-  /*completion_matches for mac headers...*/
-  matches = rl_completion_matches (text, command_generator);
+  matches = completion_matches (text, command_generator);
 
   return (matches);
 }
@@ -709,40 +690,6 @@ com_load_schema (char *arg){
 }
 
 /**
- * Load a module
- * @param arg arguments. File to be loaded
- * @return -1 on error, 0 otherwise
- */
-int
-com_load_schema2 (char *arg){
-  char word[MAX_BUFFER], word2[MAX_BUFFER];
-  int words;
-  char *cf;
-  JDESchema *s;
-
-  if (!valid_argument ("load_schema2", arg))
-    return -1;
-  
-  words=sscanf(arg,"%s %s",word,word2);
-  if (words == 1){
-    cf = get_configfile();
-  }else if (words==2){
-    cf = word2;
-  }else{
-    fprintf (stderr, "load_schema2 command accept 1 or 2 args only: load_schema2 <module> [<config file>]");	
-    return -1;
-  }
-
-  s = load_schema(word,cf);
-  if (s == 0){
-    fprintf(stderr,"Schema loading failed\n");
-    return -1;
-  }
-  s ->init(cf);
-  return 0;
-}
-
-/**
  * Print all schema state
  * @param arg arguments. Ignored
  * @return 0
@@ -902,7 +849,7 @@ com_init (char *arg){
   JDESchema *s = (JDESchema*)shstate.pdata;
 
   if (s->init != NULL) {
-    if (arg==0 || *arg == '\0')/*no args, use global configfile*/
+    if (!valid_argument ("init", arg))/*no args, use global configfile*/
       s->init(get_configfile());
     else
       s->init(arg);
