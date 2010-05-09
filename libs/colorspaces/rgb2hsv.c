@@ -26,11 +26,11 @@
 
 #include "colorspaces.h"
 
+struct HSV * LUT_RGB2HSV [64][64][64];
+
 const int MAX_BITS = 8;
 const int SIGNIFICATIVE_BITS = 6;
 const int MAX_RGB = 255;
-
-struct HSV * LUT_RGB2HSV [64][64][64];
 
 /* Condicional variable:
  *   0: The table RGB2HSV don't exists.
@@ -130,7 +130,7 @@ void hsv2rgb(double H, double S, double V, double *r, double *g, double *b)
 }
 
 /// \brief Function to print unsiged int in binary
-void print_status_YUV(unsigned long status)
+void print_status(unsigned long status)
 {
 
 	//const int BITS_PACK = 4;
@@ -193,7 +193,7 @@ void RGB2HSV_init()
         }
         pthread_mutex_unlock(&mutex);
 
-	printf("Init %s v%s ... \n",NAME,COLORSPACES_VERSION);
+	printf("Init %s v%s ... \n",NAME,VERSION);
 	pthread_mutex_lock(&mutex);
 	isInitTableHSV = 0;
 	pthread_mutex_unlock(&mutex);
@@ -291,4 +291,3 @@ void RGB2HSV_test (void)
 
 	}
 }
-

@@ -1,5 +1,5 @@
 ### PATH WHERE THE MODULES CAN BE FOUND
-path .:@driverdir@:@schemadir@:@servicedir@:@gladedir@
+path .:/usr/lib:/usr/local/lib:/usr/lib/jderobot/drivers:/usr/lib/jderobot/schemas:/usr/lib/jderobot/services:/usr/share/jdec/glade:@driverdir@:@schemadir@:@servicedir@:@gladedir@
 
 ### DRIVER CONFIGURATION 
 
@@ -9,10 +9,10 @@ path .:@driverdir@:@schemadir@:@servicedir@:@gladedir@
 #end_driver
 
 driver imagefile
-provides colorA @pkgdatadir@/casaleft.pnm
-#provides colorB @pkgdatadir@/atardecer.ppm
-#provides colorC @pkgdatadir@/atardecer.ppm
-#provides colorD @pkgdatadir@/casaright.pnm
+provides colorA /usr/local/share/jderobot/casaleft.pnm
+#provides colorB /usr/local/share/jderobot/atardecer.ppm
+#provides colorC /usr/local/share/jderobot/atardecer.ppm
+#provides colorD /usr/local/share/jderobot/casaright.pnm
 end_driver
 
 #driver mplayer
@@ -25,29 +25,6 @@ end_driver
 
 #driver video4linux
 #provides colorA /dev/video0
-#end_driver
-
-#driver opencv
-#provides varcolorA <image|video|videofile> <path> <width> <height>
-#in the case of varcolorA,B,C,D 'width' and 'height' must be provided,
-#the driver does not offers autosize capability
-#provides colorB <image|video|videofile> <path>
-#in the case of colorA,B,C,D nor 'width' neither 'height' should be provided
-#provides colorC videofile /home/salons/jde-videos/camA.ogg 
-#provides colorD video /dev/video0
-#provides varcolorB image /usr/local/share/jderobot/casaleft.pnm 620 480
-#provides varcolorA video /dev/video1394/0 620 480
-#provides varcolorC videofile /home/sara/jde-videos/bd-videos/camAv.ogg 320 240
-#end_driver
-
-#driver simulated3D
-#provides colorXX <FileWithCamParameters>
-#provides varcolorXX <FileWithCamParameters>
-#worldfile ./robotics-lab
-#provides varcolorA cameraAfile
-#provides varcolorB cameraBfile
-#provides varcolorC cameraCfile
-#provides varcolorD cameraDfile
 #end_driver
 
 #driver player
@@ -124,9 +101,15 @@ load_driver imagefile
 
 ### SCHEMA LOAD --------------------
 load mastergui
-load hsvtuner
+#load myperceptive
+#load myschema
+#load hsvtuner
 load opengldemo
+#load papito
 #load introrob
+#load teleoperator
+#load opflow
+#load esquema_prueba2
 
 ### INITIAL ACTIVATION------------
 #resume sonars

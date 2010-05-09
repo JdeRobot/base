@@ -1484,7 +1484,6 @@ void mplayer_init(char *configfile)
          num_schemas++;
          myexport("varcolorA","id",&varcolorA_schema_id);
          myexport("varcolorA","varcolorA",&myA);
-	 myexport("varcolorA","varcolor",&myA);
          myexport("varcolorA","run",(void *)myvarcolorA_run);
          myexport("varcolorA","stop",(void *)myvarcolorA_stop);
 	 myvarcolorA_run(SHELLHUMAN,NULL,NULL);
@@ -1507,7 +1506,6 @@ void mplayer_init(char *configfile)
 	 num_schemas++;
          myexport("varcolorB","id",&varcolorB_schema_id);
          myexport("varcolorB","varcolorB",&myB);
-	 myexport("varcolorB","varcolor",&myB);
          myexport("varcolorB","run",(void *)myvarcolorB_run);
          myexport("varcolorB","stop",(void *)myvarcolorB_stop);
 	 myvarcolorB_run(SHELLHUMAN,NULL,NULL);
@@ -1530,7 +1528,6 @@ void mplayer_init(char *configfile)
 	 num_schemas++;
          myexport("varcolorC","id",&varcolorC_schema_id);
          myexport("varcolorC","varcolorC",&myC);
-	 myexport("varcolorC","varcolor",&myC);
          myexport("varcolorC","run",(void *)myvarcolorC_run);
          myexport("varcolorC","stop",(void *)myvarcolorC_stop);
 	 myvarcolorC_run(SHELLHUMAN,NULL,NULL);
@@ -1553,7 +1550,6 @@ void mplayer_init(char *configfile)
 	 num_schemas++;
          myexport("varcolorD","id",&varcolorD_schema_id);
          myexport("varcolorD","varcolorD",&myD);
-	 myexport("varcolorD","varcolor",&myD);
          myexport("varcolorD","run",(void *)myvarcolorD_run);
          myexport("varcolorD","stop",(void *)myvarcolorD_stop);
 	 myvarcolorD_run(SHELLHUMAN,NULL,NULL);

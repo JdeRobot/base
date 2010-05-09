@@ -18,16 +18,16 @@
  *  Authors : Jos� Mar�a Ca�as Plaza <jmplaza@gsyc.escet.urjc.es>
  */
 
-#include <math.h>
-#include <unistd.h>
 #include <jde.h>
 #include "graphics_xforms.h"
 #define v3f glVertex3f
+
 #include <GL/gl.h>              
 #include <GL/glx.h>
 #include <GL/glu.h>
+
 #include <forms.h>
-#include <glcanvas.h>
+#include <X11/glcanvas.h>
 #include "opengldemogui.h"
 
 /*Gui declarations*/
@@ -86,7 +86,7 @@ void opengldemo_run(int father, int *brothers, arbitration fn)
   int i; 
   
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN) 
+  if (father!=GUIHUMAN) 
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[opengldemo_id]=TRUE;
@@ -474,7 +474,7 @@ void opengldemo_guidisplay()
 
 void opengldemo_hide_aux(void)
 {
-  all[opengldemo_id].guistate=off;
+  /*  all[opengldemo_id].gui=FALSE;*/
   mydelete_buttonscallback(opengldemo_guibuttons);
   mydelete_displaycallback(opengldemo_guidisplay);
   fl_hide_form(fd_opengldemogui->opengldemogui);
@@ -492,17 +492,11 @@ void opengldemo_hide(void){
    }
 }
 
-int myclose_form(FL_FORM *form, void *an_argument)
-{
-  opengldemo_hide();
-  return FL_IGNORE;
-}
-
 void opengldemo_show_aux(void)
 {
   static int k=0;
 
-  all[opengldemo_id].guistate=on;
+  /*  all[opengldemo_id].gui=TRUE;*/
   if (k==0) /* not initialized */
     {
       k++;
@@ -510,7 +504,6 @@ void opengldemo_show_aux(void)
       fl_add_canvas_handler(fd_opengldemogui->canvas,Expose,InitOGL,0);
 	/*fl_add_canvas_handler(fd_opengldemogui->canvas2,Expose,InitOGL2,0);*/
       fl_set_form_position(fd_opengldemogui->opengldemogui,400,50);
-      fl_set_form_atclose(fd_opengldemogui->opengldemogui,myclose_form,0);
       fl_set_slider_bounds(fd_opengldemogui->camX,MAXWORLD/2.,-MAXWORLD/2);
       fl_set_slider_value(fd_opengldemogui->camX,0.);
       fl_set_slider_bounds(fd_opengldemogui->camY,MAXWORLD/2.,-MAXWORLD/2);

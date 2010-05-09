@@ -47,7 +47,6 @@
 #include <X11/Xos.h>
 #include <X11/Xatom.h>
 #include <forms.h>
-#include <gtk/gtk.h>
 
 #include "graphics_xforms.h"
 
@@ -89,11 +88,6 @@ typedef struct fifo{
 
 /** Queue containing all the display callbacks. @see gui_callback*/
 t_fifo gui_callbacks;
-
-/*Imported variables*/
-registerdisplay myregister_displaycallback;
-deletedisplay mydelete_displaycallback;
-
 
 /**
  * This function inserts new data in a queue
@@ -159,7 +153,7 @@ int new_fifo (t_fifo *fifo){
    /*The initializate the straucture.*/
    fifo->init=NULL;
    fifo->end=NULL;
-   pthread_mutex_init(&(fifo->fifo_mutex),NULL);
+   pthread_mutex_init(&(fifo->fifo_mutex),PTHREAD_MUTEX_TIMED_NP);
    return 0;
 }
 
@@ -192,7 +186,6 @@ void gui_callback(gui_function f){
 guibuttons buttonscallbacks[MAX_SCHEMAS];
 /** The number of subscribed buttons callbacks*/
 int num_buttonscallbacks=0;
-
 /**
  * @brief This fuction is used to subscribe a buttons callback.
  *
@@ -303,7 +296,6 @@ int register_displaycallback(guidisplay f)
  */
 int delete_displaycallback(guidisplay f)
 {
-	
    int i;
    if (f!=NULL)
    {
@@ -314,7 +306,6 @@ int delete_displaycallback(guidisplay f)
          break;
       }
    }
-	
    return 1;
 }
 
@@ -325,7 +316,7 @@ int delete_displaycallback(guidisplay f)
  * calls every registered display callbacks to refresh it. And finally
  * extract every gui functions from the queue and calls it.
  */
-static gboolean graphics_xforms_iteration(gpointer user_data)
+static void graphics_xforms_iteration()
 {
    FL_OBJECT *obj;
    int i;
@@ -350,8 +341,6 @@ static gboolean graphics_xforms_iteration(gpointer user_data)
    while ((fn=(gui_function)extract(&gui_callbacks))!=NULL){
       fn();
    }
-
-   return FALSE;
 }
 
 /** graphics_xforms driver function finalize.*/
@@ -369,10 +358,7 @@ void *graphics_xforms_thread(void *id){
    for(;;)
    {
       gettimeofday(&a,NULL);
-
-	  g_idle_add_full (G_PRIORITY_HIGH, (GSourceFunc)graphics_xforms_iteration,
-	  				   NULL, NULL);
-	  
+      graphics_xforms_iteration();
       gettimeofday(&b,NULL);
       diff = (b.tv_sec-a.tv_sec)*1000000+b.tv_usec-a.tv_usec;
       next = graphics_xforms_cycle*1000-diff-10000;
@@ -409,17 +395,6 @@ void graphics_xforms_init(char *configfile)
    myexport ("graphics_xforms", "resume_callback", (void *)gui_callback);
    myexport ("graphics_xforms", "suspend_callback", (void *)gui_callback);
 
-
-   /* gtk import variables */
-   if (myregister_displaycallback==NULL){
-	   myregister_displaycallback=(registerdisplay)myimport ("graphics_gtk", "register_displaycallback");
-	   mydelete_displaycallback=(deletedisplay)myimport ("graphics_gtk", "delete_displaycallback");
-	   if (myregister_displaycallback==NULL || mydelete_displaycallback==NULL){
-		   printf ("I can't fetch GTK functions from graphics_xforms, please first load graphics_gtk driver\n");
-		   jdeshutdown(1);
-	   }
-   }
-   
    
    pthread_create(&graphics_xforms_id,NULL,graphics_xforms_thread,NULL);
    printf ("Xforms support loaded.\n");

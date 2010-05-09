@@ -22,9 +22,6 @@
 #include "opengl_viewer.h"
 #include "graphics_gtk.h"
 
-#include <math.h>
-#include <sys/time.h>
-#include <time.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -340,7 +337,7 @@ void opengl_viewer_guiinit(){
    if (load_object("./esqueleto2.obj", &obj)!=0){
       jdeshutdown(1);
    }
-   pthread_mutex_init(&gl_mutex, NULL);
+   pthread_mutex_init(&gl_mutex, PTHREAD_MUTEX_TIMED_NP);
 }
 
 

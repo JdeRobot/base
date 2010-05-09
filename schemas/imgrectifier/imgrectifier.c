@@ -20,11 +20,11 @@
  *  Authors : José Antonio Santos Cadenas <santoscadenas@gmail.com>
  */
 
-#include <jde.h>
-#include <limits.h>
-#include <graphics_gtk.h>
+#include "jde.h"
+#include "limits.h"
+#include "graphics_gtk.h"
 #include <imgrectifier.h>
-#include <string.h>
+
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -352,7 +352,7 @@ void imgrectifier_run(int father, int *brothers, arbitration fn)
   int i;
 
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN)
+  if (father!=GUIHUMAN)
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[imgrectifier_id]=TRUE;
@@ -517,7 +517,7 @@ void imgrectifier_init(char *configfile)
   put_state(imgrectifier_id,slept);
 
   /* == inicializamos las variables globales y el display== */
-  pthread_mutex_init(&colorchange_mutex,NULL);
+  pthread_mutex_init(&colorchange_mutex,PTHREAD_MUTEX_TIMED_NP);
 
   reset();
 

@@ -22,8 +22,6 @@
 #include "wiimote_viewer.h"
 #include <graphics_gtk.h>
 
-#include <sys/time.h>
-#include <time.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>

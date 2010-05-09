@@ -54,8 +54,6 @@ int radio_sobel=0;
 int radio_opflow=0;
 int radio_pyramid=0;
 int radio_convol=0;
-int radio_houghs=0;
-int radio_houghp=0;
 
 int opflow_first=1;
 IplImage *previous;
@@ -73,10 +71,7 @@ int modulo = 1;
 int offset = 0;
 float * kernel = NULL;
 
-float threshold = 50; //Canny
-float threshold2 = 80; //Hough
-float length = 50;
-float maxgap = 10;
+float threshold = 1;
 
 /*Global variables*/
 char *image;
@@ -106,14 +101,15 @@ gboolean on_delete_window (GtkWidget *widget, GdkEvent *event, gpointer user_dat
 
 void on_active_image_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
    if (image_ok){
-		if (gtk_check_menu_item_get_active(menu_item)){
-			color_run(opencvdemo_id,NULL,NULL);
-			load_image();
-			show_image=1;
-		}
-		else{
-			color_stop();
-			show_image=0;
+      if (gtk_check_menu_item_get_active(menu_item)){
+		color_run(opencvdemo_id,NULL,NULL);
+		load_image();
+         show_image=1;
+      }
+      else{
+		free_image();
+		color_stop();
+         show_image=0;
       }
    }
    gtk_window_resize (GTK_WINDOW(win),1,1);
@@ -184,58 +180,32 @@ void on_active_convol_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
 	}
 }
 
-void on_active_houghs_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
-	if(radio_houghs) {
-		radio_houghs=0;
-		gtk_widget_hide(glade_xml_get_widget(xml, "tableCanny"));
-		gtk_widget_hide(glade_xml_get_widget(xml, "tableHough"));
-	} else { 
-		radio_houghs=1;
-		gtk_widget_show(glade_xml_get_widget(xml, "tableCanny"));
-		gtk_widget_show(glade_xml_get_widget(xml, "tableHough"));
-	}
-}
-
-void on_active_houghp_toggled (GtkCheckMenuItem *menu_item, gpointer user_data){
-	if(radio_houghp) {
-		radio_houghp=0;
-		gtk_widget_hide(glade_xml_get_widget(xml, "tableCanny"));
-		gtk_widget_hide(glade_xml_get_widget(xml, "tableHough"));
-	} else { 
-		radio_houghp=1;
-		gtk_widget_show(glade_xml_get_widget(xml, "tableCanny"));
-		gtk_widget_show(glade_xml_get_widget(xml, "tableHough"));
-	}
-}
-
 /* Load images */
 void load_image() {
 	pthread_mutex_lock(&main_mutex);
-	if(image==NULL && image_aux==NULL) {	
-		image=(char *)malloc((*myAA).width*(*myAA).height*3);
-		image_aux=(char *)malloc((*myAA).width*(*myAA).height*3);
-		{
-			GdkPixbuf *imgBuff;
-			GtkImage *img=(GtkImage *)glade_xml_get_widget(xml, "image");
-			imgBuff = gdk_pixbuf_new_from_data((unsigned char *)image,
-		                                         GDK_COLORSPACE_RGB,0,8,
-		                                         (*myAA).width,(*myAA).height,
-		                                         (*myAA).width*3,NULL,NULL);
-			gtk_image_clear(img);
-			gtk_image_set_from_pixbuf(img, imgBuff);
-			gtk_widget_queue_draw(GTK_WIDGET(img));
+	image=(char *)malloc((*myAA).width*(*myAA).height*3);
+	image_aux=(char *)malloc((*myAA).width*(*myAA).height*3);
+	{
+		GdkPixbuf *imgBuff;
+		GtkImage *img=(GtkImage *)glade_xml_get_widget(xml, "image");
+		imgBuff = gdk_pixbuf_new_from_data((unsigned char *)image,
+                                             GDK_COLORSPACE_RGB,0,8,
+                                             (*myAA).width,(*myAA).height,
+                                             (*myAA).width*3,NULL,NULL);
+		gtk_image_clear(img);
+		gtk_image_set_from_pixbuf(img, imgBuff);
+		gtk_widget_queue_draw(GTK_WIDGET(img));
 
-			GdkPixbuf *imgBuff_aux;
-			GtkImage *img_aux=(GtkImage *)glade_xml_get_widget(xml, "image_aux");
-			imgBuff_aux = gdk_pixbuf_new_from_data((unsigned char *)image_aux,
-		                                         GDK_COLORSPACE_RGB,0,8,
-		                                         (*myAA).width,(*myAA).height,
-		                                         (*myAA).width*3,NULL,NULL);
-			gtk_image_clear(img_aux);
-			gtk_image_set_from_pixbuf(img_aux, imgBuff_aux);
-			gtk_widget_queue_draw(GTK_WIDGET(img_aux));
+		GdkPixbuf *imgBuff_aux;
+		GtkImage *img_aux=(GtkImage *)glade_xml_get_widget(xml, "image_aux");
+		imgBuff_aux = gdk_pixbuf_new_from_data((unsigned char *)image_aux,
+                                             GDK_COLORSPACE_RGB,0,8,
+                                             (*myAA).width,(*myAA).height,
+                                             (*myAA).width*3,NULL,NULL);
+		gtk_image_clear(img_aux);
+		gtk_image_set_from_pixbuf(img_aux, imgBuff_aux);
+		gtk_widget_queue_draw(GTK_WIDGET(img_aux));
 
-		}
 	}
 	pthread_mutex_unlock(&main_mutex);
 }
@@ -564,101 +534,6 @@ void convolution() {
 	cvReleaseImage(&dst);
 }
 
-void hough_standard() {
-
-	IplImage* src;
-	IplImage *gray; 
-	IplImage* dst;
-	IplImage* color_dst;
-	CvMemStorage* storage;
-	CvSeq* lines;
-	int i;
-	
-	src = cvCreateImage(cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 3);
-	gray = cvCreateImage(cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 1);
- 	dst= cvCreateImage( cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 1 );
-	color_dst = cvCreateImage( cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 3);
-	storage = cvCreateMemStorage(0);
-	lines = 0;
-
-	memcpy(src->imageData, image, src->width*src->height*src->nChannels);
-
-	/*Canny filter*/
-	cvCvtColor(src, gray, CV_RGB2GRAY);	
-	cvCanny( gray, dst, threshold, threshold*3, 3 );
-
-	cvCvtColor( dst, color_dst, CV_GRAY2RGB );
-
-	/*Hough probabilistic*/										/*Distance, angle, threshold, not used, not used*/
-	lines = cvHoughLines2( dst, storage, CV_HOUGH_STANDARD, 1, CV_PI/180, threshold2, 0, 0);
-
-	/*Draw lines*/
-	for( i = 0; i < MIN(lines->total,100); i++ ) {
-		float* line = (float*)cvGetSeqElem(lines,i);
-		float rho = line[0];
-		float theta = line[1];
-		CvPoint pt1, pt2;
-		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000*(-b));
-		pt1.y = cvRound(y0 + 1000*(a));
-		pt2.x = cvRound(x0 - 1000*(-b));
-		pt2.y = cvRound(y0 - 1000*(a));
-		cvLine( color_dst, pt1, pt2, CV_RGB(255,0,0), 3, 8, 0 );
-	}
-
-	memcpy(image_aux, color_dst->imageData, src->width*src->height*src->nChannels); 	
-
-	cvReleaseImage(&src);
-	cvReleaseImage(&gray);
-	cvReleaseImage(&dst);
-	cvReleaseImage(&color_dst);
-
-
-}
-
-void hough_probabilistic() {
-
-	IplImage* src;
-	IplImage *gray; 
-	IplImage* dst;
-	IplImage* color_dst;
-	CvMemStorage* storage;
-	CvSeq* lines;
-	int i;
-	
-	src = cvCreateImage(cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 3);
-	gray = cvCreateImage(cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 1);
- 	dst= cvCreateImage( cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 1 );
-	color_dst = cvCreateImage( cvSize((*myAA).width,(*myAA).height), IPL_DEPTH_8U, 3);
-	storage = cvCreateMemStorage(0);
-	lines = 0;
-
-	memcpy(src->imageData, image, src->width*src->height*src->nChannels);
-
-	/*Canny filter*/
-	cvCvtColor(src, gray, CV_RGB2GRAY);	
-	cvCanny( gray, dst, threshold, threshold*3, 3 );
-
-	cvCvtColor( dst, color_dst, CV_GRAY2RGB );
-
-	/*Hough probabilistic*/										/*Distance, angle, threshold, min length, max gap*/
-	lines = cvHoughLines2( dst, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI/180, threshold2, length, maxgap);
-
-	/*Draw lines*/
-	for( i = 0; i < lines->total; i++ ) {
-		CvPoint* line = (CvPoint*)cvGetSeqElem(lines,i);
-		cvLine(color_dst, line[0], line[1], CV_RGB(255,0,0), 3, 8, 0);
-	}
-
-	memcpy(image_aux, color_dst->imageData, src->width*src->height*src->nChannels); 	
-
-	cvReleaseImage(&src);
-	cvReleaseImage(&gray);
-	cvReleaseImage(&dst);
-	cvReleaseImage(&color_dst);
-}
-
 void opencvdemo_iteration(){
 	int i;
 
@@ -691,10 +566,6 @@ void opencvdemo_iteration(){
 			pyramid();
 		else if(radio_convol)
 			convolution();
-		else if(radio_houghs) 
-			hough_standard();
-		else if(radio_houghp) 
-			hough_probabilistic();
 	}
 	pthread_mutex_unlock(&main_mutex);
 }
@@ -739,7 +610,6 @@ void opencvdemo_guiinit(){
 }
 
 void opencvdemo_terminate(){
-	free_image();
 }
 
 void opencvdemo_stop()
@@ -1101,12 +971,6 @@ void opencvdemo_guidisplay(){
 			threshold = gtk_range_get_value(glade_xml_get_widget(xml, "threshold"));
 		}
 
-		if(radio_houghs || radio_houghp){
-			threshold2 = gtk_range_get_value(glade_xml_get_widget(xml, "threshold2"));
-			length = gtk_range_get_value(glade_xml_get_widget(xml, "length"));
-			maxgap = gtk_range_get_value(glade_xml_get_widget(xml, "maxgap"));
-		}
-
 		gdk_threads_leave();
    }
    pthread_mutex_unlock(&main_mutex);
@@ -1167,10 +1031,6 @@ void opencvdemo_show(void){
                           "toggled", G_CALLBACK(on_active_pyramid_toggled), NULL);
          g_signal_connect(GTK_WIDGET(glade_xml_get_widget(xml, "radio_convol")),
                           "toggled", G_CALLBACK(on_active_convol_toggled), NULL);
-         g_signal_connect(GTK_WIDGET(glade_xml_get_widget(xml, "radio_houghs")),
-                          "toggled", G_CALLBACK(on_active_houghs_toggled), NULL);
-         g_signal_connect(GTK_WIDGET(glade_xml_get_widget(xml, "radio_houghp")),
-                          "toggled", G_CALLBACK(on_active_houghp_toggled), NULL);
       }
 
 		/*Set values to sliders*/
@@ -1181,14 +1041,10 @@ void opencvdemo_show(void){
 		gtk_range_set_value(glade_xml_get_widget(xml, "vmax"),vmax);
 		gtk_range_set_value(glade_xml_get_widget(xml, "vmin"),vmin);
 		gtk_range_set_value(glade_xml_get_widget(xml, "threshold"),threshold);
-		gtk_range_set_value(glade_xml_get_widget(xml, "threshold2"),threshold2);
-		gtk_range_set_value(glade_xml_get_widget(xml, "length"),length);
-		gtk_range_set_value(glade_xml_get_widget(xml, "maxgap"),maxgap);
 
 		/*Hide frames until they are displayed*/
 		gtk_widget_hide(glade_xml_get_widget(xml, "tableColor"));
 		gtk_widget_hide(glade_xml_get_widget(xml, "tableCanny"));
-		gtk_widget_hide(glade_xml_get_widget(xml, "tableHough"));
 
       if (win==NULL){
          fprintf(stderr, "Error loading graphical interface\n");

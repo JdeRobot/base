@@ -227,7 +227,7 @@ void recorder_run(int father, int *brothers, arbitration fn)
   int i;
 
   /* update the father incorporating this schema as one of its children */
-  if (father!=GUIHUMAN && father!=SHELLHUMAN) 
+  if (father!=GUIHUMAN) 
     {
       pthread_mutex_lock(&(all[father].mymutex));
       all[father].children[recorder_id]=TRUE;
@@ -496,10 +496,9 @@ void recorder_guidisplay(){
 
 void recorder_hide_aux(void)
 {
-  all[recorder_id].guistate=off;
-  mydelete_buttonscallback(recorder_guibuttons);
-  mydelete_displaycallback(recorder_guidisplay);
-  fl_hide_form(fd_recordergui->recordergui);
+   mydelete_buttonscallback(recorder_guibuttons);
+   mydelete_displaycallback(recorder_guidisplay);
+   fl_hide_form(fd_recordergui->recordergui);
 }
 
 void recorder_hide(void){
@@ -514,24 +513,16 @@ void recorder_hide(void){
    }
 }
 
-int myclose_form(FL_FORM *form, void *an_argument)
-{
-  recorder_hide();
-  return FL_IGNORE;
-}
-
 void recorder_show_aux(void)
 {
    static int k=0;
 
-   all[recorder_id].guistate=on;
    if (k==0){ /* not initialized */
 
       k++;
       fd_recordergui = create_form_recordergui();
       fl_set_form_position(fd_recordergui->recordergui,100,200);
       fl_show_form(fd_recordergui->recordergui,FL_PLACE_POSITION,FL_FULLBORDER,RECORDERver);
-      fl_set_form_atclose(fd_recordergui->recordergui,myclose_form,0);
       recorder_window = FL_ObjWin(fd_recordergui->image);
       recordergui_setupDisplay();
    }

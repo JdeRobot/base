@@ -3,132 +3,105 @@
 #include <string.h>
 #include "motors.h"
 
-Motors* new_Motors(const char* interface_name,
-		   JDESchema* const supplier){
-  Motors* m;
-  
-  assert(supplier!=0 && supplier->hierarchy!=0);
-  m = (Motors*)calloc(1,sizeof(Motors));
+
+Motors* new_Motors(JDESchema* const owner,
+		   const char* interface_name,
+		   const int implemented){
+  Interface* i = new_Interface(owner,interface_name,implemented);
+  if (implemented != 0){
+    i->datap = calloc(1,sizeof(Motors_data));
+    myexport(i->interface_name,"v",&((Motors_data*)i->datap)->v);
+    myexport(i->interface_name,"w",&((Motors_data*)i->datap)->w);
+    myexport(i->interface_name,"cycle",&((Motors_data*)i->datap)->cycle);
+  }
+  return (Motors*)i;
+}
+
+void delete_Motors(Motors* const m){
+  if (m->implemented)
+    free(m->datap);//FIXME: controlar refs
+  delete_Interface((Interface*)m);
+}
+
+void Motors_run(const Motors* m){
+  Interface_run(m);
+}
+
+void Motors_stop(const Motors* m){
+  Interface_stop(m);
+}
+
+float Motors_v_get(const Motors* m){
+  float* vp;
+
   assert(m!=0);
-  SUPER(m) = new_JDEInterface(interface_name,supplier);
-  assert(SUPER(m) != 0);
-  /*interface export*/
-  if (JDEHierarchy_myexport(supplier->hierarchy,interface_name,"Motors",m) == 0){
-    delete_JDEInterface(SUPER(m));
-    free(m);
-    return 0;
+  if (m->implemented)
+    return ((Motors_data*)m->datap)->v;
+  else{
+    vp=(float *)myimport(m->interface_name,"v");
+    return (vp?*vp:0.0);
   }
-  /*backwards compatibility exports*/
-  myexport(interface_name,"v",&(m->v));
-  myexport(interface_name,"w",&(m->w));
-  return m;
 }
 
-void delete_Motors(Motors* const self){
-  if (self==0)
-    return;
-  delete_JDEInterface(SUPER(self));
-  free(self);/*FIXME: un-export symbols. references?*/
-}
-
-/*for old interfaces proxy->refers_to == 0*/
-MotorsPrx* new_MotorsPrx(const char* interface_name,
-			 JDESchema* const user){
-  MotorsPrx* mprx;
-
-  assert(user!=0 && user->hierarchy!=0);
-  mprx = (MotorsPrx*)calloc(1,sizeof(MotorsPrx));
-  assert(mprx!=0);
-  PRX_REFERS_TO(mprx) = (Motors*)JDEHierarchy_myimport(user->hierarchy,interface_name,"Motors");
-  if (PRX_REFERS_TO(mprx) == 0){ /*we are connecting with an old
-				   encoders interface*/
-    int *idp;
-    JDESchema *supplier;
-
-    idp = (int*)myimport(interface_name,"id");/*we have to get the
-						supplier*/
-    if (idp != 0){
-      JDEInterface *i;
-
-      supplier = get_schema(*idp);
-      assert(supplier!=0);
-      i = new_JDEInterface(interface_name,supplier);/*pointer stored with myimport*/
-      assert(i!=0);
-    }else{/*no interface found with this name*/
-      free(mprx);
-      return 0;
-    }
-  }
-  SUPER(mprx) = new_JDEInterfacePrx(interface_name,user);
-  assert(SUPER(mprx)!=0);
-  return mprx;
-}
-
-void delete_MotorsPrx(MotorsPrx* const self){
-  if (self==0)
-    return;
-  
-  delete_JDEInterfacePrx(SUPER(self));
-  free(self);
-}
-
-
-int MotorsPrx_run (MotorsPrx * const self){
-  return JDEInterfacePrx_run(self->super);
-}
-
-int MotorsPrx_stop (MotorsPrx * const self){
-  return JDEInterfacePrx_stop(self->super);
-}
-
-
-float MotorsPrx_v_get(MotorsPrx *const self){
-  float* vp = 0;
-
-  assert(self!=0);
-  if (PRX_REFERS_TO(self))
-    vp=&(PRX_REFERS_TO(self)->v);
-  else
-    vp=(float *)myimport(INTERFACEPRX_NAME(self),"v");
-  assert(vp!=0);
-  return *vp;
-}
-
-float MotorsPrx_w_get(MotorsPrx *const self){
-  float* wp = 0;
-
-  assert(self!=0);
-  if (PRX_REFERS_TO(self))
-    wp=&(PRX_REFERS_TO(self)->w);
-  else
-    wp=(float *)myimport(INTERFACEPRX_NAME(self),"w");
-  assert(wp!=0);
-  return *wp;
-}
-
-void MotorsPrx_v_set(MotorsPrx* const self, float new_v){
-  float* vp = 0;
-
-  assert(self!=0);
-  if (PRX_REFERS_TO(self))
-    vp=&(PRX_REFERS_TO(self)->v);
-  else  
-    vp=(float *)myimport(INTERFACEPRX_NAME(self),"v");
-  assert(vp!=0);
-  *vp = new_v;
-}
-
-void MotorsPrx_w_set(MotorsPrx* const self, float new_w){
+float Motors_w_get(const Motors* m){
   float* wp;
 
-  assert(self!=0);
-  if (PRX_REFERS_TO(self))
-    wp=&(PRX_REFERS_TO(self)->w);
-  else  
-    wp=(float *)myimport(INTERFACEPRX_NAME(self),"w");
-  assert(wp!=0);
-  *wp = new_w;
+  assert(m!=0);
+  if (m->implemented)
+    return ((Motors_data*)m->datap)->w;
+  else{
+    wp=(float *)myimport(m->interface_name,"w");
+    return (wp?*wp:0);
+  }
 }
 
-/*Macro to define all the attr get/set functions*/
-Motors_attr(INTERFACE_ATTR_DEFINITION,Motors)
+int Motors_cycle_get(const Motors* m){
+  int* cyclep;
+
+  assert(m!=0);
+  if (m->implemented)
+    return ((Motors_data*)m->datap)->cycle;
+  else{
+    cyclep=(int *)myimport(m->interface_name,"cycle");
+    return (cyclep?*cyclep:0);
+  }
+}
+
+void Motors_v_set(Motors* const m, const float new_v){
+  float* vp;
+
+  assert(m!=0);
+  if (m->implemented)
+    ((Motors_data*)m->datap)->v=new_v;
+  else{  
+    vp=(float *)myimport(m->interface_name,"v");
+    if (vp)
+      *vp = new_v;
+  }
+}
+
+void Motors_w_set(Motors* const m, const float new_w){
+  float* wp;
+
+  assert(m!=0);
+  if (m->implemented)
+    ((Motors_data*)m->datap)->w=new_w;
+  else{
+    wp=(float *)myimport(m->interface_name,"w");
+    if (wp)
+      *wp = new_w;
+  }
+}
+
+void Motors_cycle_set(Motors* const m, const int new_cycle){
+  int* cyclep;
+
+  assert(m!=0);
+  if (m->implemented)
+    ((Motors_data*)m->datap)->cycle=new_cycle;
+  else{
+    cyclep=(int *)myimport(m->interface_name,"cycle");
+    if (cyclep)
+      *cyclep = new_cycle;
+  }
+}
