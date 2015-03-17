@@ -41,9 +41,6 @@ schemas, because the schemas can be combined forming hierarchies.
 ```sh
 $ sudo aptitude install build-essential libtinyxml-dev libtbb-dev libxml2-dev libqt4-dev pkg-config libprotoc-dev libfreeimage-dev libprotobuf-dev protobuf-compiler libboost-all-dev freeglut3-dev cmake libogre-dev libtar-dev libcurl4-openssl-dev libcegui-mk2-dev libswscale-dev libavformat-dev libavcodec-dev 
 ```
-
-For other dependencies, like the `GTK` stuff, refer to the [Installation Manual](http://jderobot.org/Manual-5#Installing_JdeRobot_5). You may want to install the missing dependencies according to your `cmake` output.
-
 # Download source code
 
 ```sh
