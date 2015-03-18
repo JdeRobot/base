@@ -6,11 +6,13 @@ cmake_minimum_required(VERSION 2.8)
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directorio donde se encuentran las dependencias
 SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/) # Directorio con las interfaces ICE en C++
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/) # Directorio con las interfaces ICE en Python
 SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) # Directorio donde se encuentran las librerias propias de jderobot
 SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice) # Directorio donde se encuentran las interfaces ICE
 SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib parallelIce ) # Librerias de las que depende el componente
 
-
+# Create directories if necessary
+file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
 
 # MACRO to get the list of subdirectories
 macro(list_subdirectories retval curdir return_relative)
