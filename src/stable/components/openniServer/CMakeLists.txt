@@ -2,7 +2,7 @@
 #include(${DEPS_DIR}/openni2/CMakeLists.txt)
 #include(${DEPS_DIR}/nite2/CMakeLists.txt)
 
-IF(OPENNI2_LIB)
+IF(with_openni2)
 	#check for the path openni libs
 	
 
