@@ -18,7 +18,7 @@ if(pcl_openni)
     TARGET_LINK_LIBRARIES(pclRGBDServer 
       ${CMAKE_THREAD_LIBS_INIT}
       ${ZeroCIce_LIBRARIES}
-      ${pcl_LIBRARIES}
+      ${PCL_LIBRARIES}
       ${OpenCV_LIBRARIES}
       JderobotInterfaces
       jderobotutil
