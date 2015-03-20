@@ -20,7 +20,7 @@
  */
 
 #include "cameraClient.h"
-
+#include <zlib.h>
 
 namespace jderobot {
 
@@ -31,7 +31,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	prop = ic->getProperties();
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
-
+	this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
 
 	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
 	this->cycle=(float)(1/(float)fps)*1000000;
@@ -53,7 +53,9 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
 	}
 
-	jderobot::ImageDataPtr data = this->prx->getImageData();
+	// Set format
+
+	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
 	this->size=cv::Size(data->description->width,data->description->height);
 	_done=false;
@@ -67,7 +69,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::str
 	prop = ic->getProperties();
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
-
+	this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
 
 	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
 	this->cycle=(float)(1/(float)fps)*1000000;
@@ -91,7 +93,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::str
 		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
 	}
 
-	jderobot::ImageDataPtr data = this->prx->getImageData();
+	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
 	this->size=cv::Size(data->description->width,data->description->height);
 	_done=false;
@@ -102,6 +104,11 @@ cameraClient::~cameraClient() {
 	_done=true;
 }
 
+
+jderobot::ImageFormat cameraClient::getImageFormat()
+{
+	return this->prx->getImageFormat();
+}
 
 void cameraClient::reset(){
 	this->prx->reset();
@@ -125,6 +132,7 @@ cameraClient::run(){
 	colorspaces::Image::FormatPtr fmt;
 	IceUtil::Time last;
 
+
 	int iterIndex = 0;
 	int totalRefreshRate = 0;
 
@@ -137,16 +145,66 @@ cameraClient::run(){
 		}
 
 		try{
-			dataPtr = this->prx->getImageData();
+			//std::cout << "P: " << this->mImageFormat << std::endl;
+
+			dataPtr = this->prx->getImageData(this->mImageFormat);
 			fmt = colorspaces::Image::Format::searchFormat(dataPtr->description->format);
 			if (!fmt)
 				throw "Format not supported";
-			colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,fmt,&(dataPtr->pixelData[0]));
-			colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
-			this->controlMutex.lock();
-			cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
-			this->controlMutex.unlock();
-			img_rgb888.release();
+
+			//std::cout << "R: " << dataPtr->description->format << std::endl;
+
+			//dataPtr->description->size*dataPtr->description->width*3
+			if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name ||
+				dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
+			{
+
+				size_t dest_len = dataPtr->description->width*dataPtr->description->height*3;
+				size_t source_len = dataPtr->pixelData.size();
+
+				unsigned char* origin_buf = (uchar*) malloc(dest_len);
+
+				int r = uncompress((Bytef *) origin_buf, (uLongf *) &dest_len, (const Bytef *) &(dataPtr->pixelData[0]), (uLong)source_len);
+
+				if(r != Z_OK) {
+					fprintf(stderr, "[CMPR] Error:\n");
+					switch(r) {
+					case Z_MEM_ERROR:
+						fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+						break;
+					case Z_BUF_ERROR:
+						fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+						break;
+					case Z_STREAM_ERROR:    // Invalid compression level
+						fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+						break;
+					}
+				}
+				else
+				{
+					colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(origin_buf[0]));
+					colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
+					this->controlMutex.lock();
+					cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
+					this->controlMutex.unlock();
+					img_rgb888.release();
+				}
+
+
+				if (origin_buf)
+					free(origin_buf);
+
+			}
+			else
+			{
+				colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,fmt,&(dataPtr->pixelData[0]));
+				colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
+				this->controlMutex.lock();
+				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
+				this->controlMutex.unlock();
+				img_rgb888.release();
+			}
+
 		}
 		catch(...){
 			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");

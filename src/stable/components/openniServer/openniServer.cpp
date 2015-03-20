@@ -45,6 +45,8 @@
 #include <signal.h>
 #include <log/Logger.h>
 #include <ns/ns.h>
+#include <zlib.h>
+#include <openssl/md5.h>
 
 #ifdef WITH_NITE2
 	#include "NiTE.h"
@@ -475,7 +477,7 @@ void* updateThread(void*)
 /**
 * \brief Class which contains all the functions and variables to make run the Robot Cameras
 */
-	class CameraRGB: virtual public jderobot::Camera {
+class CameraRGB: virtual public jderobot::Camera {
 public:
 	CameraRGB(std::string& propertyPrefix, const Ice::PropertiesPtr propIn)
       : prefix(propertyPrefix),
@@ -532,8 +534,18 @@ public:
 		return cameraDescription;
 	}
 
-	virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
-		replyTask->pushJob(cb);
+	virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+	{
+		jderobot::ImageFormat formats;
+
+		formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+		formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
+
+		return formats;
+	}
+
+	virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
+		replyTask->pushJob(cb, format);
 	}
 
 	virtual std::string startCameraStreaming(const Ice::Current&){
@@ -561,9 +573,18 @@ private:
       }
 		
 
-	void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb){
+	void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
+		mFormat = format;
+
 		IceUtil::Mutex::Lock sync(requestsMutex);
 		requests.push_back(cb);
+	}
+
+	void print_md5_sum(unsigned char* md) {
+	    int i;
+	    for(i=0; i <MD5_DIGEST_LENGTH; i++) {
+	            printf("%02x",md[i]);
+	    }
 	}
 
     virtual void run(){
@@ -650,22 +671,84 @@ private:
 
 				}
 				pImageRow += rowSize;
-			}	
-	
-			/*if (debug==2){
-				cv::imshow("OpenniServer RGB", *srcRGB);
-				cv::waitKey(1);
-			}*/
-			//test
-			//CalculateJoints();
+			}
 
-			if ((mycameravga->imageDescription->width != m_colorFrame.getWidth()) || (mycameravga->imageDescription->height != m_colorFrame.getHeight())){
+			if ((mycameravga->imageDescription->width != m_colorFrame.getWidth()) ||
+					(mycameravga->imageDescription->height != m_colorFrame.getHeight())){
+
 				jderobot::Logger::getInstance()->warning( "Assuming kinect device with resampled on device not working" );
 				resize(*srcRGB, dst_resize, srcRGB->size(), 0, 0, cv::INTER_LINEAR);
 				memcpy(&(reply->pixelData[0]),(unsigned char *) dst_resize.data,dst_resize.cols*dst_resize.rows * 3);
 			}
 			else{
-				memcpy(&(reply->pixelData[0]),(unsigned char *) srcRGB->data,srcRGB->rows*srcRGB->cols * 3);
+
+				if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name)
+				{
+					unsigned long source_len = srcRGB->rows*srcRGB->cols*3;
+					unsigned long compress_len = compressBound(source_len);
+					unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
+
+					int r = compress((Bytef *) compress_buf, (uLongf *) &compress_len, (const Bytef *) &(srcRGB->data[0]), (uLong)source_len );
+
+
+					if(r != Z_OK) {
+						fprintf(stderr, "[CMPR] Error:\n");
+						switch(r) {
+						case Z_MEM_ERROR:
+							fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+							break;
+						case Z_BUF_ERROR:
+							fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+							break;
+						case Z_STREAM_ERROR:    // Invalid compression level
+							fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+							break;
+						}
+					}
+					else
+					{
+
+						//unsigned char* origin_buf = (uchar*) malloc(source_len);
+						//int r = uncompress((Bytef *) origin_buf, (uLongf *) &source_len, (Bytef *) &(compress_buf[0]), (uLong)compress_len);
+
+						//reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+
+						//memcpy(&(reply->pixelData[0]),  &(origin_buf[0]), srcRGB->rows*srcRGB->cols * 3);
+
+						reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
+						memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
+
+						/*
+						unsigned char * origin_hash, *uncompress_hash;
+						std::cout << "--------" << std::endl;
+
+						origin_hash = MD5((const unsigned char*) &(srcRGB->data[0]), srcRGB->rows*srcRGB->cols * 3, NULL);
+						print_md5_sum(origin_hash);
+						std::cout << std::endl;
+
+						uncompress_hash = MD5((const unsigned char*) &(origin_buf[0]), srcRGB->rows*srcRGB->cols * 3, NULL);
+						print_md5_sum (uncompress_hash);
+						std::cout << std::endl;
+						*/
+
+						//reply->pixelData.resize(compress_len);
+						//memcpy(&(reply->pixelData[0]), (unsigned char *) compress_buf, compress_len);
+					}
+
+					if (compress_buf)
+						free(compress_buf);
+
+				}
+				else if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name)
+				{
+					reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+					memcpy(&(reply->pixelData[0]),(unsigned char *) srcRGB->data, srcRGB->rows*srcRGB->cols * 3);
+				}
+				else
+				{
+					//TODO: Raise Exception
+				}
+
 			}
 
 		    {//critical region start
@@ -708,12 +791,13 @@ private:
 		int segmentation;
 		int fps;
 		bool _done;
+		std::string mFormat;
 
     };
     typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;
 
-
     std::string prefix;
+
     colorspaces::Image::FormatPtr imageFmt;
     jderobot::ImageDescriptionPtr imageDescription;
     jderobot::CameraDescriptionPtr cameraDescription;
@@ -789,8 +873,18 @@ public:
 		return cameraDescription;
 	}
 
-	virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
-		replyTask->pushJob(cb);
+	virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
+		replyTask->pushJob(cb, format);
+	}
+
+	virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+	{
+		jderobot::ImageFormat formats;
+
+		formats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
+		formats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
+
+		return formats;
 	}
 
 	virtual std::string startCameraStreaming(const Ice::Current&){
@@ -820,7 +914,8 @@ private:
       }
 		
 
-	void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb){
+	void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
+		mFormat = format;
 		IceUtil::Mutex::Lock sync(requestsMutex);
 		requests.push_back(cb);
 	}
@@ -922,14 +1017,52 @@ private:
 				cv::waitKey(1);
 			}*/
 
-		   if ((mycameradepth->imageDescription->width != m_depthFrame.getWidth()) || (mycameradepth->imageDescription->height != m_depthFrame.getHeight())){
+		   if ((mycameradepth->imageDescription->width != m_depthFrame.getWidth()) ||
+				   (mycameradepth->imageDescription->height != m_depthFrame.getHeight())){
 				//cv::resize(src,dst_resize);
 				cv::resize(src, dst_resize, dst_resize.size(), 0, 0, cv::INTER_LINEAR);
 				jderobot::Logger::getInstance()->warning("Assuming kinect device with resampled on device not working" );
 				memcpy(&(reply->pixelData[0]),(unsigned char *) dst_resize.data,dst_resize.cols*dst_resize.rows * 3);
 			}
 			else{
-				memcpy(&(reply->pixelData[0]),(unsigned char *) src.data,src.cols*src.rows * 3);
+
+				if (mFormat == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name)
+				{
+					size_t source_len = src.rows*src.cols * 3;
+					size_t compress_len = compressBound(source_len);
+					unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
+
+					int r = compress2((Bytef *) compress_buf, (uLongf *) &compress_len, (Bytef *) &(srcRGB->data), (uLong)source_len , 9);
+					if(r != Z_OK) {
+						fprintf(stderr, "[CMPR] Error:\n");
+						switch(r) {
+						case Z_MEM_ERROR:
+							fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+							break;
+						case Z_BUF_ERROR:
+							fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+							break;
+						case Z_STREAM_ERROR:    // Invalid compression level
+							fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+							break;
+						}
+					}
+
+					reply->description->format=colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
+					reply->pixelData.resize(compress_len);
+					memcpy(&(reply->pixelData[0]), (unsigned char *) compress_buf, compress_len);
+
+					if (compress_buf)
+						free(compress_buf);
+				}
+				else if (mFormat == colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name)
+				{
+					memcpy(&(reply->pixelData[0]),(unsigned char *) src.data,src.cols*src.rows * 3);
+				}
+				else
+				{
+					// TODO: Raise exception
+				}
 			}
 		    
 		    {//critical region start
@@ -969,7 +1102,7 @@ private:
 		CameraDEPTH* mycameradepth;
 		IceUtil::Mutex requestsMutex;
 		std::list<jderobot::AMD_ImageProvider_getImageDataPtr> requests;
-
+		std::string mFormat;
 	
 		int segmentation;
 		int fps;

@@ -9,6 +9,7 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+    ${ZLIB_INCLUDE_DIRS}
 )
 
 add_executable (cameraview ${SOURCE_FILES})
@@ -21,5 +22,6 @@ TARGET_LINK_LIBRARIES(cameraview
     ${libglademm_LIBRARIES}
     colorspacesmm
     JderobotInterfaces
-   ${ZeroCIce_LIBRARIES}
+    ${ZeroCIce_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )

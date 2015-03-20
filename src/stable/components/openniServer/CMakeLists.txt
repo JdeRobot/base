@@ -2,7 +2,7 @@
 #include(${DEPS_DIR}/openni2/CMakeLists.txt)
 #include(${DEPS_DIR}/nite2/CMakeLists.txt)
 
-IF(with_openni2)
+IF(OPENNI2_LIB)
 	#check for the path openni libs
 	
 
@@ -18,6 +18,7 @@ IF(with_openni2)
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/cameras
 		${NITE2_INC}
+		${ZLIB_INCLUDE_DIRS}
 		
     )
 
@@ -40,40 +41,44 @@ IF(with_openni2)
 			file (COPY ${NITE2_LIB}/libNiTE2.so DESTINATION .)
 			file (COPY ${NITE2_LIB}/NiTE2 DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
 		endif()
-	TARGET_LINK_LIBRARIES(openniServer
-        ${CMAKE_THREAD_LIBS_INIT}
-	${CMAKE_THREAD_LIBS_INIT}
-        ${ZeroCIce_LIBRARIES}
-        ${OpenCV_LIBRARIES}
-        ${OpenCVGUI_LIBRARIES} 
-        ${gsl_LIBRARIES}
-	logger
-	ns
-        jderobotutil
-        geometry
-        colorspacesmm
-        JderobotInterfaces
-	${OPENNI2_LIB}
-	${NITE2_LIB}/libNiTE2.so
-	${Boost_LIBRARIES}
-        ${LIBXML2_LIBRARIES}
-	)
+	
+		TARGET_LINK_LIBRARIES(openniServer
+	        ${CMAKE_THREAD_LIBS_INIT}
+			${CMAKE_THREAD_LIBS_INIT}
+	        ${ZeroCIce_LIBRARIES}
+	        ${OpenCV_LIBRARIES}
+	        ${OpenCVGUI_LIBRARIES} 
+	        ${gsl_LIBRARIES}
+			logger
+			ns
+	        jderobotutil
+	        geometry
+	        colorspacesmm
+	        JderobotInterfaces
+			${OPENNI2_LIB}
+			${NITE2_LIB}/libNiTE2.so
+			${Boost_LIBRARIES}
+	        ${LIBXML2_LIBRARIES}
+	        ${ZLIB_LIBRARIES}
+		)
 	else()
-	TARGET_LINK_LIBRARIES(openniServer
-        ${CMAKE_THREAD_LIBS_INIT}
-	${ZeroCIce_LIBRARIES}
-	${OpenCV_LIBRARIES}
-        ${OpenCVGUI_LIBRARIES}
-	${gsl_LIBRARIES}
-        jderobotutil
-        geometry
-        colorspacesmm
-        JderobotInterfaces
-	logger
-	ns
-	${OPENNI2_LIB}
-        ${Boost_LIBRARIES}
-        ${LIBXML2_LIBRARIES}
-	)
+		TARGET_LINK_LIBRARIES(openniServer
+	        ${CMAKE_THREAD_LIBS_INIT}
+			${ZeroCIce_LIBRARIES}
+			${OpenCV_LIBRARIES}
+	        ${OpenCVGUI_LIBRARIES}
+			${gsl_LIBRARIES}
+	        jderobotutil
+	        geometry
+	        colorspacesmm
+	        JderobotInterfaces
+			logger
+			ns
+			${OPENNI2_LIB}		    
+	        ${Boost_LIBRARIES}
+	        ${LIBXML2_LIBRARIES}
+	        ${ZLIB_LIBRARIES}
+	        ${OPENSSL_LIBRARIES}
+		)
 	endif()
 ENDIF()
