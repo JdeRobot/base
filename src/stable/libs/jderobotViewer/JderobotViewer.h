@@ -23,7 +23,7 @@ public:
 	JderobotViewer(const std::string& nameWindow, const double scale_in, const bool autoUpdate, std::string* worldFile=NULL);
 	virtual ~JderobotViewer();
 
-	void addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d& size,const  std::string& textID, const int prismID,const Eigen::Vector3d& color);
+	void addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d& size,const std::string& type, const int prismID,const Eigen::Vector3d& color);
 	void removeAllPointClouds();
 	void removeAllShapes();
 	void spinOnce(const int t);
@@ -36,6 +36,8 @@ public:
 	void saveScreenshot(const std::string& fileName);
 	void setShapeRenderingProperties(const pcl::visualization::RenderingProperties& property, const double value, const std::string& id );
 	void drawWorld();
+	void removePrism(const std::string& type, const int prismID);
+
 
 
 
@@ -49,7 +51,9 @@ private:
 	boost::mutex new_data_mutex;
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 	boost::shared_ptr<boost::thread> viewerThread;
-	std::vector<std::string> linesID;
+	std::vector<std::string> objectID;
+	std::vector<std::string> cloudsID;
+
 	int defaultLineWidth;
 	double scale;
 	int MAXWORLD;

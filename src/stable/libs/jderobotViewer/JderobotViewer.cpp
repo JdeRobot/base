@@ -201,10 +201,24 @@ void JderobotViewer::drawWorld(){
 
 }
 
+void JderobotViewer::removePrism(const std::string& type, const int prismID){
+
+	this->new_data_mutex.lock();
+	for (int i=1; i<=12; i++){
+		std::stringstream ss;
+		ss << type << prismID << "l" << i;
+		std::vector<std::string>::iterator itFind = std::find(this->objectID.begin(), this->objectID.end(),ss.str());
+		if (itFind!= this->objectID.end()){
+			this->objectID.erase(itFind);
+			this->viewer->removeShape(ss.str());
+		}
+	}
+	this->new_data_mutex.unlock();
 
 
-void JderobotViewer::addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d& size,const  std::string& textID, const int prismID,const Eigen::Vector3d& color){
+}
 
+void JderobotViewer::addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d& size, const std::string& textID, const int prismID,const Eigen::Vector3d& color){
 
 	pcl::PointXYZ p1;
 	p1.x=(pos[0]-size[0])/scale;
@@ -248,89 +262,101 @@ void JderobotViewer::addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d&
 
 
 	this->new_data_mutex.lock();
+
+	for (int i=1; i<=12; i++){
+		std::stringstream ss;
+		ss << textID << prismID << "l" << i;
+		std::vector<std::string>::iterator itFind = std::find(this->objectID.begin(), this->objectID.end(),ss.str());
+		if (itFind!= this->objectID.end()){
+			this->objectID.erase(itFind);
+			this->viewer->removeShape(ss.str());
+		}
+	}
+
+
+
 	std::stringstream ss1;
 	ss1 << textID << prismID << "l1";
 	this->viewer->addLine(p1,p2,(double)color[0],(double)color[1],(double)color[2],ss1.str());
-	this->linesID.push_back(ss1.str());
+	this->objectID.push_back(ss1.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss1.str());
 
 
 	std::stringstream ss2;
 	ss2 << textID << prismID << "l2";
 	this->viewer->addLine(p2,p3,(double)color[0],(double)color[1],(double)color[2],ss2.str());
-	this->linesID.push_back(ss2.str());
+	this->objectID.push_back(ss2.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss2.str());
 
 
 	std::stringstream ss3;
 	ss3 << textID << prismID << "l3";
 	this->viewer->addLine(p3,p4,(double)color[0],(double)color[1],(double)color[2],ss3.str());
-	this->linesID.push_back(ss3.str());
+	this->objectID.push_back(ss3.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss3.str());
 
 
 	std::stringstream ss4;
 	ss4 << textID << prismID << "l4";
 	this->viewer->addLine(p4,p1,(double)color[0],(double)color[1],(double)color[2],ss4.str());
-	this->linesID.push_back(ss4.str());
+	this->objectID.push_back(ss4.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss4.str());
 
 
 	std::stringstream ss5;
 	ss5 << textID << prismID << "l5";
 	this->viewer->addLine(p5,p6,(double)color[0],(double)color[1],(double)color[2],ss5.str());
-	this->linesID.push_back(ss5.str());
+	this->objectID.push_back(ss5.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss5.str());
 
 
 	std::stringstream ss6;
 	ss6 << textID << prismID << "l6";
 	this->viewer->addLine(p6,p7,(double)color[0],(double)color[1],(double)color[2],ss6.str());
-	this->linesID.push_back(ss6.str());
+	this->objectID.push_back(ss6.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss6.str());
 
 
 	std::stringstream ss7;
 	ss7 << textID << prismID << "l7";
 	this->viewer->addLine(p7,p8,(double)color[0],(double)color[1],(double)color[2],ss7.str());
-	this->linesID.push_back(ss7.str());
+	this->objectID.push_back(ss7.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss7.str());
 
 
 	std::stringstream ss8;
 	ss8 << textID << prismID << "l8";
 	this->viewer->addLine(p8,p5,(double)color[0],(double)color[1],(double)color[2],ss8.str());
-	this->linesID.push_back(ss8.str());
+	this->objectID.push_back(ss8.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss8.str());
 
 
 	std::stringstream ss9;
 	ss9 << textID << prismID << "l9";
 	this->viewer->addLine(p1,p5,(double)color[0],(double)color[1],(double)color[2],ss9.str());
-	this->linesID.push_back(ss9.str());
+	this->objectID.push_back(ss9.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss9.str());
 
 
 	std::stringstream ss10;
 	ss10 << textID << prismID << "l10";
 	this->viewer->addLine(p2,p6,(double)color[0],(double)color[1],(double)color[2],ss10.str());
-	this->linesID.push_back(ss10.str());
+	this->objectID.push_back(ss10.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss10.str());
 
 
 	std::stringstream ss11;
 	ss11 << textID << prismID << "l11";
 	this->viewer->addLine(p3,p7,(double)color[0],(double)color[1],(double)color[2],ss11.str());
-	this->linesID.push_back(ss11.str());
+	this->objectID.push_back(ss11.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss11.str());
 
 
 	std::stringstream ss12;
 	ss12 << textID << prismID << "l12";
 	this->viewer->addLine(p4,p8,(double)color[0],(double)color[1],(double)color[2],ss12.str());
-	this->linesID.push_back(ss12.str());
+	this->objectID.push_back(ss12.str());
 	this->viewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_LINE_WIDTH, this->defaultLineWidth,ss12.str());
-
 	this->new_data_mutex.unlock();
 
 }
@@ -338,9 +364,10 @@ void JderobotViewer::addPrism(const Eigen::Vector4d& pos, const Eigen::Vector4d&
 void JderobotViewer::removeAllShapes(){
 	this->new_data_mutex.lock();
 
-	for (std::vector<std::string>::iterator it = this->linesID.begin(); it != this->linesID.end(); it++){
+	for (std::vector<std::string>::iterator it = this->objectID.begin(); it != this->objectID.end(); it++){
 		this->viewer->removeShape(*it);
 	}
+	this->objectID.clear();
 	this->new_data_mutex.unlock();
 
 }
@@ -360,13 +387,21 @@ void JderobotViewer::spinOnce(const int t){
 
 void JderobotViewer::addPointCloud( const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud, const std::string& id){
 	this->new_data_mutex.lock();
-	this->viewer->addPointCloud(cloud,id);
+	if (std::find(this->cloudsID.begin(), this->cloudsID.end(),id) != this->cloudsID.end()){
+		this->cloudsID.push_back(id);
+		this->viewer->addPointCloud(cloud,id);
+	}
+	else{
+		this->viewer->removePointCloud(id);
+		this->viewer->addPointCloud(cloud,id);
+	}
 	this->new_data_mutex.unlock();
 
 }
 void JderobotViewer::addPointCloud( const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud){
 	this->new_data_mutex.lock();
 	this->viewer->addPointCloud(cloud);
+	this->viewer->spinOnce (100);
 	this->new_data_mutex.unlock();
 
 }
@@ -386,7 +421,7 @@ void JderobotViewer::addPointCloud( const pcl::PointCloud<pcl::PointXYZ>::ConstP
 void JderobotViewer::addLine(const pcl::PointXYZ& p1, const pcl::PointXYZ& p2, const double r, const double g, const double b, const std::string& id){
 	this->new_data_mutex.lock();
 	this->viewer->addLine(p1,p2,r,g,b,id);
-	this->linesID.push_back(id);
+	this->objectID.push_back(id);
 	this->new_data_mutex.unlock();
 }
 
