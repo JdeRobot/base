@@ -40,7 +40,7 @@ namespace cameraview{
     bool isVisible();
 
     //! function that actually displays the image in a window
-    void display( const colorspaces::Image& image );
+    void display( cv::Mat imageRGB);
 
   private:
     Glib::RefPtr<Gnome::Glade::Xml> refXml;

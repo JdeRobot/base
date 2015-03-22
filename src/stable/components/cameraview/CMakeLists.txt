@@ -2,6 +2,8 @@ SET( SOURCE_FILES cameraview.cpp viewer.cpp)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
+set( CMAKE_CXX_FLAGS "-Wno-deprecated" )
+
 include_directories(
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
@@ -22,6 +24,7 @@ TARGET_LINK_LIBRARIES(cameraview
     ${libglademm_LIBRARIES}
     colorspacesmm
     JderobotInterfaces
+    parallelIce
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )

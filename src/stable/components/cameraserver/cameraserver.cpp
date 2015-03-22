@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <list>
 
+#include <zlib.h>
+#include <log/Logger.h>
 
 namespace cameraserver{
 
@@ -173,7 +175,7 @@ class CameraI: virtual public jderobot::Camera {
         }
 
         virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
-            replyTask->pushJob(cb);
+            replyTask->pushJob(cb, format);
         }
 
         virtual std::string startCameraStreaming(const Ice::Current&){
@@ -194,9 +196,11 @@ class CameraI: virtual public jderobot::Camera {
                 {
                     std::cout << "safeThread" << std::endl;
                     mycamera = camera;
+                    mFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
                 }
 
-                void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb){
+                void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
+            		this->mFormat = format;
                     IceUtil::Mutex::Lock sync(requestsMutex);
                     requests.push_back(cb);
                 }
@@ -255,9 +259,53 @@ class CameraI: virtual public jderobot::Camera {
                         reply->timeStamp.seconds = (long)t.toSeconds();
                         reply->timeStamp.useconds = (long)t.toMicroSeconds() - reply->timeStamp.seconds*1000000;
 
-                        reply->pixelData.resize(frame.rows*frame.cols*3);
+                        if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name)
+                        {
+                        	unsigned long source_len = frame.rows*frame.cols*3;
+                        	unsigned long compress_len = compressBound(source_len);
+                        	unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
 
-                        memcpy( &(reply->pixelData[0]), (unsigned char *) frame.data, frame.rows*frame.cols*3);
+                        	int r = compress((Bytef *) compress_buf, (uLongf *) &compress_len, (const Bytef *) &(frame.data[0]), (uLong)source_len );
+
+
+                        	if(r != Z_OK) {
+                        		jderobot::Logger::getInstance()->error("Compression Error");
+                        		switch(r) {
+                        		case Z_MEM_ERROR:
+                        			jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
+                        			break;
+                        		case Z_BUF_ERROR:
+                        			jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small.");
+                        			break;
+                        		case Z_STREAM_ERROR:
+                        			jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level.");
+                        			break;
+                        		}
+                        	}
+                        	else
+                        	{
+                        		reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
+                        		memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
+                        	}
+
+                        	if (compress_buf)
+                        		free(compress_buf);
+
+                        }
+                        else if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name)
+                        {
+
+                        	reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+                        	reply->pixelData.resize(frame.rows*frame.cols*3);
+                        	memcpy( &(reply->pixelData[0]), (unsigned char *) frame.data, frame.rows*frame.cols*3);
+                        }
+                        else
+                        {
+                        	jderobot::Logger::getInstance()->error("Format image not recognized: " + mFormat);
+                        }
+
+                        //reply->pixelData.resize(frame.rows*frame.cols*3);
+                        //memcpy( &(reply->pixelData[0]), (unsigned char *) frame.data, frame.rows*frame.cols*3);
 
                         // publish
 						if(mycamera->imageConsumer!=0){
@@ -298,6 +346,7 @@ class CameraI: virtual public jderobot::Camera {
                 CameraI* mycamera;
                 IceUtil::Mutex requestsMutex;
                 std::list<jderobot::AMD_ImageProvider_getImageDataPtr> requests;
+                std::string mFormat;
         };
 
         typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;
@@ -309,7 +358,8 @@ class CameraI: virtual public jderobot::Camera {
         cv::VideoCapture cap;
         bool rpc_mode;
         jderobot::ImageConsumerPrx imageConsumer;
-	int mirror;
+        int mirror;
+
 
 }; // end class CameraI
 

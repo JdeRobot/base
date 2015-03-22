@@ -26,12 +26,14 @@
 #include <jderobot/camera.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "viewer.h"
-
+#include "parallelIce/cameraClient.h"
 
 int main(int argc, char** argv){
 	int status;
 	cameraview::Viewer viewer;
 	Ice::CommunicatorPtr ic;
+
+	jderobot::cameraClient* camRGB;
 
 	try{
 		ic = Ice::initialize(argc,argv);
@@ -41,26 +43,21 @@ int main(int argc, char** argv){
 		if (0==base)
 			throw "Could not create proxy";
 
-		/*cast to CameraPrx*/
-		jderobot::CameraPrx cprx = jderobot::CameraPrx::checkedCast(base);
-		if (0==cprx)
-			throw "Invalid proxy";
 
-		std::string format = prop->getProperty("Cameraview.Camera.Format");
-		if (format.empty())
-			throw "Not image format provided";
+		camRGB = new jderobot::cameraClient(ic,"Cameraview.Camera.");
+
+		if (camRGB == NULL){
+			throw "Invalid proxy";
+		}
+		camRGB->start();
+
+		cv::Mat rgb;
 
 		while(viewer.isVisible()){
-			jderobot::ImageDataPtr data = cprx->getImageData(format);
-			colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);
-			if (!fmt)
-				throw "Format not supported";
+			//jderobot::ImageDataPtr data = camRGB->getImageData(format);
 
-			colorspaces::Image image(data->description->width,
-					data->description->height,
-					fmt,
-					&(data->pixelData[0]));
-			viewer.display(image);
+			camRGB->getImage(rgb);
+			viewer.display(rgb);
 		}
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
@@ -72,5 +69,9 @@ int main(int argc, char** argv){
 
 	if (ic)
 		ic->destroy();
+
+	camRGB->stop_thread();
+	delete(camRGB);
+
 	return status;
 }

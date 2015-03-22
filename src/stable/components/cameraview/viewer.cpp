@@ -48,8 +48,21 @@ namespace cameraview{
     return mainwindow->is_visible();
   }
 
-  void Viewer::display( const colorspaces::Image& image )
+
+  void Viewer::display(cv::Mat imageRGB)
   {
+
+	  Glib::RefPtr<Gdk::Pixbuf> imgBuff =
+			  Gdk::Pixbuf::create_from_data((const guint8*) imageRGB.data,Gdk::COLORSPACE_RGB,false,8,imageRGB.cols,imageRGB.rows,imageRGB.step);
+
+	  gtkimage->clear();
+	  gtkimage->set(imgBuff);
+	  displayFrameRate();
+	  mainwindow->resize(1,1);
+	  while (gtkmain.events_pending())
+		  gtkmain.iteration();
+
+	  /*
     colorspaces::ImageRGB8 img_rgb8(image);//conversion will happen if needed
     Glib::RefPtr<Gdk::Pixbuf> imgBuff = 
       Gdk::Pixbuf::create_from_data((const guint8*)img_rgb8.data,
@@ -66,6 +79,8 @@ namespace cameraview{
     mainwindow->resize(1,1);
     while (gtkmain.events_pending())
       gtkmain.iteration();
+
+      */
   }
     
   void
@@ -80,7 +95,7 @@ namespace cameraview{
       frameCount++;
     else{
       oldFrameTime = currentFrameTime;
-      fps = frameCount*1000.0/diff;
+      fps = frameCount*1000/diff;
       frameCount=0;
       // Display the frame rate
       std::stringstream fpsString;

@@ -18,4 +18,6 @@ TARGET_LINK_LIBRARIES(cameraserver
 	JderobotInterfaces
 	${ZeroCIce_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT} 
+	${ZLIB_LIBRARIES}
+	logger	
 	)
