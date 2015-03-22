@@ -5,11 +5,16 @@ cmake_minimum_required(VERSION 2.8)
 # ENV VARS
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directorio donde se encuentran las dependencias
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/) # Directorio con las interfaces ICE en C++
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/) # Directorio con las interfaces ICE en Python
-SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) # Directorio donde se encuentran las librerias propias de jderobot
-SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice) # Directorio donde se encuentran las interfaces ICE
-SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib parallelIce ) # Librerias de las que depende el componente
+# Folder with ICE cpp interfaces
+SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/)
+# Folder with ICE python interfaces
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/)
+# Folder JdeRobot libraries 
+SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) 
+# Folder ICE interface definitions
+SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice)
+# Main libraries
+SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib parallelIce )
 
 # Create directories if necessary
 file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
@@ -243,8 +248,8 @@ set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "jderobot is a software development suite for robotics applications.")
-SET (CPACK_PACKAGE_DESCRIPTION "jderobot is a software development suite for robotics applications, written in C++ language. It provides a programming environment where the robot control program is made up of a collection of several concurrent asynchronous threads named schemas. It is based on JDE cognitive architecture for autonomous robots.")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "JdeRobot is a software development suite for robotics applications.")
+SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for robotics applications, written in C++ language. It provides a programming environment where the robot control program is made up of a collection of several concurrent asynchronous threads named schemas. It is based on JDE cognitive architecture for autonomous robots.")
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
 SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
