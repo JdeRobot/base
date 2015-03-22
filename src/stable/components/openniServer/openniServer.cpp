@@ -745,7 +745,7 @@ private:
 				}
 				else
 				{
-					//TODO: Raise Exception
+					jderobot::Logger::getInstance()->error("Format image not recognized");
 				}
 
 			}
