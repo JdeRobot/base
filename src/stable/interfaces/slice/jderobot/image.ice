@@ -35,10 +35,11 @@ module jderobot{
    */
   class ImageDescription 
   {
-    int width; /**< %Image width [pixels] */
-    int height;/**< %Image height [pixels] */
-    int size;/**< %Image size [bytes] */
-    string format; /**< %Image format string */
+    int width; 		/**< %Image width [pixels] */
+    int height;		/**< %Image height [pixels] */
+    int size;		/**< %Image size [bytes] */
+    string format; 	/**< %Image format string */
+    ByteSeq md5sum;
   };
   
 
@@ -47,10 +48,9 @@ module jderobot{
    */
   class ImageData
   { 
-    Time timeStamp; /**< TimeStamp of Data */
-    ImageDescription description; /**< ImageDescription of Data, for convienence purposes */
-    ByteSeq pixelData; /**< The image data itself. The structure of this byte sequence
-			  depends on the image format and compression. */
+    Time timeStamp; 				/**< TimeStamp of Data */
+    ImageDescription description; 	/**< ImageDescription of Data, for convienence purposes */
+    ByteSeq pixelData; 				/**< The image data itself. The structure of this byte sequence depends on the image format and compression. */
   };
 
 

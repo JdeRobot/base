@@ -135,7 +135,6 @@ int main(int argc, char** argv){
 	if (prop->getPropertyAsIntWithDefault("rgbdViewer.CameraRGBActive",0)){
 		camRGB = new jderobot::cameraClient(ic,"rgbdViewer.CameraRGB.");
 		if (camRGB != NULL){
-			camRGB->setImageFormat(colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
 			rgbCamSelected=true;
 			camRGB->start();
 			create_gui=true;
@@ -148,7 +147,6 @@ int main(int argc, char** argv){
 	if (prop->getPropertyAsIntWithDefault("rgbdViewer.CameraDEPTHActive",0)){
 		camDEPTH = new jderobot::cameraClient(ic,"rgbdViewer.CameraDEPTH.");
 		if (camDEPTH != NULL){
-			camDEPTH->setImageFormat(colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
 			depthCamSelected=true;
 			camDEPTH->start();
 			create_gui=true;

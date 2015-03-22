@@ -692,21 +692,23 @@ private:
 
 
 					if(r != Z_OK) {
-						fprintf(stderr, "[CMPR] Error:\n");
+						jderobot::Logger::getInstance()->error("Compression Error");
 						switch(r) {
 						case Z_MEM_ERROR:
-							fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+							jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
 							break;
 						case Z_BUF_ERROR:
-							fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+							jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small.");
 							break;
-						case Z_STREAM_ERROR:    // Invalid compression level
-							fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+						case Z_STREAM_ERROR:
+							jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level.");
 							break;
 						}
 					}
 					else
 					{
+						reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
+						memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
 
 						//unsigned char* origin_buf = (uchar*) malloc(source_len);
 						//int r = uncompress((Bytef *) origin_buf, (uLongf *) &source_len, (Bytef *) &(compress_buf[0]), (uLong)compress_len);
@@ -714,9 +716,6 @@ private:
 						//reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
 
 						//memcpy(&(reply->pixelData[0]),  &(origin_buf[0]), srcRGB->rows*srcRGB->cols * 3);
-
-						reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
-						memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
 
 						/*
 						unsigned char * origin_hash, *uncompress_hash;
@@ -751,13 +750,13 @@ private:
 
 			}
 
-		    {//critical region start
-			IceUtil::Mutex::Lock sync(requestsMutex);
-		    while(!requests.empty()){
-				jderobot::AMD_ImageProvider_getImageDataPtr cb = requests.front();
-				requests.pop_front();
-				cb->ice_response(reply);
-			}
+			{//critical region start
+				IceUtil::Mutex::Lock sync(requestsMutex);
+				while(!requests.empty()){
+					jderobot::AMD_ImageProvider_getImageDataPtr cb = requests.front();
+					requests.pop_front();
+					cb->ice_response(reply);
+				}
 
 			}//critical region end
 		    mutex.unlock();
@@ -1032,18 +1031,18 @@ private:
 					size_t compress_len = compressBound(source_len);
 					unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
 
-					int r = compress2((Bytef *) compress_buf, (uLongf *) &compress_len, (Bytef *) &(srcRGB->data), (uLong)source_len , 9);
+					int r = compress2((Bytef *) compress_buf, (uLongf *) &compress_len, (Bytef *) &(src.data[0]), (uLong)source_len , 9);
 					if(r != Z_OK) {
-						fprintf(stderr, "[CMPR] Error:\n");
+						jderobot::Logger::getInstance()->error("Compression Error");
 						switch(r) {
 						case Z_MEM_ERROR:
-							fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+							jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
 							break;
 						case Z_BUF_ERROR:
-							fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+							jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small");
 							break;
 						case Z_STREAM_ERROR:    // Invalid compression level
-							fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+							jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level");
 							break;
 						}
 					}

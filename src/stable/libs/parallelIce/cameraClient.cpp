@@ -31,7 +31,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	prop = ic->getProperties();
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
-	this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+	this->mImageFormat.empty();
 
 	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
 	this->cycle=(float)(1/(float)fps)*1000000;
@@ -53,7 +53,31 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
 	}
 
-	// Set format
+	// Discover what format are supported.
+	jderobot::ImageFormat formats = this->prx->getImageFormat();
+
+	std::vector<std::string>::iterator it;
+	it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+	if (it != formats.end())
+	{
+		this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+		it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
+		if (it != formats.end())
+			this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
+	}
+	else
+	{
+		it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
+		if (it != formats.end())
+		{
+			this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name;
+			it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
+			if (it != formats.end())
+				this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
+		}
+	}
+
+	jderobot::Logger::getInstance()->info("Using format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
