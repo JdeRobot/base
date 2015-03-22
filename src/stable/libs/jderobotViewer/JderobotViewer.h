@@ -14,7 +14,7 @@
 #include <pcl/common/common_headers.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
-#include <jderobot/log/Logger.h>
+#include <log/Logger.h>
 
 namespace jderobot {
 
