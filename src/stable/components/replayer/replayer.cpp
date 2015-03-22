@@ -108,8 +108,17 @@ namespace replayer {
 			return 0;
 		}
 
-		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
+		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
 			replyTask->pushJob(cb);
+		}
+
+		virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+		{
+			jderobot::ImageFormat formats;
+
+			formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+
+			return formats;
 		}
 
 		virtual std::string startCameraStreaming(const Ice::Current&){

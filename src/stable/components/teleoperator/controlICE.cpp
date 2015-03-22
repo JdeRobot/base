@@ -97,8 +97,8 @@ void controlICE::getData() {
     if (interfacesData->camerasInterface.activated) {
         interfacesData->imagesReady = false;
         try{
-            interfacesData->imageDataLeftReceived = cprxLeft->getImageData();
-            interfacesData->imageDataRightReceived = cprxRight->getImageData();
+            interfacesData->imageDataLeftReceived = cprxLeft->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+            interfacesData->imageDataRightReceived = cprxRight->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 
             createImage1();
             createImage2();

@@ -44,8 +44,8 @@ namespace introrob {
 
         pthread_mutex_lock(&api->controlGui);
         api->imagesReady = FALSE;
-        api->imageData1 = this->cprx1->getImageData();
-        api->imageData2 = this->cprx2->getImageData();
+        api->imageData1 = this->cprx1->getImageData( this->cprx1->getImageFormat().at(0) );
+        api->imageData2 = this->cprx2->getImageData( this->cprx2->getImageFormat().at(0) );
         if (api->guiReady) {
             createImage(api);
             createImage2(api);

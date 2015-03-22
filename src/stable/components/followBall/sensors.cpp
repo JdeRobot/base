@@ -19,7 +19,7 @@
  */
 
 #include "sensors.h"
-
+#include <visionlib/colorspaces/colorspacesmm.h>
 /*************************************************************
  * CONSTRUCTOR
  *************************************************************/
@@ -37,7 +37,7 @@ Sensors::Sensors ( Ice::CommunicatorPtr ic ) {
     if (cameraprx == 0)
         throw "Invalid Camera proxy";
     
-    jderobot::ImageDataPtr data = cameraprx->getImageData();
+    jderobot::ImageDataPtr data = cameraprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
     this->image.create(data->description->height, data->description->width, CV_8UC3);
     
     this->updateValues();    
@@ -85,7 +85,7 @@ int Sensors::getBV () {
  * ANOTHER FUNCTIONS
  *************************************************************/
 void Sensors::update () {    
-    jderobot::ImageDataPtr data = cameraprx->getImageData();
+    jderobot::ImageDataPtr data = cameraprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
     pthread_mutex_lock(&this->mutex);
     
     memcpy((unsigned char *) this->image.data, &(data->pixelData[0]), this->image.cols * this->image.rows * 3);

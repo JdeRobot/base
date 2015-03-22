@@ -58,8 +58,7 @@ int main(int argc, char** argv){
 
 		while(viewer.isVisible()){
 
-
-			jderobot::ImageDataPtr data = cprxColor->getImageData();
+			jderobot::ImageDataPtr data = cprxColor->getImageData(cprxColor->getImageFormat().at(0));
 			colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);
 			if (!fmt)
 				throw "Format not supported";
@@ -70,8 +69,7 @@ int main(int argc, char** argv){
 					&(data->pixelData[0]));
 
 
-
-			jderobot::ImageDataPtr data2 = cprxDepth->getImageData();
+			jderobot::ImageDataPtr data2 = cprxDepth->getImageData(cprxDepth->getImageFormat().at(0));
 			colorspaces::Image::FormatPtr fmt2 =  colorspaces::Image::Format::searchFormat(data2->description->format);
 			if (!fmt2)
 				throw "Format not supported";

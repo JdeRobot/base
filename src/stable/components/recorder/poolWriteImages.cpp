@@ -35,7 +35,8 @@ poolWriteImages::poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize
 		mBuffer = new RingBuffer(mBufferSeconds*1000);
 	}
 
-	mCamType = this->prx->getImageData()->description->format;
+	//mCamType = this->prx->getImageData()->description->format;
+	mCamType = this->prx->getImageFormat().at(0);
 
 	std::stringstream filePath;
 	filePath << "data/images/camera" << this->cameraID << "/cameraData.jde";
@@ -275,7 +276,7 @@ void poolWriteImages::producer_thread( struct timeval inicio){
 //(cv::Mat image, long long int it){
 	//std::cout << "productor entro" << std::endl;
 //	while(this->active){
-		jderobot::ImageDataPtr imageData=this->prx->getImageData();
+		jderobot::ImageDataPtr imageData=this->prx->getImageData(mCamType);
 		colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(imageData->description->format);
 		cv::Mat image;
 		image.create(cv::Size(imageData->description->width, imageData->description->height), CV_8UC3);

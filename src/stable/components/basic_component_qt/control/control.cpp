@@ -1,4 +1,5 @@
 #include "control.h"
+#include <visionlib/colorspaces/colorspacesmm.h>
 
 namespace basic_component_qt {
 
@@ -31,7 +32,7 @@ Control::Control(Ice::CommunicatorPtr ic, Shared* sm)
 	cameraOn = true;
 
     	/*Get the image data from the camera proxy*/
-    	jderobot::ImageDataPtr data = cprx->getImageData();
+    	jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
     	/*Create the first image obtained from the camera and stores in the shared memory*/
     	this->sm->createImage(data);
     }
@@ -51,7 +52,7 @@ void Control::update()
     if(cameraOn) 
     {
    	//Get de data from the camera and stores de image in the shared memory periodically (see threadcontrol)
-	jderobot::ImageDataPtr data = cprx->getImageData();
+	jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 	this->sm->updateImage(data);
     }
 }

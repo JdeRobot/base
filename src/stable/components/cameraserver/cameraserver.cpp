@@ -162,7 +162,17 @@ class CameraI: virtual public jderobot::Camera {
             return 0;
         }
 
-        virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
+        virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+        {
+        	jderobot::ImageFormat formats;
+
+        	formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+        	formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
+
+        	return formats;
+        }
+
+        virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
             replyTask->pushJob(cb);
         }
 

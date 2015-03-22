@@ -98,7 +98,7 @@ int main(int argc, char** argv){
 			//view->setRealValues(motorsstate["neck"].pos, motorsstate["tilt"].pos, motorsstate["leftPan"].pos, motorsstate["rightPan"].pos);
 
 			/*Get image*/
-			jderobot::ImageDataPtr data = cprx->getImageData();
+			jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 			colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);
 			if (!fmt)
 				throw "Format not supported";
