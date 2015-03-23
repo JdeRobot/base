@@ -52,12 +52,17 @@ namespace cameraview{
   void Viewer::display(cv::Mat imageRGB)
   {
 
-	  Glib::RefPtr<Gdk::Pixbuf> imgBuff =
-			  Gdk::Pixbuf::create_from_data((const guint8*) imageRGB.data,Gdk::COLORSPACE_RGB,false,8,imageRGB.cols,imageRGB.rows,imageRGB.step);
+	  if (!imageRGB.empty()){
 
-	  gtkimage->clear();
-	  gtkimage->set(imgBuff);
-	  displayFrameRate();
+
+		  Glib::RefPtr<Gdk::Pixbuf> imgBuff =
+				  Gdk::Pixbuf::create_from_data((const guint8*) imageRGB.data,Gdk::COLORSPACE_RGB,false,8,imageRGB.cols,imageRGB.rows,imageRGB.step);
+
+		  gtkimage->clear();
+		  gtkimage->set(imgBuff);
+
+		  displayFrameRate();
+	  }
 	  mainwindow->resize(1,1);
 	  while (gtkmain.events_pending())
 		  gtkmain.iteration();
