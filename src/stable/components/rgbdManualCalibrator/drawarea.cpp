@@ -517,7 +517,7 @@ DrawArea::load_line(FILE *myfile)
 		return 0; 
 	/* return EOF; empty line*/
 	else {
-		number=sscanf(buffer_file,"%s %s %s %s %s %s %s %s %s %s %s %s",word1,words[0],words[1],words[2],words[3],words[4],words[5],words[6],words[7],words[8],words[9]);
+		number=sscanf(buffer_file,"%s %s %s %s %s %s %s %s %s %s %s",word1,words[0],words[1],words[2],words[3],words[4],words[5],words[6],words[7],words[8],words[9]);
 		if (strcmp(word1,"worldline")==0){
 			if (number == 9){
 				if (numlines <MAX_LINES){
