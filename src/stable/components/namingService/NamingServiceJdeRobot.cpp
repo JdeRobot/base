@@ -175,7 +175,7 @@ bool NamingServiceJdeRobot::load ()
 					node->ip + ":" + boost::lexical_cast<std::string>(node->port) );
 
 	}
-
+	return true;
 }
 
 std::vector<std::string>& NamingServiceJdeRobot::split(const std::string &s, char delim, std::vector<std::string> &elems) {
