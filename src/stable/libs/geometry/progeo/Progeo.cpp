@@ -648,9 +648,6 @@ void Progeo::saveToFile (std::string filename, bool updateMatrix)
 		updateRTMatrix();
 	}
 
-	char buff[256];
-	int i, j;
-
 	LIBXML_TEST_VERSION;
 
 	doc = xmlNewDoc(BAD_CAST "1.0");
