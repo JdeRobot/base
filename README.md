@@ -2,6 +2,8 @@
 JdeRobot
 ========
 
+[![Build Status](http://jenkins.jderobot.org/buildStatus/icon?job=JdeRobot-GitHub)](http://jenkins.jderobot.org/job/JdeRobot-GitHub/)
+
 # Introduction
 
 
