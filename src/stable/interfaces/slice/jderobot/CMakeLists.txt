@@ -2,6 +2,7 @@
 # Check the ice binaries
 
 set( SLICE2PY_COMMAND /usr/bin/slice2py)
+set( SLICE2JAVA_COMMAND /usr/bin/slice2java)
 
 set( CMAKE_CXX_FLAGS "-lIce -lIceUtil -lIceGrid -lIceBox -lIceStorm -lIceStormService" ) # Opciones para el compilador
 
@@ -32,8 +33,11 @@ FOREACH(currentSourceFile ${ICE_FILES})
                    COMMAND slice2cpp -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source}
 	)
 
-        # Python
+  # Python
 	execute_process(COMMAND ${SLICE2PY_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../python/jderobot)
+
+  # Java
+	execute_process(COMMAND ${SLICE2JAVA_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../java/jderobot)
 
 ENDFOREACH(currentSourceFile)
 
