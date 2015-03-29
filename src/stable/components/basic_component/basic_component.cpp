@@ -7,7 +7,7 @@
 #include "gui/gui.h"
 #include "control/control.h"
 #include "control/threadcontrol.h"
-
+#include <visionlib/colorspaces/colorspacesmm.h>
 // Global members
 
 basic_component::ThreadControl* threadControl;

@@ -28,7 +28,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
     if (0==camera1)
       throw "Invalid proxy";
 
-    jderobot::ImageDataPtr data = camera1->getImageData();
+    jderobot::ImageDataPtr data = camera1->getImageData(camera1->getImageFormat().at(0));
     image1.create(data->description->height, data->description->width, CV_8UC3);
 
     ////////////////////////////// CAMERA2 /////////////////////////////2
@@ -41,7 +41,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
     if (0==camera2)
       throw "Invalid proxy";
 
-    data = camera2->getImageData();
+    data = camera2->getImageData(camera2->getImageFormat().at(0));
     image2.create(data->description->height, data->description->width, CV_8UC3);
 
     ////////////////////////////// LASER //////////////////////////////
@@ -82,8 +82,8 @@ cv::Mat Sensors::getCamera2()
 void Sensors::update()
 {
     encodersData = this->eprx->getEncodersData();
-    jderobot::ImageDataPtr data = camera1->getImageData();
-    jderobot::ImageDataPtr data2 = camera2->getImageData();
+    jderobot::ImageDataPtr data = camera1->getImageData(camera1->getImageFormat().at(0));
+    jderobot::ImageDataPtr data2 = camera2->getImageData(camera2->getImageFormat().at(0));
 
 
     mutex.lock();

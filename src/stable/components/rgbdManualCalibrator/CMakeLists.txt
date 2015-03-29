@@ -34,5 +34,5 @@ TARGET_LINK_LIBRARIES( rgbdManualCalibrator
  JderobotInterfaces
  progeo
  parallelIce
-    #-lxerces-c
+ ${ZLIB_LIBRARIES}    
 )

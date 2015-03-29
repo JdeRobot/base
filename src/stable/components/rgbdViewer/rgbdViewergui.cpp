@@ -218,7 +218,7 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
 }
 
 void
-rgbdViewergui::updateRGB( cv::Mat imageRGB)
+rgbdViewergui::updateRGB(cv::Mat imageRGB)
 {
     CvPoint pt1,pt2;
     if (w_toggle_rgb->get_active()) {

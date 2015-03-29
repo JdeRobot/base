@@ -43,7 +43,7 @@ int main(int argc, char** argv){
 
     while(viewer.isVisible()){
       
-			jderobot::ImageDataPtr data = cprx->getImageData();
+			jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
       colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);
 
       if (!fmt)

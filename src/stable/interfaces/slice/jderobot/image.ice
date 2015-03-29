@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010 JDE Developers Team
+ *  Copyright (C) 1997-2015 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,8 +15,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/. 
  *
- *  Author : David Lobato Bravo <dav.lobato@gmail.com>
- *	     Sara Marugán Alonso <smarugan@gsyc.es>
+ *  Author: Roberto Calvo <rocapal [at] gsyc [dot] es>
+ *			David Lobato Bravo <dav.lobato@gmail.com>
+ *	     	Sara Marugán Alonso <smarugan@gsyc.es>
  *
  */
 
@@ -34,10 +35,11 @@ module jderobot{
    */
   class ImageDescription 
   {
-    int width; /**< %Image width [pixels] */
-    int height;/**< %Image height [pixels] */
-    int size;/**< %Image size [bytes] */
-    string format; /**< %Image format string */
+    int width; 		/**< %Image width [pixels] */
+    int height;		/**< %Image height [pixels] */
+    int size;		/**< %Image size [bytes] */
+    string format; 	/**< %Image format string */
+    string md5sum;
   };
   
 
@@ -46,10 +48,9 @@ module jderobot{
    */
   class ImageData
   { 
-    Time timeStamp; /**< TimeStamp of Data */
-    ImageDescription description; /**< ImageDescription of Data, for convienence purposes */
-    ByteSeq pixelData; /**< The image data itself. The structure of this byte sequence
-			  depends on the image format and compression. */
+    Time timeStamp; 				/**< TimeStamp of Data */
+    ImageDescription description; 	/**< ImageDescription of Data, for convienence purposes */
+    ByteSeq pixelData; 				/**< The image data itself. The structure of this byte sequence depends on the image format and compression. */
   };
 
 
@@ -60,6 +61,7 @@ module jderobot{
     void report( ImageData obj );
   };
 
+  sequence<string> ImageFormat;
 
   /** 
    * Interface to the image provider.
@@ -71,10 +73,12 @@ module jderobot{
      */
     idempotent ImageDescription getImageDescription();
 
+    idempotent ImageFormat getImageFormat();
+	
     /**
      * Returns the latest data.
      */
-    ["amd"] idempotent ImageData getImageData()
+    ["amd"] idempotent ImageData getImageData(string format)
       throws DataNotExistException, HardwareFailedException;
   };
 

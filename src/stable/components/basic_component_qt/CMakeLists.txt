@@ -30,6 +30,7 @@ if (${QT_COMPILE})
         ${QT_LIBRARIES_JDE}
         JderobotInterfaces
         jderobotutil
+        colorspacesmm
         ${ZeroCIce_LIBRARIES}
     )
 ENDIF()

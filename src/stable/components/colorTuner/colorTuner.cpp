@@ -46,7 +46,7 @@ int main(int argc, char** argv){
           throw "Invalid proxy";
 
         while(viewer.isVisible()){
-            jderobot::ImageDataPtr data = cprx->getImageData();
+            jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 
             IplImage* image = cvCreateImage(cvSize(data->description->width,data->description->height), 8 ,3);
 

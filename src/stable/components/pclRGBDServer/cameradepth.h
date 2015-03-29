@@ -7,6 +7,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <visionlib/colorspaces/colorspacesmm.h>
+
 
 namespace kinect{
     pthread_mutex_t mutexDepth;
@@ -34,6 +36,15 @@ namespace kinect{
 
 		    }
 
+		    virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+		    {
+		    	jderobot::ImageFormat formats;
+
+		    	formats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
+
+		    	return formats;
+		    }
+
 		    virtual jderobot::ImageDescriptionPtr getImageDescription(const Ice::Current& c){
 			    return imageDescription;
 		    }
@@ -46,7 +57,7 @@ namespace kinect{
 			    return 0;
 		    }
 
-		    virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
+		    virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
 			    replyTask->pushJob(cb);
 		    }
 

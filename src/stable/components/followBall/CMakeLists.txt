@@ -61,6 +61,7 @@ else()
     TARGET_LINK_LIBRARIES ( followball
         JderobotInterfaces
         jderobotutil
+        colorspacesmm
         ${gtk20_LIBRARIES}
         ${gtkmm_LIBRARIES}
         ${libglademm_LIBRARIES}

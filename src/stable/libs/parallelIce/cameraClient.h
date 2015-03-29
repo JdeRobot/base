@@ -52,6 +52,10 @@ public:
 	bool getPause(){return pauseStatus;};
 	cv::Size getSize(){return size;};
 
+	jderobot::ImageFormat getImageFormat();
+	void setImageFormat (std::string format);
+
+
 private:
 	cv::Mat data;
 	jderobot::CameraPrx prx;
@@ -65,6 +69,7 @@ private:
 	cv::Size size;
 
 	IceUtil::Cond sem;
+	std::string mImageFormat;
 
 };
 

@@ -34,4 +34,5 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     parallelIce
     ${gsl_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
