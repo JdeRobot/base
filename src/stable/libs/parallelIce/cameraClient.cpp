@@ -22,7 +22,9 @@
 #include "cameraClient.h"
 #include <zlib.h>
 
+
 namespace jderobot {
+
 
 cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 
@@ -32,6 +34,8 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
 	this->mImageFormat.empty();
+
+
 
 	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
 	this->cycle=(float)(1/(float)fps)*1000000;
@@ -156,7 +160,6 @@ cameraClient::run(){
 	colorspaces::Image::FormatPtr fmt;
 	IceUtil::Time last;
 
-
 	int iterIndex = 0;
 	int totalRefreshRate = 0;
 
@@ -169,16 +172,12 @@ cameraClient::run(){
 		}
 
 		try{
-			//std::cout << "P: " << this->mImageFormat << std::endl;
 
 			dataPtr = this->prx->getImageData(this->mImageFormat);
 			fmt = colorspaces::Image::Format::searchFormat(dataPtr->description->format);
 			if (!fmt)
 				throw "Format not supported";
 
-			//std::cout << "R: " << dataPtr->description->format << std::endl;
-
-			//dataPtr->description->size*dataPtr->description->width*3
 			if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name ||
 				dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
 			{
@@ -271,9 +270,12 @@ void cameraClient::stop_thread()
 }
 
 void cameraClient::getImage(cv::Mat& image){
+
+
 	this->controlMutex.lock();
 	this->data.copyTo(image);
 	this->controlMutex.unlock();
+
 }
 
 } /* namespace jderobot */

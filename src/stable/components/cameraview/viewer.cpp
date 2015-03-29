@@ -19,16 +19,16 @@
  *
  */
 
-#include "viewer.h" 
+#include "viewer.h"
 #include <iostream>
 #include <cmath>
+#include <string>
 
-namespace cameraview{
-  const std::string gladepath = std::string(GLADE_DIR) + 
-    std::string("/cameraview.glade");
+namespace cameraview {
+  const std::string gladepath = std::string(GLADE_DIR) + std::string("/cameraview.glade");
 
-  Viewer::Viewer() 
-    : gtkmain(0,0),frameCount(0) {
+  Viewer::Viewer()
+    : gtkmain(0, 0), frameCount(0) {
 
     std::cout << "Loading glade\n";
     refXml = Gnome::Glade::Xml::create(gladepath);
