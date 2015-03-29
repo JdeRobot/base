@@ -35,7 +35,6 @@ poolWriteImages::poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize
 		mBuffer = new RingBuffer(mBufferSeconds*1000);
 	}
 
-	//mCamType = this->prx->getImageData()->description->format;
 	mCamType = this->prx->getImageFormat().at(0);
 
 	std::stringstream filePath;

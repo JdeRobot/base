@@ -62,7 +62,7 @@ namespace replayer {
 
 		   imageDescription = (new jderobot::ImageDescription());
 		   prop = ic->getProperties();
-		   //cameraDescription = (new jderobot::CameraDescription());
+		   cameraDescription = (new jderobot::CameraDescription());
 		   startThread = false;
 		   this->width=prop->getPropertyAsIntWithDefault(propertyPrefix + "ImageWidth",320);
 		   this->height=prop->getPropertyAsIntWithDefault(propertyPrefix + "ImageHeight",240);
