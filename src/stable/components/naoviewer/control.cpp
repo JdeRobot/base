@@ -134,7 +134,7 @@ char** Control::getArgv () {
 }
 
 jderobot::ImageDataPtr Control::getImage () {
-    return this->cameraprx->getImageData();
+    return this->cameraprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 }
 
 int Control::connect () { 

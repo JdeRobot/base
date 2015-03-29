@@ -30,6 +30,7 @@
 #include <jderobot/naomotions.h>
 #include <jderobot/camera.h>
 #include <math.h>
+#include <visionlib/colorspaces/colorspacesmm.h>
 
 #include "common.h"
 
