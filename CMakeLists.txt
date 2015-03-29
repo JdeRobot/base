@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # ENV VARS
 SET(gladedir ./)
-SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directorio donde se encuentran las dependencias
+SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
 # Folder with ICE cpp interfaces
 SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/)
 # Folder with ICE python interfaces
