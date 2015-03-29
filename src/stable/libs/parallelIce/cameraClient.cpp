@@ -81,7 +81,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		}
 	}
 
-	jderobot::Logger::getInstance()->info("Using format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+	jderobot::Logger::getInstance()->info("Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
@@ -137,6 +137,14 @@ jderobot::ImageFormat cameraClient::getImageFormat()
 {
 	return this->prx->getImageFormat();
 }
+
+void cameraClient::setImageFormat (std::string format)
+{
+	mImageFormat = format;
+
+	jderobot::Logger::getInstance()->info("Changed format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+};
+
 
 void cameraClient::reset(){
 	this->prx->reset();

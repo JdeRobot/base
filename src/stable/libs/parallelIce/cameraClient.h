@@ -53,7 +53,7 @@ public:
 	cv::Size getSize(){return size;};
 
 	jderobot::ImageFormat getImageFormat();
-	void setImageFormat (std::string format) { mImageFormat = format; };
+	void setImageFormat (std::string format);
 
 
 private:

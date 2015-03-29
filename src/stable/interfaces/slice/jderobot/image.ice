@@ -39,7 +39,7 @@ module jderobot{
     int height;		/**< %Image height [pixels] */
     int size;		/**< %Image size [bytes] */
     string format; 	/**< %Image format string */
-    ByteSeq md5sum;
+    string md5sum;
   };
   
 
