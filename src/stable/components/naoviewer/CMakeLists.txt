@@ -26,6 +26,7 @@ TARGET_LINK_LIBRARIES ( naooperator
     ${OpenCV_LIBRARIES}
     "dl"
     "rt"
+    colorspacesmm
     ${CMAKE_THREAD_LIBS_INIT}
 )
 

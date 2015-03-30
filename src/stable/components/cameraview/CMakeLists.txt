@@ -16,6 +16,8 @@ include_directories(
 
 add_executable (cameraview ${SOURCE_FILES})
 
+
+
 TARGET_LINK_LIBRARIES(cameraview
     ${CMAKE_THREAD_LIBS_INIT} 
     ${OpenCV_LIBRARIES}
@@ -27,4 +29,5 @@ TARGET_LINK_LIBRARIES(cameraview
     parallelIce
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
+${CMAKE_THREAD_LIBS_INIT}
 )
