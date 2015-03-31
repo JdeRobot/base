@@ -60,6 +60,7 @@ namespace colorspaces {
 
   const Image::FormatPtr ImageYUY2::FORMAT_YUY2 = Image::Format::createFormat("YUY2",CV_8UC2,&ImageYUY2::createInstance,&ImageYUY2::imageCvt);
   const Image::FormatPtr ImageGRAY8::FORMAT_GRAY8 = Image::Format::createFormat("GRAY8",CV_8UC1,&ImageGRAY8::createInstance,&ImageGRAY8::imageCvt);
+  const Image::FormatPtr ImageGRAY8::FORMAT_GRAY8_Z = Image::Format::createFormat("GRAY8_Z",CV_8UC1,&ImageGRAY8::createInstance,&ImageGRAY8::imageCvt);
   const Image::FormatPtr ImageHSV8::FORMAT_HSV8 = Image::Format::createFormat("HSV8",CV_8UC3,&ImageHSV8::createInstance,&ImageHSV8::imageCvt);
   const Image::FormatPtr ImageYCRCB::FORMAT_YCRCB = Image::Format::createFormat("YCRCB",CV_8UC3,&ImageYCRCB::createInstance,&ImageYCRCB::imageCvt);
   const Image::FormatPtr ImageNV21::FORMAT_NV21 = Image::Format::createFormat("NV21",CV_8UC2,&ImageNV21::createInstance,&ImageNV21::imageCvt);
