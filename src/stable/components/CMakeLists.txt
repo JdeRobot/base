@@ -5,10 +5,12 @@ IF(NOT DEFINED build-default)
 ENDIF(NOT DEFINED build-default)
 
 FOREACH (component ${LIST_COMPONENTS})
+	if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${component}/CMakeLists.txt)
 	SET(build_${component} ${build-default} CACHE BOOL "Build component ${component}")
 	IF(build_${component})
 		MESSAGE(STATUS "Processing component ${component}")
 	        ADD_SUBDIRECTORY (${component})
 	ENDIF(build_${component})
+	endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${component}/CMakeLists.txt)
 ENDFOREACH()
 
