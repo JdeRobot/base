@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2012 JDE Developers Team
+ *  Copyright (C) 1997-2014 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,20 +14,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors : 
- *            Francisco Miguel Rivas Montero <franciscomiguel.rivas@urjc.es>	
+ *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#ifndef REMOTECONFIG_ICE
-#define REMOTECONFIG_ICE
+#ifndef ARDRONEEXTRA_ICE
+#define ARDRONEEXTRA_ICE
 
-module jderobot{  
-
-	interface remoteConfig{
-		
-		int initConfiguration();
-		string read(int id);
-		int write (string data, int id);
-		int setConfiguration(int id);
+module jderobot{
+	
+	interface ArDroneExtra{
+		void toggleCam();
+		void land();
+		void takeoff();
+		void reset();
+		void recordOnUsb(bool record);
+		void ledAnimation(int type,float duration, float req);
+		void flightAnimation(int type, float duration);
+		void flatTrim();
 	};
 };
-#endif 
+
+#endif
