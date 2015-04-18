@@ -37,6 +37,14 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
+//ICE interfaces
+//#include <quadrotor.h>
+#include <pose3d.h>
+#include <remoteConfig.h>
+#include <camera.h>
+#include <cmdvel.h>
+#include <ardroneextra.h>
+
 #include "quadrotor_parser.h"
 #include "quadrotor_config.h"
 
@@ -44,17 +52,10 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "interfaces/navdatai.h"
 #include <visionlib/colorspaces/colorspacesmm.h>
 
 #include <sstream>
-
-//ICE interfaces
-#include <jderobot/pose3d.h>
-#include <jderobot/camera.h>
-#include <remoteConfig.h>
-#include <cmdvel.h>
-#include <ardroneextra.h>
-#include "interfaces/navdatai.h"
 
 namespace gazebo {
 

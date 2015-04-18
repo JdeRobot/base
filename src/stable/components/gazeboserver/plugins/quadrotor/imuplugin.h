@@ -5,7 +5,7 @@
 #include <gazebo/transport/transport.hh>
 #include <gazebo/msgs/msgs.hh>
 #include <pthread.h>
-#include <jderobot/pose3d.h>
+#include <pose3d.h>
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
