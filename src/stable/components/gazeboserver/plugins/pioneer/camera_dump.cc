@@ -123,8 +123,16 @@ class CameraI: virtual public jderobot::Camera {
 			return 0;
 		}
 
-		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
-			replyTask->pushJob(cb);
+		virtual void getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
+			replyTask->pushJob(cb, format);
+		}
+
+		virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
+		{
+			jderobot::ImageFormat mFormats;
+			mFormats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+
+			return mFormats;
 		}
 
 		virtual std::string startCameraStreaming(const Ice::Current&){
@@ -148,7 +156,9 @@ class CameraI: virtual public jderobot::Camera {
 				   	std::cout << "safeThread" << std::endl;
 				}
 
-				void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb){
+				void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
+
+					mFormat = format;
 					IceUtil::Mutex::Lock sync(requestsMutex);
 					requests.push_back(cb);
 				}
@@ -226,6 +236,7 @@ class CameraI: virtual public jderobot::Camera {
 				CameraI* mycamera;
 				IceUtil::Mutex requestsMutex;
 				std::list<jderobot::AMD_ImageProvider_getImageDataPtr> requests;
+				std::string mFormat;
 		};
 
 		typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;

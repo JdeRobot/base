@@ -4,7 +4,7 @@ PKG_CHECK_MODULES(libxmlpp REQUIRED libxml++-2.6)
 include_directories(${libxmlpp_INCLUDE_DIRS})
 link_directories(${libxmlpp_LIBRARY_DIRS})
 
-find_package(OpenCV REQUIRED)
+#find_package(OpenCV REQUIRED)
 
 include_directories(
     ${ARDRONE_INTERFACES_DIR}
