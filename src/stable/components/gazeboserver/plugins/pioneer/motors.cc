@@ -130,8 +130,8 @@ namespace gazebo {
 		std::cout << "rightVelDesired " << rightVelDesired << std::endl;
 		std::cout << "torque " << torque << std::endl;
 */
-        this->leftJoint->SetVelocity(0, leftVelDesired);
-        this->rightJoint->SetVelocity(0, rightVelDesired);
+        this->leftJoint->SetParam("vel", 0, leftVelDesired);
+        this->rightJoint->SetParam("vel", 0, rightVelDesired);
 
         this->leftJoint->SetParam("fmax", 0, this->torque);
         this->rightJoint->SetParam("fmax", 0, this->torque);
