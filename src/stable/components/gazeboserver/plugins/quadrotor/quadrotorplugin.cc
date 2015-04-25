@@ -540,10 +540,6 @@ public:
 		return mFormats;
 	}
 
-    virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c) {
-        return (mFormats);
-    }
-
 	virtual std::string startCameraStreaming(const Ice::Current&) {}
 
 	virtual void stopCameraStreaming(const Ice::Current&) {}
