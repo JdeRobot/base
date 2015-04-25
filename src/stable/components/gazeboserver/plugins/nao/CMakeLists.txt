@@ -1,5 +1,6 @@
 include_directories(
 	${GAZEBO_INCLUDE_DIRS}
+    ${OGRE_INCLUDE_DIRS}
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR})
@@ -12,8 +13,7 @@ target_link_libraries(camera_nao ${GAZEBO_libraries}
 	CameraPlugin 
 	Ice
 	IceUtil
-	JderobotInterfaces
-	colorspacesmm
+	JderobotInterfaces	
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
 )
