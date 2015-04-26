@@ -497,6 +497,7 @@ public:
 	    this->qp = qp;
 		std::cout << "Constructor CameraI" << std::endl;
 
+        mFormats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 		imageDescription = (new jderobot::ImageDescription());
 
 	    replyTask = new ReplyTask(this);
@@ -521,7 +522,9 @@ public:
 		return cameraDescription;
 	}
 
-	virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) {
+	virtual Ice::Int setCameraDescription(
+            const jderobot::CameraDescriptionPtr &description,
+            const Ice::Current& c) {
 		return 0;
 	}
 
@@ -633,7 +636,8 @@ private:
 	jderobot::ImageDescriptionPtr imageDescription;
 	jderobot::CameraDescriptionPtr cameraDescription;
 	ReplyTaskPtr replyTask;
-    QuadrotorPlugin* qp;		
+    QuadrotorPlugin* qp;
+    jderobot::ImageFormat mFormats;	
 }; // end class CameraI
 
 void* thread_QuadrotorPluginICE ( void* v ) {
