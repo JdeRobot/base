@@ -15,7 +15,7 @@ IF (GAZEBO_INCLUDE_DIRS)
 	INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/worlds DESTINATION /usr/local/share/jderobot/gazebo/ PATTERN .svn EXCLUDE)
 
 	# Install Gazebo Plugins
-	SET(PLUGINS "kinect" "nao" "pioneer" "quadrotor")
+	SET(PLUGINS "kinect" "nao" "pioneer" "quadrotor" "refereeplugin")
 
 	FOREACH (PLUGIN ${PLUGINS})
 		FILE(GLOB_RECURSE SO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/plugins/${PLUGIN}/*.so)
