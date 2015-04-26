@@ -3,7 +3,7 @@
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="secondarywindow">
-    <property name="title" translatable="yes">TELEOPERATE CAMERAS</property>
+    <property name="title" translatable="yes">Basic Component Gtk</property>
     <child>
       <widget class="GtkFixed" id="fixed1">
         <property name="visible">True</property>

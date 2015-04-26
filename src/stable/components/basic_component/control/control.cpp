@@ -1,5 +1,4 @@
 #include "control.h"
-#include <visionlib/colorspaces/colorspacesmm.h>
 
 namespace basic_component {
 
@@ -16,37 +15,35 @@ Control::Control(Ice::CommunicatorPtr ic, Shared* sm)
 
     Ice::PropertiesPtr prop = ic->getProperties();
 
-    /*Checking if the property has value and the creation of the proxy is possible. If the property is not set or has no value
-       it will be set as "miss" and then we will know that we cannot create a proxy with the camera (or other sensors/actuators)*/
     std::string cam = prop->getPropertyWithDefault("basic_component.Camera1.Proxy", "miss");
     if (!boost::iequals(cam , "miss"))
     {
+    	/*Creation of a proxy to connect with cameraServer*/
+   	Ice::ObjectPrx base = ic->propertyToProxy("basic_component.Camera1.Proxy");
+    	if (0==base)
+      		throw "Could not create proxy";
 
-	/*Creation of a proxy to connect with cameraServer*/
-	Ice::ObjectPrx base = ic->propertyToProxy("basic_component.Camera1.Proxy");
-	if (0==base)
-		throw "Could not create proxy";
 	/*cast to CameraPrx*/
-	this->cprx = jderobot::CameraPrx::checkedCast(base);
-	if (0==cprx)
-		throw "Invalid proxy";
+    	cprx = jderobot::CameraPrx::checkedCast(base);
+    	if (0==cprx)
+      		throw "Invalid proxy";
 
 	cameraOn = true;
 
-	/*Get the image data from the camera proxy*/
-	jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-
-	/*Create the first image obtained from the camera and stores in the shared memory*/
-	this->sm->createImage(data);
-	
+    	/*Get the image data from the camera proxy*/
+    	jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+    	/*Create the first image obtained from the camera and stores in the shared memory*/
+    	this->sm->createImage(data);
     }
     else
     {
 	cameraOn = false; 
-	/*Create an empty image if there is no camera connected*/
+	/*Create an empty image because there is no camera connected*/
 	this->sm->createEmptyImage();
 	std::cout << "No camera connected" << std::endl;
     }
+
+
 }
 
 void Control::update()
@@ -58,5 +55,4 @@ void Control::update()
 	this->sm->updateImage(data);
     }
 }
-
 }

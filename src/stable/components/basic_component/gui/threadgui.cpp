@@ -1,12 +1,9 @@
 #include "threadgui.h"
 
-namespace basic_component {
-ThreadGui::ThreadGui(Shared* sm)
+ThreadGui::ThreadGui(Shared* sm, IGui* g)
 {
-    //New instace of Gui with the shared memory object.
-    gui = new Gui(sm);
-    gui->display();
-
+    this->sm = sm;
+    gui = g;
 }
 
 void ThreadGui::start()
@@ -20,8 +17,12 @@ void ThreadGui::start()
         gettimeofday(&a, NULL);
         totala = a.tv_sec * 1000000 + a.tv_usec;
 
-        //updates the gui (image shown in this component)
-        gui->display();
+        if (!this->sm->isClosed()) {
+            //updates the gui (image shown in this component)
+            gui->update();
+	}else {
+	    break;
+        }
 
         gettimeofday(&b, NULL);
         totalb = b.tv_sec * 1000000 + b.tv_usec;
@@ -38,6 +39,4 @@ void ThreadGui::start()
         if (diff < 33)
             usleep(33 * 1000);
     }
-}
-
 }

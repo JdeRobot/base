@@ -4,13 +4,12 @@ namespace basic_component {
 
 ThreadControl::ThreadControl(Ice::CommunicatorPtr ic, Shared* sm)
 {
-    //Creates the control object
     this->control = new Control(ic, sm);
 }
 
 void ThreadControl::start()
 {
-    //Calculates the refreshing time of the control class
+    //Calculates the refreshing time of the sensors class
     struct timeval a, b;
     long totalb, totala;
     long diff;
@@ -38,5 +37,4 @@ void ThreadControl::start()
             usleep(33 * 1000);
     }
 }
-
 }
