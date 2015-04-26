@@ -4,4 +4,4 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 # ubuntu
 
-SET(DEPS "${DEPS} libboost-system1.46.1, libboost-filesystem1.46.1,")
+SET(DEPS "${DEPS} libboost-system1.54.0, libboost-filesystem1.54.0,")
