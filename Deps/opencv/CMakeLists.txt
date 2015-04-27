@@ -30,7 +30,7 @@ IF (OpenCVHG_INCLUDE_DIR)
 			link_directories(${OpenCV_LIBRARIES})	
 		    include_directories(${OpenCV_INCLUDE_DIR})
 
-			SET(DEPS "${DEPS}libopencv-calib3d2.3, libopencv-contrib2.3, libopencv-core2.3, libopencv-features2d2.3, libopencv-flann2.3, libopencv-gpu2.3, libopencv-highgui2.3, libopencv-imgproc2.3, libopencv-legacy2.3, libopencv-ml2.3, libopencv-objdetect2.3, libopencv-video2.3, libcv2.3, libcvaux2.3, libhighgui2.3, libopencv-highgui2.3,")
+			SET(DEPS "${DEPS}libopencv-calib3d2.4, libopencv-contrib2.4, libopencv-core2.4, libopencv-features2d2.4, libopencv-flann2.4, libopencv-gpu2.4, libopencv-highgui2.4, libopencv-imgproc2.4, libopencv-legacy2.4, libopencv-ml2.4, libopencv-objdetect2.4, libopencv-video2.4, libcv2.4, libcvaux2.4, libhighgui2.4, libopencv-highgui2.4,")
 
 	    ENDIF( OpenCV_LIBRARIES )
 
