@@ -1,0 +1,509 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+<model name='red_quadrotor'>
+    <plugin name='red_ardroneplugin' filename='libardroneplugin.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>red_base_link</bodyName>
+      <maxForce>30</maxForce>
+      <offset>0</offset>
+      <drift>0.1</drift>
+      <rollpitchProportionalGain>10.0</rollpitchProportionalGain>
+      <rollpitchDifferentialGain>5.0</rollpitchDifferentialGain>
+      <rollpitchLimit>0.5</rollpitchLimit>
+      <yawProportionalGain>2.0</yawProportionalGain>
+      <yawDifferentialGain>1.0</yawDifferentialGain>
+      <yawLimit>1.5</yawLimit>
+      <velocityXYProportionalGain>5.0</velocityXYProportionalGain>
+      <velocityXYDifferentialGain>1.0</velocityXYDifferentialGain>
+      <velocityXYLimit>2</velocityXYLimit>
+      <velocityZProportionalGain>5.0</velocityZProportionalGain>
+      <velocityZDifferentialGain>1.0</velocityZDifferentialGain>-->
+    <!--      <velocityZProportionalGain>5.0</velocityZProportionalGain>
+      <velocityZDifferentialGain>1.0</velocityZDifferentialGain>
+      <velocityZLimit>0.5</velocityZLimit>
+      <velocityZIntegralGain>1</velocityZIntegralGain>-->
+      <motionSmallNoise>0</motionSmallNoise>
+      <motionDriftNoise>0</motionDriftNoise>
+      <motionDriftNoiseTime>1.0</motionDriftNoiseTime>
+      <cfgFile>redardroneplugin.cfg</cfgFile>
+      <imgTopic>~/red_image_topic</imgTopic>
+      <toggleTopic>~/red_toggle_topic</toggleTopic>
+    </plugin>
+    <plugin name='red_pose_plugin' filename='libposeplugin.so'>
+      <poseTopic>~/red_pose_topic</poseTopic>
+    </plugin>
+    <link name='red_base_link'>
+      <gravity> 1 </gravity>
+      <self_collide> 0 </self_collide>
+      <kinematic> 0 </kinematic>
+      <inertial>
+        <mass> 1.5 </mass>
+        <pose> 0.002540 0 0.000073 0 -0 0 </pose>
+        <inertia>
+          <ixx> 0.013721 </ixx> <ixy> 0 </ixy> <ixz> -0.000023 </ixz>
+          <iyy> 0.014476 </iyy> <iyz> 0 </iyz> <izz> 0.024755 </izz>
+        </inertia>
+      </inertial>
+      <collision name='red_base_link_geom'>
+        <laser_retro> 0 </laser_retro>
+        <pose> 0 0 0 0 -0 0.00000 </pose>
+        <geometry>
+          <mesh>
+            <uri>model://RedArDrone/meshes/quadrotor/red_quadrotorbm.stl</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.200000 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001000 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <geometry>
+          <mesh>
+            <uri>model://RedArDrone/meshes/quadrotor/red_quadrotor.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='red_base_link_geom_ardrone_base_bottomcam'>
+        <laser_retro> 0 </laser_retro>
+        <pose> 0.150000 0 0 -0 -0 -1.570800 </pose>
+        <geometry>
+          <box>
+            <size> 0.001000 0.001000 0.001000 </size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.200000 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001000 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_ardrone_base_bottomcam_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <pose> 0.150000 0 -0 -0 -0 -1.570800 </pose>
+        <geometry>
+          <box>
+            <size> 0.001000 0.001000 0.001000 </size>
+          </box>
+        </geometry>
+      </visual>
+      <collision name='red_base_link_geom_ardrone_base_frontcam'>
+        <laser_retro> 0 </laser_retro>
+        <pose> 0.210000 0 0.010000 -1.570800 -0 -1.570800 </pose>
+        <geometry>
+          <box>
+            <size> 0.001000 0.001000 0.001000 </size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.200000 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001000 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_ardrone_base_frontcam_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <pose> 0.210000 -0 0.010000 -1.570800 -0 -1.570800 </pose>
+        <geometry>
+          <box>
+            <size> 0.001000 0.001000 0.001000 </size>
+          </box>
+        </geometry>
+      </visual>
+      <collision name='red_base_link_geom_bottom_link'>
+        <laser_retro> 0 </laser_retro>
+        <pose> 0.150000 0 0 3.141593 -1.570793 3.141593 </pose>
+        <geometry>
+          <box>
+            <size> 0.01 0.01 0.01 </size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.200000 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_bottom_link_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <pose> 0.15 0 0 3.141590 -1.570790 3.141590 </pose>
+        <geometry>
+          <box>
+            <size> 0.01 0.01 0.01 </size>
+          </box>
+        </geometry>
+        <material>
+          <script> PR2/Blue </script>
+        </material>
+      </visual>
+      <collision name='red_base_link_geom_front_link'>
+        <laser_retro> 0 </laser_retro>
+        <pose> 0.21 0 0.01 0 -0 0 </pose>
+        <geometry>
+          <box>
+            <size> 0.01 0.01 0.01 </size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.2 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_front_link_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <pose> 0.21 0 0.01 0 -0 0 </pose>
+        <geometry>
+          <box>
+            <size> 0.01 0.01 0.01 </size>
+          </box>
+        </geometry>
+        <material>
+          <script> PR2/Blue </script>
+        </material>
+      </visual>
+      <collision name='red_base_link_geom_sonar_link'>
+        <laser_retro> 0 </laser_retro>
+        <pose> -0.15 0 0 3.141593 1.570793 3.141593 </pose>
+        <geometry>
+          <box>
+            <size> 0.01 0.01 0.01 </size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu> -1 </mu>
+              <mu2> -1 </mu2>
+              <fdir1> 0 0 0 </fdir1>
+              <slip1> 0 </slip1>
+              <slip2> 0 </slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient> 0 </restitution_coefficient>
+            <threshold> 100000 </threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm> 0 </soft_cfm>
+              <soft_erp> 0.2 </soft_erp>
+              <kp> 1000000000000 </kp>
+              <kd> 1 </kd>
+              <max_vel> 100 </max_vel>
+              <min_depth> 0.001000 </min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='red_base_link_geom_sonar_link_visual'>
+        <cast_shadows> 1 </cast_shadows>
+        <laser_retro> 0 </laser_retro>
+        <transparency> 0 </transparency>
+        <pose> -0.150000 0 0 3.141590 1.570790 3.141590 </pose>
+        <geometry>
+          <mesh>
+            <uri>model://RedArDrone/meshes/sonar_sensor/max_sonar_ez4.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <sensor name='red_cam_sensor_ventral' type='camera'>
+        <always_on> 0 </always_on>
+        <update_rate> 60 </update_rate>
+        <visualize> 0 </visualize>
+        <pose> 0.15 0 0 0 1.570793 0 </pose>
+        <camera>
+          <horizontal_fov> 1.413717 </horizontal_fov>
+          <image>
+            <width> 240 </width>
+            <height> 240 </height>
+            <format> R8G8B8 </format>
+          </image>
+          <clip>
+            <near> 0.010000 </near>
+            <far> 100 </far>
+          </clip>
+        </camera>
+        <plugin name='red_camventralplugin' filename='libtogglecamplugin.so'>
+          <initialStatus>on</initialStatus>
+          <cameraId>1</cameraId>
+          <imgTopic>~/red_image_topic</imgTopic>
+          <toggleTopic>~/red_toggle_topic</toggleTopic>
+        </plugin>
+      </sensor>
+      <sensor name='red_cam_sensor_frontal' type='camera'>
+        <always_on> 0 </always_on>
+        <update_rate> 60 </update_rate>
+        <visualize> 0 </visualize>
+        <pose> 0.21 0 0.01 0 -0 0 </pose>
+        <camera>
+          <horizontal_fov> 1.413717 </horizontal_fov>
+          <image>
+            <width> 320 </width>
+            <height> 240 </height>
+            <format> R8G8B8 </format>
+          </image>
+          <clip>
+            <near> 0.010000 </near>
+            <far> 100 </far>
+          </clip>
+        </camera>
+        <plugin name='red_camfrontalplugin' filename='libtogglecamplugin.so'>
+          <initialStatus>off</initialStatus>
+          <cameraId>0</cameraId>
+          <imgTopic>~/red_image_topic</imgTopic>
+          <toggleTopic>~/red_toggle_topic</toggleTopic>
+        </plugin>
+      </sensor>-->
+      <sensor name='red_sonar' type='ray'>
+        <always_on> 0 </always_on>
+        <update_rate> 10 </update_rate>
+        <visualize> 0 </visualize>
+        <pose> -0.150000 0 0 3.141593 1.570793 3.141593 </pose>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples> 3 </samples>
+              <resolution> 1 </resolution>
+              <min_angle>-0.349066 </min_angle>
+              <max_angle> 0.349066 </max_angle>
+            </horizontal>
+            <vertical>
+              <samples> 3 </samples>
+              <resolution> 1 </resolution>
+              <min_angle>-0.349066 </min_angle>
+              <max_angle> 0.349066 </max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min> 0.010000 </min>
+            <max> 3 </max>
+            <resolution> 0.010000 </resolution>
+          </range>
+        </ray>
+<!--        <plugin name='red_gazebo_ros_sonar_controller' filename='libhector_gazebo_ros_sonar.so'>
+          <gaussianNoise>0.000</gaussianNoise>
+          <topicName>sonar_height</topicName>
+          <frameId>sonar_link</frameId>
+          <robotNamespace>/</robotNamespace>
+        </plugin>-->
+      </sensor>
+      <sensor name="red_imu_sensor" type="imu">
+        <update_rate>20</update_rate>
+        <plugin name='red_red_imu_plugin' filename='libimuplugin.so'>
+          <cfgFile>redimuplugin.cfg</cfgFile>
+          <poseTopic>~/red_pose_topic</poseTopic>
+        </plugin>
+      </sensor>
+      <sensor name="gps_sensor" type="gps">
+        <update_rate>20</update_rate>
+        <plugin name='red_gps_plugin' filename='libgpsplugin.so'/>
+      </sensor>
+    </link>
+<!--    <plugin name='red_quadrotor_imu_sim' filename='libhector_gazebo_ros_imu.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>100.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <frameId>ardrone_base_link</frameId>
+      <topicName>/ardrone/imu</topicName>
+      <rpyOffsets>0 0 0</rpyOffsets>
+      <gaussianNoise>0</gaussianNoise>
+      <accelDrift>0.5 0.5 0.5</accelDrift>
+      <accelGaussianNoise>0.35 0.35 0.3</accelGaussianNoise>
+      <rateDrift>0.0 0.0 0.0</rateDrift>
+      <rateGaussianNoise>0.00 0.00 0.00</rateGaussianNoise>
+      <headingDrift>0.0</headingDrift>
+      <headingGaussianNoise>0.00</headingGaussianNoise>
+      <robotNamespace>/</robotNamespace>
+    </plugin>-->
+<!--    <plugin name='red_quadrotor_baro_sim' filename='libhector_gazebo_ros_baro.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>pressure_height</topicName>
+      <altimeterTopicName>altimeter</altimeterTopicName>
+      <offset>0</offset>
+      <drift>0.1</drift>
+      <gaussianNoise>0.5</gaussianNoise>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+    <plugin name='red_quadrotor_magnetic_sim' filename='libhector_gazebo_ros_magnetic.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>magnetic</topicName>
+      <offset>0 0 0</offset>
+      <drift>0.0 0.0 0.0</drift>
+      <gaussianNoise>1.3e-2 1.3e-2 1.3e-2</gaussianNoise>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+    <plugin name='red_quadrotor_gps_sim' filename='libhector_gazebo_ros_gps.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>4.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>fix</topicName>
+      <velocityTopicName>fix_velocity</velocityTopicName>
+      <drift>5.0 5.0 5.0</drift>
+      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <velocityDrift>0 0 0</velocityDrift>
+      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+    <plugin name='red_quadrotor_groundtruth_sim' filename='libgazebo_ros_p3d.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>100.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>ground_truth/state</topicName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <frameName>map</frameName>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+    <plugin name='red_quadrotor_simple_controller' filename='libhector_gazebo_quadrotor_simple_controller.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>0.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <stateTopic>ground_truth/state</stateTopic>
+      <imuTopic>ardrone/imu</imuTopic>
+      <topicName>cmd_vel</topicName>
+      <rollpitchProportionalGain>10.0</rollpitchProportionalGain>
+      <rollpitchDifferentialGain>5.0</rollpitchDifferentialGain>
+      <rollpitchLimit>0.5</rollpitchLimit>
+      <yawProportionalGain>2.0</yawProportionalGain>
+      <yawDifferentialGain>1.0</yawDifferentialGain>
+      <yawLimit>1.5</yawLimit>
+      <velocityXYProportionalGain>5.0</velocityXYProportionalGain>
+      <velocityXYDifferentialGain>1.0</velocityXYDifferentialGain>
+      <velocityXYLimit>2</velocityXYLimit>
+      <velocityZProportionalGain>5.0</velocityZProportionalGain>
+      <velocityZDifferentialGain>1.0</velocityZDifferentialGain>
+      <velocityZLimit>0.5</velocityZLimit>
+      <maxForce>30</maxForce>
+      <motionSmallNoise>0.05</motionSmallNoise>
+      <motionDriftNoise>0.03</motionDriftNoise>
+      <motionDriftNoiseTime>5.0</motionDriftNoiseTime>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+    <plugin name='red_quadrotor_state_controller' filename='libhector_gazebo_quadrotor_state_controller.so'>
+      <alwaysOn>1</alwaysOn>
+      <updateRate>0.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <stateTopic>ground_truth/state</stateTopic>
+      <imuTopic>ardrone/imu</imuTopic>
+      <sonarTopic>sonar_height</sonarTopic>
+      <topicName>cmd_vel</topicName>
+      <robotNamespace>/</robotNamespace>
+    </plugin>-->
+  </model>
