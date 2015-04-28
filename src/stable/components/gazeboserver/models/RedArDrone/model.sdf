@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
 <model name='red_quadrotor'>
-    <plugin name='red_ardroneplugin' filename='libardroneplugin.so'>
+    <plugin name='red_ardroneplugin' filename='libquadrotorplugin.so'>
       <alwaysOn>1</alwaysOn>
       <updateRate>10.0</updateRate>
       <bodyName>red_base_link</bodyName>
