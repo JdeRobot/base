@@ -1,9 +1,7 @@
-PKG_CHECK_MODULES(OGRE OGRE )
+PKG_CHECK_MODULES(OGRE OGRE)
 #include_directories(${OGRE_INCLUDE_DIRS})
-link_directories(${OGRE_LIBRARY_DIRS})
 
-
-if (OGRE_LIBRARY_DIRS)
+if (OGRE_VERSION)
 
 	FOREACH(ogreInc ${OGRE_INCLUDE_DIRS})
         	include_directories(${ogreInc}/Paging)
