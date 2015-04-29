@@ -74,7 +74,7 @@ namespace navdata
 /*		if (IS_ARDRONE2){
 			data->vehicle=1;
 		}else{*/
-			data->vehicle=0;
+			data->vehicle=10;
 //		}
 		
 /*		data->batteryPercent=navdata_raw.navdata_demo.vbat_flying_percentage;
