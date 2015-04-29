@@ -102,10 +102,9 @@ void Logger::trace (Levels level, std::string message)
 
 	if (mFs != NULL)
 	{
-		*mFs << mLogDateTime.str();
-
 		if (mLogLevel <= level)
 		{
+		    *mFs << mLogDateTime.str();
 			if (mLastLevel != level)
 				*mFs << levelStr[level] << " ";
 
