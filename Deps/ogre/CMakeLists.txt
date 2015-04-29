@@ -3,7 +3,7 @@ PKG_CHECK_MODULES(OGRE OGRE )
 link_directories(${OGRE_LIBRARY_DIRS})
 
 
-if (GAZEBO_INCLUDE_DIRS)
+if (OGRE_LIBRARY_DIRS)
 
 	FOREACH(ogreInc ${OGRE_INCLUDE_DIRS})
         	include_directories(${ogreInc}/Paging)
