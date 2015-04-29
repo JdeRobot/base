@@ -34,10 +34,9 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
 	this->mImageFormat.empty();
+	this->newData=false;
 
-
-
-	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
+	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",30);
 	this->cycle=(float)(1/(float)fps)*1000000;
 	try{
 		baseCamera = ic->propertyToProxy(prefix+"Proxy");
@@ -105,7 +104,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::str
 	this->refreshRate=0;
 	this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
 
-	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",10);
+	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",25);
 	this->cycle=(float)(1/(float)fps)*1000000;
 
 	try{
@@ -163,7 +162,7 @@ void cameraClient::pause(){
 void cameraClient::resume(){
 	this->controlMutex.lock();
 	this->pauseStatus=false;
-	this->sem.broadcast();
+	this->semWait.broadcast();
 	this->controlMutex.unlock();
 }
 
@@ -182,7 +181,7 @@ cameraClient::run(){
 		iterIndex ++;
 		if (pauseStatus){
 			IceUtil::Mutex::Lock sync(this->controlMutex);
-			this->sem.wait(sync);
+			this->semWait.wait(sync);
 		}
 
 		try{
@@ -272,6 +271,8 @@ cameraClient::run(){
 
           this->controlMutex.lock();
           cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
+          this->newData=true;
+          this->semBlock.broadcast();
           this->controlMutex.unlock();
 
           img_gray8.release();
@@ -280,11 +281,6 @@ cameraClient::run(){
 
         if (origin_buf)
           free(origin_buf);
-
-
-
-
-
 			}
 			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name){
         colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(dataPtr->pixelData[0]));
@@ -305,7 +301,9 @@ cameraClient::run(){
 
 		}
 
-		int process = this->cycle - (IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds());
+		int process = (IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds());
+
+
 
 		if (process > (int)cycle ){
 			jderobot::Logger::getInstance()->warning("--------" + prefix + " adquisition timeout-");
@@ -339,12 +337,18 @@ void cameraClient::stop_thread()
 	_done = true;
 }
 
-void cameraClient::getImage(cv::Mat& image){
+void cameraClient::getImage(cv::Mat& image, bool blocked){
 
-
-	this->controlMutex.lock();
-	this->data.copyTo(image);
-	this->controlMutex.unlock();
+  {
+    IceUtil::Mutex::Lock sync(this->controlMutex);
+    if (blocked){
+      if (!this->newData){
+        this->semBlock.wait(sync);
+        this->newData=false;
+      }
+    }
+    this->data.copyTo(image);
+  }
 
 }
 

@@ -43,7 +43,7 @@ public:
 	virtual void run();
 
 	//callbacks
-	void getImage(cv::Mat& image);
+	void getImage(cv::Mat& image, bool blocked=false);
 	int getRefreshRate(){return refreshRate;};
 	void pause();
 	void resume();
@@ -57,7 +57,9 @@ public:
 
 
 private:
+	bool newData;
 	cv::Mat data;
+  IceUtil::Cond semBlock;
 	jderobot::CameraPrx prx;
 	long long int cycle;
 	//int type; //0 color 1 depth
@@ -68,7 +70,7 @@ private:
 	bool pauseStatus;
 	cv::Size size;
 
-	IceUtil::Cond sem;
+	IceUtil::Cond semWait;
 	std::string mImageFormat;
 
 };
