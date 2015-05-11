@@ -4,8 +4,7 @@
 set( SLICE2PY_COMMAND /usr/bin/slice2py)
 set( SLICE2JAVA_COMMAND /usr/bin/slice2java)
 
-set( CMAKE_CXX_FLAGS "-lIce -lIceUtil -lIceGrid -lIceBox -lIceStorm -lIceStormService" ) # Opciones para el compilador
-
+unset(ICE_FILES CACHE)
 FILE(GLOB ICE_FILES "*.ice")
 
 INCLUDE_DIRECTORIES(
@@ -18,6 +17,8 @@ INCLUDE_DIRECTORIES(
 
 
 FOREACH(currentSourceFile ${ICE_FILES})
+
+
 	string(REGEX REPLACE ".*/(.*)" "\\1" new_source ${currentSourceFile})
 	string(REGEX REPLACE ".*/(.*).ice" "\\1.cpp" new_source1 ${currentSourceFile})
 	string(REGEX REPLACE ".*/(.*).ice" "\\1.h" new_source2 ${currentSourceFile})
@@ -31,18 +32,19 @@ FOREACH(currentSourceFile ${ICE_FILES})
 	# C++
 	add_custom_command(OUTPUT ${new_source1} ${new_source2}
                    COMMAND slice2cpp -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source}
+                   DEPENDS ${currentSourceFile}
 	)
 
   # Python
-	execute_process(COMMAND ${SLICE2PY_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../python/jderobot)
+	execute_process(COMMAND ${SLICE2PY_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../python/jderobot INPUT_FILE ${currentSourceFile})
 
   # Java
-	execute_process(COMMAND ${SLICE2JAVA_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../java/jderobot)
+	execute_process(COMMAND ${SLICE2JAVA_COMMAND} -I${CMAKE_CURRENT_SOURCE_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_SOURCE_DIR}/../../java/jderobot INPUT_FILE ${currentSourceFile})
 
 ENDFOREACH(currentSourceFile)
 
 
 #MESSAGE("A:" ${SOURCE_FILES})
 
-add_library (JderobotInterfaces SHARED ${SOURCE_FILES})
+add_library (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
 TARGET_LINK_LIBRARIES(JderobotInterfaces ${ice2_LIBRARIES})
