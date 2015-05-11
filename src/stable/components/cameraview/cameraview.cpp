@@ -58,6 +58,7 @@ int main(int argc, char** argv){
 
 			camRGB->getImage(rgb);
 			viewer.display(rgb);
+			viewer.displayFrameRate(camRGB->getRefreshRate());
 		}
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
