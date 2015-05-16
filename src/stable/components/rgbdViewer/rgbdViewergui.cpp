@@ -44,6 +44,7 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
         cam_depth_active=0;
     modesAvalables=0;
     if (pointCloud) {
+
         if ((rgb)&&(depth)) {
             reconstructMode=1;
             modesAvalables=2; //only one mode
@@ -55,7 +56,7 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
     }
     else {
         if ((rgb)&&(depth)) {
-            reconstructMode=1;
+            reconstructMode=0;
             modesAvalables=1; //only point cloud mode
         }
         else {
