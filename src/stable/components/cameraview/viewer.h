@@ -41,6 +41,7 @@ namespace cameraview{
 
     //! function that actually displays the image in a window
     void display( cv::Mat imageRGB);
+    void displayFrameRate(int rate);
 
   private:
     Glib::RefPtr<Gnome::Glade::Xml> refXml;
@@ -50,7 +51,7 @@ namespace cameraview{
     Gtk::Main gtkmain;
   
     //! display the frame rate of the received images
-    void displayFrameRate();
+
       
     //! time variables for calculating number of frames per second 
     IceUtil::Time currentFrameTime,oldFrameTime;
