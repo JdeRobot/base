@@ -2,6 +2,7 @@
 
 ```sh
 $ git clone https://github.com/OpenKinect/libfreenect2
+$ sudo apt-get install -y build-essential libturbojpeg libtool autoconf libudev-dev cmake mesa-common-dev freeglut3-dev libxrandr-dev doxygen libxi-dev libopencv-dev automake
 $ cd libfreenect2/depends
 $ ./install_ubuntu.sh
 $ cd ..
@@ -11,8 +12,14 @@ $ cmake .
 $ make 
 $ sudo make install
 ```
+See [libfreenect2 official guide](https://github.com/OpenKinect/libfreenect2) for more details.
 
 # Troubleshooting
+libturbojpeg linker error:
+
+```sh
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/libturbojpeg.so.0.0.0 /usr/lib/x86_64-linux-gnu/libturbojpeg.so
+```
 OpenCL not found:
 /home/frivas/svn/others/libfreenect2/examples/protonect/src/opencl_depth_packet_processor.cpp:45:21: fatal error: CL/cl.hpp: No existe el archivo o el directorio
 
