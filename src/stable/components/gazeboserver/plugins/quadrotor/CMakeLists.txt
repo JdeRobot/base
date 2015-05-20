@@ -2,8 +2,6 @@ PKG_CHECK_MODULES(libxmlpp REQUIRED libxml++-2.6)
 include_directories(${libxmlpp_INCLUDE_DIRS})
 link_directories(${libxmlpp_LIBRARY_DIRS})
 
-#find_package(OpenCV REQUIRED)
-
 include_directories(
 	${GAZEBO_INCLUDE_DIRS}
     ${INTERFACES_CPP_DIR}
@@ -56,3 +54,10 @@ target_link_libraries(togglecamplugin
 	${GAZEBO_libraries}
     ${PROTOBUF_LIBRARIES}
 )
+
+
+INSTALL (TARGETS quadrotorplugin imuplugin poseplugin togglecamplugin DESTINATION share/jderobot/gazebo/plugins/quadrotor/ )
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
+
+

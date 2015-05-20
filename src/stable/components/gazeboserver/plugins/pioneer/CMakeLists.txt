@@ -45,3 +45,10 @@ target_link_libraries(pose3dencoders ${GAZEBO_libraries}
 	${ZeroCIce_LIBRARIES} 
     colorspacesmm
     JderobotInterfaces)
+
+
+INSTALL (TARGETS motors encoders laser camera_dump pose3dencoders DESTINATION share/jderobot/gazebo/plugins/pioneer/ )
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/pioneer/ )
+
+

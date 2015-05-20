@@ -6,22 +6,12 @@ IF (GAZEBO_INCLUDE_DIRS)
 	## INSTALL ##
 
 	# Install script
-	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/gazebo-setup.sh DESTINATION /usr/local/share/jderobot/gazebo/)
+	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/gazebo-setup.sh DESTINATION share/jderobot/gazebo/)
 
 	# Install Gazebo Models
-	INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models DESTINATION /usr/local/share/jderobot/gazebo/ PATTERN .svn EXCLUDE)
+	INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/models DESTINATION share/jderobot/gazebo/ PATTERN .svn EXCLUDE)
 
 	# Install Gazebo Worlds
-	INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/worlds DESTINATION /usr/local/share/jderobot/gazebo/ PATTERN .svn EXCLUDE)
-
-	# Install Gazebo Plugins
-	SET(PLUGINS "kinect" "nao" "pioneer" "quadrotor" "refereeplugin")
-
-	FOREACH (PLUGIN ${PLUGINS})
-		FILE(GLOB_RECURSE SO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/plugins/${PLUGIN}/*.so)
-		INSTALL (FILES ${SO_FILES} DESTINATION /usr/local/share/jderobot/gazebo/plugins/${PLUGIN}/ )
-		FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/plugins/${PLUGIN}/*.cfg)
-		INSTALL (FILES ${CFG_FILES} DESTINATION /usr/local/share/jderobot/gazebo/plugins/${PLUGIN}/ )	
-	ENDFOREACH(PLUGIN)
+	INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/worlds DESTINATION share/jderobot/gazebo/ PATTERN .svn EXCLUDE)
 
 ENDIF()
