@@ -26,8 +26,8 @@ target_link_libraries(kinectPlugin
     ${ZeroCIce_LIBRARIES}
 )
 
-INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinectPlugin/ )
+INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinect/ )
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/kinectPlugin/ )	
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/kinect/ )	
 
 endif()
