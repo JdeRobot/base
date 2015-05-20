@@ -42,7 +42,7 @@ public:
 	virtual ~pointcloudClient();
 	virtual void run();
 
-	void getData(std::vector<jderobot::RGBPoint>& cloud);
+	void getData(std::vector<jderobot::RGBPoint>& cloud, bool blocked=false);
 	int getRefreshRate(){return refreshRate;};
 	void pause();
 	void resume();
@@ -51,6 +51,9 @@ public:
 	void stop_thread();
 
 private:
+	bool newData;
+	IceUtil::Cond semBlock;
+
 	std::string prefix;
 	std::vector<jderobot::RGBPoint> data;
 	jderobot::pointCloudPrx prx;
