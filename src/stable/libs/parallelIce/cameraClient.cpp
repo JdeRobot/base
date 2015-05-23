@@ -243,6 +243,7 @@ cameraClient::run(){
 				this->controlMutex.lock();
 				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
 				this->newData=true;
+
 				this->semBlock.broadcast();
 				this->controlMutex.unlock();
 				img_rgb888.release();
@@ -294,6 +295,7 @@ cameraClient::run(){
 				this->controlMutex.lock();
 				cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
 				this->newData=true;
+
 				this->semBlock.broadcast();
 				this->controlMutex.unlock();
 				img_gray8.release();
@@ -346,14 +348,13 @@ void cameraClient::stop_thread()
 }
 
 void cameraClient::getImage(cv::Mat& image, bool blocked){
-
 	{
 		IceUtil::Mutex::Lock sync(this->controlMutex);
 		if (blocked){
 			if (!this->newData){
 				this->semBlock.wait(sync);
-				this->newData=false;
 			}
+			this->newData=false;
 		}
 		this->data.copyTo(image);
 	}

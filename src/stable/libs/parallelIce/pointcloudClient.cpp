@@ -105,6 +105,8 @@ void pointcloudClient::resume(){
 	this->controlMutex.lock();
 		this->pauseStatus=false;
 		this->sem.broadcast();
+		this->semBlock.broadcast();
+
 	this->controlMutex.unlock();
 }
 
@@ -131,6 +133,7 @@ void pointcloudClient::run(){
 			this->data.resize(localCloud->p.size());
 			std::copy( localCloud->p.begin(), localCloud->p.end(), this->data.begin() );
 			this->controlMutex.unlock();
+			this->semBlock.broadcast();
 		}
 		catch(...){
 			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
@@ -168,12 +171,13 @@ void  pointcloudClient::getData(std::vector<jderobot::RGBPoint>& cloud,bool bloc
     if (blocked){
       if (!this->newData){
         this->semBlock.wait(sync);
-        this->newData=false;
       }
+      this->newData=false;
     }
 	cloud.resize(this->data.size());
 	std::copy( this->data.begin(), this->data.end(), cloud.begin() );
 	this->data.clear();
+
 
 }
 
