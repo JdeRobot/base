@@ -394,116 +394,13 @@
             <resolution> 0.010000 </resolution>
           </range>
         </ray>
-<!--        <plugin name='gazebo_ros_sonar_controller' filename='libhector_gazebo_ros_sonar.so'>
-          <gaussianNoise>0.000</gaussianNoise>
-          <topicName>sonar_height</topicName>
-          <frameId>sonar_link</frameId>
-          <robotNamespace>/</robotNamespace>
-        </plugin>-->
       </sensor>
       <sensor name="imu_sensor" type="imu">
         <update_rate>20</update_rate>
         <plugin name='imu_plugin' filename='libimuplugin.so'>
           <cfgFile>imuplugin.cfg</cfgFile>
           <poseTopic>~/pose_topic</poseTopic>
-        </plugin>-->
-      </sensor>
-      <sensor name="gps_sensor" type="gps">
-        <update_rate>20</update_rate>
-        <plugin name='gps_plugin' filename='libgpsplugin.so'/>
+        </plugin>
       </sensor>
     </link>
-<!--    <plugin name='quadrotor_imu_sim' filename='libhector_gazebo_ros_imu.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>100.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <frameId>ardrone_base_link</frameId>
-      <topicName>/ardrone/imu</topicName>
-      <rpyOffsets>0 0 0</rpyOffsets>
-      <gaussianNoise>0</gaussianNoise>
-      <accelDrift>0.5 0.5 0.5</accelDrift>
-      <accelGaussianNoise>0.35 0.35 0.3</accelGaussianNoise>
-      <rateDrift>0.0 0.0 0.0</rateDrift>
-      <rateGaussianNoise>0.00 0.00 0.00</rateGaussianNoise>
-      <headingDrift>0.0</headingDrift>
-      <headingGaussianNoise>0.00</headingGaussianNoise>
-      <robotNamespace>/</robotNamespace>
-    </plugin>-->
-<!--    <plugin name='quadrotor_baro_sim' filename='libhector_gazebo_ros_baro.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>10.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <topicName>pressure_height</topicName>
-      <altimeterTopicName>altimeter</altimeterTopicName>
-      <offset>0</offset>
-      <drift>0.1</drift>
-      <gaussianNoise>0.5</gaussianNoise>
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-    <plugin name='quadrotor_magnetic_sim' filename='libhector_gazebo_ros_magnetic.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>10.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <topicName>magnetic</topicName>
-      <offset>0 0 0</offset>
-      <drift>0.0 0.0 0.0</drift>
-      <gaussianNoise>1.3e-2 1.3e-2 1.3e-2</gaussianNoise>
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-    <plugin name='quadrotor_gps_sim' filename='libhector_gazebo_ros_gps.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>4.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <topicName>fix</topicName>
-      <velocityTopicName>fix_velocity</velocityTopicName>
-      <drift>5.0 5.0 5.0</drift>
-      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
-      <velocityDrift>0 0 0</velocityDrift>
-      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-    <plugin name='quadrotor_groundtruth_sim' filename='libgazebo_ros_p3d.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>100.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <topicName>ground_truth/state</topicName>
-      <gaussianNoise>0.0</gaussianNoise>
-      <frameName>map</frameName>
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-    <plugin name='quadrotor_simple_controller' filename='libhector_gazebo_quadrotor_simple_controller.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>0.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <stateTopic>ground_truth/state</stateTopic>
-      <imuTopic>ardrone/imu</imuTopic>
-      <topicName>cmd_vel</topicName>
-      <rollpitchProportionalGain>10.0</rollpitchProportionalGain>
-      <rollpitchDifferentialGain>5.0</rollpitchDifferentialGain>
-      <rollpitchLimit>0.5</rollpitchLimit>
-      <yawProportionalGain>2.0</yawProportionalGain>
-      <yawDifferentialGain>1.0</yawDifferentialGain>
-      <yawLimit>1.5</yawLimit>
-      <velocityXYProportionalGain>5.0</velocityXYProportionalGain>
-      <velocityXYDifferentialGain>1.0</velocityXYDifferentialGain>
-      <velocityXYLimit>2</velocityXYLimit>
-      <velocityZProportionalGain>5.0</velocityZProportionalGain>
-      <velocityZDifferentialGain>1.0</velocityZDifferentialGain>
-      <velocityZLimit>0.5</velocityZLimit>
-      <maxForce>30</maxForce>
-      <motionSmallNoise>0.05</motionSmallNoise>
-      <motionDriftNoise>0.03</motionDriftNoise>
-      <motionDriftNoiseTime>5.0</motionDriftNoiseTime>
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-    <plugin name='quadrotor_state_controller' filename='libhector_gazebo_quadrotor_state_controller.so'>
-      <alwaysOn>1</alwaysOn>
-      <updateRate>0.0</updateRate>
-      <bodyName>base_link</bodyName>
-      <stateTopic>ground_truth/state</stateTopic>
-      <imuTopic>ardrone/imu</imuTopic>
-      <sonarTopic>sonar_height</sonarTopic>
-      <topicName>cmd_vel</topicName>
-      <robotNamespace>/</robotNamespace>
-    </plugin>-->
   </model>
