@@ -1,6 +1,8 @@
 
 if (${QT_COMPILE})
 
+	SET(CMAKE_AUTOMOC ON)
+
     SET(qt_SOURCES main.cpp depuratewindow.cpp MyAlgorithm.cpp
 				   robot/actuators.cpp robot/robot.cpp robot/sensors.cpp robot/threadupdaterobot.cpp 
 			       gui/gui.cpp gui/threadupdategui.cpp
@@ -17,9 +19,6 @@ if (${QT_COMPILE})
     )
 
     SET(qt_RESOURCES resources.qrc)
-    QT4_ADD_RESOURCES(qt_RESOURCES_RCC ${qt_RESOURCES})
-
-    QT4_WRAP_CPP(qt_HEADERS_MOC ${qt_HEADERS})
 
     ADD_DEFINITIONS(${QT_DEFINITIONS})
 
@@ -47,5 +46,11 @@ if (${QT_COMPILE})
         ${ZeroCIce_LIBRARIES}
 ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
     )
+
+INSTALL (TARGETS introrob_qt DESTINATION bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+
+
 ENDIF()
+
+
 

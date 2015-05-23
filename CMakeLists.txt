@@ -157,19 +157,6 @@ FOREACH(header ${HEADERS_FILES})
 	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/)
 ENDFOREACH(header)
 
-
-# Install Executables
-list_subdirectories2( LIST_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/ 1)
-
-FOREACH (currentBin ${LIST_COMPONENTS})
-    #SET(EXIST EXIST-NOTFOUND)
-    find_file(EXIST NAMES ${currentBin} PATHS ${CMAKE_CURRENT_SOURCE_DIR}/src/components/${currentBin})
-    #IF (EXIST)
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
-    #ENDIF(EXIST)
-    #MESSAGE("${EXIST}")
-ENDFOREACH(currentBin)
-
 # Install interfaces headers
 FILE(GLOB HEADER_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/*.h)
 INSTALL (FILES ${HEADER_INTERFACE_FILES} DESTINATION /usr/local/include/jderobot)

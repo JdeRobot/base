@@ -1,0 +1,1 @@
+INSTALL (FILES icestorm DESTINATION bin)

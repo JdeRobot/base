@@ -8,7 +8,7 @@ if (${QT_COMPILE})
 
     add_library(guiqt SHARED gui/gui_qt/gui.cc ${qt_HEADERS_MOC})
     target_link_libraries (guiqt ${QT_LIBRARIES_JDE})
-    
+    INSTALL (TARGETS guiqt DESTINATION lib/jderobot)
 endif()		
 	       
 #Generating gtk shared library
@@ -19,6 +19,9 @@ target_link_libraries (guigtk
     ${gtkmm3_LIBRARIES}  	
     ${gthread_LIBRARIES}
 )
+
+
+    INSTALL (TARGETS guigtk DESTINATION lib/jderobot)
 
 include_directories(
     ${INTERFACES_CPP_DIR}
@@ -52,3 +55,7 @@ target_link_libraries(basic_component
 if (${QT_COMPILE})
     target_link_libraries(basic_component guiqt dl)
 endif()
+
+INSTALL (TARGETS basic_component DESTINATION bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+
+

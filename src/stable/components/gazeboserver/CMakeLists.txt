@@ -4,7 +4,6 @@ IF (GAZEBO_INCLUDE_DIRS)
 
 
 	## INSTALL ##
-
 	# Install script
 	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/gazebo-setup.sh DESTINATION share/jderobot/gazebo/)
 
