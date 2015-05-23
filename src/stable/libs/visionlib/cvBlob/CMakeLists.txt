@@ -18,7 +18,7 @@
 #
 
 
-set(cvBlob_CVBLOB cvblob.cpp
+set(cvBlob_CPP cvblob.cpp
                    cvlabel.cpp
 		   cvaux.cpp
 		   cvcontour.cpp
@@ -26,19 +26,17 @@ set(cvBlob_CVBLOB cvblob.cpp
 		   cvcolor.cpp
 )
 
-set_source_files_properties(${cvBlob_SRC}
+set(cvBlob_H cvblob.h)
+
+
+set_source_files_properties(${cvBlob_CPP} 
                             PROPERTIES
                             COMPILE_FLAGS "-O3"
 )
 
-add_library(cvblob SHARED ${cvBlob_CVBLOB})
+add_library(cvblob SHARED ${cvBlob_CPP} ${cvBlob_H})
 
 target_link_libraries(cvblob ${OPENGL_LIBRARIES})
 
-#install(FILES cvblob.h DESTINATION include)
-
-#install(TARGETS cvblob
-#       RUNTIME DESTINATION bin
-#        LIBRARY DESTINATION lib
-#        ARCHIVE DESTINATION lib
-#)
+INSTALL (TARGETS cvblob DESTINATION lib/jderobot)
+INSTALL (FILES ${cvblob_H} DESTINATION include/jderobot/visionlib/cvblob/)

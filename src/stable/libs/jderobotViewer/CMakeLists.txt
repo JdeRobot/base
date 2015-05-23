@@ -5,14 +5,12 @@ if (with_pcl)
 
 
     include_directories( ${LIBS_DIR}/)
-    set(jderobotViewerSources JderobotViewer.cpp JderobotViewer.h)
+    set(jderobotViewer_Sources_CPP JderobotViewer.cpp)
+    set(jderobotViewer_Sources_H JderobotViewer.h)
 
-    add_library (jderobotViewer STATIC ${jderobotViewerSources})
-    TARGET_LINK_LIBRARIES(jderobotViewer ${Boost_LIBRARIES})
+    add_library (jderobotViewer SHARED ${jderobotViewer_Sources_CPP} ${jderobotViewer_Sources_H})
+    TARGET_LINK_LIBRARIES(jderobotViewer ${Boost_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
-    add_library (jderobotViewerShare SHARED ${jderobotViewerSources})
-    TARGET_LINK_LIBRARIES(jderobotViewerShare ${Boost_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
-
-
-    set_target_properties(jderobotViewerShare PROPERTIES OUTPUT_NAME jderobotViewer)
+    INSTALL (TARGETS jderobotViewer DESTINATION lib/jderobot)
+    INSTALL (FILES ${jderobotViewer_H} DESTINATION include/jderobot/jderobotViewer/)
 endif()

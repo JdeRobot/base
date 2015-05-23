@@ -4,9 +4,11 @@ include_directories(${LIBS_DIR}) # Aquí se alojan las cabeceras de las interfac
 include_directories( ${LIBS_DIR}/)
 
 
-set(SRC_FILES ns.h ns.cpp) 
+SET(ns_CPP ns.cpp)
+SET(ns_H ns.h)
+
  
-ADD_LIBRARY(ns SHARED ${SRC_FILES})
+ADD_LIBRARY(ns SHARED ${ns_CPP} ${ns_H})
 
 target_link_libraries(ns 
     JderobotInterfaces
@@ -16,3 +18,5 @@ target_link_libraries(ns
 
 SET_PROPERTY(TARGET ns PROPERTY SOVERSION 0.1.0)
  
+INSTALL (TARGETS ns DESTINATION lib/jderobot)
+INSTALL (FILES ${ns_H} DESTINATION include/jderobot/ns/)

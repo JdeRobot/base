@@ -2,6 +2,24 @@ project (jderobot)
 
 cmake_minimum_required(VERSION 2.8)
 
+
+#check compiller
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	include(CheckCXXCompilerFlag)
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+  # Si el compilador es superior a 4.6 debemos incluir una opción adicional
+	message (version: ${CMAKE_CXX_COMPILER_VERSION})
+	if(COMPILER_SUPPORTS_CXX11)
+    	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	elseif(COMPILER_SUPPORTS_CXX0X)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	else()
+		    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+	endif()
+
+endif()
+
 # ENV VARS
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
@@ -131,8 +149,6 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
-
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
 
 # Install python files
@@ -141,32 +157,6 @@ FOREACH(header ${HEADERS_FILES})
 	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/)
 ENDFOREACH(header)
 
-
-# install all libraries 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*/*.so*)
-FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
-ENDFOREACH(lib)
-
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/visionlib/*/*.so*)
-FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
-ENDFOREACH(lib)
-
-
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
-FOREACH(currentSourceFile ${HEADERS_FILES})
-    string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
-    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2})
-ENDFOREACH(currentSourceFile)
-
-# Install libraries headers
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
-FOREACH(currentSourceFile ${HEADERS_FILES})
-	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1})
-ENDFOREACH(currentSourceFile)
 
 # Install Executables
 list_subdirectories2( LIST_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/ 1)
