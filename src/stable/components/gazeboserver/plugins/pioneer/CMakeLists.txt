@@ -33,7 +33,7 @@ target_link_libraries(laser
 add_library(camera_dump SHARED camera_dump.cc)
 target_link_libraries(camera_dump ${GAZEBO_libraries} 
 	CameraPlugin 
-	colorspacesmmshare	
+	colorspacesmm	
 	${ZeroCIce_LIBRARIES}     
     JderobotInterfaces)
     
@@ -41,7 +41,6 @@ target_link_libraries(camera_dump ${GAZEBO_libraries}
 add_library(pose3dencoders SHARED pose3dencoders.cc)
 target_link_libraries(pose3dencoders ${GAZEBO_libraries} 	 	
 	${GAZEBO_libraries} 
-
 	${ZeroCIce_LIBRARIES} 
     colorspacesmm
     JderobotInterfaces)

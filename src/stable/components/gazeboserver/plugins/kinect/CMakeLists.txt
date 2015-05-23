@@ -1,4 +1,4 @@
-if (pcl_LIBRARIES)
+if (PCL_LIBRARIES)
 
 include_directories( 
 	${GAZEBO_INCLUDE_DIRS}

@@ -279,14 +279,15 @@ void DepthCameraPlugin::SetLeafSize(const float size)
 
 class CameraI: virtual public jderobot::Camera {
 	public:
-		CameraI(std::string propertyPrefix, gazebo::DepthCameraPlugin* camera)
+		CameraI(std::string propertyPrefix, gazebo::DepthCameraPlugin* camera, std::string format)
 			   : prefix(propertyPrefix), cameraI(camera) {
 		
 			std::cout << "Constructor CameraI" << std::endl;
 
 			imageDescription = (new jderobot::ImageDescription());
+			mFormats.push_back(format);
 
-        	replyTask = new ReplyTask(this);
+        replyTask = new ReplyTask(this);
 		    replyTask->start(); // my own thread
 		  
 		}
@@ -315,9 +316,15 @@ class CameraI: virtual public jderobot::Camera {
 			return 0;
 		}
 
-		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
+		virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c){
+		  return(mFormats);
+		}
+
+		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
 			replyTask->pushJob(cb);
 		}
+
+
 
 		virtual std::string startCameraStreaming(const Ice::Current&){
             return ("N/A");
@@ -426,19 +433,20 @@ class CameraI: virtual public jderobot::Camera {
 		jderobot::CameraDescriptionPtr cameraDescription;
 		ReplyTaskPtr replyTask;
 		gazebo::DepthCameraPlugin* cameraI;	
+		std::vector<std::string> mFormats;
 		
 }; // end class CameraI
 
 
 class CameraII: virtual public jderobot::Camera {
 	public:
-		CameraII(std::string propertyPrefix, gazebo::DepthCameraPlugin* camera)
+		CameraII(std::string propertyPrefix, gazebo::DepthCameraPlugin* camera, std::string format)
 			   : prefix(propertyPrefix), cameraI(camera) {
 		
 			std::cout << "Constructor CameraDepth" << std::endl;
 
 			imageDescription = (new jderobot::ImageDescription());
-
+			mFormats.push_back(format);
         	replyTask = new ReplyTask(this);
 		    replyTask->start(); // my own thread
 		  
@@ -468,7 +476,11 @@ class CameraII: virtual public jderobot::Camera {
 			return 0;
 		}
 
-		virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const Ice::Current& c){
+    virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c){
+      return(mFormats);
+    }
+
+    virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
 			replyTask->pushJob(cb);
 		}
 
@@ -579,6 +591,7 @@ class CameraII: virtual public jderobot::Camera {
 		jderobot::CameraDescriptionPtr cameraDescription;
 		ReplyTaskPtr replyTask;
 		gazebo::DepthCameraPlugin* cameraI;	
+		std::vector<std::string> mFormats;
 		
 }; // end class CameraII
 
@@ -619,8 +632,8 @@ void *mainKinect(void* v)
             ic->createObjectAdapterWithEndpoints("Kinect", Endpoints);
 
         Ice::ObjectPtr object = new KinectI(std::string("pointcloud1"),  kinect);
-        Ice::ObjectPtr object2 = new CameraI(std::string("cameraRGB"),  kinect);
-        Ice::ObjectPtr object3 = new CameraII(std::string("cameraDepth"),  kinect);
+        Ice::ObjectPtr object2 = new CameraI(std::string("cameraRGB"),  kinect,colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+        Ice::ObjectPtr object3 = new CameraII(std::string("cameraDepth"),  kinect, colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
 
         adapter->add(object, ic->stringToIdentity("pointcloud1"));
         adapter->add(object2, ic->stringToIdentity("cameraRGB"));
