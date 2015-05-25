@@ -28,6 +28,7 @@ target_link_libraries(quadrotorplugin
 	IceUtil
 	${libxmlpp_LIBRARIES}
     JderobotInterfaces
+    colorspacesmm
 	${GAZEBO_libraries} 
 )
 
