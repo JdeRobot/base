@@ -1,15 +1,17 @@
-SET(colorspacesmm_CPP imagecv.cpp)
-SET(colorspacesmm_H imagecv.h uncopyable.h)
 
-add_library (colorspacesmm SHARED ${colorspacesmm_CPP} ${colorspacesmm_H})
-TARGET_LINK_LIBRARIES(colorspacesmm ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES})
+add_library (colorspaces STATIC rgb2hsv.c rgb2yuv.c colorspaces.h colorspacesmm.h)
 
-SET(colorspaces_CPP rgb2hsv.c rgb2yuv.c )
-SET(colorspaces_H imagecv.h colorspaces.h colorspacesmm.h)
-
-add_library (colorspaces SHARED ${colorspaces_CPP} ${colorspaces_H})
 TARGET_LINK_LIBRARIES(colorspaces ${OpenCV_LIBRARIES})
 
-INSTALL (TARGETS colorspaces colorspacesmm DESTINATION lib/jderobot)
-INSTALL (FILES ${colorspacesmm_H} DESTINATION include/jderobot/visionlib/colorspacesmm/)
-INSTALL (FILES ${colorspaces_H} DESTINATION include/jderobot/visionlib/colorspaces/)
+add_library (colorspacesshare SHARED rgb2hsv.c rgb2yuv.c colorspaces.h colorspacesmm.h)
+
+TARGET_LINK_LIBRARIES(colorspacesshare  ${OpenCV_LIBRARIES})
+
+add_library (colorspacesmm SHARED imagecv.cpp imagecv.h uncopyable.h)
+
+TARGET_LINK_LIBRARIES(colorspacesmm ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES})
+
+
+
+
+set_target_properties(colorspacesshare PROPERTIES OUTPUT_NAME colorspaces)

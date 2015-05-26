@@ -1,7 +1,5 @@
-SET(jderobotutilshare_CPP observer.cpp paramdict.cpp time.cpp)
-SET(jderobotutilshare_H jderobotutil.h observer.h paramdict.h time.h uncopyable.h)
+add_library (jderobotutil STATIC jderobotutil.h observer.cpp observer.h paramdict.cpp paramdict.h time.cpp time.h uncopyable.h)
 
-add_library (jderobotutil SHARED ${jderobotutilshare_CPP} ${jderobotutilshare_H})
+add_library (jderobotutilshare SHARED jderobotutil.h observer.cpp observer.h paramdict.cpp paramdict.h time.cpp time.h uncopyable.h)
 
-INSTALL (TARGETS jderobotutil DESTINATION lib/jderobot)
-INSTALL (FILES ${jderobotutil_H} DESTINATION include/jderobot/jderobotutil/)
+set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)

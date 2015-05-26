@@ -151,6 +151,8 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
+
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
 
 # Install python files
@@ -158,6 +160,45 @@ FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interface
 FOREACH(header ${HEADERS_FILES})
 	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/)
 ENDFOREACH(header)
+
+
+# install all libraries 
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*/*.so*)
+FOREACH (lib ${LIB_FILES})
+	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
+ENDFOREACH(lib)
+
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/visionlib/*/*.so*)
+FOREACH (lib ${LIB_FILES})
+	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
+ENDFOREACH(lib)
+
+
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
+FOREACH(currentSourceFile ${HEADERS_FILES})
+    string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
+		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
+    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2})
+ENDFOREACH(currentSourceFile)
+
+# Install libraries headers
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
+FOREACH(currentSourceFile ${HEADERS_FILES})
+	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
+	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1})
+ENDFOREACH(currentSourceFile)
+
+# Install Executables
+list_subdirectories2( LIST_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/ 1)
+
+FOREACH (currentBin ${LIST_COMPONENTS})
+    #SET(EXIST EXIST-NOTFOUND)
+    find_file(EXIST NAMES ${currentBin} PATHS ${CMAKE_CURRENT_SOURCE_DIR}/src/components/${currentBin})
+    #IF (EXIST)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+    #ENDIF(EXIST)
+    #MESSAGE("${EXIST}")
+ENDFOREACH(currentBin)
 
 # Install interfaces headers
 FILE(GLOB HEADER_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/*.h)
@@ -174,6 +215,7 @@ INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf)
 # Install Glade
 FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.glade)
 INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade)
+
 
 
 ###################

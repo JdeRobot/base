@@ -48,5 +48,3 @@ ENDFOREACH(currentSourceFile)
 
 add_library (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
 TARGET_LINK_LIBRARIES(JderobotInterfaces ${ice2_LIBRARIES})
-
-INSTALL (TARGETS JderobotInterfaces DESTINATION lib/jderobot)

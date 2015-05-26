@@ -1,9 +1,8 @@
-SET(progeo_CPP progeo.c)
-SET(progeo_H progeo.h)
+add_library (progeo STATIC progeo.c progeo.h)
 
-add_library (progeo SHARED ${progeo_CPP} ${progeo_H})
+add_library (progeoshare SHARED progeo.c progeo.h)
 
+set_target_properties(progeoshare PROPERTIES OUTPUT_NAME progeo)
+
+TARGET_LINK_LIBRARIES(progeoshare ${gsl_LIBRARIES} ${xerces_LIBRARIES} ${LIBXML2_LIBRARIES})
 TARGET_LINK_LIBRARIES(progeo ${gsl_LIBRARIES} ${xerces_LIBRARIES} ${LIBXML2_LIBRARIES})
-
-INSTALL (TARGETS progeo DESTINATION lib/jderobot)
-INSTALL (FILES ${progeo_H} DESTINATION include/jderobot/progeo/)

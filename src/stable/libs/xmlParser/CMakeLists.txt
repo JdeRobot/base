@@ -5,12 +5,11 @@ include_directories(${LIBS_DIR}) # Aquí se alojan las cabeceras de las interfac
 
 include_directories( ${LIBS_DIR}/)
 
+add_library (xmlParser STATIC xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
+TARGET_LINK_LIBRARIES(xmlParser ${Boost_LIBRARIES})
 
-SET(xmlParser_CPP xmlReaderParser.cpp xmlWriterParser.cpp)
-SET(xmlParser_H xmlReaderParser.h xmlWriterParser.h)
+add_library (xmlParsershare SHARED xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
+TARGET_LINK_LIBRARIES(xmlParsershare ${Boost_LIBRARIES} ${libxmlpp_LIBRARIES} )
 
-add_library (xmlParser SHARED ${xmlParser_CPP} ${xmlParser_H})
-TARGET_LINK_LIBRARIES(xmlParser ${Boost_LIBRARIES} ${libxmlpp_LIBRARIES} )
 
-INSTALL (TARGETS xmlParser DESTINATION lib/jderobot)
-INSTALL (FILES ${xmlParser_H} DESTINATION include/jderobot/xmlParser/)
+set_target_properties(xmlParsershare PROPERTIES OUTPUT_NAME xmlParser)

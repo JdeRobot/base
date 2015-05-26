@@ -22,7 +22,4 @@ if (${kobuki_COMPILE})
         jderobotutil
         ${ZeroCIce_LIBRARIES}
     )
-
-	INSTALL (TARGETS kobuki_driver DESTINATION bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE) 
-
 ENDIF()

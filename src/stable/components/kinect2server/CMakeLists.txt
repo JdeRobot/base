@@ -5,7 +5,10 @@ IF(LIBFREENECT_PATH)
 
 
     include(FindPkgConfig)
-	find_package(freenect2 REQUIRED)
+find_package(freenect2 REQUIRED)
+message("****LIBS: " ${freenect2_LIBRARIES})
+message("****INC: " ${freenect2_INCLUDE_DIRS})
+
     add_executable (kinect2Server  ${kinect2Server_SOURCE_FILES})
 
 
@@ -38,8 +41,6 @@ IF(LIBFREENECT_PATH)
         ${ZLIB_LIBRARIES}
         ${freenect2_LIBRARIES}
     )
-	INSTALL (TARGETS kinect2Server DESTINATION bin OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
-
 ELSE()
     message("Disabled")
 ENDIF()

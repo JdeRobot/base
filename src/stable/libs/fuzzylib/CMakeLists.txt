@@ -1,9 +1,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-SET(fuzzylib_CPP fuzzylib.c)
-SET(fuzzylib_H fuzzylib.h)
 
-add_library (fuzzylib SHARED ${fuzzylib_CPP} ${fuzzylib_H})
+add_library (fuzzylib STATIC fuzzylib.c)
 
+add_library (fuzzyshare SHARED fuzzylib.c)
 
-INSTALL (TARGETS fuzzylib DESTINATION lib/jderobot)
-INSTALL (FILES ${fuzzylib_H} DESTINATION include/jderobot/fuzzylib/)
+set_target_properties(fuzzyshare PROPERTIES OUTPUT_NAME fuzzylib)
