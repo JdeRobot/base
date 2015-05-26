@@ -1,3 +1,9 @@
+jderobot (5.3.0-rc1) unstable; urgency=low
+
+  *New JdeRobot release
+
+ -- Francsico Perez <f.perez475@gmail.com>  Sat, 19 May 2015 12:56:00 +0200
+
 jderobot (5.2.0-1) unstable; urgency=low
 
   * Added cmake compilation process
