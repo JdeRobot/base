@@ -18,8 +18,9 @@
 #
 from PyQt4 import QtGui,QtCore,uic
 from sensors.colorFilterValues import ColorFilterValues
+from gui.colorFilter import Ui_Form
 
-class ColorFilterWidget(QtGui.QWidget):
+class ColorFilterWidget(QtGui.QWidget, Ui_Form):
     IMAGE_COLS_MAX=320
     IMAGE_ROWS_MAX=240
 
@@ -27,7 +28,7 @@ class ColorFilterWidget(QtGui.QWidget):
     
     def __init__(self,winParent):      
         super(ColorFilterWidget, self).__init__()
-        self.ui = uic.loadUi("gui/colorFilter.ui",self)
+	self.setupUi(self)
         self.winParent=winParent
         self.imageUpdate.connect(self.updateImage)
 

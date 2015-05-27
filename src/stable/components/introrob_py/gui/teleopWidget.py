@@ -16,6 +16,7 @@
 #  Authors :
 #       Alberto Martin Florido <almartinflorido@gmail.com>
 #
+from resources import resources_rc
 from PyQt4 import QtGui, QtCore
 
 class TeleopWidget(QtGui.QWidget):
@@ -27,7 +28,7 @@ class TeleopWidget(QtGui.QWidget):
         self.winParent=winParent
         self.line = QtCore.QPointF(0, 0);
         self.qimage=QtGui.QImage()
-        self.qimage.load('resources/ball.png')
+        self.qimage.load(':images/ball.png')
         self.stopSIG.connect(self.stop)
         self.initUI()
         
