@@ -25,7 +25,7 @@
 #include <iostream>
 
 namespace rgbdViewer {
-rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir, int width, int height, float cycle): gtkmain(0,0) {
+rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
 
     /*Init OpenGL*/
     if(!Gtk::GL::init_check(NULL, NULL))	{
@@ -70,8 +70,8 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
     lines_rgb_active=false;
     std::cout << "Loading glade\n";
     refXml = Gnome::Glade::Xml::create("./rgbdViewergui.glade");
-    cWidth=width;
-    cHeight=height;
+    myDepthSize=sizeDEPTH;
+    myRGBSize=sizeRGB;
 
 
 
@@ -133,19 +133,19 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
 
     // Mundo OpenGL
     refXml->get_widget_derived("gl_world",world);
-    world->setCamerasResolution(width,height);
+    world->setCamerasResolution(myDepthSize.width,myDepthSize.height);
 
     std::cout << "Creating Progeos Virtual Cameras" << std::endl;
-    mypro= new rgbdViewer::myprogeo(2,width,height);
-    mypro->load_cam((char*)path_rgb.c_str(),0,width, height);
+    mypro= new rgbdViewer::myprogeo(2,myRGBSize.width,myRGBSize.height);
+    mypro->load_cam((char*)path_rgb.c_str(),0,myRGBSize.width, myRGBSize.height);
 
-    mypro->load_cam((char*)path_ir.c_str(),1,width, height);
+    mypro->load_cam((char*)path_ir.c_str(),1,myDepthSize.width, myDepthSize.height);
     //util = new rgbdViewer::util3d(mypro);
 
     /*Show window. Note: Set window visibility to false in Glade, otherwise opengl won't work*/
     world->readFile(path);
     mainwindow->show();
-    this->distance = new cv::Mat(cv::Size(width,height),CV_32FC1,cv::Scalar(0,0,0));
+    this->distance = new cv::Mat(cv::Size(myDepthSize.width, myDepthSize.height),CV_32FC1,cv::Scalar(0,0,0));
 
 }
 
@@ -188,6 +188,7 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
         for (int x=0; x< layers[1].cols ; x++) {
             for (int y=0; y<layers[1].rows; y++) {
                 distance->at<float>(y,x) = ((int)layers[1].at<unsigned char>(y,x)<<8)|(int)layers[2].at<unsigned char>(y,x);
+
             }
         }
         this->m_distance.unlock();
@@ -508,8 +509,8 @@ rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
     if (sampling<=0){
     	sampling=1;
     }
-    for (int xIm=0; xIm< cWidth; xIm+=sampling) {
-        for (int yIm=0; yIm<cHeight ; yIm+=sampling) {
+    for (int xIm=0; xIm< myDepthSize.width; xIm+=sampling) {
+        for (int yIm=0; yIm<myDepthSize.height ; yIm+=sampling) {
             d=distance.at<float>(yIm,xIm);
             if (d!=0) {
                 //std::cout << d << std::endl;
@@ -551,12 +552,19 @@ rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
                 t = (-(fx*camx) + (fx*Fx) - (fy*camy) + (fy*Fy) - (fz*camz) + (fz*Fz))/((fx*ux) + (fy*uy) + (fz*uz));
 
 
+                cv::Scalar color(0,0,0);
+                if (myDepthSize == myRGBSize){
+                	color(0)= (int)imageRGB.data[3*(yIm*myDepthSize.width+xIm)];
+                	color(1)= (int)imageRGB.data[3*(yIm*myDepthSize.width+xIm)+1];
+                	color(2)= (int)imageRGB.data[3*(yIm*myDepthSize.width+xIm)+2];
+                }
+
 
                 if (w_realDistance->get_active()){
-                	world->add_kinect_point(t*ux + camx,t*uy+ camy,t*uz + camz,(int)imageRGB.data[3*(yIm*cWidth+xIm)],(int)imageRGB.data[3*(yIm*cWidth+xIm)+1],(int)imageRGB.data[3*(yIm*cWidth+xIm)+2]);
+                	world->add_kinect_point(t*ux + camx,t*uy+ camy,t*uz + camz,color(0),color(1),color(2));
                 }
                 else{
-                	world->add_kinect_point(d*ux + camx,d*uy+ camy,d*uz + camz,(int)imageRGB.data[3*(yIm*cWidth+xIm)],(int)imageRGB.data[3*(yIm*cWidth+xIm)+1],(int)imageRGB.data[3*(yIm*cWidth+xIm)+2]);
+                	world->add_kinect_point(d*ux + camx,d*uy+ camy,d*uz + camz,color(0),color(1),color(2));
                 }
 
             }
@@ -586,9 +594,9 @@ rgbdViewergui::add_camera_position() {
 		distance=300;
 		mypro->mygetcamerasize(&w,&h,1);
 		mypro->mybackproject(0,0,&c1x,&c1y,&c1z,&camx, &camy, &camz,1);
-		mypro->mybackproject(cWidth,0,&c2x,&c2y,&c2z,&camx, &camy, &camz,1);
-		mypro->mybackproject(0,cHeight,&c3x,&c3y,&c3z,&camx, &camy, &camz,1);
-		mypro->mybackproject(cWidth,cHeight,&c4x,&c4y,&c4z,&camx, &camy, &camz,1);
+		mypro->mybackproject(myDepthSize.width,0,&c2x,&c2y,&c2z,&camx, &camy, &camz,1);
+		mypro->mybackproject(0,myDepthSize.height,&c3x,&c3y,&c3z,&camx, &camy, &camz,1);
+		mypro->mybackproject(myDepthSize.width,myDepthSize.height,&c4x,&c4y,&c4z,&camx, &camy, &camz,1);
 		
 		modulo = 	sqrt(1/(((camx-c1x)*(camx-c1x))+((camy-c1y)*(camy-c1y))+((camz-c1z)*(camz-c1z))));
 		c1x = (c1x-camx)*modulo;

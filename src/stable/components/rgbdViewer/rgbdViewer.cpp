@@ -152,7 +152,7 @@ int main(int argc, char** argv){
 			create_gui=true;
 		}
 		else{
-			throw "rgbdViewer: failed to load ÇDEPTH Camera";
+			throw "rgbdViewer: failed to load DEPTH Camera";
 		}
 	}
 
@@ -169,13 +169,34 @@ int main(int argc, char** argv){
 		}
 	}
 
-	globalHeight=prop->getPropertyAsIntWithDefault("rgbdViewer.Height",240);
-	globalWidth=prop->getPropertyAsIntWithDefault("rgbdViewer.Width",320);
+	//set the sizes of each image
+	cv::Size rgbSize(0,0);
+	cv::Size depthSize(0,0);
+	//rgb
+	if (rgbCamSelected){
+		while (rgbSize == cv::Size(0,0)){
+			cv::Mat temp;
+			camRGB->getImage(temp,true);
+			rgbSize=temp.size();
+
+		}
+	}
+	//depth
+	if (depthCamSelected){
+		while (depthSize == cv::Size(0,0)){
+			cv::Mat temp;
+			camDEPTH->getImage(temp,true);
+			depthSize=temp.size();
+
+		}
+	}
+
+
 	debug=prop->getPropertyAsIntWithDefault("rgbdViewer.Debug",320);
 	int fps=prop->getPropertyAsIntWithDefault("rgbdViewer.Fps",0);
 	float cycle=(float)(1/(float)fps)*1000000;
 
-	rgbdViewergui_ptx = new rgbdViewer::rgbdViewergui(rgbCamSelected,depthCamSelected, pointCloudSelected, prop->getProperty("rgbdViewer.WorldFile"), prop->getProperty("rgbdViewer.camRGB"), prop->getProperty("rgbdViewer.camIR"),globalWidth,globalHeight, cycle);
+	rgbdViewergui_ptx = new rgbdViewer::rgbdViewergui(rgbCamSelected,depthCamSelected, pointCloudSelected, prop->getProperty("rgbdViewer.WorldFile"), prop->getProperty("rgbdViewer.camRGB"), prop->getProperty("rgbdViewer.camIR"),rgbSize,depthSize, cycle);
 	
 	std::cout << create_gui << std::endl;
 	if (create_gui){
