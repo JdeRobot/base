@@ -56,4 +56,9 @@ target_link_libraries(pose3dencodersTurtlebotJde
 	colorspacesmm
 	JderobotInterfaces)
 
+
+INSTALL (TARGETS motorsTurtlebotJde encodersTurtlebotJde laserTurtlebotJde camera_dumpTurtlebotJde pose3dencodersTurtlebotJde DESTINATION share/jderobot/gazebo/plugins/turtlebot/ )
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/*.cfg)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/turtlebot/)
+
 #MIO endif()
