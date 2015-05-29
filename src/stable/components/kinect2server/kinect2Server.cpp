@@ -518,9 +518,9 @@ private:
 			for (int y = 0; y < local_src.rows; ++y)
 			{
 			  for (int x = 0; x < local_src.cols; ++x){
-			    dst_c1.at<unsigned char>(y,x)= int(local_src.at<float>(y,x)) >> 8;
-			    dst_c2.at<unsigned char>(y,x)= int(local_src.at<float>(y,x))&0xff;
-			    dst_c3.at<unsigned char>(y,x)= int(temp32gray.at<float>(y,x));
+				dst_c1.at<unsigned char>(y,x)= int(temp32gray.at<float>(y,x));
+			    dst_c2.at<unsigned char>(y,x)= int(local_src.at<float>(y,x)) >> 8;
+			    dst_c3.at<unsigned char>(y,x)= int(local_src.at<float>(y,x))&0xff;
 			  }
 			}
 
