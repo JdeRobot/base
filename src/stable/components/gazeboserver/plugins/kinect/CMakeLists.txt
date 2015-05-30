@@ -21,9 +21,10 @@ target_link_libraries(kinectPlugin
     JderobotInterfaces
     jderobotutil
     ${GAZEBO_libraries} 
-    ${pcl_LIBRARIES}  
+    ${PCL_LIBRARIES}  
     ${OpenCV_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
+    colorspacesmm
 )
 
 INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinect/ )
