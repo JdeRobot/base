@@ -282,10 +282,13 @@ class CameraI: virtual public jderobot::Camera {
 		CameraI(std::string propertyPrefix, gazebo::DepthCameraPlugin* camera, std::string format)
 			   : prefix(propertyPrefix), cameraI(camera) {
 		
-			std::cout << "Constructor CameraI" << std::endl;
+			std::cout << "Constructor CameraRGB" << std::endl;
 
 			imageDescription = (new jderobot::ImageDescription());
 			mFormats.push_back(format);
+
+            cameraDescription = (new jderobot::CameraDescription ());
+            cameraDescription->name = propertyPrefix;
 
         replyTask = new ReplyTask(this);
 		    replyTask->start(); // my own thread
@@ -447,6 +450,10 @@ class CameraII: virtual public jderobot::Camera {
 
 			imageDescription = (new jderobot::ImageDescription());
 			mFormats.push_back(format);
+
+            cameraDescription = (new jderobot::CameraDescription ());
+            cameraDescription->name = propertyPrefix;
+
         	replyTask = new ReplyTask(this);
 		    replyTask->start(); // my own thread
 		  
