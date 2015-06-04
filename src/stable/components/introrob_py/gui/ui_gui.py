@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_gui.ui'
 #
-# Created: Sat May 23 17:16:37 2015
+# Created: Wed May 27 18:58:28 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,13 +43,13 @@ class Ui_MainWindow(object):
         self.playButton = QtGui.QPushButton(self.centralwidget)
         self.playButton.setGeometry(QtCore.QRect(470, 80, 71, 51))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("resources/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/images/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.playButton.setIcon(icon)
         self.playButton.setObjectName(_fromUtf8("playButton"))
         self.stopButton = QtGui.QPushButton(self.centralwidget)
         self.stopButton.setGeometry(QtCore.QRect(560, 80, 71, 51))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("resources/stop.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/images/stop.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.stopButton.setIcon(icon1)
         self.stopButton.setObjectName(_fromUtf8("stopButton"))
         self.windowsLabel = QtGui.QLabel(self.centralwidget)
@@ -126,3 +126,4 @@ class Ui_MainWindow(object):
         self.altdValue.setText(_translate("MainWindow", "0", None))
         self.rotValue.setText(_translate("MainWindow", "0", None))
 
+from resources import resources_rc

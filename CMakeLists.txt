@@ -134,6 +134,14 @@ include(${DEPS_DIR}/zlib/CMakeLists.txt)
 include(${DEPS_DIR}/openssl/CMakeLists.txt)
 include(${DEPS_DIR}/libfreenect2/CMakeLists.txt)
 include(${DEPS_DIR}/ogre/CMakeLists.txt)
+include(${DEPS_DIR}/findPythonModules/CMakeLists.txt)
+include(${DEPS_DIR}/opencv_py/CMakeLists.txt)
+include(${DEPS_DIR}/ice_py/CMakeLists.txt)
+include(${DEPS_DIR}/numpy/CMakeLists.txt)
+include(${DEPS_DIR}/pyqt4/CMakeLists.txt)
+include(${DEPS_DIR}/qwt5_py/CMakeLists.txt)
+
+
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CMakeLists.txt)
 
 

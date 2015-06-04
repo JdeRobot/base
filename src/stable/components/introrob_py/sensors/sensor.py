@@ -94,6 +94,7 @@ class Sensor:
 
         except:
             traceback.print_exc()
+	    exit()
             status = 1
             
     def update(self):

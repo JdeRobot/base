@@ -71,8 +71,8 @@
      <string>Play</string>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>resources/play.png</normaloff>resources/play.png</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/images/play.png</normaloff>:/images/play.png</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="stopButton">
@@ -88,8 +88,8 @@
      <string>Stop</string>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>resources/stop.png</normaloff>resources/stop.png</iconset>
+     <iconset resource="../resources/resources.qrc">
+      <normaloff>:/images/stop.png</normaloff>:/images/stop.png</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="windowsLabel">
@@ -289,6 +289,8 @@
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
