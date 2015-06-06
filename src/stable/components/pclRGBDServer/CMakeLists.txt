@@ -22,7 +22,7 @@ if(pcl_openni)
       ${OpenCV_LIBRARIES}
       JderobotInterfaces
       jderobotutil
-      colorspacesmmshare
+      colorspacesmm
       ${openni_LIBRARIES}
       ${Boost_LIBRARIES}
     )

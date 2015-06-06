@@ -52,11 +52,15 @@ pointcloudClient::pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix) 
 	}
 	_done=false;
 	this->pauseStatus=false;
+	this->newData=false;
+
 
 }
 
 pointcloudClient::pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix, std::string proxy)
 {
+	this->newData=false;
+
 	this->prefix=prefix;
 	Ice::PropertiesPtr prop;
 	prop = ic->getProperties();
@@ -101,6 +105,8 @@ void pointcloudClient::resume(){
 	this->controlMutex.lock();
 		this->pauseStatus=false;
 		this->sem.broadcast();
+		this->semBlock.broadcast();
+
 	this->controlMutex.unlock();
 }
 
@@ -123,13 +129,15 @@ void pointcloudClient::run(){
 		try{
 			jderobot::pointCloudDataPtr localCloud=this->prx->getCloudData();
 			this->controlMutex.lock();
+	        this->newData=true;
 			this->data.resize(localCloud->p.size());
 			std::copy( localCloud->p.begin(), localCloud->p.end(), this->data.begin() );
 			this->controlMutex.unlock();
+			this->semBlock.broadcast();
 		}
 		catch(...){
 			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
-			usleep(5000);
+			usleep(50000);
 
 		}
 
@@ -158,12 +166,19 @@ void pointcloudClient::run(){
 
 }
 
-void  pointcloudClient::getData(std::vector<jderobot::RGBPoint>& cloud){
-	this->controlMutex.lock();
+void  pointcloudClient::getData(std::vector<jderobot::RGBPoint>& cloud,bool blocked){
+    IceUtil::Mutex::Lock sync(this->controlMutex);
+    if (blocked){
+      if (!this->newData){
+        this->semBlock.wait(sync);
+      }
+      this->newData=false;
+    }
 	cloud.resize(this->data.size());
 	std::copy( this->data.begin(), this->data.end(), cloud.begin() );
-	this->controlMutex.unlock();
 	this->data.clear();
+
+
 }
 
 } /* namespace jderobot */

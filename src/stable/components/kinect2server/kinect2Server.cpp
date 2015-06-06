@@ -131,7 +131,7 @@ void* updateThread(void*)
 		int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
 		if (process > (int)cycle ){
-			jderobot::Logger::getInstance()->warning("-------- openniServer: Main openni timeout-" );
+			jderobot::Logger::getInstance()->warning("-------- kinect2ServerServer: Main thread timeout-" );
 		}
 		else{
 			int delay = (int)cycle - process;
@@ -189,7 +189,6 @@ public:
 
 	// Set the formats allowed
 	mFormats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-  mFormats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
 
 
 
@@ -337,7 +336,7 @@ private:
 			int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
 			if (process > (int)cycle ){
-				jderobot::Logger::getInstance()->warning("-------- kinect2Server: RGB openni timeout-" );
+				jderobot::Logger::getInstance()->warning("-------- kinect2Server: RGB data timeout-" );
 			}
 			else{
 				int delay = (int)cycle - process;
@@ -421,7 +420,7 @@ public:
 
 	// Image formats allowed
 	mFormats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
-  mFormats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
+    mFormats.push_back(colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
 
 
 	jderobot::Logger::getInstance()->info( "Starting thread for camera: " +  cameraDescription->name );
@@ -518,9 +517,9 @@ private:
 			for (int y = 0; y < local_src.rows; ++y)
 			{
 			  for (int x = 0; x < local_src.cols; ++x){
-			    dst_c1.at<unsigned char>(y,x)= int(local_src.at<float>(y,x)) >> 8;
-			    dst_c2.at<unsigned char>(y,x)= int(local_src.at<float>(y,x))&0xff;
-			    dst_c3.at<unsigned char>(y,x)= int(temp32gray.at<float>(y,x));
+				dst_c1.at<unsigned char>(y,x)= int(temp32gray.at<float>(y,x));
+			    dst_c2.at<unsigned char>(y,x)= int(local_src.at<float>(y,x)) >> 8;
+			    dst_c3.at<unsigned char>(y,x)= int(local_src.at<float>(y,x))&0xff;
 			  }
 			}
 
@@ -589,7 +588,7 @@ private:
 			int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
 			if (process > (int)cycle ){
-				jderobot::Logger::getInstance()->warning("-------- kinect2Server: Depth openni timeout-" );
+				jderobot::Logger::getInstance()->warning("-------- kinect2Server: Depth data timeout-" );
 			}
 			else{
 				int delay = (int)cycle - process;
@@ -813,7 +812,7 @@ private:
 			int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
 			if (process > (int)cycle ){
-				jderobot::Logger::getInstance()->warning("-------- kinect2Server: RGB openni timeout-" );
+				jderobot::Logger::getInstance()->warning("-------- kinect2Server: RGB data timeout-" );
 			}
 			else{
 				int delay = (int)cycle - process;
@@ -921,7 +920,7 @@ private:
 
 					int delay = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 					if (delay > cycle ){
-						jderobot::Logger::getInstance()->info("-------- kinect2Server: POINTCLOUD openni timeout-" );
+						jderobot::Logger::getInstance()->info("-------- kinect2Server: POINTCLOUD data timeout-" );
 					}
 					else{
 						if (delay <1 || delay > cycle)

@@ -2,6 +2,26 @@ project (jderobot)
 
 cmake_minimum_required(VERSION 2.8)
 
+
+#check compiller
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	include(CheckCXXCompilerFlag)
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+	message (version: ${CMAKE_CXX_COMPILER_VERSION})
+	if(COMPILER_SUPPORTS_CXX11)
+    	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	elseif(COMPILER_SUPPORTS_CXX0X)
+        #boost have problems with gcc < 4.7 and c++0x
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.7.0")
+    		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+        endif()
+	else()
+		    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+	endif()
+
+endif()
+
 # ENV VARS
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
@@ -114,6 +134,14 @@ include(${DEPS_DIR}/zlib/CMakeLists.txt)
 include(${DEPS_DIR}/openssl/CMakeLists.txt)
 include(${DEPS_DIR}/libfreenect2/CMakeLists.txt)
 include(${DEPS_DIR}/ogre/CMakeLists.txt)
+include(${DEPS_DIR}/findPythonModules/CMakeLists.txt)
+include(${DEPS_DIR}/opencv_py/CMakeLists.txt)
+include(${DEPS_DIR}/ice_py/CMakeLists.txt)
+include(${DEPS_DIR}/numpy/CMakeLists.txt)
+include(${DEPS_DIR}/pyqt4/CMakeLists.txt)
+include(${DEPS_DIR}/qwt5_py/CMakeLists.txt)
+
+
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CMakeLists.txt)
 
 
@@ -197,6 +225,7 @@ FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/
 INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade)
 
 
+
 ###################
 #                 #
 #    UNINSTALL    #
@@ -235,7 +264,7 @@ SET (CPACK_SET_DESTDIR "on")
 SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 
-SET (VERSION 5.3.0-1)
+SET (VERSION 5.3.0-rc1)
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
 SET (CPACK_PACKAGE_VERSION_MINOR 3)

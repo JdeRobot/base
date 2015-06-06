@@ -164,6 +164,7 @@ private:
     transport::SubscriberPtr sub_;
 
     void ImageCallback(const boost::shared_ptr<const msgs::Image> &_msg);
+    void AddNoiseToVel();
 
     class StateController {
     public:

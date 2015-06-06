@@ -1,4 +1,4 @@
-if (pcl_LIBRARIES)
+if (PCL_LIBRARIES)
 
 include_directories( 
 	${GAZEBO_INCLUDE_DIRS}
@@ -21,9 +21,14 @@ target_link_libraries(kinectPlugin
     JderobotInterfaces
     jderobotutil
     ${GAZEBO_libraries} 
-    ${pcl_LIBRARIES}  
+    ${PCL_LIBRARIES}  
     ${OpenCV_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
+    colorspacesmm
 )
+
+INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinect/ )
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/kinect/ )	
 
 endif()

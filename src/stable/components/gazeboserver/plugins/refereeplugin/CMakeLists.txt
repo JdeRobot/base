@@ -16,3 +16,7 @@ target_link_libraries(refereeplugin
     JderobotInterfaces
 	${GAZEBO_libraries} 
 )
+
+INSTALL (TARGETS refereeplugin DESTINATION share/jderobot/gazebo/plugins/refereeplugin/ )
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/refereeplugin/)

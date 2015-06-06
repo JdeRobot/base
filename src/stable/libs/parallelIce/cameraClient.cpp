@@ -79,10 +79,10 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 				this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
 		}
 		else{
-      this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name;
-      it = std::find(formats.begin(), formats.end(), colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name);
-      if (it != formats.end())
-        this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name;
+			this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name;
+			it = std::find(formats.begin(), formats.end(), colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name);
+			if (it != formats.end())
+				this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name;
 		}
 	}
 
@@ -97,6 +97,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 
 cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::string proxy){
 
+	this->newData=false;
 	this->prefix=prefix;
 	Ice::PropertiesPtr prop;
 	prop = ic->getProperties();
@@ -108,15 +109,15 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::str
 	this->cycle=(float)(1/(float)fps)*1000000;
 
 	try{
-			baseCamera = ic->stringToProxy(proxy);
-			if (0==baseCamera){
-				throw prefix + "Could not create proxy with Camera";
-			}
-			else {
-				this->prx= jderobot::CameraPrx::checkedCast(baseCamera);
-				if (0==this->prx)
-					throw "Invalid " + prefix + ".Proxy";
-			}
+		baseCamera = ic->stringToProxy(proxy);
+		if (0==baseCamera){
+			throw prefix + "Could not create proxy with Camera";
+		}
+		else {
+			this->prx= jderobot::CameraPrx::checkedCast(baseCamera);
+			if (0==this->prx)
+				throw "Invalid " + prefix + ".Proxy";
+		}
 
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
@@ -178,6 +179,7 @@ cameraClient::run(){
 
 	last=IceUtil::Time::now();
 	while (!(_done)){
+
 		iterIndex ++;
 		if (pauseStatus){
 			IceUtil::Mutex::Lock sync(this->controlMutex);
@@ -192,7 +194,7 @@ cameraClient::run(){
 				throw "Format not supported";
 
 			if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name ||
-				dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
+					dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
 			{
 
 				size_t dest_len = dataPtr->description->width*dataPtr->description->height*3;
@@ -222,6 +224,8 @@ cameraClient::run(){
 					colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
 					this->controlMutex.lock();
 					cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
+					this->newData=true;
+					this->semBlock.broadcast();
 					this->controlMutex.unlock();
 					img_rgb888.release();
 				}
@@ -232,72 +236,78 @@ cameraClient::run(){
 
 			}
 			else if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name ||
-	        dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name  )
+					dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name  )
 			{
 				colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(dataPtr->pixelData[0]));
 				colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
 				this->controlMutex.lock();
 				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
+				this->newData=true;
+
+				this->semBlock.broadcast();
 				this->controlMutex.unlock();
 				img_rgb888.release();
 			}
 			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name) {
-			  //gay compressed
-        size_t dest_len = dataPtr->description->width*dataPtr->description->height;
-        size_t source_len = dataPtr->pixelData.size();
+				//gay compressed
+				size_t dest_len = dataPtr->description->width*dataPtr->description->height;
+				size_t source_len = dataPtr->pixelData.size();
 
-        unsigned char* origin_buf = (uchar*) malloc(dest_len);
+				unsigned char* origin_buf = (uchar*) malloc(dest_len);
 
-        int r = uncompress((Bytef *) origin_buf, (uLongf *) &dest_len, (const Bytef *) &(dataPtr->pixelData[0]), (uLong)source_len);
+				int r = uncompress((Bytef *) origin_buf, (uLongf *) &dest_len, (const Bytef *) &(dataPtr->pixelData[0]), (uLong)source_len);
 
-        if(r != Z_OK) {
-          fprintf(stderr, "[CMPR] Error:\n");
-          switch(r) {
-          case Z_MEM_ERROR:
-            fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
-            break;
-          case Z_BUF_ERROR:
-            fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
-            break;
-          case Z_STREAM_ERROR:    // Invalid compression level
-            fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
-            break;
-          }
-        }
-        else
-        {
-          colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(origin_buf[0]));
-          colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
+				if(r != Z_OK) {
+					fprintf(stderr, "[CMPR] Error:\n");
+					switch(r) {
+					case Z_MEM_ERROR:
+						fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
+						break;
+					case Z_BUF_ERROR:
+						fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
+						break;
+					case Z_STREAM_ERROR:    // Invalid compression level
+						fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
+						break;
+					}
+				}
+				else
+				{
+					colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(origin_buf[0]));
+					colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
 
-          this->controlMutex.lock();
-          cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
-          this->newData=true;
-          this->semBlock.broadcast();
-          this->controlMutex.unlock();
+					this->controlMutex.lock();
+					cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
+					this->newData=true;
+					this->semBlock.broadcast();
+					this->controlMutex.unlock();
 
-          img_gray8.release();
-        }
+					img_gray8.release();
+				}
 
 
-        if (origin_buf)
-          free(origin_buf);
+				if (origin_buf)
+					free(origin_buf);
 			}
 			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name){
-        colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(dataPtr->pixelData[0]));
-        colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
-        this->controlMutex.lock();
-        cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
-        this->controlMutex.unlock();
-        img_gray8.release();
+				colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(dataPtr->pixelData[0]));
+				colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
+				this->controlMutex.lock();
+				cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
+				this->newData=true;
+
+				this->semBlock.broadcast();
+				this->controlMutex.unlock();
+				img_gray8.release();
 			}
 			else{
-			  //TODO raise exception
+				//TODO raise exception
 			}
 
 		}
 		catch(...){
 			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
-			usleep(5000);
+			usleep(50000);
 
 		}
 
@@ -338,17 +348,16 @@ void cameraClient::stop_thread()
 }
 
 void cameraClient::getImage(cv::Mat& image, bool blocked){
-
-  {
-    IceUtil::Mutex::Lock sync(this->controlMutex);
-    if (blocked){
-      if (!this->newData){
-        this->semBlock.wait(sync);
-        this->newData=false;
-      }
-    }
-    this->data.copyTo(image);
-  }
+	{
+		IceUtil::Mutex::Lock sync(this->controlMutex);
+		if (blocked){
+			if (!this->newData){
+				this->semBlock.wait(sync);
+			}
+			this->newData=false;
+		}
+		this->data.copyTo(image);
+	}
 
 }
 

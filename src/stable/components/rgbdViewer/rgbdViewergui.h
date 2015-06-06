@@ -40,7 +40,7 @@ namespace rgbdViewer {
   class rgbdViewergui {
 		public:
 
-		  rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir, int width, int height, float cycle);
+		  rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir, cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle);
 		  virtual ~rgbdViewergui();
 
 			/*Return true if the windows is visible*/
@@ -95,7 +95,7 @@ namespace rgbdViewer {
 
 			//util3d* util;
 			DrawArea* world;
-			int cWidth, cHeight;
+			cv::Size myDepthSize, myRGBSize;
 			int reconstructMode;
 			int modesAvalables;
 			int cam_rgb_active;

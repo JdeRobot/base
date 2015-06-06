@@ -53,29 +53,6 @@ void QuadrotorPlugin::setVelocityCommand(const jderobot::CMDVelDataPtr& vel) {
         velocity_command_->angularZ = vel->angularZ > 0 ?
                                       yawSpeed : -1*yawSpeed;
     }
-    static common::Time last_sim_time = world->GetSimTime();
-    static double time_counter_for_drift_noise = 0;
-    static double drift_noise[4] = {0.0, 0.0, 0.0, 0.0};
-    // Get simulator time
-    common::Time cur_sim_time = world->GetSimTime();
-    double noise_dt = (cur_sim_time - last_sim_time).Double();
-    // save last time stamp
-    last_sim_time = cur_sim_time;
-
-    // generate noise
-    if(time_counter_for_drift_noise > motion_drift_noise_time_) {
-        drift_noise[0] = 2*motion_drift_noise_*(drand48()-0.5);
-        drift_noise[1] = 2*motion_drift_noise_*(drand48()-0.5);
-        drift_noise[2] = 2*motion_drift_noise_*(drand48()-0.5);
-        drift_noise[3] = 2*motion_drift_noise_*(drand48()-0.5);
-        time_counter_for_drift_noise = 0.0;
-    }
-    time_counter_for_drift_noise += noise_dt;
-
-    this->velocity_command_->linearZ += drift_noise[0] + 2*motion_small_noise_*(drand48()-0.5);
-    this->velocity_command_->angularX += drift_noise[1] + 2*motion_small_noise_*(drand48()-0.5);
-    this->velocity_command_->angularY += drift_noise[2] + 2*motion_small_noise_*(drand48()-0.5);
-    this->velocity_command_->angularZ += drift_noise[3] + 2*motion_small_noise_*(drand48()-0.5);
 
     pthread_mutex_unlock(&quadrotor_mtx);
 }
@@ -251,6 +228,9 @@ void QuadrotorPlugin::OnUpdate() {
     torque.Set(0.0, 0.0, 0.0);
 
     pthread_mutex_lock(&quadrotor_mtx);
+
+    // Add noise to velocity_command_
+    AddNoiseToVel();
     double pitch_command =  controllers_.velocity_x.update(
         velocity_command_->linearX,
         velocity_xy.x,
@@ -293,6 +273,33 @@ void QuadrotorPlugin::OnUpdate() {
 
     // save last time stamp
     last_time = sim_time;
+}
+
+void QuadrotorPlugin::AddNoiseToVel() {
+
+    static common::Time last_sim_time = world->GetSimTime();
+    static double time_counter_for_drift_noise = 0;
+    static double drift_noise[4] = {0.0, 0.0, 0.0, 0.0};
+    // Get simulator time
+    common::Time cur_sim_time = world->GetSimTime();
+    double noise_dt = (cur_sim_time - last_sim_time).Double();
+    // save last time stamp
+    last_sim_time = cur_sim_time;
+
+    // generate noise
+    if(time_counter_for_drift_noise > motion_drift_noise_time_) {
+        drift_noise[0] = 2*motion_drift_noise_*(drand48()-0.5);
+        drift_noise[1] = 2*motion_drift_noise_*(drand48()-0.5);
+        drift_noise[2] = 2*motion_drift_noise_*(drand48()-0.5);
+        drift_noise[3] = 2*motion_drift_noise_*(drand48()-0.5);
+        time_counter_for_drift_noise = 0.0;
+    }
+    time_counter_for_drift_noise += noise_dt;
+
+    this->velocity_command_->linearZ += drift_noise[0] + 2*motion_small_noise_*(drand48()-0.5);
+    this->velocity_command_->linearX += drift_noise[1] + 2*motion_small_noise_*(drand48()-0.5);
+    this->velocity_command_->linearY += drift_noise[2] + 2*motion_small_noise_*(drand48()-0.5);
+    this->velocity_command_->angularZ += drift_noise[3] + 2*motion_small_noise_*(drand48()-0.5);
 }
 
 void QuadrotorPlugin::Reset() {

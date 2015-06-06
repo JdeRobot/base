@@ -61,7 +61,6 @@ namespace cameraview {
 		  gtkimage->clear();
 		  gtkimage->set(imgBuff);
 
-		  displayFrameRate();
 	  }
 	  mainwindow->resize(1,1);
 	  while (gtkmain.events_pending())
@@ -89,24 +88,11 @@ namespace cameraview {
   }
     
   void
-  Viewer::displayFrameRate()
+  Viewer::displayFrameRate(int rate)
   {
-    double diff;
-    IceUtil::Time diffT;
-
-    currentFrameTime = IceUtil::Time::now();
-    diff = (currentFrameTime - oldFrameTime).toMilliSecondsDouble();
-    if (diff < 1000.0)
-      frameCount++;
-    else{
-      oldFrameTime = currentFrameTime;
-      fps = frameCount*1000/diff;
-      frameCount=0;
-      // Display the frame rate
       std::stringstream fpsString;
-      fpsString << "fps = " << int(fps);
+      fpsString << "fps = " << rate;
       fpslabel->set_label(fpsString.str());
-    }
   }
 
 }//namespace
