@@ -97,8 +97,6 @@ void QuadrotorPlugin::ImageCallback(const boost::shared_ptr<const msgs::Image> &
 	common::Image c_image;
 	msgs::Set(c_image, *_msg);
     pthread_mutex_lock(&img_mutex);
-    //delete image;
-    image = new cv::Mat();
 	image->create(c_image.GetHeight(), c_image.GetWidth(), CV_8UC3);
     //image->resize(c_image.GetHeight() * c_image.GetWidth() * 3);
 	unsigned int size = c_image.GetHeight()*c_image.GetWidth()*3;
@@ -168,6 +166,8 @@ void QuadrotorPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     pthread_create(&thr_ice, NULL, &thread_QuadrotorPluginICE, (void*) this);
     pthread_t thr_state;
     pthread_create(&thr_state, NULL, &thread_state_controller, (void*) this);
+
+    image = new cv::Mat();
 
     transport::NodePtr sub_node(new transport::Node());
     sub_node->Init();
