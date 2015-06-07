@@ -1,8 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
   <world name="default">
-    <plugin name='referee_plugin' filename='librefereeplugin.so'>
-    </plugin>
     <!-- Ground -->
     <include>
       <uri>model://ground_plane</uri>

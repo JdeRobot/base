@@ -140,6 +140,7 @@ include(${DEPS_DIR}/ice_py/CMakeLists.txt)
 include(${DEPS_DIR}/numpy/CMakeLists.txt)
 include(${DEPS_DIR}/pyqt4/CMakeLists.txt)
 include(${DEPS_DIR}/qwt5_py/CMakeLists.txt)
+include(${DEPS_DIR}/matplotlib_py/CMakeLists.txt)
 
 
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CMakeLists.txt)
