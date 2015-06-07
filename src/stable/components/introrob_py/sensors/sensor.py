@@ -237,7 +237,7 @@ class Sensor:
             self.cmdVelProxy.setCMDVelData(self.cmd)
             self.lock.release();
 
-    def CMDVel(self,vx,vy,vz,yaw,roll,pitch):
+    def sendCMDVel(self,vx,vy,vz,yaw,roll,pitch):
         cmd=jderobot.CMDVelData()
         cmd.linearX=vy
         cmd.linearY=vx
