@@ -30,15 +30,17 @@ target_link_libraries(laserTurtlebotJde
 	colorspacesmm
     	JderobotInterfaces) 
 
-#add_library(kinectPluginTurtlebotJde SHARED kinectPlugin.cc)
-#target_link_libraries(kinectPluginTurtlebotJde
-#    JderobotInterfaces
-#    jderobotutil
-#    ${GAZEBO_libraries}
-#    ${pcl_LIBRARIES}
-#    ${OpenCV_LIBRARIES}
-#    ${ZeroCIce_LIBRARIES}
-#)
+add_library(kinectPluginTurtlebotJde SHARED kinectPlugin.cc)
+target_link_libraries(kinectPluginTurtlebotJde
+    JderobotInterfaces
+    jderobotutil
+    ${GAZEBO_libraries}
+    ${PCL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    ${ZeroCIce_LIBRARIES}
+    colorspacesmm
+)
+
 
 add_library(camera_dumpTurtlebotJde SHARED camera_dump.cc)
 target_link_libraries(camera_dumpTurtlebotJde ${GAZEBO_libraries} 
