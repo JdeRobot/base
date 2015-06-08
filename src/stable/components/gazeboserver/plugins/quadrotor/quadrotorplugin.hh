@@ -26,8 +26,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef ARDRONEPLUGIN_HH
-#define ARDRONEPLUGIN_HH
+#ifndef QUADROTORPLUGIN_HH
+#define QUADROTORPLUGIN_HH
 
 #include <boost/bind.hpp>
 #include <gazebo/gazebo.hh>
