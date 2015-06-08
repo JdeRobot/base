@@ -161,6 +161,9 @@ void QuadrotorPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     inertia = link->GetInertial()->GetPrincipalMoments();
     mass = link->GetInertial()->GetMass();
 
+    m_isFlying = m_takeOff = false;
+    m_timeAfterTakeOff = 0;
+
     Reset();
     sc = new StateController(this);
 
