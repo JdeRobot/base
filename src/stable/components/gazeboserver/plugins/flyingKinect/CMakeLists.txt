@@ -37,8 +37,8 @@ target_link_libraries(pose3d
 )
 
 
-INSTALL (TARGETS kinect DESTINATION share/jderobot/gazebo/plugins/flyingKinect/ )
+INSTALL (TARGETS pose3d kinect DESTINATION share/jderobot/gazebo/plugins/flyingkinect/ )
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/flyingKinect/ )	
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/flyingkinect/ )	
 
 endif()
