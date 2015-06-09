@@ -169,7 +169,6 @@ ENDFOREACH(header)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
 
-
 # install all libraries 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*/*.so*)
 FOREACH (lib ${LIB_FILES})
