@@ -48,8 +48,6 @@ class Pose:
 		self.poseAr=self.poseProxy.getPose3DData()
 		self.poseRed=self.poseRedProxy.getPose3DData()
 		self.lock.release()
-		print self.poseAr
-		print self.poseRed
 		return self.getDistance()
 		
 		
