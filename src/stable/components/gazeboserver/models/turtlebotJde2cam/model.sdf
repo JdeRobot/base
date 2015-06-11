@@ -858,7 +858,7 @@
             <izz>1.000000</izz>
           </inertia>
         </inertial>
-        <sensor name='cam_sensor_left' type='camera'>
+        <sensor name='cam_turtlebot_left' type='camera'>
           <pose>0.000000 0.000000 0.000000 -1.570000 -0.000000 3.140000</pose>
           <update_rate>20.000000</update_rate>
           <camera name='__default__'>
@@ -1028,7 +1028,7 @@
             <izz>1.000000</izz>
           </inertia>
         </inertial>
-        <sensor name='cam_sensor_right' type='camera'>
+        <sensor name='cam_turtlebot_right' type='camera'>
           <pose>0.000000 0.000000 0.000000 -1.570000 -0.000000 3.140000</pose>
           <update_rate>20.000000</update_rate>
           <camera name='__default__'>
