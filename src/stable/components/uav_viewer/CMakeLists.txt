@@ -57,7 +57,6 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
         ${OpenCVGUI_LIBRARIES}
         ${Ice_LIBRARIES}
 		${ZeroCIce_LIBRARIES}
-		${cvBlob_LIBS}
 		JderobotInterfaces
 		jderobotutil)
 
