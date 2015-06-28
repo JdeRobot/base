@@ -32,6 +32,7 @@
 #include <jderobot/ptmotors.h>
 #include <jderobot/laser.h>
 #include <jderobot/encoders.h>
+#include <jderobot/pose3d.h>
 #include <jderobot/ptencoders.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 
@@ -52,6 +53,7 @@ namespace introrob {
         // ICE INTERFACES
         jderobot::MotorsPrx mprx;
         jderobot::EncodersPrx eprx;
+        jderobot::Pose3DPrx p3dprx;
         jderobot::LaserPrx lprx;
         jderobot::CameraPrx cprx1;
         jderobot::CameraPrx cprx2;

@@ -564,6 +564,7 @@
 		
 
 		<plugin filename="libencoders.so" name="encoders"/>
+                <plugin filename="libpose3d_pioneer.so" name="pose3d_pioneer"/>
         
     </model>
 </sdf>

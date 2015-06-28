@@ -138,6 +138,16 @@ int main(int argc, char** argv) {
         if (0 == control->eprx)
             throw "Invalid proxy introrob.Encoders.Proxy";
 
+        // Contact to POSE3D interface
+        Ice::ObjectPrx basePose3D = ic->propertyToProxy("introrob.Pose3D.Proxy");
+        if (0 == basePose3D)
+            throw "Could not create proxy with pose3d";
+
+        // Cast to pose3d
+        control->p3dprx = jderobot::Pose3DPrx::checkedCast(basePose3D);
+        if (0 == control->p3dprx)
+            throw "Invalid proxy introrob.Pose3D.Proxy";
+
         // Contact to LASER interface
         Ice::ObjectPrx baseLaser = ic->propertyToProxy("introrob.Laser.Proxy");
         if (0 == baseLaser)
