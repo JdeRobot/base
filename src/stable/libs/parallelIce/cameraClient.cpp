@@ -55,12 +55,16 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		std::cerr << msg << std::endl;
 		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
 	}
+	//check if default format is defined
+	std::string definedFormat=prop->getProperty(prefix+"ImageFormat");
 
 	// Discover what format are supported.
 	jderobot::ImageFormat formats = this->prx->getImageFormat();
 
 	std::vector<std::string>::iterator it;
-	it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
+  it = std::find(formats.begin(), formats.end(), formats);
+  if (it==formats.end())
+    it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 	if (it != formats.end())
 	{
 		this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
