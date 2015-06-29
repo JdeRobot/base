@@ -38,7 +38,10 @@ namespace introrob {
 
 
         api->motorLin = this->mprx->getL();
+
+        //////////////////////////////////////////
         api->encodersData = this->eprx->getEncodersData();
+        api->pose3DData = this->p3dprx->getPose3DData();
 
         api->laserData = this->lprx->getLaserData();
 

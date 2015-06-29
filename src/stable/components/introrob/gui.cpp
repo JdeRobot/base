@@ -188,7 +188,10 @@ namespace introrob {
     void Gui::display(Api *api) {
 
         this->setDestino();
-        this->Encoders2world();
+        ////////////////////////////
+        //this->Encoders2world();
+        //std::cout << "Using pose not encoders" << std::endl;
+        this->Pose3D2world();
         this->Laser2world();
 
         if (!(this->yourCode_button_isPressed)) {
@@ -597,12 +600,24 @@ namespace introrob {
             cvDestroyWindow("DebuggingWin");
         }
     }
-
+///////////////////////
     void Gui::Encoders2world() {
         this->world->roboty = this->api->encodersData->roboty;
         this->world->robotx = this->api->encodersData->robotx;
         //std::cout << this->api->encodersData->robottheta << std::endl;
         this->world->robottheta = this->api->encodersData->robottheta;
+    }
+
+    void Gui::Pose3D2world() {
+        this->world->roboty = this->api->pose3DData->y;
+        this->world->robotx = this->api->pose3DData->x;
+
+        //std::cout << "test" <<std::endl;
+        float magnitude;
+
+        magnitude = sqrt(this->api->pose3DData->q0 * this->api->pose3DData->q0 + this->api->pose3DData->q3 * this->api->pose3DData->q3);
+
+        this->world->robottheta = 2.0 * acos(this->api->pose3DData->q0 / magnitude) * 180.0 / PI;
     }
 
     void Gui::Laser2world() {
@@ -725,10 +740,11 @@ namespace introrob {
         this->api->RunGraphicsAlgorithm();
 
     }
-
+//////////////////////
     void Gui::pioneerCameraButton_clicked() {
 
-        this->world->setToPioneerCamera(this->api->encodersData->robottheta);
+        //this->world->setToPioneerCamera(this->api->encodersData->robottheta);
+        this->world->setToPioneerCamera(this->world->robottheta);
     }
 
 

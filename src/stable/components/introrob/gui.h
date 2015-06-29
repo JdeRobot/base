@@ -121,6 +121,7 @@ namespace introrob {
         bool on_right_clicked(GdkEventButton * event);
         void deleteLinesButton_clicked();
         void Encoders2world();
+        void Pose3D2world();
         void Laser2world();
         void printLaser();
         void teleoperate();

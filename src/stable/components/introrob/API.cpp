@@ -53,8 +53,14 @@ namespace introrob {
         return this->laserData->distanceData;
     }
 
+    //////////////////////////
+
     jderobot::EncodersDataPtr Api::getEncodersData() {
         return this->encodersData;
+    }
+
+    jderobot::Pose3DDataPtr Api::getPose3DData() {
+        return this->pose3DData;
     }
 
     cv::Mat Api::getImageCamera1() {
