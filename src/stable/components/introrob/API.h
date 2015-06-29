@@ -37,6 +37,7 @@
 #include <jderobot/ptmotors.h>
 #include <jderobot/laser.h>
 #include <jderobot/encoders.h>
+#include <jderobot/pose3d.h>
 #include <jderobot/ptencoders.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <jderobot/pose3dmotors.h>
@@ -72,6 +73,7 @@ namespace introrob {
         int getNumLasers();
         jderobot::IntSeq getDistancesLaser();
         jderobot::EncodersDataPtr getEncodersData();
+        jderobot::Pose3DDataPtr getPose3DData();
         cv::Mat getImageCamera1();
         cv::Mat getImageCamera2();
 
@@ -91,6 +93,7 @@ namespace introrob {
         float v_normalized; // Used to teleoperate cameras (latitude)
         float w_normalized; // Used to teleoperate cameras (longitude)
         jderobot::EncodersDataPtr encodersData;
+        jderobot::Pose3DDataPtr pose3DData;
         jderobot::LaserDataPtr laserData;
         jderobot::ImageDataPtr imageData1; // Contains the image info
         jderobot::ImageDataPtr imageData2; // Contains the image info
