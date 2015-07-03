@@ -1,0 +1,20 @@
+SET(SOURCE_FILES ./bsVehicleCounter.cpp)
+
+include_directories(
+	${OpenCV_INCLUDE_DIR}
+	${Ice_INCLUDE_DIR}
+	${INTERFACES_CPP_DIR})
+
+link_directories(${JDE_LIBS})
+
+add_executable(bsVehicleCounter 
+	${SOURCE_FILES}
+	${INTERFACES_CPP_DIR})
+
+target_link_libraries(bsVehicleCounter
+	${CMAKE_THREAD_LIBS_INIT}
+	${Ice_LIBRARIES}
+	${ZeroCIce_LIBRARIES}
+	${OpenCV_LIBRARIES}
+	JderobotInterfaces
+	jderobotutil)
