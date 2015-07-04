@@ -6,7 +6,14 @@
 #include <jderobot/cmdvel.h>
 #include <jderobot/ardroneextra.h>
 
+#include <visionlib/cvBlob/cvblob.h>
+
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/video/background_segm.hpp>
+#include <cv.h>
 
 #include <iostream>
 #include <vector>
@@ -15,25 +22,61 @@
 #define DRONE_HEIGHT 5
 #define DRONE_VEL 0.5
 #define EPS 0.5
-#define N_FRAMES 500
+#define N_FRAMES 50
+#define FR_H 240
+#define FR_W 240
+#define MARGIN 120
+
+using namespace cvb;
+
+bool initiated, dynamic;
+int lmindex, countUD, countDU, count, line_pos, nframes;
+int* count_arr;
+float yaw;
+
+std::vector<cv::Point> landmarks;
+cv::Mat image;
+cv::Mat fgMaskMOG;
+cv::Ptr<cv::BackgroundSubtractor> pMOG;
+IplImage* bin;
+IplImage* frame;
+IplImage* labelImg;
+CvBlobs blobs;
+CvTracks tracks;
+CvPoint2D64f last_pos;
+CvPoint2D64f cur_pos;
+std::map<CvID, CvPoint2D64f> last_poses;
+
+void processImage(cv::Mat& image);
 
 int main (int argc, char** argv) {
 
-	bool initiated = false;
-	bool dynamic = false;
-	int lmindex = 0;
-	std::vector<cv::Point> landmarks;
+	initiated = false;
+	dynamic = false;
+	lmindex = 0;
+	countUD = 0;
+	countDU = 0;
+	count = 0;
+	nframes = 0;
+	line_pos = FR_H - MARGIN;
+
+	pMOG = new cv::BackgroundSubtractorMOG;
 
 	Ice::CommunicatorPtr ic;
 	jderobot::ArDroneExtraPrx arextraprx;
 	jderobot::Pose3DPrx poseprx;
 	jderobot::CMDVelPrx cmdprx;
+	jderobot::CameraPrx camprx;
 	jderobot::Pose3DDataPtr pose;
+	jderobot::ImageDataPtr img;
 	jderobot::CMDVelDataPtr vel = new jderobot::CMDVelData();
 
 	//prespecify checkpoints
 	landmarks.push_back(cv::Point(5.0, 0.0));
 	landmarks.push_back(cv::Point(-5.0, 0.0));
+
+	count_arr = new int[landmarks.size()]();
+	cv::namedWindow("BLOBS", cv::WINDOW_AUTOSIZE);
 
 	try {
 		ic = Ice::initialize(argc, argv);
@@ -43,16 +86,30 @@ int main (int argc, char** argv) {
 		if (0==baseextra)
 			throw "Could not create proxy";
 		arextraprx = jderobot::ArDroneExtraPrx::checkedCast(baseextra);
+		if (0==arextraprx)
+			throw "ArDroneExtra -> Invalid proxy";
 
 		Ice::ObjectPrx basepose = ic->propertyToProxy("BSCounter.Pose3D.Proxy");
 		if (0==basepose)
 			throw "Could not create proxy";
 		poseprx = jderobot::Pose3DPrx::checkedCast(basepose);
+		if (0==poseprx)
+			throw "Pose3D -> Invalid proxy";
 
 		Ice::ObjectPrx basecmd = ic->propertyToProxy("BSCounter.CMDVel.Proxy");
 		if (0==basecmd)
 			throw "Could not create proxy";
 		cmdprx = jderobot::CMDVelPrx::checkedCast(basecmd);
+		if (0==cmdprx)
+			throw "CMDVel -> Invalid proxy";
+
+		Ice::ObjectPrx basecam = ic->propertyToProxy("BSCounter.Camera.Proxy");
+		if (0==basecam)
+			throw "Could not create proxy";
+		camprx = jderobot::CameraPrx::checkedCast(basecam);
+		if (0==camprx)
+			throw "Camera -> Invalid proxy";
+		img = camprx->getImageData("RGB8");
 
 	} catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
@@ -66,11 +123,17 @@ int main (int argc, char** argv) {
 	arextraprx->takeoff();
 
 	std::cout << "reaching desired height..\n";
-	vel->linearZ = DRONE_VEL;
+	vel->linearZ = DRONE_VEL; vel->linearX = 0; vel->linearY = 0;
 	cmdprx->setCMDVelData(vel);
 
 	while (1) {
 		pose = poseprx->getPose3DData();
+		img = camprx->getImageData("RGB8");
+                image.create(img->description->height, img->description->width, CV_8UC3);
+                memcpy((unsigned char*) image.data, &(img->pixelData[0]), image.cols*image.rows*3);
+		cv::imshow("BLOBS", image);
+		cv::waitKey(33);
+
 		if (!initiated && abs(pose->z - DRONE_HEIGHT) < EPS) {
 			vel->linearZ = 0;
 			cmdprx->setCMDVelData(vel);
@@ -80,29 +143,133 @@ int main (int argc, char** argv) {
 		}
 
 		if (initiated && !dynamic) {
-			//1. set velocity for next checkpoint
+			// set velocity for next checkpoint
 			vel->linearX = (landmarks[lmindex].x-pose->x)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y));
 			vel->linearY = (landmarks[lmindex].y-pose->y)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y));
-			//TODO- take yaw into account 
+			float yaw = (float) atan2(2.0*(pose->q0*pose->q3 + pose->q1*pose->q2), 1 - 2.0*(pose->q2*pose->q2 + pose->q3*pose->q3));
+			float tempX = cos(yaw)*(vel->linearX) + sin(yaw)*(vel->linearY);
+			float tempY = -sin(yaw)*(vel->linearX) + cos(yaw)*(vel->linearY);
+			vel->linearX = tempX;
+			vel->linearY = tempY;
 			cmdprx->setCMDVelData(vel);
 
-			//2. set dynamic = true
 			dynamic = true;
-			//3. Show current heatmap
+
+			// Show current heatmap
 		}
 
 		if (dynamic && abs(landmarks[lmindex].x-pose->x)<EPS && abs(landmarks[lmindex].y-pose->y)<EPS) {
 			std::cout << "Reached checkpoint: "<<lmindex+1<<".\n";
 			std::cout << "Current position: [X="<<pose->x<<"m, Y="<<pose->y<<"m, Z="<<pose->z<<"m]\n";
 			std::cout << "[STATUS] Processing started..\n";
-			//1. set dynamic = false
-			dynamic = false;
-			//2. process Image for N Frames
-			//3. Update lmindex
+
+			vel->linearX = 0; vel->linearY = 0; vel->linearZ = 0;
+			cmdprx->setCMDVelData(vel);
+
+			// process Image for N Frames
+			while (nframes<N_FRAMES) {
+				nframes++;
+				img = camprx->getImageData("RGB8");
+				image.create(img->description->height, img->description->width, CV_8UC3);
+				memcpy((unsigned char*) image.data, &(img->pixelData[0]), image.cols*image.rows*3);
+				processImage(image);
+			}
+
+			// Update lmindex, nframes, counts
+			//cv::destroyAllWindows();
 			++lmindex%=landmarks.size();
+			nframes = 0;
+			count = 0;
+			countDU = 0;
+			countUD = 0;
 			std::cout << "[STATUS] Processed "<<N_FRAMES<<" frames. Moving to next checkpoint.\n";
+			dynamic = false;
 		}
 	}
 
 	return 0;
 }
+
+std::string to_string(int number){
+    std::string number_string = "";
+    char ones_char;
+    int ones = 0;
+    while(true){
+        ones = number % 10;
+        switch(ones){
+            case 0: ones_char = '0'; break;
+            case 1: ones_char = '1'; break;
+            case 2: ones_char = '2'; break;
+            case 3: ones_char = '3'; break;
+            case 4: ones_char = '4'; break;
+            case 5: ones_char = '5'; break;
+            case 6: ones_char = '6'; break;
+            case 7: ones_char = '7'; break;
+            case 8: ones_char = '8'; break;
+            case 9: ones_char = '9'; break;
+            default : std::cout << "Trouble converting number to string. number: "<<ones;
+        }
+        number -= ones;
+        number_string = ones_char + number_string;
+        if(number == 0){
+            break;
+        }
+        number = number/10;
+    }
+    return number_string;
+}
+
+void processImage(cv::Mat& image) {
+	if (image.empty())
+		return;
+
+	pMOG->operator()(image, fgMaskMOG);
+	cv::dilate(image,image,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
+
+	bin = new IplImage(fgMaskMOG);
+	frame = new IplImage(image);
+	labelImg = cvCreateImage(cvSize(image.cols,image.rows),IPL_DEPTH_LABEL,1);
+
+	unsigned int result = cvLabel(bin, labelImg, blobs);
+	cvRenderBlobs(labelImg, blobs, frame, frame, CV_BLOB_RENDER_BOUNDING_BOX|CV_BLOB_RENDER_CENTROID|CV_BLOB_RENDER_ANGLE);
+	cvFilterByArea(blobs, 1500, 40000);
+	cvUpdateTracks(blobs, tracks, 200., 5);
+	cvRenderTracks(tracks, frame, frame, CV_TRACK_RENDER_ID);
+
+	for (std::map<CvID, CvTrack*>::iterator track_it = tracks.begin(); track_it!=tracks.end(); track_it++) {
+		CvID id = (*track_it).first;
+		CvTrack* track = (*track_it).second;
+		cur_pos = track->centroid;
+
+		if (track->inactive == 0) {
+			if (last_poses.count(id)) {
+				std::map<CvID, CvPoint2D64f>::iterator pose_it = last_poses.find(id);
+				last_pos = pose_it -> second;
+				last_poses.erase(pose_it);
+			}
+			last_poses.insert(std::pair<CvID, CvPoint2D64f>(id, cur_pos));
+
+			if (line_pos+25>cur_pos.y && cur_pos.y>line_pos && line_pos-25<last_pos.y && last_pos.y<line_pos) {
+				count++;
+				countUD++;
+			}
+			if (line_pos-25<cur_pos.y && cur_pos.y<line_pos && line_pos+25>last_pos.y && last_pos.y>line_pos) {
+				count++;
+				countDU++;
+			}
+		} else {
+			if (last_poses.count(id)) {
+				last_poses.erase(last_poses.find(id));
+			}
+		}
+	}
+
+	cv::line(image, cv::Point(0, line_pos), cv::Point(FR_W, line_pos), cv::Scalar(0,255,0),2);
+	cv::putText(image, "COUNT: "+to_string(count), cv::Point(10, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
+	cv::putText(image, "UP->DOWN: "+to_string(countUD), cv::Point(10, 30), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
+	cv::putText(image, "DOWN->UP: "+to_string(countDU), cv::Point(10, 45), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
+	cv::imshow("BLOBS", image);
+	cv::waitKey(33);
+//	cv::imshow("FGMASK", fgMaskMOG);
+}
+

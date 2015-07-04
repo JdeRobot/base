@@ -1,6 +1,7 @@
 SET(SOURCE_FILES ./bsVehicleCounter.cpp)
 
 include_directories(
+	${LIBS_DIR}
 	${OpenCV_INCLUDE_DIR}
 	${Ice_INCLUDE_DIR}
 	${INTERFACES_CPP_DIR})
@@ -16,5 +17,7 @@ target_link_libraries(bsVehicleCounter
 	${Ice_LIBRARIES}
 	${ZeroCIce_LIBRARIES}
 	${OpenCV_LIBRARIES}
+	${OpenCVGUI_LIBRARIES}
+	cvblob
 	JderobotInterfaces
 	jderobotutil)
