@@ -188,10 +188,11 @@ namespace introrob {
     void Gui::display(Api *api) {
 
         this->setDestino();
-        ////////////////////////////
+
         //this->Encoders2world();
         //std::cout << "Using pose not encoders" << std::endl;
         this->Pose3D2world();
+
         this->Laser2world();
 
         if (!(this->yourCode_button_isPressed)) {
@@ -604,20 +605,42 @@ namespace introrob {
     void Gui::Encoders2world() {
         this->world->roboty = this->api->encodersData->roboty;
         this->world->robotx = this->api->encodersData->robotx;
-        //std::cout << this->api->encodersData->robottheta << std::endl;
         this->world->robottheta = this->api->encodersData->robottheta;
+
+        //std::cout << "Encoders:"<< this->world->robotx << " "<< this->world->roboty << " " << this->world->robottheta << " " <<std::endl;
     }
 
     void Gui::Pose3D2world() {
         this->world->roboty = this->api->pose3DData->y;
         this->world->robotx = this->api->pose3DData->x;
 
-        //std::cout << "test" <<std::endl;
-        float magnitude;
 
-        magnitude = sqrt(this->api->pose3DData->q0 * this->api->pose3DData->q0 + this->api->pose3DData->q3 * this->api->pose3DData->q3);
+        double magnitude,w,x,y,z,squ,sqx,sqy,sqz;
 
-        this->world->robottheta = 2.0 * acos(this->api->pose3DData->q0 / magnitude) * 180.0 / PI;
+        magnitude = sqrt(this->api->pose3DData->q0 * this->api->pose3DData->q0 + this->api->pose3DData->q1 * this->api->pose3DData->q1 + this->api->pose3DData->q2 * this->api->pose3DData->q2 + this->api->pose3DData->q3 * this->api->pose3DData->q3);
+
+        w = this->api->pose3DData->q0 / magnitude;
+        x = this->api->pose3DData->q1 / magnitude;
+        y = this->api->pose3DData->q2 / magnitude;
+        z = this->api->pose3DData->q3 / magnitude;
+
+        squ = w * w;
+        sqx = x * x;
+        sqy = y * y;
+        sqz = z * z;
+
+        double angle;
+
+        angle = atan2( 2 * (x * y + w * z), squ + sqx - sqy - sqz) * 180.0 / PI;
+
+        if(angle < 0)
+        {
+            angle += 360.0;
+        }
+
+        this->world->robottheta = angle;
+
+        //std::cout << "Pose3D:"<< this->world->robotx << " "<< this->world->roboty << " " << this->world->robottheta << " " <<std::endl;
     }
 
     void Gui::Laser2world() {
