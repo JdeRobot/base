@@ -22,7 +22,7 @@
 #define DRONE_HEIGHT 5
 #define DRONE_VEL 0.5
 #define EPS 0.5
-#define N_FRAMES 50
+#define N_FRAMES 500
 #define FR_H 240
 #define FR_W 240
 #define MARGIN 120
@@ -30,9 +30,10 @@
 using namespace cvb;
 
 bool initiated, dynamic;
-int lmindex, countUD, countDU, count, line_pos, nframes;
+int lmindex, countUD, countDU, count, count_active, line_pos, nframes;
 int* count_arr;
 float yaw;
+double avg_vel;
 
 std::vector<cv::Point> landmarks;
 cv::Mat image;
@@ -58,6 +59,7 @@ int main (int argc, char** argv) {
 	countDU = 0;
 	count = 0;
 	nframes = 0;
+	avg_vel = 0;
 	line_pos = FR_H - MARGIN;
 
 	pMOG = new cv::BackgroundSubtractorMOG;
@@ -72,11 +74,14 @@ int main (int argc, char** argv) {
 	jderobot::CMDVelDataPtr vel = new jderobot::CMDVelData();
 
 	//prespecify checkpoints
-	landmarks.push_back(cv::Point(5.0, 0.0));
-	landmarks.push_back(cv::Point(-5.0, 0.0));
+	landmarks.push_back(cv::Point(40.0, 0.0));
+	landmarks.push_back(cv::Point(10.0, 0.0));
+	landmarks.push_back(cv::Point(-20.0, 0.0));
 
 	count_arr = new int[landmarks.size()]();
 	cv::namedWindow("BLOBS", cv::WINDOW_AUTOSIZE);
+	count_active = 0;
+	avg_vel = 0;
 
 	try {
 		ic = Ice::initialize(argc, argv);
@@ -156,11 +161,18 @@ int main (int argc, char** argv) {
 			dynamic = true;
 
 			// Show current heatmap
+			std::cout << "[HEATMAP] Current Heatmap: \n";
+			for (int i=0; i<landmarks.size(); i++) 
+				std::cout << "Cars counted at checkpoint ["<< i+1 <<"]: "<<count_arr[i]<<"\n";
+			avg_vel/=count_active;
+			std::cout << "Average speed of cars: "<<avg_vel<<"\n";
+			std::cout<<"\n";
+			avg_vel = 0;
+			count_active = 0;
 		}
 
 		if (dynamic && abs(landmarks[lmindex].x-pose->x)<EPS && abs(landmarks[lmindex].y-pose->y)<EPS) {
-			std::cout << "Reached checkpoint: "<<lmindex+1<<".\n";
-			std::cout << "Current position: [X="<<pose->x<<"m, Y="<<pose->y<<"m, Z="<<pose->z<<"m]\n";
+			std::cout << "Reached checkpoint ["<<lmindex+1<<"]: X="<<pose->x<<"m, Y="<<pose->y<<"m\n";
 			std::cout << "[STATUS] Processing started..\n";
 
 			vel->linearX = 0; vel->linearY = 0; vel->linearZ = 0;
@@ -177,6 +189,7 @@ int main (int argc, char** argv) {
 
 			// Update lmindex, nframes, counts
 			//cv::destroyAllWindows();
+			count_arr[lmindex]=count;
 			++lmindex%=landmarks.size();
 			nframes = 0;
 			count = 0;
@@ -248,7 +261,6 @@ void processImage(cv::Mat& image) {
 				last_poses.erase(pose_it);
 			}
 			last_poses.insert(std::pair<CvID, CvPoint2D64f>(id, cur_pos));
-
 			if (line_pos+25>cur_pos.y && cur_pos.y>line_pos && line_pos-25<last_pos.y && last_pos.y<line_pos) {
 				count++;
 				countUD++;
@@ -256,6 +268,12 @@ void processImage(cv::Mat& image) {
 			if (line_pos-25<cur_pos.y && cur_pos.y<line_pos && line_pos+25>last_pos.y && last_pos.y>line_pos) {
 				count++;
 				countDU++;
+			}
+
+			if ( cur_pos.y<line_pos+50 && cur_pos.y>line_pos-50) {
+				//std::cout << "Id: "<< id <<" velX: "<< cur_pos.x - last_pos.x <<" velY: "<< cur_pos.y - last_pos.y <<"\n";
+				avg_vel += abs(cur_pos.y-last_pos.y);
+				count_active++;
 			}
 		} else {
 			if (last_poses.count(id)) {
