@@ -1,3 +1,26 @@
+/*
+ *  Copyright (C) 1997-2015 JDERobot Developers Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *  Author: Satyaki Chakraborty (satyaki [dot] cs15 [at] gmail [dot] com)
+ *
+ *  Note: This source code has been developed in GSoC'2015
+ *
+ */
+
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
@@ -32,12 +55,14 @@ using namespace cvb;
 bool initiated, dynamic;
 int lmindex, countUD, countDU, count, count_active, line_pos, nframes;
 int* count_arr;
+float* avg_vel_arr;
 float yaw;
 double avg_vel;
 
 std::vector<cv::Point> landmarks;
 cv::Mat image;
 cv::Mat fgMaskMOG;
+cv::Mat heat_map;
 cv::Ptr<cv::BackgroundSubtractor> pMOG;
 IplImage* bin;
 IplImage* frame;
@@ -63,6 +88,7 @@ int main (int argc, char** argv) {
 	line_pos = FR_H - MARGIN;
 
 	pMOG = new cv::BackgroundSubtractorMOG;
+	heat_map = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
 
 	Ice::CommunicatorPtr ic;
 	jderobot::ArDroneExtraPrx arextraprx;
@@ -79,6 +105,7 @@ int main (int argc, char** argv) {
 	landmarks.push_back(cv::Point(-20.0, 0.0));
 
 	count_arr = new int[landmarks.size()]();
+	avg_vel_arr = new float[landmarks.size()]();
 	cv::namedWindow("BLOBS", cv::WINDOW_AUTOSIZE);
 	count_active = 0;
 	avg_vel = 0;
@@ -137,6 +164,7 @@ int main (int argc, char** argv) {
                 image.create(img->description->height, img->description->width, CV_8UC3);
                 memcpy((unsigned char*) image.data, &(img->pixelData[0]), image.cols*image.rows*3);
 		cv::imshow("BLOBS", image);
+		cv::imshow("HEATMAP", heat_map);
 		cv::waitKey(33);
 
 		if (!initiated && abs(pose->z - DRONE_HEIGHT) < EPS) {
@@ -160,13 +188,18 @@ int main (int argc, char** argv) {
 
 			dynamic = true;
 
-			// Show current heatmap
+			// Update heatmap
 			std::cout << "[HEATMAP] Current Heatmap: \n";
 			for (int i=0; i<landmarks.size(); i++) 
 				std::cout << "Cars counted at checkpoint ["<< i+1 <<"]: "<<count_arr[i]<<"\n";
-			avg_vel/=count_active;
+			heat_map = cv::Mat::zeros(FR_H, FR_W, CV_8UC3);
+
+			for (int i=0; i<landmarks.size(); i++) {
+				cv::circle(heat_map, cv::Point((landmarks[i].y + 50)*2.4, (landmarks[i].x + 50)*2.4), count_arr[i]*3, cv::Scalar(0, 16*avg_vel_arr[i], 255 - 16*avg_vel_arr[i]), -1);
+			}
 			std::cout << "Average speed of cars: "<<avg_vel<<"\n";
 			std::cout<<"\n";
+
 			avg_vel = 0;
 			count_active = 0;
 		}
@@ -187,9 +220,10 @@ int main (int argc, char** argv) {
 				processImage(image);
 			}
 
-			// Update lmindex, nframes, counts
 			//cv::destroyAllWindows();
 			count_arr[lmindex]=count;
+			if (count_active) avg_vel/=count_active;
+			avg_vel_arr[lmindex] = avg_vel;
 			++lmindex%=landmarks.size();
 			nframes = 0;
 			count = 0;
@@ -236,7 +270,7 @@ void processImage(cv::Mat& image) {
 	if (image.empty())
 		return;
 
-	pMOG->operator()(image, fgMaskMOG);
+	pMOG->operator()(image, fgMaskMOG, 0.01);
 	cv::dilate(image,image,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
 
 	bin = new IplImage(fgMaskMOG);
@@ -271,7 +305,6 @@ void processImage(cv::Mat& image) {
 			}
 
 			if ( cur_pos.y<line_pos+50 && cur_pos.y>line_pos-50) {
-				//std::cout << "Id: "<< id <<" velX: "<< cur_pos.x - last_pos.x <<" velY: "<< cur_pos.y - last_pos.y <<"\n";
 				avg_vel += abs(cur_pos.y-last_pos.y);
 				count_active++;
 			}
@@ -288,6 +321,5 @@ void processImage(cv::Mat& image) {
 	cv::putText(image, "DOWN->UP: "+to_string(countDU), cv::Point(10, 45), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
 	cv::imshow("BLOBS", image);
 	cv::waitKey(33);
-//	cv::imshow("FGMASK", fgMaskMOG);
 }
 
