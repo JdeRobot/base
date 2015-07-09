@@ -60,9 +60,7 @@ float yaw;
 double avg_vel;
 
 std::vector<cv::Point> landmarks;
-cv::Mat image;
-cv::Mat fgMaskMOG;
-cv::Mat heat_map;
+cv::Mat image, fgMaskMOG, heat_map, heat_mapfg;
 cv::Ptr<cv::BackgroundSubtractor> pMOG;
 IplImage* bin;
 IplImage* frame;
@@ -89,6 +87,8 @@ int main (int argc, char** argv) {
 
 	pMOG = new cv::BackgroundSubtractorMOG;
 	heat_map = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
+	cv::rectangle(heat_map, cv::Point(FR_W/2-40, 0), cv::Point(FR_W/2+40, FR_H), cv::Scalar(50, 50, 50), -1);
+	cv::line(heat_map, cv::Point(FR_W/2, 0), cv::Point(FR_W/2, FR_H), cv::Scalar(100, 100, 100), 1);
 
 	Ice::CommunicatorPtr ic;
 	jderobot::ArDroneExtraPrx arextraprx;
@@ -177,8 +177,10 @@ int main (int argc, char** argv) {
 
 		if (initiated && !dynamic) {
 			// set velocity for next checkpoint
-			vel->linearX = (landmarks[lmindex].x-pose->x)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y));
-			vel->linearY = (landmarks[lmindex].y-pose->y)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y));
+			vel->linearX = (landmarks[lmindex].x-pose->x)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
+			vel->linearY = (landmarks[lmindex].y-pose->y)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
+			vel->linearZ = (DRONE_HEIGHT-pose->z)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
+//			std::cout << "Velx: "<<vel->linearX <<"\n";
 			float yaw = (float) atan2(2.0*(pose->q0*pose->q3 + pose->q1*pose->q2), 1 - 2.0*(pose->q2*pose->q2 + pose->q3*pose->q3));
 			float tempX = cos(yaw)*(vel->linearX) + sin(yaw)*(vel->linearY);
 			float tempY = -sin(yaw)*(vel->linearX) + cos(yaw)*(vel->linearY);
@@ -193,6 +195,8 @@ int main (int argc, char** argv) {
 			for (int i=0; i<landmarks.size(); i++) 
 				std::cout << "Cars counted at checkpoint ["<< i+1 <<"]: "<<count_arr[i]<<"\n";
 			heat_map = cv::Mat::zeros(FR_H, FR_W, CV_8UC3);
+			cv::rectangle(heat_map, cv::Point(FR_W/2-40, 0), cv::Point(FR_W/2+40, FR_H), cv::Scalar(50, 50, 50), -1);
+			cv::line(heat_map, cv::Point(FR_W/2, 0), cv::Point(FR_W/2, FR_H), cv::Scalar(100, 100, 100), 1);
 
 			for (int i=0; i<landmarks.size(); i++) {
 				cv::circle(heat_map, cv::Point((landmarks[i].y + 50)*2.4, (landmarks[i].x + 50)*2.4), count_arr[i]*3, cv::Scalar(0, 16*avg_vel_arr[i], 255 - 16*avg_vel_arr[i]), -1);
@@ -205,7 +209,7 @@ int main (int argc, char** argv) {
 		}
 
 		if (dynamic && abs(landmarks[lmindex].x-pose->x)<EPS && abs(landmarks[lmindex].y-pose->y)<EPS) {
-			std::cout << "Reached checkpoint ["<<lmindex+1<<"]: X="<<pose->x<<"m, Y="<<pose->y<<"m\n";
+			std::cout << "Reached checkpoint ["<<lmindex+1<<"]: X="<<pose->x<<"m, Y="<<pose->y<<"m, Z="<<pose->z<<"m\n";
 			std::cout << "[STATUS] Processing started..\n";
 
 			vel->linearX = 0; vel->linearY = 0; vel->linearZ = 0;
@@ -271,7 +275,7 @@ void processImage(cv::Mat& image) {
 		return;
 
 	pMOG->operator()(image, fgMaskMOG, 0.01);
-	cv::dilate(image,image,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
+	cv::dilate(fgMaskMOG,fgMaskMOG,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
 
 	bin = new IplImage(fgMaskMOG);
 	frame = new IplImage(image);
