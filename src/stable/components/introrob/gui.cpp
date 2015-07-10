@@ -614,6 +614,10 @@ namespace introrob {
         this->world->roboty = this->api->pose3DData->y;
         this->world->robotx = this->api->pose3DData->x;
 
+        /*
+         * The following section calculates the angle required to properly visualize the pioneer robot
+         */
+
 
         double magnitude,w,x,y,z,squ,sqx,sqy,sqz;
 
