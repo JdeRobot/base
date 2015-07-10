@@ -87,6 +87,7 @@ int main (int argc, char** argv) {
 
 	pMOG = new cv::BackgroundSubtractorMOG;
 	heat_map = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
+	heat_mapfg = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
 	cv::rectangle(heat_map, cv::Point(FR_W/2-40, 0), cv::Point(FR_W/2+40, FR_H), cv::Scalar(50, 50, 50), -1);
 	cv::line(heat_map, cv::Point(FR_W/2, 0), cv::Point(FR_W/2, FR_H), cv::Scalar(100, 100, 100), 1);
 
@@ -164,7 +165,7 @@ int main (int argc, char** argv) {
                 image.create(img->description->height, img->description->width, CV_8UC3);
                 memcpy((unsigned char*) image.data, &(img->pixelData[0]), image.cols*image.rows*3);
 		cv::imshow("BLOBS", image);
-		cv::imshow("HEATMAP", heat_map);
+		cv::imshow("HEATMAP", heat_map + heat_mapfg);
 		cv::waitKey(33);
 
 		if (!initiated && abs(pose->z - DRONE_HEIGHT) < EPS) {
@@ -180,7 +181,6 @@ int main (int argc, char** argv) {
 			vel->linearX = (landmarks[lmindex].x-pose->x)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
 			vel->linearY = (landmarks[lmindex].y-pose->y)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
 			vel->linearZ = (DRONE_HEIGHT-pose->z)/sqrt((landmarks[lmindex].x-pose->x)*(landmarks[lmindex].x-pose->x)+(landmarks[lmindex].y-pose->y)*(landmarks[lmindex].y-pose->y)+(DRONE_HEIGHT-pose->z)*(DRONE_HEIGHT-pose->z));
-//			std::cout << "Velx: "<<vel->linearX <<"\n";
 			float yaw = (float) atan2(2.0*(pose->q0*pose->q3 + pose->q1*pose->q2), 1 - 2.0*(pose->q2*pose->q2 + pose->q3*pose->q3));
 			float tempX = cos(yaw)*(vel->linearX) + sin(yaw)*(vel->linearY);
 			float tempY = -sin(yaw)*(vel->linearX) + cos(yaw)*(vel->linearY);
@@ -192,15 +192,14 @@ int main (int argc, char** argv) {
 
 			// Update heatmap
 			std::cout << "[HEATMAP] Current Heatmap: \n";
-			for (int i=0; i<landmarks.size(); i++) 
+			for (int i=0; i<landmarks.size(); i++)
 				std::cout << "Cars counted at checkpoint ["<< i+1 <<"]: "<<count_arr[i]<<"\n";
-			heat_map = cv::Mat::zeros(FR_H, FR_W, CV_8UC3);
-			cv::rectangle(heat_map, cv::Point(FR_W/2-40, 0), cv::Point(FR_W/2+40, FR_H), cv::Scalar(50, 50, 50), -1);
-			cv::line(heat_map, cv::Point(FR_W/2, 0), cv::Point(FR_W/2, FR_H), cv::Scalar(100, 100, 100), 1);
+			heat_mapfg = cv::Mat::zeros(FR_H, FR_W, CV_8UC3);
 
 			for (int i=0; i<landmarks.size(); i++) {
-				cv::circle(heat_map, cv::Point((landmarks[i].y + 50)*2.4, (landmarks[i].x + 50)*2.4), count_arr[i]*3, cv::Scalar(0, 16*avg_vel_arr[i], 255 - 16*avg_vel_arr[i]), -1);
+				cv::circle(heat_mapfg, cv::Point((landmarks[i].y + 50)*2.4, (landmarks[i].x + 50)*2.4), count_arr[i]*3, cv::Scalar(0, 16*avg_vel_arr[i], 255 - 16*avg_vel_arr[i]), -1);
 			}
+			cv::GaussianBlur(heat_mapfg, heat_mapfg, cv::Size(15, 15), 3);
 			std::cout << "Average speed of cars: "<<avg_vel<<"\n";
 			std::cout<<"\n";
 
@@ -224,7 +223,6 @@ int main (int argc, char** argv) {
 				processImage(image);
 			}
 
-			//cv::destroyAllWindows();
 			count_arr[lmindex]=count;
 			if (count_active) avg_vel/=count_active;
 			avg_vel_arr[lmindex] = avg_vel;
@@ -274,7 +272,7 @@ void processImage(cv::Mat& image) {
 	if (image.empty())
 		return;
 
-	pMOG->operator()(image, fgMaskMOG, 0.01);
+	pMOG->operator()(image, fgMaskMOG, 0.05);
 	cv::dilate(fgMaskMOG,fgMaskMOG,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
 
 	bin = new IplImage(fgMaskMOG);
@@ -312,6 +310,15 @@ void processImage(cv::Mat& image) {
 				avg_vel += abs(cur_pos.y-last_pos.y);
 				count_active++;
 			}
+
+			//update heatmapfg
+			heat_mapfg = cv::Mat::zeros(FR_H, FR_W, CV_8UC3);
+			count_arr[lmindex] = count;
+			avg_vel_arr[lmindex] = avg_vel/count_active ;
+			for (int i=0; i<landmarks.size(); i++) {
+				cv::circle(heat_mapfg, cv::Point((landmarks[i].y + 50)*2.4, (landmarks[i].x + 50)*2.4), count_arr[i]*3, cv::Scalar(0, 16*avg_vel_arr[i], 255 - 16*avg_vel_arr[i]), -1);
+			}
+			cv::GaussianBlur(heat_mapfg, heat_mapfg, cv::Size(15, 15), 5);
 		} else {
 			if (last_poses.count(id)) {
 				last_poses.erase(last_poses.find(id));
@@ -324,6 +331,6 @@ void processImage(cv::Mat& image) {
 	cv::putText(image, "UP->DOWN: "+to_string(countUD), cv::Point(10, 30), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
 	cv::putText(image, "DOWN->UP: "+to_string(countDU), cv::Point(10, 45), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255,255,255));
 	cv::imshow("BLOBS", image);
+	cv::imshow("HEATMAP", heat_map + heat_mapfg);
 	cv::waitKey(33);
 }
-
