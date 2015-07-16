@@ -109,6 +109,18 @@
                         <property name="bottom_attach">2</property>
                       </packing>
                     </child>
+										<child>
+          						<widget class="GtkDrawingArea" id="teleopAreaTrl">
+			            			<property name="width_request">218</property>
+						      			<property name="height_request">205</property>
+									      <property name="visible">True</property>
+						      			<property name="can_focus">False</property>
+			          			</widget>
+          						<packing>
+												<property name="left_attach">1</property>
+												<property name="top_attach">2</property>
+											</packing>
+										</child>
                   </widget>
                 </child>
               </widget>
@@ -230,6 +242,18 @@
                         <property name="bottom_attach">2</property>
                       </packing>
                     </child>
+										<child>
+          						<widget class="GtkDrawingArea" id="teleopAreaRtt">
+			            			<property name="width_request">218</property>
+						      			<property name="height_request">205</property>
+									      <property name="visible">True</property>
+						      			<property name="can_focus">False</property>
+			          			</widget>
+          						<packing>
+												<property name="left_attach">1</property>
+												<property name="top_attach">2</property>
+											</packing>
+										</child>
                   </widget>
                 </child>
               </widget>

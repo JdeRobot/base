@@ -8,6 +8,9 @@
 #include <cv.h>
 #include "sharer.h"
 
+#define pi 3.14159265358979
+
+
 namespace navigatorCamera {
 
 	class Gui {
@@ -45,8 +48,25 @@ namespace navigatorCamera {
 		Glib::RefPtr<Gnome::Glade::Xml> refXml;	///< Glade XML parser.
 		std::string gladepath;					///< Path to the associated glade file.
 
+		Glib::RefPtr<Gdk::GC> gc_teleoperateTrl;
+		Glib::RefPtr<Gdk::GC> gc_teleoperateRtt;
+		Glib::RefPtr<Gdk::Pixbuf> m_imageTrl;
+		Glib::RefPtr<Gdk::Pixbuf> m_imageRtt;
+
+		Glib::RefPtr<Gdk::Colormap> colormapTrl;
+		Glib::RefPtr<Gdk::Colormap> colormapRtt;
+		Gdk::Color color_white;
+		Gdk::Color color_black;
+		Gdk::Color color_red;
+		int previous_event_x, previous_event_y;
+		float prev_x, prev_y;
+		int previous_event_yaw, previous_event_pitch;
+		float prev_yaw, prev_pitch;
+
 		// Private Functions
 		void showPose3d();			///< Show the fields of current Pose3D in GUI.
+		void teleoperateTrl();
+		void teleoperateRtt();
 
 		// Windows
 		Gtk::Window *showWindow;	///< Window for show the image of RGB camera and the fields of Pose3D.
@@ -54,6 +74,8 @@ namespace navigatorCamera {
 
 		// Widgets
 		Gtk::Image* RGB;			///< RGB Camera image.
+	        Gtk::DrawingArea *teleopAreaTrl;
+	        Gtk::DrawingArea *teleopAreaRtt;
 
 		Gtk::Entry *txtInfoX;		///< Display for 'x' value of Pose3D.
 		Gtk::Entry *txtInfoY;		///< Display for 'y' value of Pose3D.
@@ -104,6 +126,9 @@ namespace navigatorCamera {
 		void gtk_restart_onButtonClick();
 
 		bool on_key_press_event(GdkEventKey* event);
+	        bool on_press_teleopAreaTrl(GdkEvent * event);
+	        bool on_press_teleopAreaRtt(GdkEvent * event);
+
 
 
 	}; /* class Gui */
