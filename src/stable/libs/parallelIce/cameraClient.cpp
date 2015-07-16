@@ -62,33 +62,38 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	jderobot::ImageFormat formats = this->prx->getImageFormat();
 
 	std::vector<std::string>::iterator it;
-  it = std::find(formats.begin(), formats.end(), formats);
-  if (it==formats.end())
+  it = std::find(formats.begin(), formats.end(), definedFormat);
+  if (it==formats.end()){
     it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-	if (it != formats.end())
-	{
-		this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
-		it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
-		if (it != formats.end())
-			this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
-	}
-	else
-	{
-		it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
-		if (it != formats.end())
-		{
-			this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name;
-			it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
-			if (it != formats.end())
-				this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
-		}
-		else{
-			this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name;
-			it = std::find(formats.begin(), formats.end(), colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name);
-			if (it != formats.end())
-				this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name;
-		}
-	}
+
+    if (it != formats.end())
+    {
+      this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
+      it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
+      if (it != formats.end())
+        this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
+    }
+    else
+    {
+      it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
+      if (it != formats.end())
+      {
+        this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name;
+        it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
+        if (it != formats.end())
+          this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
+      }
+      else{
+        this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name;
+        it = std::find(formats.begin(), formats.end(), colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name);
+        if (it != formats.end())
+          this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name;
+      }
+    }
+  }
+  else{
+    this->mImageFormat = definedFormat;
+  }
 
 	jderobot::Logger::getInstance()->info("Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
 

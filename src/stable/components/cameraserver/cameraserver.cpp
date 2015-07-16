@@ -42,323 +42,123 @@
 
 #include <zlib.h>
 #include <log/Logger.h>
+#include <jderobotutil/CameraHandler.h>
+#include <jderobotutil/CameraTask.h>
 
 namespace cameraserver{
 
-class CameraI: virtual public jderobot::Camera {
-
+class CameraI:  public jderobot::CameraHandler {
+ public:
+  CameraI(std::string propertyPrefix, Ice::CommunicatorPtr ic):jderobot::CameraHandler(propertyPrefix,ic){
+    //we use formats acording to colorspaces
+    std::string fmtStr = prop->getPropertyWithDefault(prefix+"Format","YUY2");//default format YUY2
+    imageFmt = colorspaces::Image::Format::searchFormat(fmtStr);
+    if (!imageFmt)
+      throw  "Format " + fmtStr + " unknown";
+
+    imageDescription->size = imageDescription->width * imageDescription->height * CV_ELEM_SIZE(imageFmt->cvType);
+    imageDescription->format = imageFmt->name;
+
+    // mirror image
+    mirror = prop->getPropertyAsIntWithDefault(prefix+"Mirror",0);
+
+    //fill pipeline cfg
+    uri = prop->getProperty(prefix+"Uri");
+    framerateN = prop->getPropertyAsIntWithDefault(prefix+"FramerateN",25);
+    framerateD = prop->getPropertyAsIntWithDefault(prefix+"FramerateD",1);
+
+    std::cout << "URI: " << uri << std::endl;
+
+    if(uri.size()>3)
+      capture.open(uri);
+    else
+      capture.open(atoi(uri.c_str()));
+
+    if(capture.isOpened()){
+      replyTask = new ReplyTask(this, framerateN, capture, cv::Size(imageDescription->width, imageDescription->height));
+
+      // check client/server service mode
+      int rpc = prop->getPropertyAsIntWithDefault("CameraSrv.DefaultMode",1);
+
+      if(rpc){
+        rpc_mode=true;
+      }
+      else{
+        // check publish/subscribe service mode
+        Ice::ObjectPrx obj = ic->propertyToProxy("CameraSrv.TopicManager");
+
+        if(obj!=0){
+          // IceStorm publisher initialization
+          IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(obj);
+          IceStorm::TopicPrx topic;
+          try{
+            topic = topicManager->retrieve(cameraDescription->name);
+          }
+          catch(const IceStorm::NoSuchTopic&){
+            topic = topicManager->create(cameraDescription->name);
+          }
+          Ice::ObjectPrx pub = topic->getPublisher()->ice_oneway();
+
+          imageConsumer=jderobot::ImageConsumerPrx::uncheckedCast(pub);
+        }
+        else{
+          imageConsumer=0;
+        }
+      }
+
+      replyTask->start(); // my own thread
+
+    }else{
+      exit(-1);
+    }
+  }
+  void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
+    replyTask->pushJob(cb, format);
+  }
+
+
+ private:
+  class ReplyTask: public jderobot::CameraTask {
+   public:
+      ReplyTask(const jderobot::Camera* camera, int fps, cv::VideoCapture& cap, cv::Size configSize):jderobot::CameraTask(camera,fps), capture(cap), configSize(configSize){
+
+      }
+
+      virtual void createCustomImage(cv::Mat& image){
+        cv::Mat frame;
+        if(!capture.isOpened()){
+          exit(-1);
+        }
+
+        capture >> frame;
+
+        if(!frame.data){
+          capture.set(CV_CAP_PROP_POS_AVI_RATIO, 0.0);
+          capture >> frame;
+        }
+        cv::cvtColor(frame, frame, CV_RGB2BGR);
+
+        if(configSize!=frame.size())
+          cv::resize(frame, frame,configSize);
+        frame.copyTo(image);
+      }
+
+   private:
+      cv::VideoCapture capture;
+      cv::Size configSize;
+
+  };
+  cv::VideoCapture capture;
 
-public:
+  std::string uri;
+  int framerateN;
+  int framerateD;
+  bool rpc_mode;
 
-	std::string uri;
-	int framerateN;
-	int framerateD;
 
-	CameraI(std::string propertyPrefix, Ice::CommunicatorPtr ic)
-	: prefix(propertyPrefix), imageConsumer(), rpc_mode(false) {
-
-		std::cout << "Constructor CameraI -> " << propertyPrefix << std::endl;
-
-		imageDescription = (new jderobot::ImageDescription());
-		cameraDescription = (new jderobot::CameraDescription());
-
-		Ice::PropertiesPtr prop = ic->getProperties();
-
-		//fill cameraDescription
-		cameraDescription->name = prop->getProperty(prefix+"Name");
-		if (cameraDescription->name.size() == 0)
-			throw "Camera name not configured";
-
-		cameraDescription->shortDescription = prop->getProperty(prefix+"ShortDescription");
-		cameraDescription->streamingUri = prop->getProperty(prefix+"StreamingUri");
-
-		//fill imageDescription
-		imageDescription->width = prop->getPropertyAsIntWithDefault(prefix+"ImageWidth",340);
-		imageDescription->height = prop->getPropertyAsIntWithDefault(prefix+"ImageHeight",280);
-
-		//we use formats acording to colorspaces
-		std::string fmtStr = prop->getPropertyWithDefault(prefix+"Format","YUY2");//default format YUY2
-		imageFmt = colorspaces::Image::Format::searchFormat(fmtStr);
-		if (!imageFmt)
-			throw  "Format " + fmtStr + " unknown";
-
-		imageDescription->size = imageDescription->width * imageDescription->height * CV_ELEM_SIZE(imageFmt->cvType);
-		imageDescription->format = imageFmt->name;
-
-		// mirror image
-		mirror = prop->getPropertyAsIntWithDefault(prefix+"Mirror",0);
-
-		//fill pipeline cfg
-		uri = prop->getProperty(prefix+"Uri");
-		framerateN = prop->getPropertyAsIntWithDefault(prefix+"FramerateN",25);
-		framerateD = prop->getPropertyAsIntWithDefault(prefix+"FramerateD",1);
-
-		std::cout << "URI: " << uri << std::endl;
-
-		if(uri.size()>3)
-			cap.open(uri);
-		else
-			cap.open(atoi(uri.c_str()));
-
-		if(cap.isOpened()){
-			replyTask = new ReplyTask(this);
-
-			// check client/server service mode
-			int rpc = prop->getPropertyAsIntWithDefault("CameraSrv.DefaultMode",1);
-
-			if(rpc){
-				rpc_mode=true;
-			}
-			else{
-				// check publish/subscribe service mode
-				Ice::ObjectPrx obj = ic->propertyToProxy("CameraSrv.TopicManager");
-
-				if(obj!=0){
-					// IceStorm publisher initialization
-					IceStorm::TopicManagerPrx topicManager = IceStorm::TopicManagerPrx::checkedCast(obj);
-					IceStorm::TopicPrx topic;
-					try{
-						topic = topicManager->retrieve(cameraDescription->name);
-					}
-					catch(const IceStorm::NoSuchTopic&){
-						topic = topicManager->create(cameraDescription->name);
-					}
-					Ice::ObjectPrx pub = topic->getPublisher()->ice_oneway();
-
-					imageConsumer=jderobot::ImageConsumerPrx::uncheckedCast(pub);
-				}
-				else{
-					imageConsumer=0;
-				}
-			}
-
-			replyTask->start(); // my own thread
-
-		}else{
-			exit(-1);
-		}
-	}
-
-	std::string getName () {
-		return (cameraDescription->name);
-	}
-
-	std::string getRobotName () {
-		//            return ((context.properties())->getProperty(context.tag()+".RobotName"));
-	}
-
-	virtual ~CameraI() {
-		//            context.tracer().info("Stopping and joining thread for camera: " + cameraDescription->name);
-		//            gbxiceutilacfr::stopAndJoin(replyTask);
-	}
-
-	virtual jderobot::ImageDescriptionPtr getImageDescription(const Ice::Current& c){
-		return imageDescription;
-	}
-
-	virtual jderobot::CameraDescriptionPtr getCameraDescription(const Ice::Current& c){
-		return cameraDescription;
-	}
-
-	virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) {
-		return 0;
-	}
-
-	virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
-	{
-		jderobot::ImageFormat formats;
-
-		formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-		formats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
-
-		return formats;
-	}
-
-	virtual void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
-		replyTask->pushJob(cb, format);
-	}
-
-	virtual std::string startCameraStreaming(const Ice::Current&){
-	}
-
-	virtual void stopCameraStreaming(const Ice::Current&) {
-	}
-
-	virtual void reset(const Ice::Current&)
-	{
-	}
-
-private:
-
-	class ReplyTask: public IceUtil::Thread {
-	public:
-		ReplyTask(CameraI* camera)
-	{
-			std::cout << "safeThread" << std::endl;
-			mycamera = camera;
-			mFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
-	}
-
-		void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
-			this->mFormat = format;
-			IceUtil::Mutex::Lock sync(requestsMutex);
-			requests.push_back(cb);
-		}
-
-		virtual void run(){
-			jderobot::ImageDataPtr reply(new jderobot::ImageData);
-			struct timeval a, b;
-			int cycle = 48;
-			long totalb,totala;
-			long diff;
-
-			int count = 0 ;
-			cv::Mat frame;
-
-			int cycle_control = 1000/mycamera->framerateN;
-
-			std::cout << cycle_control << std::endl;
-
-			while(1){
-
-				gettimeofday(&a,NULL);
-				totala=a.tv_sec*1000000+a.tv_usec;
-
-				if(!mycamera->cap.isOpened()){
-					exit(-1);
-				}
-
-				mycamera->cap >> frame;
-
-				if(!frame.data){
-					mycamera->cap.set(CV_CAP_PROP_POS_AVI_RATIO, 0.0);
-					mycamera->cap >> frame;
-				}
-				cv::cvtColor(frame, frame, CV_RGB2BGR);
-
-				if(mycamera->imageDescription->width!=frame.rows &&
-						mycamera->imageDescription->height!=frame.cols)
-					cv::resize(frame, frame,
-							cv::Size(mycamera->imageDescription->width,
-									mycamera->imageDescription->height));
-
-				if(count==0){
-					reply->description = mycamera->imageDescription;
-					count++;
-				}
-
-
-				if (mycamera->mirror)
-				{
-					cv::Mat dst;
-					cv::flip(frame, frame, 1);
-				}
-
-
-				IceUtil::Time t = IceUtil::Time::now();
-				reply->timeStamp.seconds = (long)t.toSeconds();
-				reply->timeStamp.useconds = (long)t.toMicroSeconds() - reply->timeStamp.seconds*1000000;
-
-				if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name)
-				{
-					unsigned long source_len = frame.rows*frame.cols*3;
-					unsigned long compress_len = compressBound(source_len);
-					unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
-
-					int r = compress((Bytef *) compress_buf, (uLongf *) &compress_len, (const Bytef *) &(frame.data[0]), (uLong)source_len );
-
-
-					if(r != Z_OK) {
-						jderobot::Logger::getInstance()->error("Compression Error");
-						switch(r) {
-						case Z_MEM_ERROR:
-							jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
-							break;
-						case Z_BUF_ERROR:
-							jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small.");
-							break;
-						case Z_STREAM_ERROR:
-							jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level.");
-							break;
-						}
-					}
-					else
-					{
-						reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
-						memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
-					}
-
-					if (compress_buf)
-						free(compress_buf);
-
-				}
-				else if (mFormat == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name)
-				{
-
-					reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
-					reply->pixelData.resize(frame.rows*frame.cols*3);
-					memcpy( &(reply->pixelData[0]), (unsigned char *) frame.data, frame.rows*frame.cols*3);
-				}
-				else
-				{
-					jderobot::Logger::getInstance()->error("Format image not recognized: " + mFormat);
-				}
-
-				// publish
-				if(mycamera->imageConsumer!=0){
-					//std::cout << "reply" << std::endl;
-					mycamera->imageConsumer->report(reply);
-				}
-
-				if (mycamera->rpc_mode){
-					{ //critical region start
-						IceUtil::Mutex::Lock sync(requestsMutex);
-						while(!requests.empty()) {
-							jderobot::AMD_ImageProvider_getImageDataPtr cb = requests.front();
-							requests.pop_front();
-							cb->ice_response(reply);
-						}
-					} //critical region end
-				}
-
-				gettimeofday(&b,NULL);
-				totalb=b.tv_sec*1000000+b.tv_usec;
-
-				diff = (totalb-totala)/1000;
-				diff = cycle-diff;
-				//std::cout << "CameraServer takes " << diff << " ms ";
-
-				if (diff < 0 || diff > cycle_control)
-					diff = 0.;
-				else
-					diff = cycle_control - diff;
-
-				//std::cout <<  " and sleep " << diff << " ms " << std::endl;
-				/*Sleep Algorithm*/
-				usleep(diff * 1000);
-
-			}
-		}
-
-		CameraI* mycamera;
-		IceUtil::Mutex requestsMutex;
-		std::list<jderobot::AMD_ImageProvider_getImageDataPtr> requests;
-		std::string mFormat;
-	};
-
-	typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;
-	std::string prefix;
-	colorspaces::Image::FormatPtr imageFmt;
-	jderobot::ImageDescriptionPtr imageDescription;
-	jderobot::CameraDescriptionPtr cameraDescription;
-	ReplyTaskPtr replyTask;
-	cv::VideoCapture cap;
-	bool rpc_mode;
-	jderobot::ImageConsumerPrx imageConsumer;
-	int mirror;
-
-
-}; // end class CameraI
+  typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;
+  ReplyTaskPtr replyTask;
+};
 
 } //namespace
 
