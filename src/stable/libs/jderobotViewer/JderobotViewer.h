@@ -15,6 +15,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <log/Logger.h>
+#include <opencv2/core/core.hpp>
+
 
 namespace jderobot {
 
@@ -34,7 +36,8 @@ public:
 	void addLine(const pcl::PointXYZ& p1, const pcl::PointXYZ& p2, const double r, const double g, const double b, const std::string& id);
 	bool wasStopped();
 	void saveScreenshot(const std::string& fileName);
-	void setShapeRenderingProperties(const pcl::visualization::RenderingProperties& property, const double value, const std::string& id );
+    void getScreenshotImage(cv::Mat& image);
+    void setShapeRenderingProperties(const pcl::visualization::RenderingProperties& property, const double value, const std::string& id );
 	void drawWorld();
 	void removePrism(const std::string& type, const int prismID);
 

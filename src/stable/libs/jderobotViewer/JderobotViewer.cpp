@@ -5,7 +5,9 @@
  *      Author: frivas
  */
 
-#include <jderobotViewer/JderobotViewer.h>
+#include "JderobotViewer.h"
+#include <opencv2/highgui/highgui.hpp>
+#include <boost/filesystem.hpp>
 
 namespace jderobot {
 
@@ -435,6 +437,18 @@ bool JderobotViewer::wasStopped() {
 	this->new_data_mutex.unlock();
 	return value;
 }
+
+void JderobotViewer::getScreenshotImage(cv::Mat& image){
+    std::string tempFilename("/tmp/tempWorld.png");
+    this->new_data_mutex.lock();
+    this->viewer->saveScreenshot(tempFilename);
+    cv::Mat tempImage= cv::imread(tempFilename);
+    boost::filesystem::wpath fileDisk(tempFilename);
+    boost::filesystem::remove(fileDisk);
+    this->new_data_mutex.unlock();
+    tempImage.copyTo(image);
+}
+
 
 void JderobotViewer::saveScreenshot(const std::string& fileName){
 	this->new_data_mutex.lock();
