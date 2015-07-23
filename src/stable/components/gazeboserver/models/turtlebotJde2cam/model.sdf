@@ -1424,6 +1424,7 @@
         <torque>5</torque>
       </plugin>
       <plugin name='encoders' filename='libencodersTurtlebotJde.so'/>
+      <plugin name="pose3d" filename="libpose3dTurtlebotJde.so"/> 
       <link name='kinect_model::kinect'>
         <inertial>
           <mass>0.300000</mass>
