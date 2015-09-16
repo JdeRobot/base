@@ -1,0 +1,20 @@
+#cuda
+find_package(CUDA QUIET)
+IF (CUDA_LIBRARIES)
+	include_directories(${CUDA_INCLUDE_DIRS})
+	message ("   -- CUDA detected")
+	#find cuda link directories:
+	if (WIN32)
+		add_definitions(-DHAVE_OPENCV_GPU)
+	else()
+		FIND_PATH( CUDA_LINK_DIR NAMES libcudart.so PATHS /usr/local/cuda-${CUDA_VERSION}/ /usr/lib/x86_64-linux-gnu/ PATH PATH_SUFFIXES lib64 lib)
+		if (CUDA_LINK_DIR)
+			SET(OpenCV_LIBRARIES ${OpenCV_LIBRARIES} ${CUDA_LINK_DIR}/libcudart.so)
+		else()
+			message (WARNING "        **Warning: Cuda link dir not found for version ${CUDA_VERSION}")
+		endif()
+	endif()
+ELSE()
+	message ("   -- CUDA not found!!")
+ENDIF()
+
