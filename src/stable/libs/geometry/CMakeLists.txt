@@ -11,7 +11,7 @@ ADD_LIBRARY(geometry SHARED ${SRC_FILES})
 include(FindPkgConfig)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-target_link_libraries(geometry tinyxml GLU opencv_core opencv_highgui ${Boost_LIBRARIES})
+target_link_libraries(geometry tinyxml GLU ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES} ${Boost_LIBRARIES})
 
 SET_PROPERTY(TARGET geometry PROPERTY SOVERSION 1.0)
  
