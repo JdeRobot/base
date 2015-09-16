@@ -1,9 +1,7 @@
 
 
 
-add_custom_command(OUTPUT myInterface.cpp myInterface.h
-                   COMMAND slice2cpp myInterface.ice
-	)
+execute_process(COMMAND slice2cpp ${CMAKE_CURRENT_LIST_DIR}/myInterface.ice WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 SET( SOURCE_FILES  basic_server.cpp myInterface.cpp)
 

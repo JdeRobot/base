@@ -1,14 +1,7 @@
 IF(LIBFREENECT_PATH)
 	SET( kinect2Server_SOURCE_FILES kinect2Server.cpp )
-
-
-
-
     include(FindPkgConfig)
-find_package(freenect2 REQUIRED)
-message("****LIBS: " ${freenect2_LIBRARIES})
-message("****INC: " ${freenect2_INCLUDE_DIRS})
-
+    find_package(freenect2 REQUIRED)
     add_executable (kinect2Server  ${kinect2Server_SOURCE_FILES})
 
 

@@ -1,4 +1,4 @@
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/../cpp/jderobot)
+include(${CMAKE_CURRENT_LIST_DIR}/jderobot/CMakeLists.txt)
 
 
 
