@@ -3,8 +3,7 @@ SET (opencv_gui_libs_components highgui calib3d)
 SET (opencv2_extra_libs_components contrib gpu legacy)
 SET (opencv3_extra_libs_components bgsegm )
 
-FIND_PACKAGE(OpenCV REQUIRED)
-message("verison ${OpenCV_VERSION_MAJOR}")
+FIND_PACKAGE(OpenCV QUIET)
 
 #look for core libs
 UNSET(OpenCV_LIBS)
@@ -45,9 +44,6 @@ message("***OpenCV Version: ${OpenCV_VERSION}")
 message("***OpenCV CORE LIBS: ${OpenCV_CORE_LIBS}")
 message("***OpenCV GUI LIBS: ${OpenCV_GUI_LIBS}")
 message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")
-
-message("***OpenCV Version1: ${OpenCV_VERSION_MAJOR}")
-message("***OpenCV Version2: ${OpenCV_VERSION_MINOR}")
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 #SET TO JDEROBOT CMAKE VARIABLES
