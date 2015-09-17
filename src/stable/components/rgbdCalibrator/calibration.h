@@ -47,6 +47,8 @@
 #include <gsl/gsl_multifit.h>
 
 using namespace cv;
+using namespace std;
+
 
 namespace rgbdCalibrator
 {
@@ -67,7 +69,7 @@ namespace rgbdCalibrator
 			       Size imageSize, 
 			       Mat&  cameraMatrix, 
 			       Mat& distCoeffs,
-			       vector<vector<Point2f> > imagePoints );
+			       std::vector<std::vector<Point2f> > imagePoints );
 
     void BackProjectWithDepth (const Eigen::Vector3d pixel,
 			       const colorspaces::Image depthData,
@@ -80,7 +82,7 @@ namespace rgbdCalibrator
 
     void saveFile(std::string fileName, Eigen::Vector4d offset);
 
-    void test(Eigen::Vector3d pixel, std::vector<colorspaces::Image> depthVector);
+    void test(Eigen::Vector3d pixel, vector<colorspaces::Image> depthVector);
 
   private:
 

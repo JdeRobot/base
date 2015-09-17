@@ -2,9 +2,10 @@
  * DepthSampler.cpp
  *
  *  Created on: 08/01/2014
- *      Author: eldercare
+ *      Author: frivas
  */
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include "DepthSampler.h"
 
 namespace jderobot {

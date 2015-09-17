@@ -5,6 +5,7 @@
  *      Author: frivas
  */
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include "DepthFilter.h"
 
 namespace jderobot {

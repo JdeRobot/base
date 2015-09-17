@@ -614,9 +614,6 @@ private:
     std::string mFormat;
 
 		int fps;
-		cv::BackgroundSubtractorMOG2 bg;
-		cv::Mat fore;
-		cv::Mat trainImage;
 		bool _done;
 	
 	

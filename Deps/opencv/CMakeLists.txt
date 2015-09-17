@@ -21,6 +21,7 @@ IF (DEFINED OpenCV_VERSION)
 	endforeach()
 
 	IF (${OpenCV_VERSION_MAJOR} MATCHES "3")
+		add_definitions(-D_OPENCV3)
 		#look for extra libs 
 		UNSET(OpenCV_LIBS)
 		FIND_PACKAGE(OpenCV COMPONENTS ${opencv3_extra_libs_components})
@@ -40,10 +41,7 @@ IF (DEFINED OpenCV_VERSION)
 ENDIF()
 
 
-message("***OpenCV Version: ${OpenCV_VERSION}")
-message("***OpenCV CORE LIBS: ${OpenCV_CORE_LIBS}")
-message("***OpenCV GUI LIBS: ${OpenCV_GUI_LIBS}")
-message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")
+
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 #SET TO JDEROBOT CMAKE VARIABLES
@@ -107,3 +105,10 @@ IF (NOT DEFINED OpenCV_VERSION)
 	ENDIF(OpenCVHG_INCLUDE_DIR)
 
 ENDIF()
+
+
+
+message("***OpenCV Version: ${OpenCV_VERSION}")
+message("***OpenCV CORE LIBS: ${OpenCV_CORE_LIBS}")
+message("***OpenCV GUI LIBS: ${OpenCV_GUI_LIBS}")
+message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")

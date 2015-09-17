@@ -85,7 +85,11 @@ int main (int argc, char** argv) {
 	avg_vel = 0;
 	line_pos = FR_H - MARGIN;
 
+#ifdef _OPENCV3
+	pMOG = cv::createBackgroundSubtractorMOG2();
+#else
 	pMOG = new cv::BackgroundSubtractorMOG;
+#endif
 	heat_map = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
 	heat_mapfg = cv::Mat::zeros(FR_W, FR_H, CV_8UC3);
 	cv::rectangle(heat_map, cv::Point(FR_W/2-40, 0), cv::Point(FR_W/2+40, FR_H), cv::Scalar(50, 50, 50), -1);
@@ -272,7 +276,11 @@ void processImage(cv::Mat& image) {
 	if (image.empty())
 		return;
 
+#ifdef _OPENCV3
+	pMOG->apply(image, fgMaskMOG, 0.05);
+#else
 	pMOG->operator()(image, fgMaskMOG, 0.05);
+#endif
 	cv::dilate(fgMaskMOG,fgMaskMOG,cv::getStructuringElement(cv::MORPH_ELLIPSE,cv::Size(15,15)));
 
 	bin = new IplImage(fgMaskMOG);

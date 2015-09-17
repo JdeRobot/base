@@ -10,6 +10,7 @@
 #include <zlib.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <log/Logger.h>
+#include <iomanip>
 
 
 

@@ -220,8 +220,8 @@ static bool runAndSave(const std::string& outputFilename,
                 float aspectRatio, int flags, cv::Mat& cameraMatrix,
                 cv::Mat& distCoeffs, bool writeExtrinsics, bool writePoints )
 {
-    cv::vector<cv::Mat> rvecs, tvecs;
-    cv::vector<float> reprojErrs;
+    std::vector<cv::Mat> rvecs, tvecs;
+    std::vector<float> reprojErrs;
     double totalAvgErr = 0;
 
     bool ok = runCalibration(imagePoints, imageSize, boardSize, patternType, squareSize,
