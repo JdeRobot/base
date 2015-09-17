@@ -44,6 +44,8 @@
 #include "replayergui.h"
 #include "control.h"
 #include <ns/ns.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 

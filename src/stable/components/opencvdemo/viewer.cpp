@@ -25,6 +25,8 @@
 #include "opencv/highgui.h"
 #include <cv.h>
 #include <glade/glade.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/video/tracking.hpp>
 /*#include <highgui.h>*/
 
 using namespace cv;
@@ -990,7 +992,7 @@ void Viewer::harris( Mat image )
 				/* Pyramidal Lucas Kanade Optical Flow algorithm, search feature points in img2 */
 				//cvCalcOpticalFlowPyrLK(img1, img2, aux3, aux4, points1, points2, numpoints, sizeWindow, 5, foundPoint, errors, termCriteria, 0);
 
-				calcOpticalFlowPyrLK(img1, img2, points[0], 
+                cv::calcOpticalFlowPyrLK(img1, img2, points[0],
 				points[1], foundPoint, errors, sizeWindow, 5, 
 				criteria);
 

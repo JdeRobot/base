@@ -36,6 +36,7 @@
 #include <jderobot/pose3dencoders.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "SharedMemory.h"
+#include <opencv2/core/core.hpp>
 
 class controlICE {
 public:

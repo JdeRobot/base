@@ -23,6 +23,7 @@
 #include <jderobot/pointcloud.h>
 #include <string>
 #include <iostream>
+#include <opencv2/imgproc/imgproc.hpp>
 
 namespace rgbdViewer {
 rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {

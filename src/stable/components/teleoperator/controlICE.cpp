@@ -20,6 +20,7 @@
  *
  */
 
+#include <opencv2/core/core_c.h>
 #include "controlICE.h"
 
 controlICE::controlICE(SharedMemory *interfacesData) {
@@ -134,7 +135,6 @@ void controlICE::getData() {
 }
 
 void controlICE::createImage1() {
-
     cvReleaseImage(&image);
     this->image = cvCreateImage(cvSize(interfacesData->imageDataLeftReceived->description->width, interfacesData->imageDataLeftReceived->description->height), 8, 3);
 

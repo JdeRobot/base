@@ -19,6 +19,7 @@
  *
  */
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include "API.h"
 
 /*

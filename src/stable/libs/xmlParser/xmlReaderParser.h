@@ -29,8 +29,8 @@
 
 #include <libxml++/libxml++.h>
 #include <iostream>
-#include <opencv2/opencv.hpp>
 #include <eigen3/Eigen/Dense>
+#include <opencv2/core/core.hpp>
 
 namespace Tracker3DPT {
 

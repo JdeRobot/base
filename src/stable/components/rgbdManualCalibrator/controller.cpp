@@ -21,6 +21,7 @@
  *
  */
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include "controller.h"
 
 namespace rgbdManualCalibrator {

@@ -23,6 +23,7 @@
 #include "view.h"
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/liststore.h>
+#include <opencv2/imgproc/imgproc.hpp>
 
 namespace rgbdManualCalibrator {
 
