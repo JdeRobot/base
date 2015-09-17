@@ -22,7 +22,7 @@
 #ifndef IMAGECV_COLORSPACES_H
 #define IMAGECV_COLORSPACES_H
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 #include <exception>
 #include <vector>
 #include <iostream>
