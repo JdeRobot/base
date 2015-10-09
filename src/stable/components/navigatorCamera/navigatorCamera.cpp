@@ -9,6 +9,7 @@
 
 #define cycle_camera 100000 //microseconds
 #define cycle_gui 50000 //microseconds
+#define cycle_speed 20000 //microseconds
 
 // Global Memory
 navigatorCamera::Sharer *sharer;
@@ -89,6 +90,31 @@ void *updateCamera(void* camRGB_ptr)
 	return NULL;
 } //*updateCamera
 
+void *updateSpeed(void*)
+{
+	struct timeval a, b;
+	long totala, totalb;
+	long diff;
+
+	while ( sharer->getGuiVisible() )
+	{
+		gettimeofday(&a, NULL);
+		totala = a.tv_sec * 1000000 + a.tv_usec;
+
+		sharer->changePose3dTranslationSpeed();
+
+
+		//Sleep Algorithm
+		gettimeofday(&b, NULL);
+		totalb = b.tv_sec * 1000000 + b.tv_usec;
+		diff = (totalb - totala);
+
+		cycleWait(cycle_speed, diff);
+	}
+
+	return NULL;
+} //*updateCamera
+
 // ################################ End Threads ################################
 
 int main(int argc, char** argv)
@@ -104,12 +130,14 @@ int main(int argc, char** argv)
 
 	pthread_t thr_gui;			// GUI thread
 	pthread_t thr_camera;		// Update Camera thread
+	pthread_t thr_speed;		//speed control
 
 	std::string prefix("navigatorCamera");	// Component Prefix
 	std::string gladeFile;					// Path to the glade file
 
 	bool guiActivated;		// GUI activation flag
 	bool controlActivated;	// Control activation flag
+	bool speedActivated;
 
 	int pose3dFps;		// Frequency to update the Pose3D.
 	long cycle_pose3d;	// Time cycle for control the update of Pose3D.
@@ -138,6 +166,7 @@ int main(int argc, char** argv)
 
 		guiActivated = prop->getPropertyAsIntWithDefault(prefix + ".guiActivated",1);
 		controlActivated = prop->getPropertyAsIntWithDefault(prefix + ".controlActivated",0);
+		speedActivated = prop->getPropertyAsIntWithDefault(prefix + ".speedActivated",0);
 
 		pose3dFps = prop->getPropertyAsIntWithDefault(prefix + ".Pose3D.Fps",25);
 		cycle_pose3d = (long)( (1./(float)pose3dFps) * 1000000); //microseconds
@@ -171,10 +200,15 @@ int main(int argc, char** argv)
 			pthread_create(&thr_gui, NULL, &showGui, static_cast<void *>(&gladeFile));
 
 		pthread_create(&thr_camera, NULL, &updateCamera, static_cast<void *>(camRGB));
+		
 
 		// Captures Pose3D ICE data.
 		jderobot::Pose3DDataPtr p3dData = pose3Dprx->getPose3DData();
 		sharer->setPose3D(p3dData);
+
+		if ( speedActivated ) {
+			pthread_create(&thr_speed, NULL, &updateSpeed, NULL);
+		}
 
 		while ( sharer->getControlActive() || sharer->getGuiVisible() )
 		{

@@ -192,8 +192,11 @@ namespace navigatorCamera {
 		x_normalized = 20 * (k * previous_event_y + p)*(-1);
        		y_normalized = 20 * (k * previous_event_x + p)*(-1);
 
+		sharer->setSpeedX(x_normalized/100.0);
+		sharer->setSpeedY(y_normalized/100.0);
 
-		if (x_normalized > prev_x)
+
+		/*if (x_normalized > prev_x)
 			sharer->changePose3dTranslation(1., 0., 0.);
 		else if (x_normalized < prev_x)
 			sharer->changePose3dTranslation(-1., 0., 0.);
@@ -208,7 +211,7 @@ namespace navigatorCamera {
 		//pthread_mutex_lock(&api->controlGui);
 		//api->setYawValue(yaw_normalized);
 		//api->setPitchValue(pitch_normalized);
-		//pthread_mutex_unlock(&api->controlGui);
+		//pthread_mutex_unlock(&api->controlGui);*/
 	    }
 
 	void Gui::teleoperateTrl() {
@@ -442,6 +445,12 @@ namespace navigatorCamera {
 
 	void Gui::gtk_restart_onButtonClick()
 	{
+		this->previous_event_x = 100;
+		this->previous_event_y = 100;
+		this->previous_event_yaw = 100;
+		this->previous_event_pitch = 100;
+		sharer->setSpeedX(0.0);
+		sharer->setSpeedY(0.0);		
 		sharer->restartPose3D();
 	}
 
