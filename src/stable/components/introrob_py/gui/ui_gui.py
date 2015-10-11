@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_gui.ui'
 #
-# Created: Wed May 27 18:58:28 2015
+# Created: Sun Oct 11 12:42:26 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,9 +61,6 @@ class Ui_MainWindow(object):
         self.sensorsCheck = QtGui.QCheckBox(self.centralwidget)
         self.sensorsCheck.setGeometry(QtCore.QRect(540, 250, 94, 26))
         self.sensorsCheck.setObjectName(_fromUtf8("sensorsCheck"))
-        self.colorFilterCheck = QtGui.QCheckBox(self.centralwidget)
-        self.colorFilterCheck.setGeometry(QtCore.QRect(540, 280, 94, 26))
-        self.colorFilterCheck.setObjectName(_fromUtf8("colorFilterCheck"))
         self.altdLabel = QtGui.QLabel(self.centralwidget)
         self.altdLabel.setGeometry(QtCore.QRect(390, 340, 51, 21))
         self.altdLabel.setObjectName(_fromUtf8("altdLabel"))
@@ -103,6 +100,9 @@ class Ui_MainWindow(object):
         self.rotValue.setGeometry(QtCore.QRect(445, 200, 41, 21))
         self.rotValue.setAlignment(QtCore.Qt.AlignCenter)
         self.rotValue.setObjectName(_fromUtf8("rotValue"))
+        self.resetButton = QtGui.QPushButton(self.centralwidget)
+        self.resetButton.setGeometry(QtCore.QRect(470, 140, 161, 41))
+        self.resetButton.setObjectName(_fromUtf8("resetButton"))
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -116,7 +116,6 @@ class Ui_MainWindow(object):
         self.windowsLabel.setText(_translate("MainWindow", "Windows:", None))
         self.cameraCheck.setText(_translate("MainWindow", "Camera", None))
         self.sensorsCheck.setText(_translate("MainWindow", "Sensors", None))
-        self.colorFilterCheck.setText(_translate("MainWindow", "Color filter", None))
         self.altdLabel.setText(_translate("MainWindow", "Altitude", None))
         self.rotationLabel.setText(_translate("MainWindow", "Rotation", None))
         self.XLabel.setText(_translate("MainWindow", "X:", None))
@@ -125,5 +124,7 @@ class Ui_MainWindow(object):
         self.YValue.setText(_translate("MainWindow", "0", None))
         self.altdValue.setText(_translate("MainWindow", "0", None))
         self.rotValue.setText(_translate("MainWindow", "0", None))
+        self.resetButton.setText(_translate("MainWindow", "Reset", None))
 
 from resources import resources_rc
+

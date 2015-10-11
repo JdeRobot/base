@@ -24,7 +24,6 @@ from gui.teleopWidget import TeleopWidget
 from gui.cameraWidget import CameraWidget
 from gui.communicator import Communicator
 from gui.sensorsWidget import SensorsWidget
-from gui.colorFilterWidget import ColorFilterWidget
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
@@ -42,22 +41,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         self.cameraCheck.stateChanged.connect(self.showCameraWidget)
         self.sensorsCheck.stateChanged.connect(self.showSensorsWidget)
-        self.colorFilterCheck.stateChanged.connect(self.showColorFilterWidget)
         
         self.rotationDial.valueChanged.connect(self.rotationChange)
         self.altdSlider.valueChanged.connect(self.altitudeChange)
         
         self.cameraWidget=CameraWidget(self)
         self.sensorsWidget=SensorsWidget(self)
-        self.colorFilterWidget=ColorFilterWidget(self)
 
         self.cameraCommunicator=Communicator()
-        self.colorFilterCommunicator=Communicator()
-        
+        self.trackingCommunicator = Communicator()
+
         self.stopButton.clicked.connect(self.stopClicked)
         self.playButton.clicked.connect(self.playClicked)
+        self.resetButton.clicked.connect(self.resetClicked)
         self.takeoffButton.clicked.connect(self.takeOffClicked)
         self.takeoff=False
+        self.reset=False
       
     def setSensor(self,sensor):
         self.sensor=sensor
@@ -67,7 +66,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     def updateGUI(self):
         self.cameraWidget.imageUpdate.emit()
-        self.colorFilterWidget.imageUpdate.emit()
         self.sensorsWidget.sensorsUpdate.emit()  
     
     def playClicked(self):
@@ -81,6 +79,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.sensor.setPlayButton(False)
         self.rotationDial.setValue(self.altdSlider.maximum()/2)
         self.altdSlider.setValue(self.altdSlider.maximum()/2)
+        self.sensor.sendCMDVel(0,0,0,0,0,0)
         self.teleop.stopSIG.emit()
     
     def takeOffClicked(self):
@@ -92,6 +91,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.takeoffButton.setText("Land")    
             self.sensor.takeoff()
             self.takeoff=True
+
+    def resetClicked(self):
+        if self.reset == True:
+            self.resetButton.setText("Reset")
+            self.sensor.reset()
+            self.reset=False
+        else:
+            self.resetButton.setText("Unreset")
+            self.sensor.reset()
+            self.reset=True
         
     def showCameraWidget(self,state):
         if state == QtCore.Qt.Checked:
@@ -101,15 +110,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             
     def closeCameraWidget(self):
         self.cameraCheck.setChecked(False)
-
-    def showColorFilterWidget(self,state):
-        if state == QtCore.Qt.Checked:
-            self.colorFilterWidget.show()
-        else:
-            self.colorFilterWidget.close()
-
-    def closeColorFilterWidget(self):
-        self.colorFilterCheck.setChecked(False)
         
     def showSensorsWidget(self,state):
         if state == QtCore.Qt.Checked:
@@ -135,10 +135,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def setXYValues(self,newX,newY):
         self.XValue.setText(unicode(newX))
         self.YValue.setText(unicode(newY))
-        if not self.sensor.isVirtual():
-            self.sensor.setVX(-newY/10.0)
-            self.sensor.setVY(-newX/10.0)
-        else:
-            self.sensor.setVX(-newY)
-            self.sensor.setVY(-newX)
+        self.sensor.setVX(-newY)
+        self.sensor.setVY(-newX)
         self.sensor.sendVelocities()
+

@@ -20,12 +20,15 @@ import sys, traceback, Ice
 import jderobot
 import numpy as np
 import threading
-from sensors.colorFilterValues import ColorFilterValues
 
 class Sensor:
     ARDRONE1=0
     ARDRONE2=1
     ARDRONE_SIMULATED=10
+    MAX_LINX  = 0.1
+    MAX_LINY  = 0.3
+    MAX_LINZ  = 0.3
+    MAX_ANGZ  = 0.4
 
     def __init__(self):
         self.lock = threading.Lock()
@@ -36,9 +39,8 @@ class Sensor:
         self.cmd.linearX=self.cmd.linearY=self.cmd.linearZ=0
         self.cmd.angularZ=0
         ''' With values distinct to 0 in the next fields, the ardrone not enter in hover mode'''
-        self.cmd.angularX=0.5
-        self.cmd.angularY=1.0
-
+        self.cmd.angularX=0.0
+        self.cmd.angularY=0.0
 
         try:
             ic = Ice.initialize(sys.argv)
@@ -55,9 +57,7 @@ class Sensor:
                 self.trackImage.shape = self.height, self.width, 3
 
                 self.thresoldImage = np.zeros((self.height, self.width,1), np.uint8)
-                self.thresoldImage.shape = self.height, self.width, 1
-
-                self.filterValues = ColorFilterValues()
+                self.thresoldImage.shape = self.height, self.width,
 
             else:
                 print 'Interface camera not connected'
@@ -94,8 +94,9 @@ class Sensor:
 
         except:
             traceback.print_exc()
-	    exit()
+            exit()
             status = 1
+
             
     def update(self):
         self.lock.acquire()
@@ -138,54 +139,16 @@ class Sensor:
 
         return None
 
-    def getTrackImage(self):
-        if self.cameraProxy:
-            self.lock.acquire()
-            img = np.zeros((self.height, self.width, 3), np.uint8)
-            img = self.trackImage
-            img.shape = self.trackImage.shape
-            self.lock.release()
-            return img;
-        return None
-
-    def setTrackImage(self, image):
-        if self.cameraProxy:
-            self.lock.acquire()
-            self.trackImage = image
-            self.trackImage.shape = image.shape
-            self.lock.release()
-
-    def getThresoldImage(self):
-        if self.cameraProxy:
-            self.lock.acquire()
-            img = np.zeros((self.height, self.width, 1), np.uint8)
-            img = self.thresoldImage
-            img.shape = self.thresoldImage.shape
-            self.lock.release()
-            return img;
-        return None
-
-    def setThresoldImage(self, image):
-        if self.cameraProxy:
-            self.lock.acquire()
-            self.thresoldImage = image
-            self.thresoldImage.shape = image.shape
-            self.lock.release()
-
-    def setColorFilterValues(self, values):
-        self.filterValues = values
-
-    def getColorFilterValues(self):
-        return self.filterValues
-
     def takeoff(self):
         if self.extraProxy:
+            self.sendCMDVel(0,0,0,0,0,0)
             self.lock.acquire()
             self.extraProxy.takeoff()
             self.lock.release()
         
     def land(self):
         if self.extraProxy:
+            self.sendCMDVel(0,0,0,0,0,0)
             self.lock.acquire()
             self.extraProxy.land()
             self.lock.release()
@@ -212,38 +175,68 @@ class Sensor:
 
     def setVY(self,vy):
         self.cmd.linearY=vy
-        
+
     def setVZ(self,vz):
         self.cmd.linearZ=vz
 
     def setYaw(self,yaw):
-        self.cmd.angularZ=yaw        
-        
+        self.cmd.angularZ=yaw
+
     def setRoll(self,roll):
-        self.cmd.angularX=roll 
+        self.cmd.angularX=roll
         
     def setPitch(self,pitch):
-        self.cmd.angularY=pitch                 
-                
-    def Velocities(self):
-        if self.cmdVelProxy:
-            self.lock.acquire();
-            self.cmdVelProxy.setCMDVelData(self.cmd)
-            self.lock.release();
+        self.cmd.angularY=pitch
 
     def sendVelocities(self):
         if self.cmdVelProxy:
-            self.lock.acquire();
-            self.cmdVelProxy.setCMDVelData(self.cmd)
-            self.lock.release();
+            if self.isVirtual():
+                self.sendCMDVel(self.cmd.linearY,self.cmd.linearX,self.cmd.linearZ,self.cmd.angularZ,self.cmd.angularY,self.cmd.angularX)
+            else:
+                self.sendCMDVel(self.cmd.linearX,self.cmd.linearY,self.cmd.linearZ,self.cmd.angularZ,self.cmd.angularY,self.cmd.angularX)
 
     def sendCMDVel(self,vx,vy,vz,yaw,roll,pitch):
         cmd=jderobot.CMDVelData()
-        cmd.linearX=vy
-        cmd.linearY=vx
-        cmd.linearZ=vz
-        cmd.angularZ=yaw
-        cmd.angularX=cmd.angularY=1.0
+        if self.isVirtual() == True:
+            cmd.linearX=vy
+            cmd.linearY=vx
+            cmd.linearZ=vz
+            cmd.angularZ=yaw
+        else:
+            if abs(vx) > self.MAX_LINX:
+                if vx > 0:
+                    cmd.linearX = self.MAX_LINX
+                else:
+                    cmd.linearX = -self.MAX_LINX
+            else:
+                cmd.linearX = vx
+
+            if abs(vy) > self.MAX_LINY:
+                if vy > 0:
+                    cmd.linearY = self.MAX_LINY
+                else:
+                    cmd.linearY = -self.MAX_LINY
+            else:
+                cmd.linearY = vy
+
+            if abs(vz) > self.MAX_LINZ:
+                if vz > 0:
+                    cmd.linearZ = self.MAX_LINZ
+                else:
+                    cmd.linearZ = -self.MAX_LINZ
+            else:
+                cmd.linearZ = vz
+
+            if abs(yaw) > self.MAX_ANGZ:
+                if yaw > 0:
+                    cmd.angularZ = self.MAX_ANGZ
+                else:
+                    cmd.angularZ = -self.MAX_ANGZ
+            else:
+                cmd.angularZ = yaw
+
+        cmd.angularX = roll
+        cmd.angularY = pitch
 
         if self.cmdVelProxy:
             self.lock.acquire();
@@ -258,7 +251,7 @@ class Sensor:
             return tmp
 
         return None
-    
+
     def isPlayButton(self):
         return self.playButton
     
@@ -267,3 +260,4 @@ class Sensor:
 
     def isVirtual(self):
         return self.virtualDrone
+

@@ -168,7 +168,7 @@ class SensorsWidget(QtGui.QWidget):
             result=0.0
     
         self.horizon.setGradient(result)
-        self.horizon.setAngle(roll)
+        self.horizon.setAngle(-roll)
         pitchValue="{0:.2f}".format(pitch)
         rollValue="{0:.2f}".format(roll)
         self.pitchValueLabel.setText(unicode(pitchValue))
@@ -338,3 +338,4 @@ class SensorsWidget(QtGui.QWidget):
         return compass
 
         
+
