@@ -51,7 +51,7 @@ namespace pose3D
         gps_on(false), gps_valid(false), gps_is_bootstrapped(false)
 	{
 		std::cout << "pose3d start" << std::endl;
-		pose3D = new jderobot::Pose3DData();
+		pose3D = new jderobot::Pose3DData(0,0,0,0, 0,0,0,0);
 	}
 	
 	Pose3DI::~Pose3DI()
