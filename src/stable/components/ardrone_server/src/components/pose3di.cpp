@@ -29,7 +29,7 @@ namespace {
 	/// * http://gis.stackexchange.com/questions/23793/how-do-i-calculate-a-xyz-position-of-a-gps-position-relative-to-an-other-gps-pos#
 	/// * http://geographiclib.sourceforge.net/cgi-bin/GeodSolve
 
-	#define deg2rad(x) (PI*x/180.0)    /* from grades to radians */
+	#define deg2rad(x) (PI*(x)/180.0)    /* from grades to radians */
 	#define wgs84_radius 6378137
 	#define wgs84_flattening (1 - 1/298.257223563)
 
@@ -66,14 +66,14 @@ namespace pose3D
 		vp_os_mutex_unlock(&navdata_lock);	
 
 		/// Push orientation
-		float roll=navdata_raw.navdata_demo.phi / 1000.0;
-		float pitch=-navdata_raw.navdata_demo.theta / 1000.0;
-		float yaw=-navdata_raw.navdata_demo.psi / 1000.0;
+		float roll  = deg2rad( navdata_raw.navdata_demo.phi   / 1000.0);
+		float pitch = deg2rad(-navdata_raw.navdata_demo.theta / 1000.0);
+		float yaw   = deg2rad(-navdata_raw.navdata_demo.psi   / 1000.0);
 
 		Eigen::Quaternion<float> q;
-		Eigen::AngleAxis<float> aaZ(this->deg2rad(yaw), Eigen::Vector3f::UnitZ());
-		Eigen::AngleAxis<float> aaY(this->deg2rad(pitch), Eigen::Vector3f::UnitY());
-		Eigen::AngleAxis<float> aaX(this->deg2rad(roll), Eigen::Vector3f::UnitX());
+		Eigen::AngleAxis<float> aaZ( yaw,   Eigen::Vector3f::UnitZ());
+		Eigen::AngleAxis<float> aaY( pitch, Eigen::Vector3f::UnitY());
+		Eigen::AngleAxis<float> aaX( roll,  Eigen::Vector3f::UnitX());
 
 		q = aaZ * aaY * aaX;	
 		
@@ -84,12 +84,13 @@ namespace pose3D
 
 
 		///Push position
-		bool is_gps_plugged = navdata_raw.navdata_gps_info.is_gps_plugged;
+		bool is_gps_plugged     = navdata_raw.navdata_gps_info.is_gps_plugged;
 		uint32_t firmwareStatus = navdata_raw.navdata_gps_info.firmwareStatus;
-		float64_t latitude = navdata_raw.navdata_gps_info.latitude;
+		uint32_t gps_state      = navdata_raw.navdata_gps_info.gps_state;
+		float64_t latitude  = navdata_raw.navdata_gps_info.latitude;
 		float64_t longitude = navdata_raw.navdata_gps_info.longitude;
 		float64_t elevation = navdata_raw.navdata_gps_info.elevation;
-		uint32_t gps_state = navdata_raw.navdata_gps_info.gps_state;
+
 
 		gps_on = (is_gps_plugged && firmwareStatus == 1);
 		gps_valid = (gps_state == 1);
@@ -128,11 +129,6 @@ namespace pose3D
 		return pose3D;
 	}
 	
-	float Pose3DI::deg2rad(float d)
-	{
-		float radians = (d / 360) * (2.0 * PI);
-		return radians;
-	}
 	
 	Ice::Int Pose3DI::setPose3DData(const jderobot::Pose3DDataPtr& data, const Ice::Current&)
 	{

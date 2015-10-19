@@ -37,7 +37,6 @@ namespace pose3D
 			virtual Ice::Int setPose3DData(const jderobot::Pose3DDataPtr& data, const Ice::Current&);		
 		private:
 			jderobot::Pose3DDataPtr pose3D;
-			float deg2rad(float d);
 			ARDroneDriver *driver;
 
 			bool gps_on, gps_valid;
