@@ -22,8 +22,8 @@ if(ARDRONE_ALL_DEPS)
 					src/components/cmdveli.cpp				
 					src/components/pose3di.cpp
 					src/components/remoteconfigi.cpp
-					src/components/navdatai.cpp			
-					src/components/ardroneextrai.cpp									
+					src/components/navdatai.cpp
+					src/components/ardroneextrai.cpp
 					src/ardrone_parser.cpp
 					src/ardrone_config.cpp)
 
@@ -43,6 +43,14 @@ if(ARDRONE_ALL_DEPS)
 				colorspacesmm
 				JderobotInterfaces
 				${libxmlpp_LIBRARIES})
+
+	add_custom_command(TARGET ardrone_server POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_CURRENT_SOURCE_DIR}/config $<TARGET_FILE_DIR:ardrone_server>/config)
+
+	add_custom_command(TARGET ardrone_server POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg $<TARGET_FILE_DIR:ardrone_server>)
 
 
 ELSE()
