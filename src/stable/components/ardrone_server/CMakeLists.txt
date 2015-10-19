@@ -45,4 +45,7 @@ if(ARDRONE_ALL_DEPS)
 				${libxmlpp_LIBRARIES})
 
 
+ELSE()
+	message(SEND_ERROR "ardrone_server marked to build, but required dependencies were not met.
+		You should install third party library: ardonelib")
 ENDIF()
