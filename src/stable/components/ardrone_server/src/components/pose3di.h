@@ -14,7 +14,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors : 
- *       Alberto Martín Florido <almartinflorido@gmail.com>	
+ *       Alberto Martín Florido <almartinflorido@gmail.com>
+ *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
 #ifndef _DRONE_CAMERASERVER_H_
@@ -38,6 +39,10 @@ namespace pose3D
 			jderobot::Pose3DDataPtr pose3D;
 			float deg2rad(float d);
 			ARDroneDriver *driver;
+
+			bool gps_on, gps_valid;
+			bool gps_is_bootstrapped;
+			double x0, y0, z0;
 	};
 }
 
