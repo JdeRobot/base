@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ardrone_server">
+	<param name="altitude_max" value="3000"/>
+	<param name="altitude_min" value="50"/>
+	<param name="bitrate" value="2000"/>
+	<param name="control_vz_max" value="2000"/>
+	<param name="control_yaw" value="6.11"/>
+	<param name="detect_type" value="10"/>
+	<param name="detections_select_h" value="128"/>
+	<param name="detections_select_v_hsync" value="32"/>
+	<param name="do_imu_caliberation" value="0"/>
+	<param name="enemy_colors" value="2"/>
+	<param name="enemy_without_shell" value="0"/>
+	<param name="euler_angle_max" value="0.35"/>
+	<param name="flight_without_shell" value="1"/>
+	<param name="max_bitrate" value="2000"/>
+	<param name="navdata_demo" value="0"/>	
+	<param name="outdoor" value="1"/>
+	<param name="video_channel" value="0"/>	
+</component>
