@@ -62,6 +62,8 @@ namespace navigatorCamera {
 		 * @param step	current rotation step.
 		 */
 		void setRotationStep(double step);
+		void setSpeedX(double step);
+		void setSpeedY(double step);
 
 		/** Get method to know the status of flag 'guiVisible'.
 		 *
@@ -100,6 +102,8 @@ namespace navigatorCamera {
 		 * @return	current rotation step.
 		 */
 		double getRotationStep();
+		double getSpeedX();
+		double getSpeedY();
 
 		/** Method to change the translation of current Pose3D.
 		 *
@@ -108,6 +112,7 @@ namespace navigatorCamera {
 		 * @param sZ	sign to apply at translation step for 'z' component.
 		 */
 		void changePose3dTranslation(double sX, double sY, double sZ);
+		void changePose3dTranslationSpeed();
 
 		/** Method to change the rotation of current Pose3D.
 		 *
@@ -138,6 +143,9 @@ namespace navigatorCamera {
 
 		double trlnStp;		///< Current translation step to move when is used the translation controls of GUI.
 		double rtnStp;		///< Current rotation step to move when is used the rotation controls of GUI.
+
+		double speed_x;
+		double speed_y;
 
 
 	}; /* class Sharer */

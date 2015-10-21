@@ -14,6 +14,9 @@ namespace navigatorCamera {
 
 		refXml->get_widget("showWindow", showWindow);
 		refXml->get_widget("RGB", RGB);
+	        refXml->get_widget("teleopAreaTrl", teleopAreaTrl);
+	        refXml->get_widget("teleopAreaRtt", teleopAreaRtt);
+
 
 		refXml->get_widget("txtInfoX", txtInfoX);
 		refXml->get_widget("txtInfoY", txtInfoY);
@@ -45,6 +48,9 @@ namespace navigatorCamera {
 
 		refXml->get_widget("bttnRstr", bttnRstr);
 
+		teleopAreaTrl->signal_event().connect(sigc::mem_fun(this, &Gui::on_press_teleopAreaTrl));
+		teleopAreaRtt->signal_event().connect(sigc::mem_fun(this, &Gui::on_press_teleopAreaRtt));
+
 		bttnTrlnRight->signal_clicked().connect(sigc::mem_fun(this,&Gui::gtk_bttnTrlnRight_onButtonClick));
 		bttnTrlnLeft->signal_clicked().connect(sigc::mem_fun(this,&Gui::gtk_bttnTrlnLeft_onButtonClick));
 		bttnTrlnFront->signal_clicked().connect(sigc::mem_fun(this,&Gui::gtk_bttnTrlnFront_onButtonClick));
@@ -75,6 +81,45 @@ namespace navigatorCamera {
 		/*Show window. Note: Set window visibility to false in Glade, otherwise opengl won't work*/
 		showWindow->show();
 		controlWindow->show();
+
+		teleopAreaTrl->signal_unrealize();
+		teleopAreaTrl->signal_realize();
+		teleopAreaTrl->set_child_visible(TRUE);
+		teleopAreaTrl->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::VISIBILITY_NOTIFY_MASK | Gdk::BUTTON1_MOTION_MASK);
+		gc_teleoperateTrl = Gdk::GC::create(teleopAreaTrl->get_window());
+
+		teleopAreaRtt->signal_unrealize();
+		teleopAreaRtt->signal_realize();
+		teleopAreaRtt->set_child_visible(TRUE);
+		teleopAreaRtt->add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::VISIBILITY_NOTIFY_MASK | Gdk::BUTTON1_MOTION_MASK);
+		gc_teleoperateRtt = Gdk::GC::create(teleopAreaRtt->get_window());
+		
+
+		//Colors
+		colormapTrl = teleopAreaTrl->get_colormap();
+		colormapRtt = teleopAreaRtt->get_colormap();
+		color_white = Gdk::Color("#FFFFFF");
+		color_black = Gdk::Color("#000000");
+		color_red = Gdk::Color("#FF0000");
+		colormapTrl->alloc_color(color_white);
+		colormapTrl->alloc_color(color_black);
+		colormapTrl->alloc_color(color_red);
+
+		colormapRtt->alloc_color(color_white);
+		colormapRtt->alloc_color(color_black);
+		colormapRtt->alloc_color(color_red);
+
+		m_imageTrl = Gdk::Pixbuf::create_from_file("myimage.png");
+		m_imageRtt = Gdk::Pixbuf::create_from_file("myimage.png");
+		this->previous_event_x = 100;
+		this->previous_event_y = 100;
+		this->prev_x = 0.0;
+		this->prev_y = 0.0;
+		this->previous_event_yaw = 100;
+		this->previous_event_pitch = 100;
+		prev_yaw = 0.0;
+		prev_pitch = 0.0;
+
 	}
 
 	Gui::~Gui()
@@ -94,14 +139,183 @@ namespace navigatorCamera {
 		Glib::RefPtr<Gdk::Pixbuf> imgBuff =  Gdk::Pixbuf::create_from_data((const guint8*) image.data, Gdk::COLORSPACE_RGB, false, 8, image.cols, image.rows, image.step);
 		RGB->clear();
 		RGB->set(imgBuff);
-
+        	this->teleoperateTrl();
+        	this->teleoperateRtt();
 		this->showPose3d();
+
+
 
 		while ( gtkmain.events_pending() )
 			gtkmain.iteration();
 
 		this->showWindow->queue_draw();
 	}
+
+	bool Gui::on_press_teleopAreaTrl(GdkEvent * event) {
+		float event_x = event->button.x;
+		float event_y = event->button.y;
+		float k = 0.01;
+		float p = -1;
+		float x_normalized, y_normalized;
+		static gboolean dragging = FALSE;
+
+		switch (event->type) {
+		    case GDK_BUTTON_PRESS:
+		        if (event->button.button == 3) {
+		            this->previous_event_x = event->button.x;
+		            this->previous_event_y = event->button.y;
+		        }
+		        if (event->button.button == 1) {
+		            GdkCursor *cursor;
+		            cursor = gdk_cursor_new(GDK_FLEUR);
+		            gdk_cursor_destroy(cursor);
+
+		            dragging = true;
+		        }
+		        break;
+
+		    case GDK_MOTION_NOTIFY:
+		        if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
+		            this->previous_event_x = event_x;
+		            this->previous_event_y = event_y;
+		            this->teleoperateTrl();
+		        }
+		        break;
+
+		    case GDK_BUTTON_RELEASE:
+		        dragging = FALSE;
+		        break;
+
+		    default:
+		        break;
+		}
+		x_normalized = 20 * (k * previous_event_y + p)*(-1);
+       		y_normalized = 20 * (k * previous_event_x + p)*(-1);
+
+		sharer->setSpeedX(x_normalized/100.0);
+		sharer->setSpeedY(y_normalized/100.0);
+
+
+		/*if (x_normalized > prev_x)
+			sharer->changePose3dTranslation(1., 0., 0.);
+		else if (x_normalized < prev_x)
+			sharer->changePose3dTranslation(-1., 0., 0.);
+
+		if (y_normalized > prev_y)
+			sharer->changePose3dTranslation(0., -1., 0.);
+		else if (y_normalized < prev_y)
+			sharer->changePose3dTranslation(0., 1., 0.);
+		this->prev_x = x_normalized;
+		this->prev_y = y_normalized;
+		//Set to API
+		//pthread_mutex_lock(&api->controlGui);
+		//api->setYawValue(yaw_normalized);
+		//api->setPitchValue(pitch_normalized);
+		//pthread_mutex_unlock(&api->controlGui);*/
+	    }
+
+	void Gui::teleoperateTrl() {
+		gc_teleoperateTrl->set_foreground(color_black);
+		teleopAreaTrl->get_window()->draw_rectangle(gc_teleoperateTrl, true, 0, 0, 200, 200);
+
+
+		teleopAreaTrl->get_window()->draw_pixbuf(m_imageTrl,
+		        0, 0, this->previous_event_x-12, this->previous_event_y-12 ,
+		        m_imageTrl->get_width(),
+		        m_imageTrl->get_height(),
+		        Gdk::RGB_DITHER_NONE,
+		        -1, -1);
+		
+		gc_teleoperateTrl->set_foreground(color_red);
+		teleopAreaTrl->get_window()->draw_line(gc_teleoperateTrl, 0, previous_event_y, 200, previous_event_y);
+		teleopAreaTrl->get_window()->draw_line(gc_teleoperateTrl, previous_event_x, 0, previous_event_x, 200);
+
+
+		gc_teleoperateTrl->set_foreground(color_white);
+		teleopAreaTrl->get_window()->draw_line(gc_teleoperateTrl, 100, 0, 100, 200);
+		teleopAreaTrl->get_window()->draw_line(gc_teleoperateTrl, 0, 100, 200, 100);
+	}
+
+	bool Gui::on_press_teleopAreaRtt(GdkEvent * event) {
+		float event_yaw = event->button.x;
+		float event_pitch = event->button.y;
+		float k = 0.01;
+		float p = -1;
+		float yaw_normalized, pitch_normalized;
+		static gboolean dragging = FALSE;
+
+		switch (event->type) {
+		    case GDK_BUTTON_PRESS:
+		        if (event->button.button == 3) {
+		            this->previous_event_yaw = event->button.x;
+		            this->previous_event_pitch = event->button.y;
+		        }
+		        if (event->button.button == 1) {
+		            GdkCursor *cursor;
+		            cursor = gdk_cursor_new(GDK_FLEUR);
+		            gdk_cursor_destroy(cursor);
+
+		            dragging = true;
+		        }
+		        break;
+
+		    case GDK_MOTION_NOTIFY:
+		        if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
+		            this->previous_event_yaw = event_yaw;
+		            this->previous_event_pitch = event_pitch;
+		            this->teleoperateRtt();
+		        }
+		        break;
+
+		    case GDK_BUTTON_RELEASE:
+		        dragging = FALSE;
+		        break;
+
+		    default:
+		        break;
+		}
+		yaw_normalized = pi * (k * previous_event_yaw + p)*(-1);
+		pitch_normalized = pi  * (k * previous_event_pitch + p);
+
+		if (yaw_normalized > prev_yaw)
+			sharer->changePose3dRotation(-1., 0., 0.);
+		else if (yaw_normalized < prev_yaw)
+			sharer->changePose3dRotation(1., 0., 0.);
+
+		if (pitch_normalized > prev_pitch)
+			sharer->changePose3dRotation(0., -1., 0.);
+		else if (pitch_normalized < prev_pitch)
+			sharer->changePose3dRotation(0., 1., 0.);
+		this->prev_yaw = yaw_normalized;
+		this->prev_pitch = pitch_normalized;
+		//Set to API
+		//pthread_mutex_lock(&api->controlGui);
+		//api->setYawValue(yaw_normalized);
+		//api->setPitchValue(pitch_normalized);
+		//pthread_mutex_unlock(&api->controlGui);
+	}
+
+    	void Gui::teleoperateRtt() {
+		gc_teleoperateRtt->set_foreground(color_black);
+		teleopAreaRtt->get_window()->draw_rectangle(gc_teleoperateRtt, true, 0, 0, 200, 200);
+
+
+		teleopAreaRtt->get_window()->draw_pixbuf(m_imageRtt,
+			0, 0, this->previous_event_yaw-12, this->previous_event_pitch-12 ,
+			m_imageRtt->get_width(),
+			m_imageRtt->get_height(),
+			Gdk::RGB_DITHER_NONE,
+			-1, -1);
+	
+		gc_teleoperateRtt->set_foreground(color_red);
+		teleopAreaRtt->get_window()->draw_line(gc_teleoperateRtt, 0, previous_event_pitch, 200, previous_event_pitch);
+		teleopAreaRtt->get_window()->draw_line(gc_teleoperateRtt, previous_event_yaw, 0, previous_event_yaw, 200);
+
+
+		gc_teleoperateRtt->set_foreground(color_white);
+		teleopAreaRtt->get_window()->draw_line(gc_teleoperateRtt, 100, 0, 100, 200);
+		teleopAreaRtt->get_window()->draw_line(gc_teleoperateRtt, 0, 100, 200, 100);
+    	}
 
 	void Gui::showPose3d()
 	{
@@ -231,6 +445,12 @@ namespace navigatorCamera {
 
 	void Gui::gtk_restart_onButtonClick()
 	{
+		this->previous_event_x = 100;
+		this->previous_event_y = 100;
+		this->previous_event_yaw = 100;
+		this->previous_event_pitch = 100;
+		sharer->setSpeedX(0.0);
+		sharer->setSpeedY(0.0);		
 		sharer->restartPose3D();
 	}
 
