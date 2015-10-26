@@ -52,6 +52,8 @@ namespace pose3D
 	{
 		std::cout << "pose3d start" << std::endl;
 		pose3D = new jderobot::Pose3DData(0,0,0,0, 0,0,0,0);
+		xyz0 = {0,0,0};
+		angles0 = {0,0,0};
 	}
 	
 	Pose3DI::~Pose3DI()
@@ -65,25 +67,15 @@ namespace pose3D
 			navdata_unpacked_t navdata_raw = *shared_raw_navdata;
 		vp_os_mutex_unlock(&navdata_lock);	
 
-		/// Push orientation
-		float roll  = deg2rad( navdata_raw.navdata_demo.phi   / 1000.0);
-		float pitch = deg2rad(-navdata_raw.navdata_demo.theta / 1000.0);
-		float yaw   = deg2rad(-navdata_raw.navdata_demo.psi   / 1000.0);
+		pose3d_t xyz = {0,0,0};
+		pose3d_t angles = {0,0,0};
 
-		Eigen::Quaternion<float> q;
-		Eigen::AngleAxis<float> aaZ( yaw,   Eigen::Vector3f::UnitZ());
-		Eigen::AngleAxis<float> aaY( pitch, Eigen::Vector3f::UnitY());
-		Eigen::AngleAxis<float> aaX( roll,  Eigen::Vector3f::UnitX());
+		/// Get orientation
+		angles.roll  = deg2rad( navdata_raw.navdata_demo.phi   / 1000.0);
+		angles.pitch = deg2rad(-navdata_raw.navdata_demo.theta / 1000.0);
+		angles.yaw   = deg2rad(-navdata_raw.navdata_demo.psi   / 1000.0);
 
-		q = aaZ * aaY * aaX;	
-		
-		pose3D->q0=q.w();
-		pose3D->q1=q.x();
-		pose3D->q2=q.y();
-		pose3D->q3=q.z();
-
-
-		///Push position
+		/// Get GPS position
 		bool is_gps_plugged     = navdata_raw.navdata_gps_info.is_gps_plugged;
 		uint32_t firmwareStatus = navdata_raw.navdata_gps_info.firmwareStatus;
 		uint32_t gps_state      = navdata_raw.navdata_gps_info.gps_state;
@@ -91,40 +83,51 @@ namespace pose3D
 		float64_t longitude = navdata_raw.navdata_gps_info.longitude;
 		float64_t elevation = navdata_raw.navdata_gps_info.elevation;
 
-
+		/// Check GPS status
 		gps_on = (is_gps_plugged && firmwareStatus == 1);
 		gps_valid = (gps_state == 1);
 
 		if (gps_on && gps_valid){
+			spherical2cartesian(latitude, longitude, elevation, xyz.x, xyz.y, xyz.z);
+
 			if (!gps_is_bootstrapped){
-				spherical2cartesian(latitude, longitude, elevation, x0, y0, z0);
+				xyz0 = xyz;
 				gps_is_bootstrapped = true;
 				printf("GPS boostrap at %f, %f, %f\n", latitude, longitude, elevation);
+
+				poseBoostrapWithExternals(xyz, angles);
 			}
-
-			double x,y,z;
-			spherical2cartesian(latitude, longitude, elevation, x,y,z);
-			x -= x0;
-			y -= y0;
-			z -= z0;
-
-			pose3D->x = x;
-			pose3D->y = y;
-			pose3D->z = z;
-			pose3D->h = 1;
 		}
-
-		if (!gps_valid)
-			pose3D->h = 0;
-
 		if (!gps_on){
-			pose3D->h = 0;
 			if (gps_is_bootstrapped){
 				gps_is_bootstrapped = false;
 				printf("GPS disconnected\n");
 			}
 		}
 
+
+		/// Origin base change
+		Point3D_OP(angles, angles, -, angles0);
+		Point3D_OP(xyz, xyz, -, xyz0);
+		//Point3D_OP((*pose3D), xyz, -, xyz0);
+
+		/// Push values
+		Eigen::Quaternion<float> q;
+		Eigen::AngleAxis<float> aaZ( angles.yaw,   Eigen::Vector3f::UnitZ());
+		Eigen::AngleAxis<float> aaY( angles.pitch, Eigen::Vector3f::UnitY());
+		Eigen::AngleAxis<float> aaX( angles.roll,  Eigen::Vector3f::UnitX());
+
+		q = aaZ * aaY * aaX;
+
+		pose3D->q0=q.w();
+		pose3D->q1=q.x();
+		pose3D->q2=q.y();
+		pose3D->q3=q.z();
+
+		pose3D->x = xyz.x;
+		pose3D->y = xyz.y;
+		pose3D->z = xyz.z;
+		pose3D->h = gps_valid? 1 : 0;
 
 		return pose3D;
 	}
@@ -142,5 +145,66 @@ namespace pose3D
 		pose3D->q2=data->q2;
 		pose3D->q3=data->q3;														
 		return 1;
+	}
+
+
+	void Pose3DI::poseBoostrapWithExternals(pose3d_t current_xyz, pose3d_t current_angles)
+	{
+		double external_presets;
+		external_presets = driver->getParameter("origin_absolute", -1);
+		if (external_presets>0){
+			//// Use external <x,y,z, roll,pith,yaw> as absolute positioning.
+			/// Current values will be show like external defined.
+			/// So, if internals says <x,y,z, a,b,c> then, these will be "equivalent"
+			/// to external <x',y',z',a',b',c'>
+			/// //// Please, notice that NOOP value for absolute is 'itself'
+			pose3d_t true0, diff;
+			true0.x = driver->getParameter("origin_x", current_xyz.x);
+			true0.y = driver->getParameter("origin_y", current_xyz.y);
+			true0.z = driver->getParameter("origin_z", current_xyz.z);
+			Point3D_OP(diff, current_xyz, -, true0);
+			xyz0 = diff;
+
+			true0.roll  = deg2rad(driver->getParameter("origin_roll",  current_angles.roll));
+			true0.pitch = deg2rad(driver->getParameter("origin_pitch", current_angles.pitch));
+			true0.yaw   = deg2rad(driver->getParameter("origin_yaw",   current_angles.yaw));
+			Point3D_OP(diff, current_angles, -, true0);
+			angles0 = diff;
+
+			printf("Pose3D boostrap with absolute reference origin.\n");
+			printf("\t XYZ transform: %.2f, %.2f, %.2f\n",
+			   -xyz0.x, -xyz0.y, -xyz0.z);
+			printf("\t Orientation transform: %.4f, %.4f, %.4f\n",
+			   -angles0.x, -angles0.y, -angles0.z);
+		}else{
+			external_presets = driver->getParameter("origin_differential", -1);
+			if (external_presets>0){
+				//// Use external <x,y,z, roll,pith,yaw> as differential positioning.
+				/// Current values will be seek with extenals offset.
+				/// Defined as NEGATIVE differential. So externals will define offset from
+				/// internals to "real" origin <0,0,0>
+				//// Please, notice that NOOP value for offset is '0'
+				pose3d_t offset;
+				offset.x = driver->getParameter("origin_x", 0);
+				offset.y = driver->getParameter("origin_y", 0);
+				offset.z = driver->getParameter("origin_z", 0);
+
+				// With position, offset is applied from driver origin == GPS start posittion
+				Point3D_OP(xyz0, xyz0, -, offset);
+
+				// With orientation, offset is applied from "angle start point", so it simply apply this offset.
+				angles0.roll  = deg2rad(driver->getParameter("origin_roll",  0));
+				angles0.pitch = deg2rad(driver->getParameter("origin_pitch", 0));
+				angles0.yaw   = deg2rad(driver->getParameter("origin_yaw",   0));
+
+				printf("Pose3D boostrap with offset adjustment.\n");
+				printf("\t XYZ transform: %.2f, %.2f, %.2f\n",
+				       -xyz0.x, -xyz0.y, -xyz0.z);
+				printf("\t Orientation transform: %.4f, %.4f, %.4f\n",
+				       -angles0.x, -angles0.y, -angles0.z);
+			}else{
+				printf("Pose3D: using ardrone origin convection.\n");
+			}
+		}
 	}
 }

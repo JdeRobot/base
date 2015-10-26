@@ -17,4 +17,13 @@
 	<param name="navdata_demo" value="0"/>	
 	<param name="outdoor" value="1"/>
 	<param name="video_channel" value="0"/>	
+
+	<param name="origin_x" value="100"/>
+	<param name="origin_y" value="200"/>
+	<param name="origin_z" value="10"/>
+	<param name="origin_roll" value="0"/>
+	<param name="origin_pitch" value="0"/>
+	<param name="origin_yaw" value="0"/>
+	<param name="origin_absolute" novalue="1"/>
+	<param name="origin_differential" novalue="1"/>
 </component>

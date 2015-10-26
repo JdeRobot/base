@@ -28,6 +28,14 @@
 
 namespace pose3D
 {
+	typedef struct pose3d{
+		union{double x; double roll;};
+		union{double y; double pitch;};
+		union{double z; double yaw;};
+	}pose3d_t;
+	#define Point3D_OP(c,a,op,b) {c.x = a.x op b.x; c.y = a.y op b.y; c.z = a.z op b.z;}
+
+
 	class Pose3DI : virtual public jderobot::Pose3D
 	{
 		public:
@@ -36,13 +44,19 @@ namespace pose3D
 			virtual jderobot::Pose3DDataPtr getPose3DData(const Ice::Current&);
 			virtual Ice::Int setPose3DData(const jderobot::Pose3DDataPtr& data, const Ice::Current&);		
 		private:
+			void poseBoostrapWithExternals(pose3d_t current_xyz, pose3d_t current_angles);
+
 			jderobot::Pose3DDataPtr pose3D;
 			ARDroneDriver *driver;
 
 			bool gps_on, gps_valid;
 			bool gps_is_bootstrapped;
-			double x0, y0, z0;
+
+			pose3d_t xyz0;
+			pose3d_t angles0;
 	};
+
+
 }
 
 #endif

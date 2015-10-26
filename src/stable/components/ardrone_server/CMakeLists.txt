@@ -53,6 +53,12 @@ if(ARDRONE_ALL_DEPS)
 			${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg $<TARGET_FILE_DIR:ardrone_server>)
 
 
+	if(DEFINED ARDRONE_TEST_PARSER)
+		message(STATUS "Enable testing for ardrone_server")
+		add_executable(test_parser test/test_parser.cpp src/ardrone_parser.cpp src/ardrone_config.cpp)
+		set_target_properties(ardrone_server test_parser PROPERTIES COMPILE_DEFINITIONS "ARDRONE_TEST_PARSER")
+	endif()
+
 ELSE()
 	message(SEND_ERROR "ardrone_server marked to build, but required dependencies were not met.
 		You should install third party library: ardonelib")
