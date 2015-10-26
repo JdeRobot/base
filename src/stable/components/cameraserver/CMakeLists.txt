@@ -22,4 +22,5 @@ TARGET_LINK_LIBRARIES(cameraserver
 	${ZLIB_LIBRARIES}
 	logger
     crypto
+ns
 	)
