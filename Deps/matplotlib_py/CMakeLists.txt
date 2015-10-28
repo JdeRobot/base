@@ -5,5 +5,5 @@ string(TOUPPER ${module} module_upper)
 
 if(PY_${module_upper})
 	SET (MATPLOTLIB_PY_MODULES  PY_${module_upper})
-	SET(DEPS "${DEPS} python-matplotlib")
+	SET(DEPS "${DEPS} python-matplotlib,")
 endif(PY_${module_upper})

@@ -18,6 +18,7 @@ SET(OpenCV_GUI_LIBS ${OpenCV_LIBS})
 IF (DEFINED OpenCV_VERSION)
 	foreach( d ${opencv_core_libs_components})
 		SET(DEPS "${DEPS} libopencv-${d}${OpenCV_VERSION_MAJOR}.${OpenCV_VERSION_MINOR},")
+		SET(DEPS_DEV "${DEPS_DEV} libopencv-${d}-dev,")
 	endforeach()
 
 	IF (${OpenCV_VERSION_MAJOR} MATCHES "3")
@@ -28,6 +29,7 @@ IF (DEFINED OpenCV_VERSION)
 		SET(OpenCV_EXTRA_LIBS ${OpenCV_LIBS})
 		foreach( d ${opencv3_extra_libs_components})
 			SET(DEPS "${DEPS} libopencv-${d}${OpenCV_VERSION_MAJOR}.${OpenCV_VERSION_MINOR},")
+			SET(DEPS_DEV "${DEPS_DEV} libopencv-${d}-dev,")
 		endforeach()
 	ELSE()
 		#look for extra libs 
@@ -36,8 +38,11 @@ IF (DEFINED OpenCV_VERSION)
 		SET(OpenCV_EXTRA_LIBS ${OpenCV_LIBS})
 		foreach( d ${opencv2_extra_libs_components})
 			SET(DEPS "${DEPS} libopencv-${d}${OpenCV_VERSION_MAJOR}.${OpenCV_VERSION_MINOR},")
+			SET(DEPS_DEV "${DEPS_DEV} libopencv-${d}-dev,")
 		endforeach()
+
 	ENDIF()
+	SET(DEPS_DEV "${DEPS_DEV} libopencv-dev,")
 ENDIF()
 
 
@@ -90,7 +95,6 @@ IF (NOT DEFINED OpenCV_VERSION)
 			    include_directories(${OpenCV_INCLUDE_DIR})
 
 				SET(DEPS "${DEPS}libopencv-calib3d2.4, libopencv-contrib2.4, libopencv-core2.4, libopencv-features2d2.4, libopencv-flann2.4, libopencv-gpu2.4, libopencv-highgui2.4, libopencv-imgproc2.4, libopencv-legacy2.4, libopencv-ml2.4, libopencv-objdetect2.4, libopencv-video2.4, libcv2.4, libcvaux2.4, libhighgui2.4,")
-
 		    ENDIF( OpenCV_LIBRARIES )
 
 
