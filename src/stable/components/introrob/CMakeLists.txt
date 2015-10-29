@@ -17,7 +17,7 @@ include_directories(
 
 set( CMAKE_CXX_FLAGS "-Wno-deprecated")  # Opciones para el compilador
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/conf/ )
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/conf/ COMPONENT core)
 
 FILE(GLOB XML_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameras/*xml)
 FOREACH (xml ${XML_FILES})

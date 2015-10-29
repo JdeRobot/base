@@ -163,25 +163,25 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot COMPONENT core)
 
 # Install python files
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/*py)
 FOREACH(header ${HEADERS_FILES})
-	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/)
+	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
 ENDFOREACH(header)
 
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
 
 # install all libraries 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
+	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/visionlib/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
+	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
 
@@ -189,14 +189,14 @@ FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
     string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
 		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
-    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2})
+    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install libraries headers
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
 	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1})
+	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install Executables
@@ -206,27 +206,31 @@ FOREACH (currentBin ${LIST_COMPONENTS})
     #SET(EXIST EXIST-NOTFOUND)
     find_file(EXIST NAMES ${currentBin} PATHS ${CMAKE_CURRENT_SOURCE_DIR}/src/components/${currentBin})
     #IF (EXIST)
-    INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL)
+    INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
     #ENDIF(EXIST)
     #MESSAGE("${EXIST}")
 ENDFOREACH(currentBin)
 
 # Install interfaces headers
 FILE(GLOB HEADER_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/*.h)
-INSTALL (FILES ${HEADER_INTERFACE_FILES} DESTINATION /usr/local/include/jderobot)
+INSTALL (FILES ${HEADER_INTERFACE_FILES} DESTINATION /usr/local/include/jderobot COMPONENT core)
 
 # Install slice
 FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice/jderobot/*.ice)
-INSTALL (FILES ${SLICE_FILES} DESTINATION /usr/local/include/jderobot/slice)
+INSTALL (FILES ${SLICE_FILES} DESTINATION /usr/local/include/jderobot/slice COMPONENT core)
 
 # Install CONF
 FILE(GLOB_RECURSE CONF_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.cfg)
-INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf)
+INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf COMPONENT core)
 
 # Install Glade
 FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.glade)
-INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade)
+INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
 
+
+file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
+add_executable(dummy_main1 dummy_main1.c)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
 
 
 ###################
@@ -262,8 +266,8 @@ endmacro(dpkg_arch)
 include (InstallRequiredSystemLibraries)
 SET (CPACK_GENERATOR "DEB")
 SET (CPACK_SOURCE_GENERATOR TGZ)
-SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 SET (CPACK_SET_DESTDIR ON)
+SET (CPACK_DEB_COMPONENT_INSTALL ON)
 SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 
@@ -279,9 +283,21 @@ SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 dpkg_arch(CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
 
-#MESSAGE("Dependencias: ${DEPS}")
+set(CPACK_COMPONENTS_ALL core deps)
+#set(CPACK_COMPONENT_NONAME_FOR core)
+#set(CPACK_COMPONENT_CORE_GROUP "Core")
+#set(CPACK_COMPONENT_DEPS_GROUP "Development")
 
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
+SET (CPACK_DEBIAN_CORE_PACKAGE_SHLIBDEPS ON)
+SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
+
+#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
+SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5.8, libvtk5-dev")
+set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
+set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
+
+MESSAGE("Dependencias: ${DEPS}")
+MESSAGE("Dependencias2: ${DEPS_DEV}")
 
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
@@ -293,5 +309,5 @@ SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for rob
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
 SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 
-SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
+#SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)

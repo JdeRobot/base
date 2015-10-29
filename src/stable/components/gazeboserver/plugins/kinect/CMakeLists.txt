@@ -27,8 +27,8 @@ target_link_libraries(kinectPlugin
     colorspacesmm
 )
 
-INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinect/ )
+INSTALL (TARGETS kinectPlugin DESTINATION share/jderobot/gazebo/plugins/kinect/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/kinect/ )	
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/kinect/ COMPONENT core)
 
 endif()

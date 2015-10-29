@@ -142,6 +142,6 @@ target_link_libraries(poseleftankle ${GAZEBO_libraries}
 )
 
 
-INSTALL (TARGETS camera_nao ballencoder poseneck poseneckspeed poserightshoulder poseleftshoulder poserightelbow poseleftelbow poserighthip poselefthip poserightknee poseleftknee poserightankle poseleftankle DESTINATION share/jderobot/gazebo/plugins/nao/ )
+INSTALL (TARGETS camera_nao ballencoder poseneck poseneckspeed poserightshoulder poseleftshoulder poserightelbow poseleftelbow poserighthip poselefthip poserightknee poseleftknee poserightankle poseleftankle DESTINATION share/jderobot/gazebo/plugins/nao/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/nao/ )
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/nao/ COMPONENT core)
