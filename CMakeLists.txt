@@ -293,12 +293,15 @@ SET (CPACK_DEBIAN_CORE_PACKAGE_SHLIBDEPS ON)
 SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
 
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
-SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5.8, libvtk5-dev")
+SET(DEPS "${DEPS} libvtk5.8")
+SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5-dev")
 set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
 set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
 
+if(DEFINED debug_deps)
 MESSAGE("Dependencias: ${DEPS}")
-MESSAGE("Dependencias2: ${DEPS_DEV}")
+MESSAGE("Dependencias_dev: ${DEPS_DEV}")
+endif()
 
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
