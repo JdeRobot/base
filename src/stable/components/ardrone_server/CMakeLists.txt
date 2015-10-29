@@ -1,4 +1,3 @@
-
 if(ARDRONE_ALL_DEPS)
 
 	set(CMAKE_CXX_FLAGS "-w -lIce -lIceUtil")
