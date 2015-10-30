@@ -163,7 +163,7 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
 
 # Install python files
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/*py)
