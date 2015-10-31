@@ -61,6 +61,7 @@ int Generate::init () {
 		this->generateHeaders();
 		this->generateEnums();
 		this->generateVariables();
+		this->generateShutDown();
 		this->generateFunctions();
 		this->generateCreateGuiSubautomataList();
 		this->generateSubautomatas();
@@ -100,6 +101,8 @@ int Generate::init_py (){
 			this->fs.close();
 		}
 
+		std::string permission("chmod +x " + this->path);
+		system(permission.c_str());
 		return 0;
 	}else{
 		return -1;
@@ -181,7 +184,7 @@ void Generate::generateVariables () {
 	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
             subListIterator != this->subautomataList.end(); subListIterator++ )
 		this->fs << "bool run" << subListIterator->getId() << " = true;" << std::endl;
-	this->fs < std::endl;
+	this->fs << std::endl;
 
 	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
             subListIterator != this->subautomataList.end(); subListIterator++ ) {
@@ -223,7 +226,6 @@ void Generate::generateShutDown(){
 }
 	
 void Generate::generateFunctions () {
-	this->generateShutDown();
 	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
             subListIterator != this->subautomataList.end(); subListIterator++ ) {		
 		this->fs << subListIterator->getFunctions() << std::endl;
@@ -871,26 +873,20 @@ void Generate::generateSubautomatas_py(){
 		for ( std::list<Node>::iterator nodeListIterator = nodeList.begin();
 				nodeListIterator != nodeList.end(); nodeListIterator++ ) {
 			int idNode = nodeListIterator->getId();
-			this->fs << this->mapTab[(TabEnum)(T_THREE + addTab)];
-
-			/*if(transList.begin() != transList.end()){
-				if(firstState){
-					this->fs << "if(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
-					firstState = false;
-				}else {
-					this->fs << "elif(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
-				}
-			}	*/
 			
 			for ( std::list<Transition>::iterator transListIterator = transList.begin();
 					transListIterator != transList.end(); transListIterator++ ) {
-				if(firstState){
-					this->fs << "if(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
-					firstState = false;
-				}else {
-					this->fs << "elif(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
-				}
+
 				if (transListIterator->getIdOrigin() == idNode) {
+
+					this->fs << this->mapTab[(TabEnum)(T_THREE + addTab)];
+					if(firstState){
+						this->fs << "if(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
+						firstState = false;
+					}else {
+						this->fs << "elif(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
+					}
+
 					int idDestiny = transListIterator->getIdDestiny();
 					int idOrigin = transListIterator->getIdOrigin();
 					if (transListIterator->getType().compare("condition") == 0) {
@@ -976,6 +972,7 @@ void Generate::generateSubautomatas_py(){
 						this->fs << this->mapTab[T_FOUR] << "if(sub" << id << "):" << std::endl;
 						this->fs << this->mapTab[T_FIVE];
 						this->fs << "if(sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
+						firstState = false;
 					}else{
 						this->fs << this->mapTab[T_FIVE];
 						this->fs << "elif(sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
