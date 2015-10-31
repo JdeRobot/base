@@ -969,19 +969,18 @@ void Generate::generateSubautomatas_py(){
 				if (mapNameTime.find(nodeListIterator->getName()) != mapNameTime.end()) {
 					if (firstState){
 						this->fs << this->mapTab[T_THREE] << "else:" << std::endl;
-						this->fs << this->mapTab[T_FOUR] << "if(sub" << id << "):" << std::endl;
-						this->fs << this->mapTab[T_FIVE];
-						this->fs << "if(sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
+						this->fs << this->mapTab[T_FOUR];
+						this->fs << "if(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
 						firstState = false;
 					}else{
-						this->fs << this->mapTab[T_FIVE];
-						this->fs << "elif(sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
+						this->fs << this->mapTab[T_FOUR];
+						this->fs << "elif(self.sub" << id << " == \"" << nodeListIterator->getName() << "\"):" << std::endl;
 					}
-					this->fs << this->mapTab[T_SIX];
+					this->fs << this->mapTab[T_FIVE];
 					this->fs << "t_" << nodeListIterator->getName() << "_max = " << mapNameTime[nodeListIterator->getName()] << " - (t_fin - t_ini)" << std::endl;
-					this->fs << this->mapTab[T_SIX];
+					this->fs << this->mapTab[T_FIVE];
 					this->fs << "ghostStateIndex = self.StateSub" << id << ".index(self.sub" << id << ") + 1" << std::endl;					
-					this->fs << this->mapTab[T_SIX];
+					this->fs << this->mapTab[T_FIVE];
 					this->fs << "sub" << id << " = self.StatesSub" << id << "[ghostStateIndex]" << std::endl;
 				} 
 			}
