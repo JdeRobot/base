@@ -5,26 +5,26 @@ set -e
 test -d src/stable && test -d src/testing
 
 # remove cmake_(un)?install.cmake files
-find -type f -name cmake_install.cmake -o -name cmake_uninstall.cmake -exec rm {} +
+find -type f -name cmake_install.cmake -o -name cmake_uninstall.cmake -delete
 
 # remove Makefile files
-find src -type f -name Makefile -exec rm {} +
+find src -type f -name Makefile | xargs -r rm
 test -d CMakeFiles \
-    && find CMakeFiles -type f -name Makefile -exec rm {} + \
+    && find CMakeFiles -type f -name Makefile -delete \
     || true
 rm -f Makefile
 
 # remove CMakeFiles dirs
-find -type d -name CMakeFiles -exec rm -r {} +
+find -type d -name CMakeFiles | xargs -r rm -r
 
 # remove CMakeCache.txt files
-find -type f -name CMakeCache.txt -exec rm {} +
+find -type f -name CMakeCache.txt -delete
 
 # remove generated interface source files
 langdirs=`find src/stable/interfaces -mindepth 1 -maxdepth 1 -type d ! -name slice`
 for langdir in $langdirs; do
-    find "$langdir" -type f ! -name '*.tmp' -a ! -name '.keepme' -exec rm {} +
+    find "$langdir" -type f ! -name '*.tmp' -a ! -name '.keepme' -delete
 done
 
 # remove *.so and *.a files
-find src/stable -type f -name '*.so' -o -name '*.a' -exec rm {} +
+find src/stable -type f -name '*.so' -o -name '*.a' -delete
