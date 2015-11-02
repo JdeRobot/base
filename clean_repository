@@ -4,13 +4,10 @@ set -e
 
 test -d src/stable && test -d src/testing
 
-mivar=`du -a | grep cmake_install.cmake | awk '{print $2}'`
+# remove cmake_install.cmake files
+find -type f -name cmake_install.cmake -exec rm {} +
 
 mv ./doc/paper-autonomous_robots/Makefile /tmp
-
-for file in $mivar; do
-	rm -f $file
-done
 
 mivar=`du -a | grep Makefile$ | awk '{print $2}'`
 
