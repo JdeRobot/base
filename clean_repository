@@ -14,12 +14,8 @@ test -d CMakeFiles \
     || true
 rm -f Makefile
 
-mivar=`du -a | grep CMakeFiles | awk '{print $2}'`
-
-
-for file in $mivar; do
-	rm -fr $file
-done
+# remove CMakeFiles dirs
+find -type d -name CMakeFiles -exec rm -r {} +
 
 mivar=`du -a | grep CMakeCache.txt | awk '{print $2}'`
 
