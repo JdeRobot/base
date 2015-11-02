@@ -43,6 +43,18 @@ namespace {
 	}
 }
 
+namespace {
+	typedef Eigen::Quaternion<float> quat;
+	Eigen::Quaternion<float> qFromRPY(float roll, float pitch, float yaw){
+		quat q;
+		Eigen::AngleAxis<float> aaZ( yaw,   Eigen::Vector3f::UnitZ());
+		Eigen::AngleAxis<float> aaY( pitch, Eigen::Vector3f::UnitY());
+		Eigen::AngleAxis<float> aaX( roll,  Eigen::Vector3f::UnitX());
+		q = aaZ * aaY * aaX;
+		return q;
+	}
+}
+
 
 namespace pose3D
 {
@@ -52,8 +64,8 @@ namespace pose3D
 	{
 		std::cout << "pose3d start" << std::endl;
 		pose3D = new jderobot::Pose3DData(0,0,0,0, 0,0,0,0);
-		xyz0 = {0,0,0};
-		angles0 = {0,0,0};
+		xyzT = {0,0,0};
+		qR.setIdentity();
 	}
 	
 	Pose3DI::~Pose3DI()
@@ -91,7 +103,6 @@ namespace pose3D
 			spherical2cartesian(latitude, longitude, elevation, xyz.x, xyz.y, xyz.z);
 
 			if (!gps_is_bootstrapped){
-				xyz0 = xyz;
 				gps_is_bootstrapped = true;
 				printf("GPS boostrap at %f, %f, %f\n", latitude, longitude, elevation);
 
@@ -105,20 +116,14 @@ namespace pose3D
 			}
 		}
 
-
 		/// Origin base change
-		Point3D_OP(angles, angles, -, angles0);
-		Point3D_OP(xyz, xyz, -, xyz0);
-		//Point3D_OP((*pose3D), xyz, -, xyz0);
+		//Rotation
+		Eigen::Quaternion<float> q = qFromRPY(angles.roll, angles.pitch, angles.yaw);
+		q = qR*q;
+		// Translation
+		Point3D_OP(xyz, xyz, +, xyzT);
 
 		/// Push values
-		Eigen::Quaternion<float> q;
-		Eigen::AngleAxis<float> aaZ( angles.yaw,   Eigen::Vector3f::UnitZ());
-		Eigen::AngleAxis<float> aaY( angles.pitch, Eigen::Vector3f::UnitY());
-		Eigen::AngleAxis<float> aaX( angles.roll,  Eigen::Vector3f::UnitX());
-
-		q = aaZ * aaY * aaX;
-
 		pose3D->q0=q.w();
 		pose3D->q1=q.x();
 		pose3D->q2=q.y();
@@ -150,61 +155,36 @@ namespace pose3D
 
 	void Pose3DI::poseBoostrapWithExternals(pose3d_t current_xyz, pose3d_t current_angles)
 	{
-		double external_presets;
-		external_presets = driver->getParameter("origin_absolute", -1);
-		if (external_presets>0){
-			//// Use external <x,y,z, roll,pith,yaw> as absolute positioning.
-			/// Current values will be show like external defined.
-			/// So, if internals says <x,y,z, a,b,c> then, these will be "equivalent"
-			/// to external <x',y',z',a',b',c'>
-			/// //// Please, notice that NOOP value for absolute is 'itself'
-			pose3d_t true0, diff;
-			true0.x = driver->getParameter("origin_x", current_xyz.x);
-			true0.y = driver->getParameter("origin_y", current_xyz.y);
-			true0.z = driver->getParameter("origin_z", current_xyz.z);
-			Point3D_OP(diff, current_xyz, -, true0);
-			xyz0 = diff;
+		pose3d_t diff, target;
+		//// Compose Translation
+		/// Default behavior must be T={0,0,0}
+		target.x = driver->getParameter("origin_x", current_xyz.x);
+		target.y = driver->getParameter("origin_y", current_xyz.y);
+		target.z = driver->getParameter("origin_z", current_xyz.z);
+		Point3D_OP(diff, target, -, current_xyz);
+		xyzT = diff;
 
-			true0.roll  = deg2rad(driver->getParameter("origin_roll",  current_angles.roll));
-			true0.pitch = deg2rad(driver->getParameter("origin_pitch", current_angles.pitch));
-			true0.yaw   = deg2rad(driver->getParameter("origin_yaw",   current_angles.yaw));
-			Point3D_OP(diff, current_angles, -, true0);
-			angles0 = diff;
+		//// Compose Rotation
+		/// Default behavior must be identity
+		target.roll  = current_angles.roll  + deg2rad(driver->getParameter("origin_roll",  0));
+		target.pitch = current_angles.pitch + deg2rad(driver->getParameter("origin_pitch", 0));
+		target.yaw   = deg2rad(driver->getParameter("origin_yaw", current_angles.yaw));
+		Point3D_OP(diff, target, -, current_angles);
+		qR = qFromRPY(diff.roll, diff.pitch, diff.yaw);
 
-			printf("Pose3D boostrap with absolute reference origin.\n");
-			printf("\t XYZ transform: %.2f, %.2f, %.2f\n",
-			   -xyz0.x, -xyz0.y, -xyz0.z);
-			printf("\t Orientation transform: %.4f, %.4f, %.4f\n",
-			   -angles0.x, -angles0.y, -angles0.z);
-		}else{
-			external_presets = driver->getParameter("origin_differential", -1);
-			if (external_presets>0){
-				//// Use external <x,y,z, roll,pith,yaw> as differential positioning.
-				/// Current values will be seek with extenals offset.
-				/// Defined as NEGATIVE differential. So externals will define offset from
-				/// internals to "real" origin <0,0,0>
-				//// Please, notice that NOOP value for offset is '0'
-				pose3d_t offset;
-				offset.x = driver->getParameter("origin_x", 0);
-				offset.y = driver->getParameter("origin_y", 0);
-				offset.z = driver->getParameter("origin_z", 0);
+#if 0 // for test purposes only
+		quat q_t = qFromRPY(target.roll, target.pitch, target.yaw);
+		quat q_c = qFromRPY(current_angles.roll, current_angles.pitch, current_angles.yaw);
+		quat qR2 = q_t*q_c.inverse();
 
-				// With position, offset is applied from driver origin == GPS start posittion
-				Point3D_OP(xyz0, xyz0, -, offset);
+		printf("Pose3D boostrap with transforms.\n");
+		printf("\t XYZ transform: %.2f, %.2f, %.2f\n",
+           -xyzT.x, -xyzT.y, -xyzT.z);
+		printf("\t Orientation transform: %.4f, %.4f, %.4f\n",
+           -diff.x, -diff.y, -diff.z);
 
-				// With orientation, offset is applied from "angle start point", so it simply apply this offset.
-				angles0.roll  = deg2rad(driver->getParameter("origin_roll",  0));
-				angles0.pitch = deg2rad(driver->getParameter("origin_pitch", 0));
-				angles0.yaw   = deg2rad(driver->getParameter("origin_yaw",   0));
-
-				printf("Pose3D boostrap with offset adjustment.\n");
-				printf("\t XYZ transform: %.2f, %.2f, %.2f\n",
-				       -xyz0.x, -xyz0.y, -xyz0.z);
-				printf("\t Orientation transform: %.4f, %.4f, %.4f\n",
-				       -angles0.x, -angles0.y, -angles0.z);
-			}else{
-				printf("Pose3D: using ardrone origin convection.\n");
-			}
-		}
+		printf("qR:  %.2f, %.2f, %.2f, %.2f\n", qR.x(), qR.y(), qR.z(), qR.w());
+		printf("qR2: %.2f, %.2f, %.2f, %.2f\n", qR2.x(), qR2.y(), qR2.z(), qR2.w());
+#endif
 	}
 }

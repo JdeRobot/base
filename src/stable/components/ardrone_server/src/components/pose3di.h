@@ -52,8 +52,8 @@ namespace pose3D
 			bool gps_on, gps_valid;
 			bool gps_is_bootstrapped;
 
-			pose3d_t xyz0;
-			pose3d_t angles0;
+			Eigen::Quaternion<float> qR;
+			pose3d_t xyzT;
 	};
 
 
