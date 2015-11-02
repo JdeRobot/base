@@ -17,12 +17,8 @@ rm -f Makefile
 # remove CMakeFiles dirs
 find -type d -name CMakeFiles -exec rm -r {} +
 
-mivar=`du -a | grep CMakeCache.txt | awk '{print $2}'`
-
-
-for file in $mivar; do
-	rm -fr $file
-done
+# remove CMakeCache.txt files
+find -type f -name CMakeCache.txt -exec rm {} +
 
 rm -f src/stable/interfaces/cpp/jderobot/*
 rm -rf src/stable/interfaces/python/jderobot/*
