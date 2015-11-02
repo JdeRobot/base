@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -e
+
+test -d src/stable && test -d src/testing
+
 mivar=`du -a | grep cmake_install.cmake | awk '{print $2}'`
 
 mv ./doc/paper-autonomous_robots/Makefile /tmp
