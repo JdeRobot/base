@@ -26,5 +26,5 @@ for langdir in $langdirs; do
     find "$langdir" -type f ! -name '*.tmp' -a ! -name '.keepme' -exec rm {} +
 done
 
-rm -f src/stable/libs/*/*.so
-rm -f src/stable/libs/*/*.a
+# remove *.so and *.a files
+find src/stable -type f -name '*.so' -o -name '*.a' -exec rm {} +
