@@ -4,8 +4,8 @@ set -e
 
 test -d src/stable && test -d src/testing
 
-# remove cmake_install.cmake files
-find -type f -name cmake_install.cmake -exec rm {} +
+# remove cmake_(un)?install.cmake files
+find -type f -name cmake_install.cmake -o -name cmake_uninstall.cmake -exec rm {} +
 
 # remove Makefile files
 find src -type f -name Makefile -exec rm {} +
@@ -24,12 +24,6 @@ find -type f -name CMakeCache.txt -exec rm {} +
 langdirs=`find src/stable/interfaces -mindepth 1 -maxdepth 1 -type d ! -name slice`
 for langdir in $langdirs; do
     find "$langdir" -type f ! -name '*.tmp' -a ! -name '.keepme' -exec rm {} +
-done
-
-mivar=`du -a | grep "cmake_uninstall.cmake$" | awk '{print $2}'`
-
-for file in $mivar; do
-	rm -fr $file
 done
 
 rm -f src/stable/libs/*/*.so
