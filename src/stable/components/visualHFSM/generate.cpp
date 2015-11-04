@@ -1062,23 +1062,23 @@ void Generate::generaitJoin_py(){
 }
 
 void Generate::generateMain_py (){
-	this->fs << "if __name__ == '__main__':" << std::endl;
-	this->fs << std::endl;
-	this->fs << this->mapTab[T_ONE];
-	this->fs << "signal.signal(signal.SIGINT, signal.SIG_DFL)" << std::endl;
-	this->fs << this->mapTab[T_ONE] << "automata = Automata()" << std::endl;
-	this->fs << this->mapTab[T_ONE] << "try:" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.connectToProxys()" << std::endl;
+	this->fs <<
+"if __name__ == '__main__':\n\
+	signal.signal(signal.SIGINT, signal.SIG_DFL)\n\
+	automata = Automata()\n\
+	try:\n\
+		automata.connectToProxys()\n\
+";
 	//TODO more automatagui
 	this->fs.flush();
-	this->fs << this->mapTab[T_TWO] << "automata.start()" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.join()" << std::endl;
-	this->fs << std::endl;
-
-	this->fs << this->mapTab[T_TWO] << "sys.exit(0)" << std::endl;
-
-	this->fs << this->mapTab[T_ONE] << "except:" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "traceback.print_exc()" <<std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.destroyIc()" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "sys.exit(-1)"<< std::endl;
+	this->fs <<
+"		automata.start()\n\
+		automata.join()\n\
+		\n\
+		sys.exit(0)\n\
+	except:\n\
+		traceback.print_exc()\n\
+		automata.destroyIc()\n\
+		sys.exit(-1)\n\
+";
 }
