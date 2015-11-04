@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <boost/format.hpp>
 
 #include "subautomata.h"
 #include "iceinterface.h"
