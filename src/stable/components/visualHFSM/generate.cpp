@@ -1005,28 +1005,25 @@ void Generate::generateSubautomatas_py(){
 }
 
 void Generate::generateConnectToProxys_py(){
-	this->fs << this->mapTab[T_ONE] << "def connectToProxys(self):" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "self.ic = Ice.initialize(sys.argv)" << std::endl;
-	this->fs << std::endl;
+	this->fs << 
+"	def connectToProxys(self):\n\
+		self.ic = Ice.initialize(sys.argv)\n\
+\n";
+	boost::format fmt_iConnect( /* %1%: getName() %2%: getInterface() */
+"		# Contact to %1%\n\
+		%1% = self.ic.propertyToProxy('automata.%2%.Proxy')\n\
+		if(not %1%):\n\
+			raise Exception('could not create proxy with %1%')\n\
+		self.%1%Prx = %2%Prx.checkedCast(%1%)\n\
+		if(not self.%1%Prx):\n\
+			raise Exception('invalid proxy automata.%2%.Proxy')\n\
+		print '%1% connected'\n\
+\n");
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
-		this->fs << this->mapTab[T_TWO];
-		this->fs << "# Contact to " << listInterfacesIterator->getName() << std::endl;
-		this->fs << this->mapTab[T_TWO];
-		this->fs << listInterfacesIterator->getName() << " = self.ic.propertyToProxy(\"automata." << listInterfacesIterator->getInterface() << ".Proxy\");" << std::endl;
-		this->fs << this->mapTab[T_TWO];
-		this->fs << "if(not " << listInterfacesIterator->getName() << "):" << std::endl;
-		this->fs << this->mapTab[T_THREE];
-		this->fs << "raise Exception(\"could not create proxy with" << listInterfacesIterator->getName() << "\")" << std::endl;
-		this->fs << this->mapTab[T_TWO];
-		this->fs << "self." << listInterfacesIterator->getName() << "Prx = " << listInterfacesIterator->getInterface() << "Prx.checkedCast(" << listInterfacesIterator->getName() << ")" << std::endl;
-		this->fs << this->mapTab[T_TWO];
-		this->fs << "if(not self." << listInterfacesIterator->getName() << "Prx):" << std::endl;
-		this->fs << this->mapTab[T_THREE];
-		this->fs << "raise Exception(\"invalid proxy automata." << listInterfacesIterator->getName() << ".Proxy\")" << std::endl;
-		this->fs << this->mapTab[T_TWO];
-		this->fs << "print \"" << listInterfacesIterator->getName() << " connected\"" << std::endl;
-		this->fs << std::endl;
+		std::string iName = listInterfacesIterator->getName();
+		std::string iInterface = listInterfacesIterator->getInterface();
+		std::cout<<boost::str(fmt_iConnect % iName % iInterface);
 	}
 	this->fs << std::endl;
 }
@@ -1062,23 +1059,23 @@ void Generate::generaitJoin_py(){
 }
 
 void Generate::generateMain_py (){
-	this->fs << "if __name__ == '__main__':" << std::endl;
-	this->fs << std::endl;
-	this->fs << this->mapTab[T_ONE];
-	this->fs << "signal.signal(signal.SIGINT, signal.SIG_DFL)" << std::endl;
-	this->fs << this->mapTab[T_ONE] << "automata = Automata()" << std::endl;
-	this->fs << this->mapTab[T_ONE] << "try:" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.connectToProxys()" << std::endl;
+	this->fs <<
+"if __name__ == '__main__':\n\
+	signal.signal(signal.SIGINT, signal.SIG_DFL)\n\
+	automata = Automata()\n\
+	try:\n\
+		automata.connectToProxys()\n\
+";
 	//TODO more automatagui
 	this->fs.flush();
-	this->fs << this->mapTab[T_TWO] << "automata.start()" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.join()" << std::endl;
-	this->fs << std::endl;
-
-	this->fs << this->mapTab[T_TWO] << "sys.exit(0)" << std::endl;
-
-	this->fs << this->mapTab[T_ONE] << "except:" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "traceback.print_exc()" <<std::endl;
-	this->fs << this->mapTab[T_TWO] << "automata.destroyIc()" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "sys.exit(-1)"<< std::endl;
+	this->fs <<
+"		automata.start()\n\
+		automata.join()\n\
+		\n\
+		sys.exit(0)\n\
+	except:\n\
+		traceback.print_exc()\n\
+		automata.destroyIc()\n\
+		sys.exit(-1)\n\
+";
 }
