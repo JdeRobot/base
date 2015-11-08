@@ -1006,24 +1006,24 @@ void Generate::generateSubautomatas_py(){
 
 void Generate::generateConnectToProxys_py(){
 	this->fs << 
-"	def connectToProxys(self):\n\
-		self.ic = Ice.initialize(sys.argv)\n\
-\n";
+	"	def connectToProxys(self):\n\
+			self.ic = Ice.initialize(sys.argv)\n\
+	\n";
 	boost::format fmt_iConnect( /* %1%: getName() %2%: getInterface() */
-"		# Contact to %1%\n\
-		%1% = self.ic.propertyToProxy('automata.%2%.Proxy')\n\
-		if(not %1%):\n\
-			raise Exception('could not create proxy with %1%')\n\
-		self.%1%Prx = %2%Prx.checkedCast(%1%)\n\
-		if(not self.%1%Prx):\n\
-			raise Exception('invalid proxy automata.%2%.Proxy')\n\
-		print '%1% connected'\n\
-\n");
+	"		# Contact to %1%\n\
+			%1% = self.ic.propertyToProxy('automata.%2%.Proxy')\n\
+			if(not %1%):\n\
+				raise Exception('could not create proxy with %1%')\n\
+			self.%1%Prx = %2%Prx.checkedCast(%1%)\n\
+			if(not self.%1%Prx):\n\
+				raise Exception('invalid proxy automata.%2%.Proxy')\n\
+			print '%1% connected'\n\
+	\n");
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
 		std::string iName = listInterfacesIterator->getName();
 		std::string iInterface = listInterfacesIterator->getInterface();
-		std::cout<<boost::str(fmt_iConnect % iName % iInterface);
+		this->fs << boost::str(fmt_iConnect % iName % iInterface);
 	}
 	this->fs << std::endl;
 }
@@ -1060,22 +1060,22 @@ void Generate::generaitJoin_py(){
 
 void Generate::generateMain_py (){
 	this->fs <<
-"if __name__ == '__main__':\n\
-	signal.signal(signal.SIGINT, signal.SIG_DFL)\n\
-	automata = Automata()\n\
-	try:\n\
-		automata.connectToProxys()\n\
-";
-	//TODO more automatagui
-	this->fs.flush();
-	this->fs <<
-"		automata.start()\n\
-		automata.join()\n\
-		\n\
-		sys.exit(0)\n\
-	except:\n\
-		traceback.print_exc()\n\
-		automata.destroyIc()\n\
-		sys.exit(-1)\n\
-";
+	"if __name__ == '__main__':\n\
+		signal.signal(signal.SIGINT, signal.SIG_DFL)\n\
+		automata = Automata()\n\
+		try:\n\
+			automata.connectToProxys()\n\
+	";
+		//TODO more automatagui
+		this->fs.flush();
+		this->fs <<
+	"		automata.start()\n\
+			automata.join()\n\
+			\n\
+			sys.exit(0)\n\
+		except:\n\
+			traceback.print_exc()\n\
+			automata.destroyIc()\n\
+			sys.exit(-1)\n\
+	";
 }
