@@ -33,6 +33,7 @@
           <izz>1.0</izz>
         </inertia>
       </inertial>
+
         <collision name="collision">
           <geometry>
             <cylinder>
@@ -41,7 +42,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -50,7 +51,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       <link name="front_left_wheel">
         <pose>-1.100000 -1.70000 0.448000 0 1.5707 0</pose>
@@ -72,9 +73,8 @@
               <length>.3</length>
             </cylinder>
           </geometry>
-          
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -83,7 +83,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="front_left_steering_wheel_block">
@@ -99,6 +99,7 @@
           <izz>1.0</izz>
         </inertia>
       </inertial>
+
         <collision name="collision">
           <geometry>
             <cylinder>
@@ -107,7 +108,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -116,7 +117,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
 		</link>       
         
         <link name="front_right_steering_wheel_block">
@@ -132,6 +133,7 @@
           <izz>1.0</izz>
         </inertia>
       </inertial>
+
         <collision name="collision">
           <geometry>
             <cylinder>
@@ -140,7 +142,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -149,7 +151,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="rear_left_wheel">
@@ -166,12 +168,14 @@
         </inertia>
         </inertial>
         <collision name="collision">
+
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
             </cylinder>
           </geometry>
+
           <max_contacts>1</max_contacts>
         <surface>
           <friction>
@@ -191,7 +195,7 @@
           </contact>
         </surface>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -200,7 +204,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="rear_right_wheel">
@@ -217,12 +221,14 @@
         </inertia>
         </inertial>
         <collision name="collision">
+
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
             </cylinder>
           </geometry>
+
           <max_contacts>1</max_contacts>
         <surface>
           <friction>
@@ -242,7 +248,7 @@
           </contact>
         </surface>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -251,7 +257,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
        <joint type="revolute" name="front_left_wheel_hinge">
