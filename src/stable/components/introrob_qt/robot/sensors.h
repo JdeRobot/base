@@ -27,7 +27,6 @@ public:
     float getRobotPoseTheta();
     std::vector<float> getLaserData();
 
-    bool getBoolLaser();
     cv::Mat getCamera2();
     cv::Mat getCamera1();
 
@@ -43,6 +42,12 @@ private:
     jderobot::EncodersDataPtr encodersData;
     jderobot::CameraPrx camera2;
     jderobot::CameraPrx camera1;
+
+    //ICE interfaces available for connection on demand
+    bool laserON;
+    bool encodersON;
+    bool camera1ON;
+    bool camera2ON;
 
     //ROBOT POSE
     double robotx;
