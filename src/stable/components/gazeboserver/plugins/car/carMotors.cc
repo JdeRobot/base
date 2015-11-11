@@ -27,6 +27,7 @@ namespace gazebo
         this->node = transport::NodePtr(new transport::Node());
         this->node->Init(this->model->GetWorld()->GetName());
 
+#ifdef USE_REAL_WHEELS
         if (!_sdf->HasElement("front_right_joint"))
             gzerr << "motors plugin missing <front_right_joint> element\n";
         if (!_sdf->HasElement("front_left_joint"))
@@ -64,6 +65,7 @@ namespace gazebo
         if (!this->steerRightJoint)
             gzerr << "Unable to find steering right joint["
                 << _sdf->GetElement("front_right_steering_joint")->Get<std::string>() << "]\n";
+#endif
 
         this->updateConnection = event::Events::ConnectWorldUpdateBegin(
                                     boost::bind(&Motors::OnUpdate, this));
@@ -97,12 +99,13 @@ namespace gazebo
             robotMotors.wheelMin= -0.52359;
             robotMotors.wheelMax= 0.52359;
             robotMotors.targetRightSteerPos=robotMotors.targetLeftSteerPos=0;
+#ifdef USE_REAL_WHEELS
 
             this->steerRightJoint->SetHighStop(0,robotMotors.wheelMax);
             this->steerRightJoint->SetLowStop(0,robotMotors.wheelMin);
             this->steerLeftJoint->SetHighStop(0,robotMotors.wheelMax);
             this->steerLeftJoint->SetLowStop(0,robotMotors.wheelMin);
-
+#endif
             count++;
             //std::string name = this->model->GetName();
             //std::cout << "Model name " << name << std::endl;
@@ -114,7 +117,9 @@ namespace gazebo
 
         }
 
+#ifdef USE_REAL_WHEELS
         pthread_mutex_lock(&mutex);
+
         robotMotors.targetRightSteerPos=robotMotors.w*0.58-this->steerRightJoint->GetAngle(0).Radian();
         robotMotors.targetLeftSteerPos=robotMotors.w*0.58-this->steerLeftJoint->GetAngle(0).Radian();
 
@@ -143,6 +148,16 @@ namespace gazebo
         //std::cout << "Angle:" << this->steerRightJoint->GetAngle(0) << std::endl;
         this->steerRightJoint->SetForce(0,580*robotMotors.targetRightSteerPos);
         this->steerLeftJoint->SetForce(0,580*robotMotors.targetLeftSteerPos);
+#else
+        float z = model->GetRelativeLinearVel().z;
+        math::Vector3 vel(0,-robotMotors.v/10.0,z);
+
+        math::Quaternion rot = model->GetWorldPose().rot;
+        vel = rot.GetAsMatrix3()*vel;
+
+        this->model->SetLinearVel(vel);
+        this->model->SetAngularVel(math::Vector3(0,0,robotMotors.w));
+#endif
 
     }
 

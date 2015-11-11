@@ -41,7 +41,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -50,7 +50,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       <link name="front_left_wheel">
         <pose>-1.100000 -1.70000 0.448000 0 1.5707 0</pose>
@@ -74,7 +74,7 @@
           </geometry>
           
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -83,7 +83,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="front_left_steering_wheel_block">
@@ -107,7 +107,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -116,7 +116,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
 		</link>       
         
         <link name="front_right_steering_wheel_block">
@@ -140,7 +140,7 @@
             </cylinder>
           </geometry>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -149,7 +149,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="rear_left_wheel">
@@ -191,7 +191,7 @@
           </contact>
         </surface>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -200,7 +200,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
       <link name="rear_right_wheel">
@@ -242,7 +242,7 @@
           </contact>
         </surface>
         </collision>
-<!---->
+<!--
         <visual name="visual">
           <geometry>
             <cylinder>
@@ -251,7 +251,7 @@
             </cylinder>
           </geometry>
         </visual>
-<!---->
+-->
       </link>
       
        <joint type="revolute" name="front_left_wheel_hinge">
