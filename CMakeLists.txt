@@ -26,11 +26,11 @@ endif()
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
 # Folder with ICE cpp interfaces
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/)
+SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/)
 # Folder with ICE python interfaces
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/)
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/)
 # Folder with ICE java interfaces
-SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/java/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/java/)
+SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/)
 # Folder JdeRobot libraries 
 SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) 
 # Folder ICE interface definitions
