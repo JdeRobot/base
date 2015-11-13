@@ -22,7 +22,7 @@
 #ifndef SONARS_ICE
 #define SONARS_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 
 module jderobot{  

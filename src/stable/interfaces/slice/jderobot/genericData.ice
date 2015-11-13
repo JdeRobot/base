@@ -22,7 +22,7 @@
 #ifndef GENERICDATA_ICE
 #define GENERICDATA_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 
 module jderobot{  

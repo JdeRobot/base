@@ -23,7 +23,7 @@
 #ifndef PTENCODERS_ICE
 #define PTENCODERS_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 
 module jderobot{  

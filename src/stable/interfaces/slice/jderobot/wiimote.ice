@@ -22,7 +22,7 @@
 #ifndef WIIMOTE_ICE
 #define WIIMOTE_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 module jderobot{
 

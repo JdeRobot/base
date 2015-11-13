@@ -1,9 +1,9 @@
 #ifndef COMMON_ICE
 #define COMMON_ICE
 
-#include <datetime.ice>
-#include <exceptions.ice>
-#include <containers.ice>
+#include <jderobot/datetime.ice>
+#include <jderobot/exceptions.ice>
+#include <jderobot/containers.ice>
 
 module jderobot{
 }; /*module*/

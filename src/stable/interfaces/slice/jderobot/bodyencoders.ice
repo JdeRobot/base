@@ -21,8 +21,8 @@
 #ifndef BODYENCODERS_ICE
 #define BODYENCODERS_ICE
 
-#include <common.ice>
-#include <body.ice>
+#include <jderobot/common.ice>
+#include <jderobot/body.ice>
 
 module jderobot{  
 
