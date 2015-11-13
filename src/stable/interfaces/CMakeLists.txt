@@ -68,15 +68,15 @@ endif()
     file(MAKE_DIRECTORY ${target_directory})
     execute_process(
         WORKING_DIRECTORY ${SLICE_PY_DIR}
-        COMMAND slice2py ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${target_directory}
+        COMMAND slice2py ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${SLICE_PY_DIR}
     )
 
     ### Java
     set(target_directory ${SLICE_JAVA_DIR}/${slice_rel_dir})
     file(MAKE_DIRECTORY ${target_directory})
     execute_process(
-        WORKING_DIRECTORY ${SLICE_PY_DIR}
-        COMMAND slice2java ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${target_directory}
+        WORKING_DIRECTORY ${SLICE_JAVA_DIR}
+        COMMAND slice2java ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${SLICE_JAVA_DIR}
     )
 
 endforeach()
