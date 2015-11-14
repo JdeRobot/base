@@ -68,7 +68,11 @@ endif()
     file(MAKE_DIRECTORY ${target_directory})
     execute_process(
         WORKING_DIRECTORY ${SLICE_PY_DIR}
-        COMMAND slice2py ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${SLICE_PY_DIR}
+        COMMAND slice2py ${slice_abs_path} -I${SLICE_DIRECTORY} --output-dir ${SLICE_PY_DIR} --all
+        # py files will be placed at ${SLICE_PY_DIR}
+        # __init__.py will be placed at ${target_directory} (creates a directory for each module)
+        # tested but invalid: --prefix (not a '--include-dir' equivalent)
+
     )
 
     ### Java
