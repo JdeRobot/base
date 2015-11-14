@@ -21,7 +21,7 @@
 #ifndef NAVDATAI_H
 #define NAVDATAI_H
 
-#include <navdata.h>
+#include <jderobot/navdata.h>
 
 
 

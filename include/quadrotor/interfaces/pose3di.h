@@ -22,7 +22,7 @@
 #define POSE3DI_H
 
 
-#include <pose3d.h>
+#include <jderobot/pose3d.h>
 
 
 namespace quadrotor{
