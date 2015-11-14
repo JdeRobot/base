@@ -21,11 +21,6 @@
 #include "quadrotor/quadrotorsensors.hh"
 
 
-#include <boost/format.hpp>
-#include <gazebo/sensors/SensorManager.hh>
-#include <iostream>
-
-
 using namespace quadrotor;
 using namespace gazebo::physics;
 using namespace gazebo::sensors;
@@ -56,6 +51,22 @@ QuadRotorSensors::Load(ModelPtr model){
     }
 }
 
+
+void
+QuadRotorSensors::Init(){
+    sub_cam_frontal = cam_frontal->ConnectUpdated(
+        boost::bind(&QuadRotorSensors::_on_cam_frontal, this));
+
+    sub_cam_ventral = cam_frontal->ConnectUpdated(
+        boost::bind(&QuadRotorSensors::_on_cam_ventral, this));
+
+    sub_sonar = cam_frontal->ConnectUpdated(
+        boost::bind(&QuadRotorSensors::_on_sonar, this));
+
+    sub_imu = cam_frontal->ConnectUpdated(
+        boost::bind(&QuadRotorSensors::_on_imu, this));
+}
+
 void
 QuadRotorSensors::debugInfo(){
     std::cout << "Sensors of " << model->GetName() << std::endl;
@@ -65,4 +76,60 @@ QuadRotorSensors::debugInfo(){
     std::cout << fmt % cam_frontal->GetName() % cam_frontal->GetId();
     std::cout << fmt % sonar->GetName() % sonar->GetId();
     std::cout << fmt % imu->GetName() % imu->GetId();
+}
+
+
+void
+QuadRotorSensors::_on_cam_frontal(){
+    //// Assumption: Camera (raw) data is constant, so after Camera boostrap
+    /// Camera.data will be a constant pointer.
+    /// Therefore, we can use the cv::Mat constructor to simply wrap this
+    /// data and avoid copy overload.
+    /// Warning: thread safe is not supplied, but one can never ensure it
+    /// if CameraSensor thread is overriding data and there are no option
+    /// to intercept this update.
+    /// Warning 2: char* is NULL until CameraSensor.OnUpdate(), so it is not
+    /// possible to bootstrap at Load neither Init step.
+
+    if (img_frontal.empty()){
+        const unsigned char *data = cam_frontal->GetImageData();
+        if (data == 0)
+            return;
+
+        std::cout<<"\tbootstrap cam_frontal"<<std::endl;
+        uint32_t h = cam_frontal->GetImageHeight();
+        uint32_t w = cam_frontal->GetImageWidth();
+        img_frontal = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
+
+        sub_cam_frontal->~Connection(); // close connection
+    }
+}
+
+void
+QuadRotorSensors::_on_cam_ventral(){
+    if (img_ventral.empty()){
+        const unsigned char *data = cam_ventral->GetImageData();
+        if (data == 0)
+            return;
+
+        std::cout<<"\tbootstrap cam_ventral"<<std::endl;
+        uint32_t h = cam_ventral->GetImageHeight();
+        uint32_t w = cam_frontal->GetImageWidth();
+        img_ventral = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
+
+        sub_cam_ventral->~Connection();
+    }
+}
+
+
+void
+QuadRotorSensors::_on_sonar(){
+    //ToDO:
+    altitude = sonar->GetRangeMin();
+}
+
+void
+QuadRotorSensors::_on_imu(){
+    pose = model->GetWorldPose();
+    pose.rot = imu->GetOrientation();
 }

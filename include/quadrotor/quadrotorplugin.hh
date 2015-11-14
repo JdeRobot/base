@@ -20,7 +20,12 @@
 #ifndef QUADROTORPLUGIN_H
 #define QUADROTORPLUGIN_H
 
+#include <boost/bind.hpp>
+
 #include <gazebo/gazebo.hh>
+#include <gazebo/common/common.hh>
+#include <gazebo/math/Pose.hh>
+
 #include "quadrotor/quadrotorsensors.hh"
 
 
@@ -33,12 +38,16 @@ public:
 protected:
     void Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr _sdf);
     void Init();
-    void OnUpdate();
+    void OnUpdate(const gazebo::common::UpdateInfo & _info);
     void Reset();
 
 private:
     gazebo::physics::ModelPtr model;
+    gazebo::event::ConnectionPtr updateConnection;
     QuadRotorSensors sensors;
+
+protected:
+    gazebo::math::Pose pose;
 
 };
 

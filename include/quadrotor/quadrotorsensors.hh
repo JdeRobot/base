@@ -21,10 +21,17 @@
 #ifndef QUADROTORSENSORS_H
 #define QUADROTORSENSORS_H
 
+#include <iostream>
+#include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/Model.hh>
 #include <gazebo/sensors/sensors.hh>
+#include <gazebo/sensors/SensorManager.hh>
+#include <gazebo/common/Events.hh>
+
+#include <opencv2/core/core.hpp>
 
 
 namespace quadrotor{
@@ -35,6 +42,7 @@ public:
     QuadRotorSensors();
 
     void Load(gazebo::physics::ModelPtr model);
+    void Init();
 
     void debugInfo();
 
@@ -47,6 +55,23 @@ public:
 private:
     gazebo::physics::ModelPtr model;
     uint32_t base_link_id;
+
+private:
+    gazebo::event::ConnectionPtr sub_cam_frontal;
+    gazebo::event::ConnectionPtr sub_cam_ventral;
+    gazebo::event::ConnectionPtr sub_sonar;
+    gazebo::event::ConnectionPtr sub_imu;
+
+    void _on_cam_frontal();
+    void _on_cam_ventral();
+    void _on_sonar();
+    void _on_imu();
+
+public:
+    cv::Mat img_frontal;
+    cv::Mat img_ventral;
+    gazebo::math::Pose pose;
+    double altitude;
 
 };
 

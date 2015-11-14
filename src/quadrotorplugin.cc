@@ -25,6 +25,9 @@ GZ_REGISTER_MODEL_PLUGIN(quadrotor::QuadrotorPlugin)
 
 using namespace quadrotor;
 using namespace gazebo::physics;
+using namespace gazebo::math;
+using namespace gazebo::event;
+using namespace gazebo::common;
 
 
 QuadrotorPlugin::QuadrotorPlugin()
@@ -37,18 +40,29 @@ void
 QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     model = _model;
     sensors.Load(model);
+
+    // Listen to the update event. This event is broadcast every
+    // simulation iteration.
+    this->updateConnection = Events::ConnectWorldUpdateBegin(
+        boost::bind(&QuadrotorPlugin::OnUpdate, this, _1));
 }
 
 
 void
 QuadrotorPlugin::Init(){
+std::cout << "QuadrotorPlugin::Init()" << std::endl;
     sensors.debugInfo();
+    sensors.Init();
+
+    sensors.cam_frontal->SetActive(true);
+    sensors.cam_ventral->SetActive(true);
 }
 
 
 void
-QuadrotorPlugin::OnUpdate(){
-
+QuadrotorPlugin::OnUpdate(const UpdateInfo & _info){
+//    std::cout << "QuadrotorPlugin::OnUpdate()" << std::endl;
+//    std::cout << "\t" << _info.simTime << std::endl;
 }
 
 
