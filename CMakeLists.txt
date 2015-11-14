@@ -213,8 +213,10 @@ FOREACH (currentBin ${LIST_COMPONENTS})
 ENDFOREACH(currentBin)
 
 # Install interfaces headers
-FILE(GLOB HEADER_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/*.h)
-INSTALL (FILES ${HEADER_INTERFACE_FILES} DESTINATION /usr/local/include/jderobot)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot/
+    DESTINATION /usr/local/include/jderobot
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
 
 # Install slice
 FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice/jderobot/*.ice)
