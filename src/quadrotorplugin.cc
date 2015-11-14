@@ -43,8 +43,10 @@ QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
 
     // Listen to the update event. This event is broadcast every
     // simulation iteration.
-    this->updateConnection = Events::ConnectWorldUpdateBegin(
+    updateConnection = Events::ConnectWorldUpdateBegin(
         boost::bind(&QuadrotorPlugin::OnUpdate, this, _1));
+
+    this->InitializeIce(_sdf);
 }
 
 
@@ -56,6 +58,10 @@ std::cout << "QuadrotorPlugin::Init()" << std::endl;
 
     sensors.cam_frontal->SetActive(true);
     sensors.cam_ventral->SetActive(true);
+    sensors.sonar->SetActive(true);
+    sensors.imu->SetActive(true);
+
+    icePlugin->start();
 }
 
 
@@ -69,4 +75,26 @@ QuadrotorPlugin::OnUpdate(const UpdateInfo & _info){
 void
 QuadrotorPlugin::Reset(){
 
+}
+
+
+
+void
+QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
+    std::cout << "QuadrotorPlugin::InitializeIce()" << std::endl;
+    std::string iceConfigFile = "quadrotorplugin.cfg";
+    if(_sdf->HasElement("cfgFile"))
+        iceConfigFile =  _sdf->GetElement("cfgFile")->GetValue()->GetAsString();
+    std::cout << "\tconfig: "<< iceConfigFile << std::endl;
+#if 1
+    Ice::StringSeq args;
+    args.push_back("--Ice.Config=" + iceConfigFile);
+    Ice::CommunicatorPtr ic = Ice::initialize(args);
+#else
+    Ice::InitializationData id;
+    id.properties->load(iceConfigFile);
+    Ice::CommunicatorPtr ic = Ice::initialize(id);
+#endif
+    std::cout << "\tcreate Ice plugin..." << std::endl;
+    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors));
 }

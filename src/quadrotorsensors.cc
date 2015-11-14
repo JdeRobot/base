@@ -132,4 +132,5 @@ void
 QuadRotorSensors::_on_imu(){
     pose = model->GetWorldPose();
     pose.rot = imu->GetOrientation();
+    std::cout<<pose<<std::endl;
 }

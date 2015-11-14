@@ -27,6 +27,7 @@
 #include <gazebo/math/Pose.hh>
 
 #include "quadrotor/quadrotorsensors.hh"
+#include "quadrotor/quadrotorice.hh"
 
 
 namespace quadrotor{
@@ -35,6 +36,11 @@ class QuadrotorPlugin : public gazebo::ModelPlugin {
 public:
     QuadrotorPlugin();
 
+private:
+    QuadRotorSensors sensors;
+
+
+/// Gazebo
 protected:
     void Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr _sdf);
     void Init();
@@ -44,10 +50,14 @@ protected:
 private:
     gazebo::physics::ModelPtr model;
     gazebo::event::ConnectionPtr updateConnection;
-    QuadRotorSensors sensors;
 
+
+/// Ice
 protected:
-    gazebo::math::Pose pose;
+    void InitializeIce(sdf::ElementPtr _sdf);
+
+private:
+    QuadrotorIcePtr icePlugin;
 
 };
 

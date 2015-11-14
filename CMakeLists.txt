@@ -24,31 +24,42 @@ add_library(quadrotor2_headers ${quadrotor2_headers})
 set_target_properties(quadrotor2_headers PROPERTIES LINKER_LANGUAGE CXX)
 
 
-add_library(quadrotor2_ice_interfaces STATIC
-	src/interfaces/pose3di.cpp
-	src/interfaces/navdatai.cpp
-)
+#add_library(quadrotor2_ice_interfaces STATIC
+#	src/interfaces/pose3di.cpp
+#	src/interfaces/navdatai.cpp
+#)
+#target_link_libraries(quadrotor2_ice_interfaces
+#	Ice
+#	IceUtil
+#	JderobotInterfaces
+#	${ZeroCIce_LIBRARIES}
+#)
 
-target_link_libraries(quadrotor2_ice_interfaces
-	Ice
-	IceUtil
-	JderobotInterfaces
-	${ZeroCIce_LIBRARIES}
-)
 
 
 add_library(quadrotorplugin2 SHARED
 	src/quadrotorplugin.cc
 	src/quadrotorsensors.cc
+
+	src/quadrotorice.cc
+	src/interfaces/pose3di.cpp
+	src/interfaces/navdatai.cpp
 )
 
 target_link_libraries(quadrotorplugin2
 	${GAZEBO_libraries}
 	${OpenCV_LIBS}
 	colorspacesmm
-	quadrotor2_ice_interfaces
+#	quadrotor2_ice_interfaces
+)
+target_link_libraries(quadrotorplugin2
+	Ice
+	IceUtil
+	JderobotInterfaces
+	${ZeroCIce_LIBRARIES}
 )
 
+#set_target_properties(quadrotorplugin2 PROPERTIES LINK_FLAGS "-fPIC")
 
 INSTALL (TARGETS quadrotorplugin2 DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)

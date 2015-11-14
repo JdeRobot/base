@@ -17,40 +17,45 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-
-#include "quadrotor/interfaces/pose3di.h"
-
-
-using namespace quadrotor::interfaces;
-using namespace jderobot;
+#ifndef QUADROTORICE_H
+#define QUADROTORICE_H
 
 
-Pose3DI::Pose3DI (const QuadRotorSensors *sensor):
-    data(new Pose3DData(0,0,0,0,0,0,0,0)),
-    sensor(sensor)
-{}
+#include <Ice/Ice.h>
+#include <IceUtil/IceUtil.h>
 
-Pose3DI::~Pose3DI ()
-{}
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
-Pose3DDataPtr
-Pose3DI::getPose3DData ( const Ice::Current& ){
-    gazebo::math::Pose pose = sensor->pose;
+#include <quadrotor/interfaces/pose3di.h>
+#include <quadrotor/interfaces/navdatai.h>
 
-    data->x = pose.pos.x;
-    data->y = pose.pos.y;
-    data->z = pose.pos.z;
-    data->h = 1;
-    data->q0 = pose.rot.w;
-    data->q1 = pose.rot.x;
-    data->q2 = pose.rot.y;
-    data->q3 = pose.rot.z;
+#include <quadrotor/quadrotorsensors.hh>
 
-    return data;
-}
+namespace quadrotor{
 
-Ice::Int
-Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data,
-                                 const Ice::Current& ){
-    //ToDo: control
-}
+class QuadrotorIce
+{
+public:
+    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors);
+    virtual ~QuadrotorIce();
+
+    void run();
+    void start();
+
+private:
+    Ice::CommunicatorPtr ic;
+    Ice::PropertiesPtr prop;
+    Ice::ObjectAdapterPtr adapter;
+    boost::thread *ice_thread;
+
+private:
+    const QuadRotorSensors *sensor;
+
+};
+
+typedef boost::shared_ptr<QuadrotorIce> QuadrotorIcePtr;
+
+}//NS
+
+#endif // QUADROTORICE_H

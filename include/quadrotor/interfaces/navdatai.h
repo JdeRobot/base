@@ -22,7 +22,7 @@
 #define NAVDATAI_H
 
 #include <jderobot/navdata.h>
-
+#include <quadrotor/quadrotorsensors.hh>
 
 
 namespace quadrotor{
@@ -31,12 +31,13 @@ namespace interfaces{
 
 class NavdataI: public jderobot::Navdata{
 public:
-    NavdataI();
+    NavdataI(const quadrotor::QuadRotorSensors *sensor);
     virtual ~NavdataI();
     jderobot::NavdataDataPtr getNavdata(Ice::Current const & c);
 
 private:
     jderobot::NavdataDataPtr data;
+    const quadrotor::QuadRotorSensors *sensor;
 };
 
 }}//NS

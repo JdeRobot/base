@@ -24,7 +24,8 @@ using namespace quadrotor::interfaces;
 using namespace jderobot;
 
 
-NavdataI::NavdataI():
+NavdataI::NavdataI(const quadrotor::QuadRotorSensors *sensor):
+    sensor(sensor),
     data(new NavdataData())
 {
     data->vehicle=10;
