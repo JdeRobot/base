@@ -18,6 +18,11 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# Headers trick for IDEs
+file(GLOB_RECURSE quadrotor2_headers "include/**")
+add_library(quadrotor2_headers ${quadrotor2_headers})
+set_target_properties(quadrotor2_headers PROPERTIES LINKER_LANGUAGE CXX)
+
 
 add_library(quadrotor2_ice_interfaces STATIC
 	src/interfaces/pose3di.cpp
