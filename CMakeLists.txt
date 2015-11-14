@@ -41,6 +41,7 @@ SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib par
 # Create directories if necessary
 file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
 file(MAKE_DIRECTORY ${INTERFACES_JAVA_DIR})
+file(MAKE_DIRECTORY ${INTERFACES_CPP_DIR})
 
 # MACRO to get the list of subdirectories
 macro(list_subdirectories retval curdir return_relative)
