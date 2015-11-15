@@ -63,6 +63,10 @@ QuadrotorIce::run(){
     name = prop->getProperty("Quadrotor.Extra.Name");
     adapter->add(dronecontroli, ic->stringToIdentity(name));
 
+    ObjectPtr cmdveli = new CMDVelI(control);
+    name = prop->getProperty("Quadrotor.CMDVel.Name");
+    adapter->add(cmdveli, ic->stringToIdentity(name));
+
     adapter->activate();
 
     std::cout<< "Ice booststrap done." << std::endl;

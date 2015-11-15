@@ -17,49 +17,30 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#ifndef QUADROTORICE_H
-#define QUADROTORICE_H
+
+#ifndef CMDVELI_H
+#define CMDVELI_H
 
 
-#include <Ice/Ice.h>
-#include <IceUtil/IceUtil.h>
-
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
-#include <quadrotor/interfaces/pose3di.h>
-#include <quadrotor/interfaces/navdatai.h>
-#include <quadrotor/interfaces/dronecontroli.h>
-#include <quadrotor/interfaces/cmdveli.h>
-
-#include <quadrotor/quadrotorsensors.hh>
+#include <jderobot/cmdvel.h>
 #include <quadrotor/quadrotorcontrol.hh>
 
+
 namespace quadrotor{
+namespace interfaces{
 
-class QuadrotorIce
-{
+class CMDVelI : public jderobot::CMDVel {
 public:
-    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control);
-    virtual ~QuadrotorIce();
+    CMDVelI (quadrotor::QuadrotorControl *control);
+    virtual ~CMDVelI ();
 
-    void run();
-    void start();
-
-private:
-    Ice::CommunicatorPtr ic;
-    Ice::PropertiesPtr prop;
-    Ice::ObjectAdapterPtr adapter;
-    boost::thread *ice_thread;
+    Ice::Int setCMDVelData(const jderobot::CMDVelDataPtr&,
+                           const Ice::Current&);
 
 private:
-    const QuadRotorSensors *sensor;
-    QuadrotorControl *control;
-
+    quadrotor::QuadrotorControl* const control;
 };
 
-typedef boost::shared_ptr<QuadrotorIce> QuadrotorIcePtr;
 
-}//NS
-
-#endif // QUADROTORICE_H
+}}//NS
+#endif // CMDVELI_H

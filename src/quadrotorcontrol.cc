@@ -75,6 +75,11 @@ QuadrotorControl::land(){
     }
 }
 
+void
+QuadrotorControl::setTargetVelocity(Twist twist){
+    velocity_command = twist;
+}
+
 
 void
 QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){

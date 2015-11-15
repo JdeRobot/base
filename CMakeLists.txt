@@ -49,6 +49,7 @@ add_library(quadrotorplugin2 SHARED
 	src/interfaces/pose3di.cpp
 	src/interfaces/navdatai.cpp
 	src/interfaces/dronecontroli.cpp
+	src/interfaces/cmdveli.cpp
 )
 
 target_link_libraries(quadrotorplugin2
