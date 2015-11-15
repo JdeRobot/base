@@ -24,6 +24,9 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/physics/physics.hh>
 
+#include <quadrotor/control/twist.hh>
+#include <quadrotor/control/pidcontroller.hh>
+
 
 namespace quadrotor{
 
@@ -34,13 +37,22 @@ public:
     QuadrotorControl();
     virtual ~QuadrotorControl();
 
-
+/// Control commands
+public:
     void takeoff();
     void land();
 
-private:
+
+/// Control
+protected:
+    void _control_loop_novel(const gazebo::common::UpdateInfo & _info);
+    void _control_loop_hector(const gazebo::common::UpdateInfo & _info);
+
     double mass;
     QuadrotorState my_state;
+    Controllers controllers;
+    gazebo::common::Time last_simTime;
+    gazebo::math::Twist velocity_command;
 
 
 /// Gazebo

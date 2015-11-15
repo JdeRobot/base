@@ -42,6 +42,9 @@ add_library(quadrotorplugin2 SHARED
 	src/quadrotorsensors.cc
 	src/quadrotorcontrol.cc
 
+	src/quadrotorcontrol_hector.cc
+	src/pidcontroller.cc
+
 	src/quadrotorice.cc
 	src/interfaces/pose3di.cpp
 	src/interfaces/navdatai.cpp

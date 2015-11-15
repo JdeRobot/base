@@ -38,6 +38,7 @@ QuadrotorPlugin::QuadrotorPlugin()
 
 void
 QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
+    std::cout << "QuadrotorPlugin::Load()" << std::endl;
     model = _model;
     sensors.Load(model);
     control.Load(model->GetLink(), _sdf);
@@ -53,7 +54,7 @@ QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
 
 void
 QuadrotorPlugin::Init(){
-std::cout << "QuadrotorPlugin::Init()" << std::endl;
+    std::cout << "QuadrotorPlugin::Init()" << std::endl;
     sensors.debugInfo();
     sensors.Init();
 
