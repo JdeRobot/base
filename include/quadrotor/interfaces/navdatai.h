@@ -33,7 +33,7 @@ class NavdataI: public jderobot::Navdata{
 public:
     NavdataI(const quadrotor::QuadRotorSensors *sensor);
     virtual ~NavdataI();
-    jderobot::NavdataDataPtr getNavdata(Ice::Current const & c);
+    jderobot::NavdataDataPtr getNavdata(Ice::Current const &);
 
 private:
     jderobot::NavdataDataPtr data;

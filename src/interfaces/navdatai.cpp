@@ -36,7 +36,7 @@ NavdataI::~NavdataI()
 
 
 NavdataDataPtr
-NavdataI::getNavdata(Ice::Current const & c){
+NavdataI::getNavdata(Ice::Current const &){
     return data;
 }
 

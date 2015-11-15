@@ -35,7 +35,7 @@ DroneControlI::~DroneControlI ()
 
 
 void
-DroneControlI::land(const Ice::Current& c){
+DroneControlI::land(const Ice::Current& ){
     std::cout << "send order: Land" <<std::endl;
     control->land();
 }
@@ -43,13 +43,13 @@ DroneControlI::land(const Ice::Current& c){
 
 
 void
-DroneControlI::takeoff(const Ice::Current& c){
+DroneControlI::takeoff(const Ice::Current& ){
     std::cout << "send order: TakeOff" <<std::endl;
     control->takeoff();
 }
 
 
 void
-DroneControlI::toggleCam(const Ice::Current& c){
+DroneControlI::toggleCam(const Ice::Current& ){
 
 }

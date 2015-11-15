@@ -34,15 +34,15 @@ public:
     DroneControlI (quadrotor::QuadrotorControl *control);
     virtual ~DroneControlI ();
 
-    void land(const Ice::Current& c);
-    void takeoff(const Ice::Current& c);
-    void toggleCam(const Ice::Current& c);
+    void land(const Ice::Current& /*c*/);
+    void takeoff(const Ice::Current& /*c*/);
+    void toggleCam(const Ice::Current& /*c*/);
 
-    void reset(const Ice::Current& c){}
-    void recordOnUsb(bool, const Ice::Current& c){}
-    void ledAnimation(Ice::Int, Ice::Float, Ice::Float, const Ice::Current& c){}
-    void flightAnimation(Ice::Int, Ice::Float, const Ice::Current& c){}
-    void flatTrim(const Ice::Current& c){}
+    void reset(const Ice::Current& ){}
+    void recordOnUsb(bool, const Ice::Current& ){}
+    void ledAnimation(Ice::Int, Ice::Float, Ice::Float, const Ice::Current& ){}
+    void flightAnimation(Ice::Int, Ice::Float, const Ice::Current& ){}
+    void flatTrim(const Ice::Current& ){}
 
 private:
     quadrotor::QuadrotorControl* const control;
