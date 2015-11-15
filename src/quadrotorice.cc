@@ -25,9 +25,10 @@ using namespace quadrotor::interfaces;
 using namespace Ice;
 
 
-QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors):
+QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control):
     ic(ic),
-    sensor(sensors)
+    sensor(sensors),
+    control(control)
 {
 }
 
@@ -46,7 +47,7 @@ QuadrotorIce::run(){
     prop = ic->getProperties();
 
     adapter = ic->createObjectAdapter("Quadrotor.Adapter");
-    std::cout << "Ice adapter listeting at " << std::endl;
+    std::cout << "Ice adapter listening at " << std::endl;
     std::cout << "\t" << adapter->getEndpoints()[0]->toString() << std::endl;
 
     std::string name;
@@ -58,7 +59,13 @@ QuadrotorIce::run(){
     name = prop->getProperty("Quadrotor.Navdata.Name");
     adapter->add(navdatai, ic->stringToIdentity(name));
 
+    ObjectPtr dronecontroli = new DroneControlI(control);
+    name = prop->getProperty("Quadrotor.Extra.Name");
+    adapter->add(dronecontroli, ic->stringToIdentity(name));
+
     adapter->activate();
+
+    std::cout<< "Ice booststrap done." << std::endl;
 
     ic->waitForShutdown();
 }

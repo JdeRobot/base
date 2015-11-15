@@ -99,5 +99,5 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
     Ice::CommunicatorPtr ic = Ice::initialize(id);
 #endif
     std::cout << "\tcreate Ice plugin..." << std::endl;
-    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors));
+    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control));
 }

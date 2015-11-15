@@ -17,48 +17,37 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#ifndef QUADROTORICE_H
-#define QUADROTORICE_H
+
+#ifndef DRONECONTROLI_H
+#define DRONECONTROLI_H
 
 
-#include <Ice/Ice.h>
-#include <IceUtil/IceUtil.h>
-
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
-#include <quadrotor/interfaces/pose3di.h>
-#include <quadrotor/interfaces/navdatai.h>
-#include <quadrotor/interfaces/dronecontroli.h>
-
-#include <quadrotor/quadrotorsensors.hh>
+#include <jderobot/ardroneextra.h>
 #include <quadrotor/quadrotorcontrol.hh>
 
+
 namespace quadrotor{
+namespace interfaces{
 
-class QuadrotorIce
-{
+class DroneControlI : public jderobot::ArDroneExtra {
 public:
-    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control);
-    virtual ~QuadrotorIce();
+    DroneControlI (quadrotor::QuadrotorControl *control);
+    virtual ~DroneControlI ();
 
-    void run();
-    void start();
+    void land(const Ice::Current& c);
+    void takeoff(const Ice::Current& c);
+    void toggleCam(const Ice::Current& c);
+
+    void reset(const Ice::Current& c){}
+    void recordOnUsb(bool, const Ice::Current& c){}
+    void ledAnimation(Ice::Int, Ice::Float, Ice::Float, const Ice::Current& c){}
+    void flightAnimation(Ice::Int, Ice::Float, const Ice::Current& c){}
+    void flatTrim(const Ice::Current& c){}
 
 private:
-    Ice::CommunicatorPtr ic;
-    Ice::PropertiesPtr prop;
-    Ice::ObjectAdapterPtr adapter;
-    boost::thread *ice_thread;
-
-private:
-    const QuadRotorSensors *sensor;
-    QuadrotorControl *control;
-
+    quadrotor::QuadrotorControl* const control;
 };
 
-typedef boost::shared_ptr<QuadrotorIce> QuadrotorIcePtr;
 
-}//NS
-
-#endif // QUADROTORICE_H
+}}//NS
+#endif // POSE3DI_H

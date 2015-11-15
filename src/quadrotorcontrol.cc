@@ -27,8 +27,9 @@ using namespace gazebo::math;
 using namespace gazebo::physics;
 
 
-QuadrotorControl::QuadrotorControl(){
-}
+QuadrotorControl::QuadrotorControl():
+    my_state(QuadrotorState::Unknown)
+{}
 
 QuadrotorControl::~QuadrotorControl(){
 
@@ -59,19 +60,71 @@ QuadrotorControl::OnUpdate(const gazebo::common::UpdateInfo & _info){
     // getting gravity dynamically to allow on-demand changes.
     Vector3 gravity = base_link->GetWorld()->GetPhysicsEngine()->GetGravity();
     Vector3 counter_gravity = mass*-gravity;
+    //base_link->AddForce(counter_gravity);
 
     Pose pose = base_link->GetWorldPose();
 
-    base_link->AddForce(counter_gravity);
+
+    Vector3 vel_model = base_link->GetRelativeLinearVel();
+    Vector3 vel_world = base_link->GetWorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
+    Vector3 up_down_vel = Vector3(0,0,0.001);
+    std::cout<<vel_world<<std::endl;
+
+
+    switch(my_state){
+    case Unknown:
+        if (pose.pos.z > /*model.height*/ 1)
+            my_state = QuadrotorState::Flying;
+        else
+            my_state = QuadrotorState::Landed;
+        std::cout << "\tboostrap quadrotor state as " << my_state <<std::endl;
+    break;
+    case Landing:
+        vel_model = vel_model-up_down_vel;// = pose.rot.RotateVector(vel_world-up_down_vel);
+        base_link->SetLinearVel(vel_model);
+        if (pose.pos.z < 0.8){
+            my_state = QuadrotorState::Landed;
+            std::cout << "QuadrotorState::Landed" << std::endl;
+        }
+    break;
+    case TakingOff:
+
+        vel_model = vel_model+up_down_vel;// pose.rot.RotateVector(vel_world+up_down_vel);
+        base_link->SetLinearVel(vel_model);
+        if (pose.pos.z >= 3){
+            my_state = QuadrotorState::Flying;
+            std::cout << "QuadrotorState::Flying" << std::endl;
+        }
+    break;
+    }
+
+    if (my_state != QuadrotorState::Landed){
+        base_link->AddForce(counter_gravity);
+    }
+
+
+
+#if 0 //Testing
+    switch(my_state){
+    case Landed: takeoff() break;
+    case Flying: land() break;
+    }
+#endif
 }
 
 
 void
 QuadrotorControl::takeoff(){
-
+    if (my_state == QuadrotorState::Landed || my_state == QuadrotorState::Landing){
+        my_state = QuadrotorState::TakingOff;
+        std::cout << "QuadrotorState::TakingOff" << std::endl;
+    }
 }
 
 void
 QuadrotorControl::land(){
-
+    if (my_state == QuadrotorState::Flying || my_state == QuadrotorState::TakingOff){
+        my_state = QuadrotorState::Landing;
+        std::cout << "QuadrotorState::Landing" << std::endl;
+    }
 }

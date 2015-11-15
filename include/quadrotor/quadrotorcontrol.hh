@@ -27,6 +27,8 @@
 
 namespace quadrotor{
 
+enum QuadrotorState{Unknown, Flying, Landed, TakingOff, Landing};
+
 class QuadrotorControl {
 public:
     QuadrotorControl();
@@ -38,6 +40,7 @@ public:
 
 private:
     double mass;
+    QuadrotorState my_state;
 
 
 /// Gazebo
