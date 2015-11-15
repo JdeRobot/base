@@ -40,13 +40,13 @@ QuadRotorSensors::Load(ModelPtr model){
     for (SensorPtr s: sm->GetSensors()){
         if (s->GetParentId() != base_link_id) continue;
         std::string name = s->GetName();
-        if (name.find("imu_sensor") != -1)
+        if (name.find("imu_sensor") != std::string::npos)
             imu = boost::static_pointer_cast<ImuSensor>(s);
-        if (name.find("sonar") != -1)
+        if (name.find("sonar") != std::string::npos)
             sonar = boost::static_pointer_cast<SonarSensor>(s);
-        if (name.find("frontal") != -1)
+        if (name.find("frontal") != std::string::npos)
             cam_frontal = boost::static_pointer_cast<CameraSensor>(s);
-        if (name.find("ventral") != -1)
+        if (name.find("ventral") != std::string::npos)
             cam_ventral = boost::static_pointer_cast<CameraSensor>(s);
     }
 }
@@ -54,17 +54,29 @@ QuadRotorSensors::Load(ModelPtr model){
 
 void
 QuadRotorSensors::Init(){
-    sub_cam_frontal = cam_frontal->ConnectUpdated(
-        boost::bind(&QuadRotorSensors::_on_cam_frontal, this));
+    if (cam_frontal){
+        sub_cam_frontal = cam_frontal->ConnectUpdated(
+            boost::bind(&QuadRotorSensors::_on_cam_frontal, this));
+    }else
+        std::cerr << "\t cam_frontal was not connected (NULL pointer)" << std::endl;
 
-    sub_cam_ventral = cam_frontal->ConnectUpdated(
-        boost::bind(&QuadRotorSensors::_on_cam_ventral, this));
+    if (cam_ventral){
+        sub_cam_ventral = cam_ventral->ConnectUpdated(
+            boost::bind(&QuadRotorSensors::_on_cam_ventral, this));
+    }else
+        std::cerr << "\t cam_ventral was not connected (NULL pointer)" << std::endl;
 
-    sub_sonar = cam_frontal->ConnectUpdated(
-        boost::bind(&QuadRotorSensors::_on_sonar, this));
+    if (sonar){
+        sub_sonar = sonar->ConnectUpdated(
+            boost::bind(&QuadRotorSensors::_on_sonar, this));
+    }else
+        std::cerr << "\t sonar was not connected (NULL pointer)" << std::endl;
 
-    sub_imu = cam_frontal->ConnectUpdated(
-        boost::bind(&QuadRotorSensors::_on_imu, this));
+    if (imu){
+        sub_imu = imu->ConnectUpdated(
+            boost::bind(&QuadRotorSensors::_on_imu, this));
+    }else
+        std::cerr << "\t imu_sensor was not connected (NULL pointer)" << std::endl;
 }
 
 void
