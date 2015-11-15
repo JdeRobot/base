@@ -39,7 +39,7 @@ QuadrotorIce::~QuadrotorIce(){
 
 void
 QuadrotorIce::start(){
-    boost::thread *ice_thread = new boost::thread(boost::bind(&QuadrotorIce::run, this));
+   ice_thread  = new boost::thread(boost::bind(&QuadrotorIce::run, this));
 }
 
 void
