@@ -40,6 +40,7 @@ void
 QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     model = _model;
     sensors.Load(model);
+    control.Load(model->GetLink(), _sdf);
 
     // Listen to the update event. This event is broadcast every
     // simulation iteration.
@@ -60,6 +61,8 @@ std::cout << "QuadrotorPlugin::Init()" << std::endl;
     sensors.cam_ventral->SetActive(true);
     sensors.sonar->SetActive(true);
     sensors.imu->SetActive(true);
+
+    control.Init();
 
     icePlugin->start();
 }

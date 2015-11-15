@@ -40,6 +40,7 @@ set_target_properties(quadrotor2_headers PROPERTIES LINKER_LANGUAGE CXX)
 add_library(quadrotorplugin2 SHARED
 	src/quadrotorplugin.cc
 	src/quadrotorsensors.cc
+	src/quadrotorcontrol.cc
 
 	src/quadrotorice.cc
 	src/interfaces/pose3di.cpp

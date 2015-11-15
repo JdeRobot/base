@@ -17,51 +17,45 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#ifndef QUADROTORPLUGIN_H
-#define QUADROTORPLUGIN_H
+#ifndef QUADROTORCONTROL_H
+#define QUADROTORCONTROL_H
 
-#include <boost/bind.hpp>
 
-#include <gazebo/gazebo.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo/math/Pose.hh>
-
-#include <quadrotor/quadrotorsensors.hh>
-#include <quadrotor/quadrotorcontrol.hh>
-#include <quadrotor/quadrotorice.hh>
+#include <gazebo/physics/physics.hh>
 
 
 namespace quadrotor{
 
-class QuadrotorPlugin : public gazebo::ModelPlugin {
+class QuadrotorControl {
 public:
-    QuadrotorPlugin();
+    QuadrotorControl();
+    virtual ~QuadrotorControl();
+
+
+    void takeoff();
+    void land();
 
 private:
-    QuadRotorSensors sensors;
-    QuadrotorControl control;
+    double mass;
 
 
 /// Gazebo
-protected:
-    void Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr _sdf);
+public:
+    void Load(gazebo::physics::LinkPtr _base_link, sdf::ElementPtr _sdf);
     void Init();
     void OnUpdate(const gazebo::common::UpdateInfo & _info);
-    void Reset();
+
 
 private:
-    gazebo::physics::ModelPtr model;
     gazebo::event::ConnectionPtr updateConnection;
-
-
-/// Ice
-protected:
-    void InitializeIce(sdf::ElementPtr _sdf);
-
-private:
-    QuadrotorIcePtr icePlugin;
+    gazebo::physics::LinkPtr base_link;
+    gazebo::physics::InertialPtr inertial;
 
 };
+
+
+typedef boost::shared_ptr<QuadrotorControl> QuadrotorControlPtr;
 
 }//NS
 
