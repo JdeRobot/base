@@ -60,7 +60,7 @@ target_link_libraries(quadrotorplugin2
 	JderobotInterfaces
 	${ZeroCIce_LIBRARIES}
 )
-set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "-g -Wall -Wextra")
+set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
 
 INSTALL (TARGETS quadrotorplugin2 DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)

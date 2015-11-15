@@ -36,8 +36,9 @@ public:
     jderobot::NavdataDataPtr getNavdata(Ice::Current const &);
 
 private:
-    jderobot::NavdataDataPtr data;
     const quadrotor::QuadRotorSensors *sensor;
+    jderobot::NavdataDataPtr data;
+
 };
 
 }}//NS
