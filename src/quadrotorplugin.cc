@@ -104,12 +104,13 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
     if(_sdf->HasElement("cfgFile"))
         iceConfigFile =  _sdf->GetElement("cfgFile")->GetValue()->GetAsString();
     std::cout << "\tconfig: "<< iceConfigFile << std::endl;
-#if 1
+#if 0
     Ice::StringSeq args;
     args.push_back("--Ice.Config=" + iceConfigFile);
     Ice::CommunicatorPtr ic = Ice::initialize(args);
 #else
     Ice::InitializationData id;
+    id.properties = Ice::createProperties();
     id.properties->load(iceConfigFile);
     Ice::CommunicatorPtr ic = Ice::initialize(id);
 #endif
