@@ -33,13 +33,26 @@ QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, 
 }
 
 QuadrotorIce::~QuadrotorIce(){
-    if (ice_thread!=0)
-        delete ice_thread;
+    stop();
+}
+
+void
+QuadrotorIce::stop(){
+    if (!ic->isShutdown()){
+        std::cout << "Shuting down Ice..." << std::endl;
+        adapter->deactivate();
+        ic->shutdown();
+    }
 }
 
 void
 QuadrotorIce::start(){
-   ice_thread  = new boost::thread(boost::bind(&QuadrotorIce::run, this));
+    /// boost::thread "thread" lifetime survives "object" lifetime if
+    /// thread was running when object is deleted
+    /// Is same effect that detach()
+    /// Therefore, there is no needed to manage object lifetime neither
+    /// delete it.
+   boost::thread(boost::bind(&QuadrotorIce::run, this));
 }
 
 void
@@ -68,4 +81,6 @@ QuadrotorIce::run(){
     std::cout<< "Ice booststrap done." << std::endl;
 
     ic->waitForShutdown();
+
+    std::cout << "Ice is down now" << std::endl;
 }

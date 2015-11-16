@@ -44,12 +44,12 @@ public:
 
     void run();
     void start();
+    void stop();
 
 private:
     Ice::CommunicatorPtr ic;
     Ice::PropertiesPtr prop;
     Ice::ObjectAdapterPtr adapter;
-    boost::thread *ice_thread;
 
 private:
     const QuadRotorSensors *sensor;
