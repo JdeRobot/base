@@ -41,6 +41,13 @@ QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
     base_link = _base_link;
     inertial = _base_link->GetInertial();
     mass = inertial->GetMass();
+
+    controllers.roll.Load(_sdf, "rollpitch");
+    controllers.pitch.Load(_sdf, "rollpitch");
+    controllers.yaw.Load(_sdf, "yaw");
+    controllers.velocity_x.Load(_sdf, "velocityXY");
+    controllers.velocity_y.Load(_sdf, "velocityXY");
+    controllers.velocity_z.Load(_sdf, "velocityZ");
 }
 
 void
@@ -51,6 +58,7 @@ QuadrotorControl::Init(){
 
 void
 QuadrotorControl::OnUpdate(const gazebo::common::UpdateInfo & _info){
+    _update_state(_info);
 #if 1
     _control_loop_hector(_info);
 #else
@@ -81,6 +89,35 @@ QuadrotorControl::setTargetVelocity(Twist twist){
 }
 
 
+
+void
+QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
+    Pose pose = base_link->GetWorldPose();
+
+    switch(my_state){
+    case Unknown:
+        if (pose.pos.z > /*model.height*/ 1)
+            my_state = QuadrotorState::Flying;
+        else
+            my_state = QuadrotorState::Landed;
+        std::cout << "\tboostrap quadrotor state as " << my_state <<std::endl;
+    break;
+    case Landing:
+        if (pose.pos.z < 0.8){
+            my_state = QuadrotorState::Landed;
+            std::cout << "QuadrotorState::Landed" << std::endl;
+        }
+    break;
+    case TakingOff:
+        if (pose.pos.z >= 3){
+            my_state = QuadrotorState::Flying;
+            std::cout << "QuadrotorState::Flying" << std::endl;
+        }
+    break;
+    }
+}
+
+
 void
 QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){
     //// Forces and velocities are handled bt a physics engine
@@ -97,36 +134,19 @@ QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){
 
     Pose pose = base_link->GetWorldPose();
 
-
     Vector3 vel_model = base_link->GetRelativeLinearVel();
     Vector3 vel_world = base_link->GetWorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
     Vector3 up_down_vel = Vector3(0,0,0.001);
 
 
     switch(my_state){
-    case Unknown:
-        if (pose.pos.z > /*model.height*/ 1)
-            my_state = QuadrotorState::Flying;
-        else
-            my_state = QuadrotorState::Landed;
-        std::cout << "\tboostrap quadrotor state as " << my_state <<std::endl;
-    break;
     case Landing:
         vel_model = vel_model-up_down_vel;// = pose.rot.RotateVector(vel_world-up_down_vel);
         base_link->SetLinearVel(vel_model);
-        if (pose.pos.z < 0.8){
-            my_state = QuadrotorState::Landed;
-            std::cout << "QuadrotorState::Landed" << std::endl;
-        }
     break;
     case TakingOff:
-
         vel_model = vel_model+up_down_vel;// pose.rot.RotateVector(vel_world+up_down_vel);
         base_link->SetLinearVel(vel_model);
-        if (pose.pos.z >= 3){
-            my_state = QuadrotorState::Flying;
-            std::cout << "QuadrotorState::Flying" << std::endl;
-        }
     break;
     }
 

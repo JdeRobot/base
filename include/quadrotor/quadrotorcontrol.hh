@@ -46,6 +46,7 @@ public:
 
 /// Control
 protected:
+    void _update_state(const gazebo::common::UpdateInfo & _info);
     void _control_loop_novel(const gazebo::common::UpdateInfo & _info);
     void _control_loop_hector(const gazebo::common::UpdateInfo & _info);
 

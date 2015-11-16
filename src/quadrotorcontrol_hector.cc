@@ -93,5 +93,15 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
         base_link->AddRelativeForce(force);
         base_link->AddRelativeTorque(torque);
     }
+
+    if (my_state == QuadrotorState::Landing){
+        base_link->AddRelativeForce(-0.2*force);
+        base_link->AddRelativeTorque(-0.2*torque);
+    }
+
+    if (my_state == QuadrotorState::TakingOff){
+        base_link->AddRelativeForce(0.5*force);
+        base_link->AddRelativeTorque(0.5*torque);
+    }
 }
 
