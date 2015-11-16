@@ -25,9 +25,12 @@ using namespace quadrotor;
 using namespace gazebo::physics;
 using namespace gazebo::sensors;
 
-QuadRotorSensors::QuadRotorSensors()
-{
+QuadRotorSensors::QuadRotorSensors(){
+    ONDEBUG_INFO(std::cout << "QuadRotorSensors::QuadRotorSensors()" << std::endl;)
+}
 
+QuadRotorSensors::~QuadRotorSensors(){
+    ONDEBUG_INFO(std::cout << "QuadRotorSensors::~QuadRotorSensors()" << std::endl;)
 }
 
 void

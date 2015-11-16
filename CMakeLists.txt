@@ -52,18 +52,24 @@ add_library(quadrotorplugin2 SHARED
 	src/interfaces/cmdveli.cpp
 )
 
-target_link_libraries(quadrotorplugin2
-	${GAZEBO_libraries}
-	${OpenCV_LIBS}
-	colorspacesmm
-#	quadrotor2_ice_interfaces
-)
+# Gazebo
+target_link_libraries(quadrotorplugin2 ${GAZEBO_libraries})
+set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FLAGS}")
+
+# Ice
 target_link_libraries(quadrotorplugin2
 	Ice
 	IceUtil
 	JderobotInterfaces
 	${ZeroCIce_LIBRARIES}
 )
+
+# Application
+target_link_libraries(quadrotorplugin2
+	${OpenCV_LIBS}
+	colorspacesmm
+)
+
 set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
 
 INSTALL (TARGETS quadrotorplugin2 DESTINATION share/jderobot/gazebo/plugins/quadrotor/)

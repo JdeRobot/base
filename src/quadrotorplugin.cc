@@ -30,15 +30,19 @@ using namespace gazebo::event;
 using namespace gazebo::common;
 
 
-QuadrotorPlugin::QuadrotorPlugin()
-{
+QuadrotorPlugin::QuadrotorPlugin(){
+    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::QuadrotorPlugin()" << std::endl;)
+}
 
+QuadrotorPlugin::~QuadrotorPlugin(){
+    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::~QuadrotorPlugin()" << std::endl;)
+    //icePlugin->stop();
 }
 
 
 void
 QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
-    std::cout << "QuadrotorPlugin::Load()" << std::endl;
+    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::Load()" << std::endl;)
     model = _model;
     sensors.Load(model);
     control.Load(model->GetLink(), _sdf);
@@ -48,13 +52,16 @@ QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     updateConnection = Events::ConnectWorldUpdateBegin(
         boost::bind(&QuadrotorPlugin::OnUpdate, this, _1));
 
+    sigintConnection = Events::ConnectSigInt(
+        boost::bind(&QuadrotorPlugin::OnSigInt, this));
+
     this->InitializeIce(_sdf);
 }
 
 
 void
 QuadrotorPlugin::Init(){
-    std::cout << "QuadrotorPlugin::Init()" << std::endl;
+    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::Init()" << std::endl;)
     sensors.debugInfo();
     sensors.Init();
 
@@ -71,8 +78,16 @@ QuadrotorPlugin::Init(){
 
 void
 QuadrotorPlugin::OnUpdate(const UpdateInfo & _info){
-//    std::cout << "QuadrotorPlugin::OnUpdate()" << std::endl;
-//    std::cout << "\t" << _info.simTime << std::endl;
+    ONDEBUG_VERBOSE(
+        std::cout << "QuadrotorPlugin::OnUpdate()" << std::endl;
+        std::cout << "\t" << _info.simTime << std::endl;
+    )
+}
+
+void
+QuadrotorPlugin::OnSigInt(){
+    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::OnSigInt()" << std::endl;)
+    icePlugin->stop();
 }
 
 
@@ -80,7 +95,6 @@ void
 QuadrotorPlugin::Reset(){
 
 }
-
 
 
 void

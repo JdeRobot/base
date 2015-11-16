@@ -101,7 +101,6 @@ QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){
     Vector3 vel_model = base_link->GetRelativeLinearVel();
     Vector3 vel_world = base_link->GetWorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
     Vector3 up_down_vel = Vector3(0,0,0.001);
-    //std::cout<<vel_world<<std::endl;
 
 
     switch(my_state){
