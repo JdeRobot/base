@@ -26,6 +26,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
+#include <boost/asio.hpp>
 
 #include <quadrotor/interfaces/pose3di.h>
 #include <quadrotor/interfaces/navdatai.h>
@@ -33,6 +34,8 @@
 
 #include <quadrotor/quadrotorsensors.hh>
 #include <quadrotor/quadrotorcontrol.hh>
+
+#include <quadrotor/debugtools.h>
 
 namespace quadrotor{
 
@@ -46,6 +49,9 @@ public:
     void start();
     void stop();
 
+protected:
+    void bootstrap();
+
 private:
     Ice::CommunicatorPtr ic;
     Ice::PropertiesPtr prop;
@@ -54,6 +60,7 @@ private:
 private:
     const QuadRotorSensors *sensor;
     QuadrotorControl *control;
+    boost::mutex lock;
 
 };
 

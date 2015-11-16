@@ -33,6 +33,8 @@
 
 #include <opencv2/core/core.hpp>
 
+#include <quadrotor/debugtools.h>
+
 
 namespace quadrotor{
 
@@ -40,6 +42,7 @@ class QuadRotorSensors
 {
 public:
     QuadRotorSensors();
+    virtual ~QuadRotorSensors();
 
     void Load(gazebo::physics::ModelPtr model);
     void Init();

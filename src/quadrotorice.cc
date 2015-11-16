@@ -38,11 +38,14 @@ QuadrotorIce::~QuadrotorIce(){
 
 void
 QuadrotorIce::stop(){
-    if (!ic->isShutdown()){
+    ONDEBUG_INFO(std::cout << "QuadrotorIce::stop()" << std::endl;)
+    lock.lock();
+    if (ic && !ic->isShutdown()){
         std::cout << "Shuting down Ice..." << std::endl;
         adapter->deactivate();
         ic->shutdown();
     }
+    lock.unlock();
 }
 
 void
@@ -57,6 +60,28 @@ QuadrotorIce::start(){
 
 void
 QuadrotorIce::run(){
+    // Register to handle the signals that indicate when the server should exit.
+    // It is safe to register for the same signal multiple times in a program,
+    // provided all registration for the specified signal is made through Asio.
+    // API changed from 1.47 to 1.59 (now requires io_service)
+    boost::asio::io_service _io_service;
+    boost::asio::signal_set _signals(_io_service);
+    _signals.add(SIGINT);
+    _signals.add(SIGTERM);
+    _signals.async_wait(boost::bind(&QuadrotorIce::stop, this));
+
+    bootstrap();
+
+    ic->waitForShutdown();
+
+    std::cout << "Ice is down now" << std::endl;
+}
+
+void QuadrotorIce::bootstrap(){
+    lock.lock();
+    if (!ic) return;
+    if (ic->isShutdown()) return;
+
     prop = ic->getProperties();
 
     adapter = ic->createObjectAdapter("Quadrotor.Adapter");
@@ -79,8 +104,5 @@ QuadrotorIce::run(){
     adapter->activate();
 
     std::cout<< "Ice booststrap done." << std::endl;
-
-    ic->waitForShutdown();
-
-    std::cout << "Ice is down now" << std::endl;
+    lock.unlock();
 }

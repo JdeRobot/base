@@ -30,12 +30,15 @@
 #include <quadrotor/quadrotorcontrol.hh>
 #include <quadrotor/quadrotorice.hh>
 
+#include <quadrotor/debugtools.h>
+
 
 namespace quadrotor{
 
 class QuadrotorPlugin : public gazebo::ModelPlugin {
 public:
     QuadrotorPlugin();
+    ~QuadrotorPlugin();
 
 private:
     QuadRotorSensors sensors;
@@ -48,10 +51,12 @@ protected:
     void Init();
     void OnUpdate(const gazebo::common::UpdateInfo & _info);
     void Reset();
+    void OnSigInt();
 
 private:
     gazebo::physics::ModelPtr model;
     gazebo::event::ConnectionPtr updateConnection;
+    gazebo::event::ConnectionPtr sigintConnection;
 
 
 /// Ice
