@@ -30,6 +30,7 @@ QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, 
     sensor(sensors),
     control(control)
 {
+    assert(ic != 0);
 }
 
 QuadrotorIce::~QuadrotorIce(){
@@ -60,6 +61,7 @@ QuadrotorIce::start(){
 
 void
 QuadrotorIce::run(){
+#if 0
     // Register to handle the signals that indicate when the server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -69,6 +71,7 @@ QuadrotorIce::run(){
     _signals.add(SIGINT);
     _signals.add(SIGTERM);
     _signals.async_wait(boost::bind(&QuadrotorIce::stop, this));
+#endif
 
     bootstrap();
 
@@ -79,7 +82,6 @@ QuadrotorIce::run(){
 
 void QuadrotorIce::bootstrap(){
     lock.lock();
-    if (!ic) return;
     if (ic->isShutdown()) return;
 
     prop = ic->getProperties();
