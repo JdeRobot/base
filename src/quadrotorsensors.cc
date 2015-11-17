@@ -122,7 +122,7 @@ QuadRotorSensors::_on_cam_frontal(){
         uint32_t w = cam_frontal->GetImageWidth();
         img_frontal = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        sub_cam_frontal->~Connection(); // close connection
+        cam_frontal->DisconnectUpdated(sub_cam_frontal); // close connection
     }
 }
 
@@ -138,7 +138,7 @@ QuadRotorSensors::_on_cam_ventral(){
         uint32_t w = cam_frontal->GetImageWidth();
         img_ventral = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        sub_cam_ventral->~Connection();
+        cam_ventral->DisconnectUpdated(sub_cam_ventral);
     }
 }
 
