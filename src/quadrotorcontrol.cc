@@ -67,7 +67,7 @@ QuadrotorControl::Init(QuadRotorSensors *sensors){
 void
 QuadrotorControl::OnUpdate(const gazebo::common::UpdateInfo & _info){
     _update_state(_info);
-#if 0
+#if 1
     _control_loop_hector(_info);
 #else
     _control_loop_novel(_info);
