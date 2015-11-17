@@ -101,8 +101,8 @@ void
 QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
     std::cout << "QuadrotorPlugin::InitializeIce()" << std::endl;
     std::string iceConfigFile = "quadrotorplugin.cfg";
-    if(_sdf->HasElement("cfgFile"))
-        iceConfigFile =  _sdf->GetElement("cfgFile")->GetValue()->GetAsString();
+    if(_sdf->HasElement("iceConfigFile"))
+        iceConfigFile =  _sdf->GetElement("iceConfigFile")->GetValue()->GetAsString();
     std::cout << "\tconfig: "<< iceConfigFile << std::endl;
 #if 0
     Ice::StringSeq args;
@@ -114,6 +114,23 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
     id.properties->load(iceConfigFile);
     Ice::CommunicatorPtr ic = Ice::initialize(id);
 #endif
+
+    std::string port;
+    /// Get Adapter port from _sdf (static bad)
+    if(_sdf->HasElement("iceAdapterPort"))
+        port = _sdf->GetElement("iceAdapterPort")->Get<std::string>();
+
+    /// Get port from model <name> (wolrd file, good enough)
+    std::string name = model->GetName();
+    boost::regex re("[0-9]+$");
+    boost::sregex_iterator eof, m1(name.begin(), name.end(), re);
+    if (m1!=eof){
+        port = (*m1)[0];
+        std::cout<<"port: "<<port<<std::endl;
+    }
+    if (!port.empty())
+        id.properties->setProperty("Quadrotor.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
+
     std::cout << "\tcreate Ice plugin..." << std::endl;
     icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control));
 }
