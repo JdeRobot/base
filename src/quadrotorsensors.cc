@@ -26,11 +26,11 @@ using namespace gazebo::physics;
 using namespace gazebo::sensors;
 
 QuadRotorSensors::QuadRotorSensors(){
-    ONDEBUG_INFO(std::cout << "QuadRotorSensors::QuadRotorSensors()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadRotorSensors::QuadRotorSensors()" << std::endl;)
 }
 
 QuadRotorSensors::~QuadRotorSensors(){
-    ONDEBUG_INFO(std::cout << "QuadRotorSensors::~QuadRotorSensors()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadRotorSensors::~QuadRotorSensors()" << std::endl;)
 }
 
 void
@@ -67,31 +67,31 @@ QuadRotorSensors::Init(){
         sub_cam_frontal = cam_frontal->ConnectUpdated(
             boost::bind(&QuadRotorSensors::_on_cam_frontal, this));
     }else
-        std::cerr << "\t cam_frontal was not connected (NULL pointer)" << std::endl;
+        std::cerr << _log_prefix << "\t cam_frontal was not connected (NULL pointer)" << std::endl;
 
     if (cam_ventral){
         sub_cam_ventral = cam_ventral->ConnectUpdated(
             boost::bind(&QuadRotorSensors::_on_cam_ventral, this));
     }else
-        std::cerr << "\t cam_ventral was not connected (NULL pointer)" << std::endl;
+        std::cerr << _log_prefix << "\t cam_ventral was not connected (NULL pointer)" << std::endl;
 
     if (sonar){
         sub_sonar = sonar->ConnectUpdated(
             boost::bind(&QuadRotorSensors::_on_sonar, this));
     }else
-        std::cerr << "\t sonar was not connected (NULL pointer)" << std::endl;
+        std::cerr << _log_prefix << "\t sonar was not connected (NULL pointer)" << std::endl;
 
     if (imu){
         sub_imu = imu->ConnectUpdated(
             boost::bind(&QuadRotorSensors::_on_imu, this));
     }else
-        std::cerr << "\t imu_sensor was not connected (NULL pointer)" << std::endl;
+        std::cerr << _log_prefix << "\t imu_sensor was not connected (NULL pointer)" << std::endl;
 }
 
 void
 QuadRotorSensors::debugInfo(){
-    std::cout << "Sensors of " << model->GetName() << std::endl;
-    boost::format fmt("\t%1% (id: %2%)\n");
+    std::cout << _log_prefix << "Sensors of " << model->GetName() << std::endl;
+    boost::format fmt(_log_prefix+"\t%1% (id: %2%)\n");
 
     std::cout << fmt % cam_ventral->GetName() % cam_ventral->GetId();
     std::cout << fmt % cam_frontal->GetName() % cam_frontal->GetId();
@@ -117,7 +117,7 @@ QuadRotorSensors::_on_cam_frontal(){
         if (data == 0)
             return;
 
-        std::cout<<"\tbootstrap cam_frontal"<<std::endl;
+        std::cout <<  _log_prefix << "\tbootstrap cam_frontal" << std::endl;
         uint32_t h = cam_frontal->GetImageHeight();
         uint32_t w = cam_frontal->GetImageWidth();
         img_frontal = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
@@ -133,7 +133,7 @@ QuadRotorSensors::_on_cam_ventral(){
         if (data == 0)
             return;
 
-        std::cout<<"\tbootstrap cam_ventral"<<std::endl;
+        std::cout<<_log_prefix<<"\tbootstrap cam_ventral"<<std::endl;
         uint32_t h = cam_ventral->GetImageHeight();
         uint32_t w = cam_frontal->GetImageWidth();
         img_ventral = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);

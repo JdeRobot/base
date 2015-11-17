@@ -65,7 +65,7 @@ QuadrotorControl::Init(QuadRotorSensors *sensors){
 void
 QuadrotorControl::OnUpdate(const gazebo::common::UpdateInfo & _info){
     _update_state(_info);
-#if 1
+#if 0
     _control_loop_hector(_info);
 #else
     _control_loop_novel(_info);
@@ -77,7 +77,7 @@ void
 QuadrotorControl::takeoff(){
     if (my_state == QuadrotorState::Landed || my_state == QuadrotorState::Landing){
         my_state = QuadrotorState::TakingOff;
-        std::cout << "QuadrotorState::TakingOff" << std::endl;
+        std::cout<<_log_prefix << "QuadrotorState::TakingOff" << std::endl;
     }
 }
 
@@ -85,7 +85,7 @@ void
 QuadrotorControl::land(){
     if (my_state == QuadrotorState::Flying || my_state == QuadrotorState::TakingOff){
         my_state = QuadrotorState::Landing;
-        std::cout << "QuadrotorState::Landing" << std::endl;
+        std::cout<<_log_prefix << "QuadrotorState::Landing" << std::endl;
     }
 }
 
@@ -108,18 +108,18 @@ QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
             my_state = QuadrotorState::Flying;
         else
             my_state = QuadrotorState::Landed;
-        std::cout << "\tboostrap quadrotor state as " << my_state <<std::endl;
+        std::cout<<_log_prefix << "\tboostrap quadrotor state as " << my_state <<std::endl;
     break;
     case Landing:
         if (altitude < fly_state_thresholds.first){
             my_state = QuadrotorState::Landed;
-            std::cout << "QuadrotorState::Landed" << std::endl;
+            std::cout<<_log_prefix << "QuadrotorState::Landed" << std::endl;
         }
     break;
     case TakingOff:
         if (altitude >= fly_state_thresholds.second){
             my_state = QuadrotorState::Flying;
-            std::cout << "QuadrotorState::Flying" << std::endl;
+            std::cout<<_log_prefix << "QuadrotorState::Flying" << std::endl;
         }
     break;
     }

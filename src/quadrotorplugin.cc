@@ -31,18 +31,27 @@ using namespace gazebo::common;
 
 
 QuadrotorPlugin::QuadrotorPlugin(){
-    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::QuadrotorPlugin()" << std::endl;)
+    std::stringstream ss;
+    ss << "["<<(void*)this<<"] ";
+    ss >> _log_prefix;
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::QuadrotorPlugin()" << std::endl;)
+    sensors._log_prefix = _log_prefix;
+    control._log_prefix = _log_prefix;
 }
 
 QuadrotorPlugin::~QuadrotorPlugin(){
-    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::~QuadrotorPlugin()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::~QuadrotorPlugin()" << std::endl;)
     //icePlugin->stop();
 }
 
 
 void
 QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
-    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::Load()" << std::endl;)
+    _log_prefix = "["+_model->GetName()+"] ";
+    sensors._log_prefix = _log_prefix;
+    control._log_prefix = _log_prefix;
+
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::Load()" << std::endl;)
     model = _model;
     sensors.Load(model);
     control.Load(model->GetLink(), _sdf);
@@ -61,7 +70,7 @@ QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
 
 void
 QuadrotorPlugin::Init(){
-    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::Init()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::Init()" << std::endl;)
     sensors.debugInfo();
     sensors.Init();
 
@@ -78,15 +87,12 @@ QuadrotorPlugin::Init(){
 
 void
 QuadrotorPlugin::OnUpdate(const UpdateInfo & _info){
-    ONDEBUG_VERBOSE(
-        std::cout << "QuadrotorPlugin::OnUpdate()" << std::endl;
-        std::cout << "\t" << _info.simTime << std::endl;
-    )
+    ONDEBUG_VERBOSE(std::cout << _log_prefix << "QuadrotorPlugin::OnUpdate()\n\t" << _info.simTime << std::endl;)
 }
 
 void
 QuadrotorPlugin::OnSigInt(){
-    ONDEBUG_INFO(std::cout << "QuadrotorPlugin::OnSigInt()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::OnSigInt()" << std::endl;)
     icePlugin->stop();
 }
 
@@ -99,11 +105,11 @@ QuadrotorPlugin::Reset(){
 
 void
 QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
-    std::cout << "QuadrotorPlugin::InitializeIce()" << std::endl;
+    std::cout << _log_prefix << "QuadrotorPlugin::InitializeIce()" << std::endl;
     std::string iceConfigFile = "quadrotorplugin.cfg";
     if(_sdf->HasElement("iceConfigFile"))
         iceConfigFile =  _sdf->GetElement("iceConfigFile")->GetValue()->GetAsString();
-    std::cout << "\tconfig: "<< iceConfigFile << std::endl;
+    std::cout << _log_prefix << "\tconfig: "<< iceConfigFile << std::endl;
 #if 0
     Ice::StringSeq args;
     args.push_back("--Ice.Config=" + iceConfigFile);
@@ -126,11 +132,11 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
     boost::sregex_iterator eof, m1(name.begin(), name.end(), re);
     if (m1!=eof){
         port = (*m1)[0];
-        std::cout<<"port: "<<port<<std::endl;
     }
     if (!port.empty())
         id.properties->setProperty("Quadrotor.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
 
-    std::cout << "\tcreate Ice plugin..." << std::endl;
+    std::cout << _log_prefix << "\tcreate Ice plugin..." << std::endl;
     icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control));
+    icePlugin->_log_prefix = _log_prefix;
 }

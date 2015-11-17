@@ -46,6 +46,7 @@ public:
     void land();
     void setTargetVelocity(gazebo::math::Twist twist);
 
+    std::string _log_prefix;
 
 /// Control
 protected:

@@ -40,6 +40,8 @@ public:
     QuadrotorPlugin();
     ~QuadrotorPlugin();
 
+    std::string _log_prefix;
+
 private:
     QuadRotorSensors sensors;
     QuadrotorControl control;
