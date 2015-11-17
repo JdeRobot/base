@@ -21,6 +21,8 @@
 
 #include "quadrotor/quadrotorcontrol.hh"
 
+const std::string quadrotor::QuadrotorStateDescription[] = {"Unknown", "Flying", "Landed", "TakingOff", "Landing"};
+
 
 using namespace quadrotor;
 using namespace gazebo::math;
@@ -108,7 +110,7 @@ QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
             my_state = QuadrotorState::Flying;
         else
             my_state = QuadrotorState::Landed;
-        std::cout<<_log_prefix << "\tboostrap quadrotor state as " << my_state <<std::endl;
+        std::cout<<_log_prefix << boost::format("\tboostrap quadrotor state as %1% (altitude=%2%)") % QuadrotorStateDescription[my_state] % altitude <<std::endl;
     break;
     case Landing:
         if (altitude < fly_state_thresholds.first){

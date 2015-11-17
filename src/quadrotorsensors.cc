@@ -58,6 +58,9 @@ QuadRotorSensors::Load(ModelPtr model){
         if (name.find("ventral") != std::string::npos)
             cam_ventral = boost::static_pointer_cast<CameraSensor>(s);
     }
+
+    // weak-fix for sonar value at boostrap (1/2)
+    altitude = model->GetWorldPose().pos.z;
 }
 
 
@@ -86,6 +89,9 @@ QuadRotorSensors::Init(){
             boost::bind(&QuadRotorSensors::_on_imu, this));
     }else
         std::cerr << _log_prefix << "\t imu_sensor was not connected (NULL pointer)" << std::endl;
+
+    // weak-fix for sonar value at boostrap (2/2)
+    sonar->Update(true);
 }
 
 void

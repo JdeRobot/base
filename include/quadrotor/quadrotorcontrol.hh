@@ -33,6 +33,7 @@
 namespace quadrotor{
 
 enum QuadrotorState{Unknown, Flying, Landed, TakingOff, Landing};
+extern const std::string QuadrotorStateDescription[];
 
 class QuadrotorControl {
 public:
