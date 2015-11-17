@@ -41,6 +41,8 @@
 
 #include "quadrotor/quadrotorcontrol.hh"
 
+/// Constant velocity landing to avoid previous fall down behavior.
+#define VELOCITY_BASED_TAKEOFF
 
 using namespace quadrotor;
 using namespace gazebo::math;
@@ -65,6 +67,15 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
     Vector3 acceleration = base_link->GetWorldLinearAccel();
     Vector3 inertia = inertia = inertial->GetPrincipalMoments();
 
+    double velocity_command_linear_z = velocity_command.linear.z;
+#ifdef VELOCITY_BASED_TAKEOFF
+    // Inject landing/takingoff
+    if (my_state == QuadrotorState::Landing)
+        velocity_command_linear_z = std::min(velocity_command.linear.z, -3.0/*m/s*/);
+    if (my_state == QuadrotorState::TakingOff)
+        velocity_command_linear_z = std::max(velocity_command.linear.z, +3.0/*m/s*/);
+#endif
+
     // Get gravity
     Vector3 gravity = base_link->GetWorld()->GetPhysicsEngine()->GetGravity();
     Vector3 gravity_body = pose.rot.RotateVector(gravity);
@@ -85,7 +96,7 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
     torque.x = inertia.x *  controllers.roll.update(roll_command, euler.x, angular_velocity_body.x, dt);
     torque.y = inertia.y *  controllers.pitch.update(pitch_command, euler.y, angular_velocity_body.y, dt);
     torque.z = inertia.z *  controllers.yaw.update(velocity_command.angular.z, angular_velocity.z, 0, dt);
-    force.z  = mass      * (controllers.velocity_z.update(velocity_command.linear.z,  linear_velocity.z, acceleration.z, dt) + load_factor * gravity_module);
+    force.z  = mass      * (controllers.velocity_z.update(velocity_command_linear_z,  linear_velocity.z, acceleration.z, dt) + load_factor * gravity_module);
     if (max_force_ > 0.0 && force.z > max_force_) force.z = max_force_;
     if (force.z < 0.0) force.z = 0.0;
 
@@ -94,14 +105,16 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
         base_link->AddRelativeTorque(torque);
     }
 
+#ifndef VELOCITY_BASED_TAKEOFF
     if (my_state == QuadrotorState::Landing){
-        base_link->AddRelativeForce(-0.2*force);
-        base_link->AddRelativeTorque(-0.2*torque);
+        base_link->AddRelativeForce(-0.5*force);
+        base_link->AddRelativeTorque(-0.5*torque);
     }
 
     if (my_state == QuadrotorState::TakingOff){
         base_link->AddRelativeForce(0.5*force);
         base_link->AddRelativeTorque(0.5*torque);
     }
+#endif
 }
 

@@ -51,6 +51,8 @@ public:
 
     void debugInfo();
 
+    std::string _log_prefix;
+
 public:
     gazebo::sensors::CameraSensorPtr cam_ventral;
     gazebo::sensors::CameraSensorPtr cam_frontal;

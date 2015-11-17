@@ -39,10 +39,10 @@ QuadrotorIce::~QuadrotorIce(){
 
 void
 QuadrotorIce::stop(){
-    ONDEBUG_INFO(std::cout << "QuadrotorIce::stop()" << std::endl;)
+    ONDEBUG_INFO(std::cout<<_log_prefix << "QuadrotorIce::stop()" << std::endl;)
     lock.lock();
     if (ic && !ic->isShutdown()){
-        std::cout << "Shuting down Ice..." << std::endl;
+        std::cout<<_log_prefix << "Shuting down Ice..." << std::endl;
         adapter->deactivate();
         ic->shutdown();
     }
@@ -77,7 +77,7 @@ QuadrotorIce::run(){
 
     ic->waitForShutdown();
 
-    std::cout << "Ice is down now" << std::endl;
+    std::cout<<_log_prefix << "Ice is down now" << std::endl;
 }
 
 void QuadrotorIce::bootstrap(){
@@ -87,8 +87,8 @@ void QuadrotorIce::bootstrap(){
     prop = ic->getProperties();
 
     adapter = ic->createObjectAdapter("Quadrotor.Adapter");
-    std::cout << "Ice adapter listening at " << std::endl;
-    std::cout << "\t" << adapter->getEndpoints()[0]->toString() << std::endl;
+    std::cout<<_log_prefix << "Ice adapter listening at " << std::endl;
+    std::cout<<_log_prefix << "\t" << adapter->getEndpoints()[0]->toString() << std::endl;
 
     std::string name;
     name = prop->getProperty("Quadrotor.Pose3D.Name");
@@ -109,6 +109,6 @@ void QuadrotorIce::bootstrap(){
 
     adapter->activate();
 
-    std::cout<< "Ice booststrap done." << std::endl;
+    std::cout<<_log_prefix<< "Ice booststrap done." << std::endl;
     lock.unlock();
 }

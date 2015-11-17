@@ -50,6 +50,8 @@ public:
     void start();
     void stop();
 
+    std::string _log_prefix;
+
 protected:
     void bootstrap();
 
