@@ -35,6 +35,8 @@
 
 #include <quadrotor/debugtools.h>
 
+#define BROKEN_SonarSensor
+
 
 namespace quadrotor{
 
@@ -52,7 +54,11 @@ public:
 public:
     gazebo::sensors::CameraSensorPtr cam_ventral;
     gazebo::sensors::CameraSensorPtr cam_frontal;
+#ifdef BROKEN_SonarSensor
+    gazebo::sensors::RaySensorPtr sonar;
+#else
     gazebo::sensors::SonarSensorPtr sonar;
+#endif
     gazebo::sensors::ImuSensorPtr imu;
 
 private:

@@ -70,7 +70,7 @@ QuadrotorPlugin::Init(){
     sensors.sonar->SetActive(true);
     sensors.imu->SetActive(true);
 
-    control.Init();
+    control.Init(&sensors);
 
     icePlugin->start();
 }

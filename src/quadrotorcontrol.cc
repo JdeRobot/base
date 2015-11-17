@@ -36,11 +36,15 @@ QuadrotorControl::~QuadrotorControl(){
 
 }
 
+
 void
 QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
     base_link = _base_link;
     inertial = _base_link->GetInertial();
     mass = inertial->GetMass();
+
+    fly_state_thresholds.first = 0.2;
+    fly_state_thresholds.second = 1.5;
 
     controllers.roll.Load(_sdf, "rollpitch");
     controllers.pitch.Load(_sdf, "rollpitch");
@@ -51,7 +55,9 @@ QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
 }
 
 void
-QuadrotorControl::Init(){
+QuadrotorControl::Init(QuadRotorSensors *sensors){
+    this->sensors = sensors;
+
     updateConnection = gazebo::event::Events::ConnectWorldUpdateBegin(
         boost::bind(&QuadrotorControl::OnUpdate, this, _1));
 }
@@ -93,23 +99,25 @@ QuadrotorControl::setTargetVelocity(Twist twist){
 void
 QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
     Pose pose = base_link->GetWorldPose();
+    double altitude = sensors->altitude;
+    //std::cout<<"altotude "<<altitude<<std::endl;
 
     switch(my_state){
     case Unknown:
-        if (pose.pos.z > /*model.height*/ 1)
+        if (altitude >= /*model.height?*/ fly_state_thresholds.second)
             my_state = QuadrotorState::Flying;
         else
             my_state = QuadrotorState::Landed;
         std::cout << "\tboostrap quadrotor state as " << my_state <<std::endl;
     break;
     case Landing:
-        if (pose.pos.z < 0.8){
+        if (altitude < fly_state_thresholds.first){
             my_state = QuadrotorState::Landed;
             std::cout << "QuadrotorState::Landed" << std::endl;
         }
     break;
     case TakingOff:
-        if (pose.pos.z >= 3){
+        if (altitude >= fly_state_thresholds.second){
             my_state = QuadrotorState::Flying;
             std::cout << "QuadrotorState::Flying" << std::endl;
         }

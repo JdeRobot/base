@@ -27,6 +27,8 @@
 #include <quadrotor/control/twist.hh>
 #include <quadrotor/control/pidcontroller.hh>
 
+#include <quadrotor/quadrotorsensors.hh>
+
 
 namespace quadrotor{
 
@@ -36,6 +38,7 @@ class QuadrotorControl {
 public:
     QuadrotorControl();
     virtual ~QuadrotorControl();
+    void setSensors(QuadRotorSensors *sensors);
 
 /// Control commands
 public:
@@ -56,11 +59,15 @@ protected:
     gazebo::common::Time last_simTime;
     gazebo::math::Twist velocity_command;
 
+    std::pair<double,double> fly_state_thresholds;
+
+    QuadRotorSensors *sensors;
+
 
 /// Gazebo
 public:
     void Load(gazebo::physics::LinkPtr _base_link, sdf::ElementPtr _sdf);
-    void Init();
+    void Init(QuadRotorSensors* sensors);
     void OnUpdate(const gazebo::common::UpdateInfo & _info);
 
 

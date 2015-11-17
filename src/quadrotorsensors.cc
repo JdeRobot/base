@@ -46,7 +46,13 @@ QuadRotorSensors::Load(ModelPtr model){
         if (name.find("imu_sensor") != std::string::npos)
             imu = boost::static_pointer_cast<ImuSensor>(s);
         if (name.find("sonar") != std::string::npos)
-            sonar = boost::static_pointer_cast<SonarSensor>(s);
+            sonar = boost::static_pointer_cast<
+#ifdef BROKEN_SonarSensor
+                    RaySensor
+#else
+                    SonarSensor
+#endif
+>(s);
         if (name.find("frontal") != std::string::npos)
             cam_frontal = boost::static_pointer_cast<CameraSensor>(s);
         if (name.find("ventral") != std::string::npos)
@@ -139,8 +145,18 @@ QuadRotorSensors::_on_cam_ventral(){
 
 void
 QuadRotorSensors::_on_sonar(){
-    //ToDO:
-    altitude = sonar->GetRangeMin();
+#ifdef BROKEN_SonarSensor
+    assert(sonar->GetRangeCount() > 0);
+    std::vector<double> ranges(sonar->GetRangeCount());
+    sonar->GetRanges(ranges);
+    std::sort(ranges.begin(), ranges.end());
+    //altitude = ranges[0];
+    int c = std::ceil(ranges.size()*0.20); // smooth value by take 20% of minor values
+    ranges.resize(c);
+    altitude = std::accumulate(ranges.begin(), ranges.end(), 0.0, std::plus<double>())/(double)c;
+#else
+    altitude = sonar->GetRange();
+#endif
 }
 
 void
