@@ -107,7 +107,7 @@ void QuadrotorIce::bootstrap(){
     name = prop->getProperty("Quadrotor.CMDVel.Name");
     adapter->add(cmdveli, ic->stringToIdentity(name));
 
-    ObjectPtr camerai = new CameraI();
+    ObjectPtr camerai = new CameraI(sensor);
     name = prop->getProperty("Quadrotor.Camera.Name");
     adapter->add(camerai, ic->stringToIdentity(name));
 

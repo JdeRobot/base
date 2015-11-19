@@ -22,3 +22,51 @@
 using namespace quadrotor::interfaces;
 using namespace jderobot;
 
+
+CameraI::CameraI (const QuadRotorSensors *sensor):
+    sensor(sensor)
+{
+    cameraSensorConnection = sensor->cam_ventral->ConnectUpdated(
+                boost::bind(&CameraI::onCameraSensorBoostrap, this));
+}
+
+CameraI::~CameraI ()
+{}
+
+
+void
+CameraI::onCameraSensorBoostrap(){
+    if (sensor->img_ventral.empty())
+        return;
+
+    std::cout<<"CameraI::onCameraSensorBoostrap()"<<std::endl;
+
+    sensor->cam_ventral->DisconnectUpdated(cameraSensorConnection);
+
+    imgCached = sensor->img_ventral.clone();
+
+    imageDescription = new ImageDescription();
+    imageDescription->format = "RGB8";// colorspaces::ImageRGB8::FORMAT_RGB8->name();
+    imageDescription->height = imgCached.rows;
+    imageDescription->width  = imgCached.cols;
+    imageDescription->size = imgCached.rows*imgCached.cols*3;
+
+    imageData = new ImageData();
+    imageData->description = imageDescription;
+    imageData->pixelData.resize(imageDescription->size);
+    memcpy(imageData->pixelData.data(), imgCached.data, imageData->pixelData.size());
+
+    imageFormats.push_back(imageDescription->format);
+
+    cameraSensorConnection = sensor->cam_ventral->ConnectUpdated(
+                boost::bind(&CameraI::onCameraSensorUpdate, this));
+}
+
+void
+CameraI::onCameraSensorUpdate(){
+    // thread unsafe with gazebo (?)
+    imgCached = sensor->img_ventral.clone();
+
+    // thread unsafe with ice
+    memcpy(imageData->pixelData.data(), imgCached.data, imageData->pixelData.size());
+}

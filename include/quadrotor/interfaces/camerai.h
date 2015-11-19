@@ -22,6 +22,9 @@
 
 #include <quadrotor/interfaces/cameraibase.h>
 
+#include <quadrotor/quadrotorsensors.hh>
+#include <gazebo/common/Events.hh>
+
 
 namespace quadrotor{
 namespace interfaces{
@@ -29,6 +32,20 @@ namespace interfaces{
 
 class CameraI: public quadrotor::interfaces::CameraIBase {
 public:
+    CameraI (const quadrotor::QuadRotorSensors *sensor);
+    virtual ~CameraI ();
+
+private:
+    cv::Mat imgCached;
+    const quadrotor::QuadRotorSensors *sensor;
+
+/// Gazebo
+private:
+    void onCameraSensorBoostrap();
+    void onCameraSensorUpdate();
+
+    gazebo::event::ConnectionPtr cameraSensorConnection;
+
 
 };
 
