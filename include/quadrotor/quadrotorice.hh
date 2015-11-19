@@ -32,6 +32,7 @@
 #include <quadrotor/interfaces/navdatai.h>
 #include <quadrotor/interfaces/dronecontroli.h>
 #include <quadrotor/interfaces/cmdveli.h>
+#include <quadrotor/interfaces/camerai.h>
 
 #include <quadrotor/quadrotorsensors.hh>
 #include <quadrotor/quadrotorcontrol.hh>
