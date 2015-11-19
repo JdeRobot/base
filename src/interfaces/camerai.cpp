@@ -36,15 +36,19 @@ CameraI::~CameraI(){
 
 ImageDescriptionPtr
 CameraI::getImageDescription(const Ice::Current& c){
-    if (!imageDescription) throw new JderobotException("not initialized");
+    std::cout<<"CameraI::getImageDescription()"<<std::endl;
+    if (!imageDescription)
+        throw JderobotException("not initialized");
+
 	return imageDescription;
 }
 
 
 ImageFormats
 CameraI::getImageFormat(const Ice::Current& c) {
+    std::cout<<"CameraI::getImageFormat()"<<std::endl;
     if (imageFormats.empty())
-        throw new JderobotException("not initialized");
+        throw JderobotException("not initialized");
 
 	return imageFormats;
 }
@@ -52,10 +56,9 @@ CameraI::getImageFormat(const Ice::Current& c) {
 
 void
 CameraI::getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
-    if (std::find(imageFormats.begin(), imageFormats.end(), format) != imageFormats.end())
-        throw new JderobotException("format not supported");
-    if (!imageData)
-        throw new DataNotExistException();
+    std::cout<<"CameraI::getImageData_async()"<<std::endl;
+    if (std::find(imageFormats.begin(), imageFormats.end(), format) == imageFormats.end())
+        throw JderobotException("format not supported"); // UnknownUserException: unknown = jderobot::JderobotException because it is not declared into .ice
 
     _getImageData_async(cb, format, c);
 }
@@ -63,12 +66,16 @@ CameraI::getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& 
 void
 CameraI::_getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
     //Non async response
+    if (!imageData)
+        throw DataNotExistException();
+
     cb->ice_response(imageData);
 }
 
 
 CameraDescriptionPtr
 CameraI::getCameraDescription(const Ice::Current& c){
+    std::cout<<"CameraI::getCameraDescription()"<<std::endl;
     if (!cameraDescription)
         throw new JderobotException("not initialized");
 
