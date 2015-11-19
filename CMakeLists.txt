@@ -50,6 +50,7 @@ add_library(quadrotorplugin2 SHARED
 	src/interfaces/navdatai.cpp
 	src/interfaces/dronecontroli.cpp
 	src/interfaces/cmdveli.cpp
+	src/interfaces/camerai.cpp
 )
 
 # Gazebo
