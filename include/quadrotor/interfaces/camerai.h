@@ -20,49 +20,16 @@
 #ifndef CAMERAI_H
 #define CAMERAI_H
 
-#include <list>
-#include <iostream>
-
-#include <jderobot/camera.h>
-#include <jderobot/colorspaces/colorspacesmm.h>
-
-
-// Fix name
-namespace jderobot{ typedef ImageFormat ImageFormats; }
+#include <quadrotor/interfaces/cameraibase.h>
 
 
 namespace quadrotor{
 namespace interfaces{
 
 
-class CameraI: virtual public jderobot::Camera {
+class CameraI: public quadrotor::interfaces::CameraIBase {
 public:
-    CameraI();
-    virtual ~CameraI();
 
-    /// jderobot::ImageProvider
-    jderobot::ImageFormats getImageFormat(const Ice::Current& c); //bad name... getSupportedFormats please
-    jderobot::ImageDescriptionPtr getImageDescription(const Ice::Current& c);
-    void getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c);
-    virtual void _getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c);
-
-
-    /// jderobot::Camera
-    jderobot::CameraDescriptionPtr getCameraDescription(const Ice::Current& c);
-    virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) { return 0; }
-
-
-    /// jderobot::StreamableCamera
-    virtual std::string startCameraStreaming(const Ice::Current&){ return ""; }
-    virtual void stopCameraStreaming(const Ice::Current&) {}
-    virtual void reset(const Ice::Current&){}
-
-protected:
-    /// Ice
-    jderobot::ImageDataPtr imageData;
-    jderobot::ImageFormats imageFormats;
-    jderobot::ImageDescriptionPtr imageDescription;
-    jderobot::CameraDescriptionPtr cameraDescription;
 };
 
 

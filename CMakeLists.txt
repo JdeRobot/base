@@ -51,6 +51,7 @@ add_library(quadrotorplugin2 SHARED
 	src/interfaces/dronecontroli.cpp
 	src/interfaces/cmdveli.cpp
 	src/interfaces/camerai.cpp
+	src/interfaces/cameraibase.cpp
 )
 
 # Gazebo
