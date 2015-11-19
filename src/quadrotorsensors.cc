@@ -141,7 +141,7 @@ QuadRotorSensors::_on_cam_ventral(){
 
         std::cout<<_log_prefix<<"\tbootstrap cam_ventral"<<std::endl;
         uint32_t h = cam_ventral->GetImageHeight();
-        uint32_t w = cam_frontal->GetImageWidth();
+        uint32_t w = cam_ventral->GetImageWidth();
         img_ventral = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
         cam_ventral->DisconnectUpdated(sub_cam_ventral);
