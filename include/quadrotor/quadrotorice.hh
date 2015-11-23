@@ -32,10 +32,11 @@
 #include <quadrotor/interfaces/navdatai.h>
 #include <quadrotor/interfaces/dronecontroli.h>
 #include <quadrotor/interfaces/cmdveli.h>
-#include <quadrotor/interfaces/camerai.h>
+#include <quadrotor/interfaces/pushcamerai.h>
 
 #include <quadrotor/quadrotorsensors.hh>
 #include <quadrotor/quadrotorcontrol.hh>
+#include <quadrotor/cameraproxy.hh>
 
 #include <quadrotor/debugtools.h>
 
@@ -44,7 +45,7 @@ namespace quadrotor{
 class QuadrotorIce
 {
 public:
-    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control);
+    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control, CameraProxy *camproxy);
     virtual ~QuadrotorIce();
 
     void run();
@@ -64,6 +65,7 @@ private:
 private:
     const QuadRotorSensors *sensor;
     QuadrotorControl *control;
+    CameraProxy *camproxy;
     boost::mutex lock;
 
 };

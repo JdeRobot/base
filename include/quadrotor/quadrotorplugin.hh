@@ -29,6 +29,7 @@
 #include <quadrotor/quadrotorsensors.hh>
 #include <quadrotor/quadrotorcontrol.hh>
 #include <quadrotor/quadrotorice.hh>
+#include <quadrotor/cameraproxy.hh>
 
 #include <quadrotor/debugtools.h>
 
@@ -45,6 +46,7 @@ public:
 private:
     QuadRotorSensors sensors;
     QuadrotorControl control;
+    CameraProxy cameraproxy;
 
 
 /// Gazebo
