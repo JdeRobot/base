@@ -319,7 +319,7 @@
       <sensor name='cam_sensor_ventral' type='camera'>
         <always_on> 0 </always_on>
         <update_rate> 60 </update_rate>
-	  <visualize> true </visualize>
+	  <visualize> false </visualize>
         <pose> 0.15 0 0 0 1.570793 0 </pose>
         <camera>
           <horizontal_fov> 1.413717 </horizontal_fov>
@@ -337,7 +337,7 @@
       <sensor name='cam_sensor_frontal' type='camera'>
         <always_on> 0 </always_on>
         <update_rate> 60 </update_rate>
-	  <visualize> true </visualize>
+	  <visualize> false </visualize>
         <pose> 0.21 0 0.01 0 -0 0 </pose>
         <camera>
           <horizontal_fov> 1.413717 </horizontal_fov>
@@ -355,7 +355,7 @@
 	<sensor name='sonar' type='ray'>
 	  <always_on> 0 </always_on>
 	  <update_rate> 10 </update_rate>
-	  <visualize> true </visualize>
+	  <visualize> false </visualize>
 	  <pose> -0.150000 0 0 3.141593 1.570793 3.141593 </pose>
 	  <ray>
 	    <scan>
