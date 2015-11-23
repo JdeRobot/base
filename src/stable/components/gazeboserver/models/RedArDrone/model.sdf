@@ -328,8 +328,8 @@
         <camera>
           <horizontal_fov> 1.413717 </horizontal_fov>
           <image>
-            <width> 240 </width>
-            <height> 240 </height>
+            <width> 640 </width>
+            <height> 360 </height>
             <format> R8G8B8 </format>
           </image>
           <clip>
@@ -352,8 +352,8 @@
         <camera>
           <horizontal_fov> 1.413717 </horizontal_fov>
           <image>
-            <width> 320 </width>
-            <height> 240 </height>
+            <width> 640 </width>
+            <height> 360 </height>
             <format> R8G8B8 </format>
           </image>
           <clip>
