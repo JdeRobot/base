@@ -37,7 +37,7 @@ DroneControlI::~DroneControlI ()
 
 void
 DroneControlI::land(const Ice::Current& ){
-    std::cout << "send order: Land" <<std::endl;
+    ONDEBUG_VERBOSE(std::cout << "send order: Land" <<std::endl;)
     control->land();
 }
 
@@ -45,7 +45,7 @@ DroneControlI::land(const Ice::Current& ){
 
 void
 DroneControlI::takeoff(const Ice::Current& ){
-    std::cout << "send order: TakeOff" <<std::endl;
+    ONDEBUG_VERBOSE(std::cout << "send order: TakeOff" <<std::endl;)
     control->takeoff();
 }
 
@@ -53,4 +53,5 @@ DroneControlI::takeoff(const Ice::Current& ){
 void
 DroneControlI::toggleCam(const Ice::Current& ){
     camproxy->next();
+    ONDEBUG_VERBOSE(std::cout << "toggled camera to "<<camproxy->getActive() <<std::endl;)
 }
