@@ -54,9 +54,9 @@ QuadRotorSensors::Load(ModelPtr model){
 #endif
 >(s);
         if (name.find("frontal") != std::string::npos)
-            cam_frontal = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_FRONTAL] = boost::static_pointer_cast<CameraSensor>(s);
         if (name.find("ventral") != std::string::npos)
-            cam_ventral = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_VENTRAL] = boost::static_pointer_cast<CameraSensor>(s);
     }
 
     // weak-fix for sonar value at boostrap (1/2)
@@ -66,17 +66,13 @@ QuadRotorSensors::Load(ModelPtr model){
 
 void
 QuadRotorSensors::Init(){
-    if (cam_frontal){
-        sub_cam_frontal = cam_frontal->ConnectUpdated(
-            boost::bind(&QuadRotorSensors::_on_cam_frontal, this));
-    }else
-        std::cerr << _log_prefix << "\t cam_frontal was not connected (NULL pointer)" << std::endl;
-
-    if (cam_ventral){
-        sub_cam_ventral = cam_ventral->ConnectUpdated(
-            boost::bind(&QuadRotorSensors::_on_cam_ventral, this));
-    }else
-        std::cerr << _log_prefix << "\t cam_ventral was not connected (NULL pointer)" << std::endl;
+    for (int id=0; id<NUM_CAMS; id++){
+        if (cam[id]){
+            sub_cam[id] = cam[id]->ConnectUpdated(
+                boost::bind(&QuadRotorSensors::_on_cam, this, id));
+        }else
+            std::cerr << _log_prefix << "\t cam["<<id<<"] was not connected (NULL pointer)" << std::endl;
+    }
 
     if (sonar){
         sub_sonar = sonar->ConnectUpdated(
@@ -99,15 +95,14 @@ QuadRotorSensors::debugInfo(){
     std::cout << _log_prefix << "Sensors of " << model->GetName() << std::endl;
     boost::format fmt(_log_prefix+"\t%1% (id: %2%)\n");
 
-    std::cout << fmt % cam_ventral->GetName() % cam_ventral->GetId();
-    std::cout << fmt % cam_frontal->GetName() % cam_frontal->GetId();
+    std::cout << fmt % cam[CAM_VENTRAL]->GetName() % cam[CAM_VENTRAL]->GetId();
+    std::cout << fmt % cam[CAM_FRONTAL]->GetName() % cam[CAM_FRONTAL]->GetId();
     std::cout << fmt % sonar->GetName() % sonar->GetId();
     std::cout << fmt % imu->GetName() % imu->GetId();
 }
 
-
 void
-QuadRotorSensors::_on_cam_frontal(){
+QuadRotorSensors::_on_cam(int id){
     //// Assumption: Camera (raw) data is constant, so after Camera boostrap
     /// Camera.data will be a constant pointer.
     /// Therefore, we can use the cv::Mat constructor to simply wrap this
@@ -118,33 +113,17 @@ QuadRotorSensors::_on_cam_frontal(){
     /// Warning 2: char* is NULL until CameraSensor.OnUpdate(), so it is not
     /// possible to bootstrap at Load neither Init step.
 
-    if (img_frontal.empty()){
-        const unsigned char *data = cam_frontal->GetImageData();
+    if (img[id].empty()){
+        const unsigned char *data = cam[id]->GetImageData();
         if (data == 0)
             return;
 
-        std::cout <<  _log_prefix << "\tbootstrap cam_frontal" << std::endl;
-        uint32_t h = cam_frontal->GetImageHeight();
-        uint32_t w = cam_frontal->GetImageWidth();
-        img_frontal = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
+        std::cout <<  _log_prefix << "\tbootstrap cam["<<id<<"]" << std::endl;
+        uint32_t h = cam[id]->GetImageHeight();
+        uint32_t w = cam[id]->GetImageWidth();
+        img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        cam_frontal->DisconnectUpdated(sub_cam_frontal); // close connection
-    }
-}
-
-void
-QuadRotorSensors::_on_cam_ventral(){
-    if (img_ventral.empty()){
-        const unsigned char *data = cam_ventral->GetImageData();
-        if (data == 0)
-            return;
-
-        std::cout<<_log_prefix<<"\tbootstrap cam_ventral"<<std::endl;
-        uint32_t h = cam_ventral->GetImageHeight();
-        uint32_t w = cam_ventral->GetImageWidth();
-        img_ventral = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
-
-        cam_ventral->DisconnectUpdated(sub_cam_ventral);
+        cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
     }
 }
 

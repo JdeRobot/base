@@ -74,8 +74,8 @@ QuadrotorPlugin::Init(){
     sensors.debugInfo();
     sensors.Init();
 
-    sensors.cam_frontal->SetActive(true);
-    sensors.cam_ventral->SetActive(true);
+    sensors.cam[QuadRotorSensors::CAM_FRONTAL]->SetActive(true);
+    sensors.cam[QuadRotorSensors::CAM_VENTRAL]->SetActive(true);
     sensors.sonar->SetActive(true);
     sensors.imu->SetActive(true);
 
