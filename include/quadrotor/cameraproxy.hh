@@ -41,6 +41,8 @@ public:
 
     void registerCamera(gazebo::sensors::CameraSensorPtr cam);
     void setActive(int id);
+    int getActive();
+    void next();
 
     void registerConsumer(ICameraConsumerPtr consumer);
 

@@ -25,8 +25,9 @@ using namespace quadrotor::interfaces;
 using namespace jderobot;
 
 
-DroneControlI::DroneControlI (QuadrotorControl *control):
-    control(control)
+DroneControlI::DroneControlI (QuadrotorControl *control, CameraProxy *camproxy):
+    control(control),
+    camproxy(camproxy)
 {}
 
 DroneControlI::~DroneControlI ()
@@ -51,5 +52,5 @@ DroneControlI::takeoff(const Ice::Current& ){
 
 void
 DroneControlI::toggleCam(const Ice::Current& ){
-
+    camproxy->next();
 }

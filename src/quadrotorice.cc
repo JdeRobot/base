@@ -100,7 +100,7 @@ void QuadrotorIce::bootstrap(){
     name = prop->getProperty("Quadrotor.Navdata.Name");
     adapter->add(navdatai, ic->stringToIdentity(name));
 
-    ObjectPtr dronecontroli = new DroneControlI(control);
+    ObjectPtr dronecontroli = new DroneControlI(control, camproxy);
     name = prop->getProperty("Quadrotor.Extra.Name");
     adapter->add(dronecontroli, ic->stringToIdentity(name));
 

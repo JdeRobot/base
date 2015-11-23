@@ -63,6 +63,17 @@ CameraProxy::setActive(int id){
     lock.unlock();
 }
 
+int
+CameraProxy::getActive(){
+    return active_camera;
+}
+
+void
+CameraProxy::next(){
+    int next = (active_camera+1)%cameras.size();
+    setActive(next);
+}
+
 void
 CameraProxy::_on_cam_bootstrap(){
     lock.lock();
