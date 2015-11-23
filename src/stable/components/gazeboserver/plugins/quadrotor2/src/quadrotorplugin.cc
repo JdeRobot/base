@@ -74,10 +74,14 @@ QuadrotorPlugin::Init(){
     sensors.debugInfo();
     sensors.Init();
 
-    sensors.cam_frontal->SetActive(true);
-    sensors.cam_ventral->SetActive(true);
+    sensors.cam[QuadRotorSensors::CAM_FRONTAL]->SetActive(true);
+    sensors.cam[QuadRotorSensors::CAM_VENTRAL]->SetActive(true);
     sensors.sonar->SetActive(true);
     sensors.imu->SetActive(true);
+
+    cameraproxy.registerCamera(sensors.cam[QuadRotorSensors::CAM_VENTRAL]);
+    cameraproxy.registerCamera(sensors.cam[QuadRotorSensors::CAM_FRONTAL]);
+    cameraproxy.setActive(0);
 
     control.Init(&sensors);
 
@@ -137,6 +141,6 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
         id.properties->setProperty("Quadrotor.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
 
     std::cout << _log_prefix << "\tcreate Ice plugin..." << std::endl;
-    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control));
+    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control, &cameraproxy));
     icePlugin->_log_prefix = _log_prefix;
 }

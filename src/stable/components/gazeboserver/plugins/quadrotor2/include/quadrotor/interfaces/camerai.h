@@ -35,6 +35,8 @@ public:
     CameraI (const quadrotor::QuadRotorSensors *sensor);
     virtual ~CameraI ();
 
+    const int cam_id = QuadRotorSensors::CAM_VENTRAL;
+
 private:
     cv::Mat imgCached;
     const quadrotor::QuadRotorSensors *sensor;

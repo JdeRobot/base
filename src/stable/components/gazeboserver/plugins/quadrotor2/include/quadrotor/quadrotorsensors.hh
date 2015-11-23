@@ -43,6 +43,13 @@ namespace quadrotor{
 class QuadRotorSensors
 {
 public:
+    enum{
+        CAM_VENTRAL = 0,
+        CAM_FRONTAL,
+        NUM_CAMS
+    };
+
+public:
     QuadRotorSensors();
     virtual ~QuadRotorSensors();
 
@@ -54,8 +61,7 @@ public:
     std::string _log_prefix;
 
 public:
-    gazebo::sensors::CameraSensorPtr cam_ventral;
-    gazebo::sensors::CameraSensorPtr cam_frontal;
+    gazebo::sensors::CameraSensorPtr cam[NUM_CAMS];
 #ifdef BROKEN_SonarSensor
     gazebo::sensors::RaySensorPtr sonar;
 #else
@@ -68,19 +74,16 @@ private:
     uint32_t base_link_id;
 
 private:
-    gazebo::event::ConnectionPtr sub_cam_frontal;
-    gazebo::event::ConnectionPtr sub_cam_ventral;
+    gazebo::event::ConnectionPtr sub_cam[NUM_CAMS];
     gazebo::event::ConnectionPtr sub_sonar;
     gazebo::event::ConnectionPtr sub_imu;
 
-    void _on_cam_frontal();
-    void _on_cam_ventral();
+    void _on_cam(int id);
     void _on_sonar();
     void _on_imu();
 
 public:
-    cv::Mat img_frontal;
-    cv::Mat img_ventral;
+    cv::Mat img[NUM_CAMS];
     gazebo::math::Pose pose;
     double altitude;
 

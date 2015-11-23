@@ -24,6 +24,7 @@
 
 #include <jderobot/ardroneextra.h>
 #include <quadrotor/quadrotorcontrol.hh>
+#include <quadrotor/cameraproxy.hh>
 
 
 namespace quadrotor{
@@ -31,7 +32,7 @@ namespace interfaces{
 
 class DroneControlI : public jderobot::ArDroneExtra {
 public:
-    DroneControlI (quadrotor::QuadrotorControl *control);
+    DroneControlI (quadrotor::QuadrotorControl *control, quadrotor::CameraProxy *camproxy);
     virtual ~DroneControlI ();
 
     void land(const Ice::Current& /*c*/);
@@ -46,6 +47,7 @@ public:
 
 private:
     quadrotor::QuadrotorControl* const control;
+    quadrotor::CameraProxy* const camproxy;
 };
 
 

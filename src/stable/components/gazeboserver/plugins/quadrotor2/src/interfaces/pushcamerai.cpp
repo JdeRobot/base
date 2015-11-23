@@ -17,56 +17,40 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#include <quadrotor/interfaces/camerai.h>
+#include <quadrotor/interfaces/pushcamerai.h>
 
 using namespace quadrotor::interfaces;
 using namespace jderobot;
 
 
-CameraI::CameraI (const QuadRotorSensors *sensor):
-    sensor(sensor)
-{
-    cameraSensorConnection = sensor->cam[cam_id]->ConnectUpdated(
-                boost::bind(&CameraI::onCameraSensorBoostrap, this));
-}
-
-CameraI::~CameraI ()
+PushCameraI::PushCameraI ()
 {}
 
+PushCameraI::~PushCameraI ()
+{}
 
 void
-CameraI::onCameraSensorBoostrap(){
-    if (sensor->img[cam_id].empty())
-        return;
-
-    std::cout<<"CameraI::onCameraSensorBoostrap()"<<std::endl;
-
-    sensor->cam[cam_id]->DisconnectUpdated(cameraSensorConnection);
-
-    imgCached = sensor->img[cam_id].clone();
-
+PushCameraI::onCameraSensorBoostrap(const cv::Mat img, const gazebo::sensors::CameraSensorPtr /*camerasensor*/){
+    ONDEBUG_INFO(std::cout << "PushCameraI::onCameraSensorBoostrap()" << std::endl;)
     imageDescription = new ImageDescription();
     imageDescription->format = "RGB8";// colorspaces::ImageRGB8::FORMAT_RGB8->name();
-    imageDescription->height = imgCached.rows;
-    imageDescription->width  = imgCached.cols;
-    imageDescription->size = imgCached.rows*imgCached.cols*3;
+    imageDescription->height = img.rows;
+    imageDescription->width  = img.cols;
+    imageDescription->size = img.rows*img.cols*3;
+
+    //cameraDescription = new CameraDescription();
+    //gazebo::rendering::CameraPtr cam = camerasensor->GetCamera();
 
     imageData = new ImageData();
     imageData->description = imageDescription;
     imageData->pixelData.resize(imageDescription->size);
-    memcpy(imageData->pixelData.data(), imgCached.data, imageData->pixelData.size());
+    memcpy(imageData->pixelData.data(), img.data, imageData->pixelData.size());
 
     imageFormats.push_back(imageDescription->format);
-
-    cameraSensorConnection = sensor->cam[cam_id]->ConnectUpdated(
-                boost::bind(&CameraI::onCameraSensorUpdate, this));
 }
 
 void
-CameraI::onCameraSensorUpdate(){
-    // thread unsafe with gazebo (?)
-    imgCached = sensor->img[cam_id].clone();
-
-    // thread unsafe with ice
-    memcpy(imageData->pixelData.data(), imgCached.data, imageData->pixelData.size());
+PushCameraI::onCameraSensorUpdate(const cv::Mat img){
+    ONDEBUG_VERBOSE(std::cout << "PushCameraI::onCameraSensorUpdate()" << std::endl;)
+    memcpy(imageData->pixelData.data(), img.data, imageData->pixelData.size());
 }
