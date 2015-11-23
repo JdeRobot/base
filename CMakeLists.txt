@@ -45,12 +45,15 @@ add_library(quadrotorplugin2 SHARED
 	src/quadrotorcontrol_hector.cc
 	src/pidcontroller.cc
 
+	src/cameraproxy.cc
+
 	src/quadrotorice.cc
 	src/interfaces/pose3di.cpp
 	src/interfaces/navdatai.cpp
 	src/interfaces/dronecontroli.cpp
 	src/interfaces/cmdveli.cpp
 	src/interfaces/camerai.cpp
+	src/interfaces/pushcamerai.cpp
 	src/interfaces/cameraibase.cpp
 )
 

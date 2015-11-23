@@ -17,41 +17,33 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
+#ifndef PUSHCAMERAI_H
+#define PUSHCAMERAI_H
 
-#include "quadrotor/interfaces/dronecontroli.h"
-
-
-using namespace quadrotor::interfaces;
-using namespace jderobot;
-
-
-DroneControlI::DroneControlI (QuadrotorControl *control, CameraProxy *camproxy):
-    control(control),
-    camproxy(camproxy)
-{}
-
-DroneControlI::~DroneControlI ()
-{}
+#include <quadrotor/interfaces/cameraibase.h>
+#include <quadrotor/cameraproxy.hh>
 
 
-
-void
-DroneControlI::land(const Ice::Current& ){
-    ONDEBUG_VERBOSE(std::cout << "send order: Land" <<std::endl;)
-    control->land();
-}
+namespace quadrotor{
+namespace interfaces{
 
 
+class PushCameraI:
+		public quadrotor::interfaces::CameraIBase,
+		public ICameraConsumer
+{
+public:
+    PushCameraI ();
+    virtual ~PushCameraI ();
 
-void
-DroneControlI::takeoff(const Ice::Current& ){
-    ONDEBUG_VERBOSE(std::cout << "send order: TakeOff" <<std::endl;)
-    control->takeoff();
-}
+
+    void onCameraSensorBoostrap(const cv::Mat, const gazebo::sensors::CameraSensorPtr);
+    void onCameraSensorUpdate(const cv::Mat);
+
+};
 
 
-void
-DroneControlI::toggleCam(const Ice::Current& ){
-    camproxy->next();
-    ONDEBUG_VERBOSE(std::cout << "toggled camera to "<<camproxy->getActive() <<std::endl;)
-}
+}}//NS
+
+#endif // PUSHCAMERAI_H
+

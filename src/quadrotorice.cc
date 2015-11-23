@@ -25,10 +25,11 @@ using namespace quadrotor::interfaces;
 using namespace Ice;
 
 
-QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control):
+QuadrotorIce::QuadrotorIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control, CameraProxy *camproxy):
     ic(ic),
     sensor(sensors),
-    control(control)
+    control(control),
+    camproxy(camproxy)
 {
     assert(ic != 0);
 }
@@ -99,7 +100,7 @@ void QuadrotorIce::bootstrap(){
     name = prop->getProperty("Quadrotor.Navdata.Name");
     adapter->add(navdatai, ic->stringToIdentity(name));
 
-    ObjectPtr dronecontroli = new DroneControlI(control);
+    ObjectPtr dronecontroli = new DroneControlI(control, camproxy);
     name = prop->getProperty("Quadrotor.Extra.Name");
     adapter->add(dronecontroli, ic->stringToIdentity(name));
 
@@ -107,7 +108,13 @@ void QuadrotorIce::bootstrap(){
     name = prop->getProperty("Quadrotor.CMDVel.Name");
     adapter->add(cmdveli, ic->stringToIdentity(name));
 
-    ObjectPtr camerai = new CameraI(sensor);
+    //ObjectPtr camerai = new CameraI(sensor);
+    ObjectPtr camerai;
+    {
+        PushCameraI *_camerai = new PushCameraI();
+        camproxy->registerConsumer(ICameraConsumerPtr(_camerai));
+        camerai = ObjectPtr(_camerai);
+    }
     name = prop->getProperty("Quadrotor.Camera.Name");
     adapter->add(camerai, ic->stringToIdentity(name));
 

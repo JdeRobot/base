@@ -26,6 +26,8 @@
 #include <jderobot/camera.h>
 #include <jderobot/colorspaces/colorspacesmm.h>
 
+#include <quadrotor/debugtools.h>
+
 
 // Fix name
 namespace jderobot{ typedef ImageFormat ImageFormats; }

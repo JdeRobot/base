@@ -27,7 +27,7 @@ CameraIBase::CameraIBase():
 	imageDescription(new ImageDescription()),
 	cameraDescription(new CameraDescription())
 {
-    std::cout << "Constructor CameraIBase" << std::endl;
+    ONDEBUG_INFO(std::cout << "Constructor CameraIBase" << std::endl;)
 }
 
 CameraIBase::~CameraIBase(){
@@ -36,7 +36,7 @@ CameraIBase::~CameraIBase(){
 
 ImageDescriptionPtr
 CameraIBase::getImageDescription(const Ice::Current& c){
-    std::cout<<"CameraIBase::getImageDescription()"<<std::endl;
+    ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getImageDescription()"<<std::endl;)
     if (!imageDescription)
         throw JderobotException("not initialized");
 
@@ -46,7 +46,7 @@ CameraIBase::getImageDescription(const Ice::Current& c){
 
 ImageFormats
 CameraIBase::getImageFormat(const Ice::Current& c) {
-    std::cout<<"CameraIBase::getImageFormat()"<<std::endl;
+    ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getImageFormat()"<<std::endl;)
     if (imageFormats.empty())
         throw JderobotException("not initialized");
 
@@ -56,7 +56,7 @@ CameraIBase::getImageFormat(const Ice::Current& c) {
 
 void
 CameraIBase::getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
-    std::cout<<"CameraIBase::getImageData_async()"<<std::endl;
+    ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getImageData_async()"<<std::endl;)
     if (std::find(imageFormats.begin(), imageFormats.end(), format) == imageFormats.end())
         throw JderobotException("format not supported"); // UnknownUserException: unknown = jderobot::JderobotException because it is not declared into .ice
 
@@ -75,7 +75,7 @@ CameraIBase::_getImageData_async (const jderobot::AMD_ImageProvider_getImageData
 
 CameraDescriptionPtr
 CameraIBase::getCameraDescription(const Ice::Current& c){
-    std::cout<<"CameraIBase::getCameraDescription()"<<std::endl;
+    ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getCameraDescription()"<<std::endl;)
     if (!cameraDescription)
         throw new JderobotException("not initialized");
 
