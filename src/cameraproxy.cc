@@ -86,6 +86,9 @@ CameraProxy::_on_cam_bootstrap(){
         consumer->onCameraSensorBoostrap(img, cameras[active_camera]);
     }
 
+    active_sub = cameras[active_camera]->ConnectUpdated(
+        boost::bind(&CameraProxy::_on_cam_update, this));
+
     lock.unlock();
 }
 
@@ -94,7 +97,7 @@ CameraProxy::_on_cam_update(){
     lock.lock();
 
     for (ICameraConsumerPtr consumer : consumers){
-        consumer->onCameraSensorBoostrap(img, cameras[active_camera]);
+        consumer->onCameraSensorUpdate(img);
     }
 
     lock.unlock();
