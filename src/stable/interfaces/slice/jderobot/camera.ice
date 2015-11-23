@@ -24,7 +24,7 @@
 #define CAMERA_ICE
 
 
-#include <image.ice>
+#include <jderobot/image.ice>
 
 module jderobot{
   /**

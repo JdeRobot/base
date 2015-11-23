@@ -22,7 +22,7 @@
 #ifndef NAOMOTIONS_ICE
 #define NAOMOTIONS_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 module jderobot {
     

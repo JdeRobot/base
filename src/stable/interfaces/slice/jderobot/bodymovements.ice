@@ -21,8 +21,8 @@
 #ifndef BODYMOVEMENTS_ICE
 #define BODYMOVEMENTS_ICE
 
-#include <common.ice>
-#include <body.ice>
+#include <jderobot/common.ice>
+#include <jderobot/body.ice>
 
 module jderobot{  
 

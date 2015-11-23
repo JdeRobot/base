@@ -26,11 +26,11 @@ endif()
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
 # Folder with ICE cpp interfaces
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/)
+SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/)
 # Folder with ICE python interfaces
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/)
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/)
 # Folder with ICE java interfaces
-SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/java/jderobot ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/java/)
+SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/)
 # Folder JdeRobot libraries 
 SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) 
 # Folder ICE interface definitions
@@ -41,6 +41,7 @@ SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib par
 # Create directories if necessary
 file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
 file(MAKE_DIRECTORY ${INTERFACES_JAVA_DIR})
+file(MAKE_DIRECTORY ${INTERFACES_CPP_DIR})
 
 # MACRO to get the list of subdirectories
 macro(list_subdirectories retval curdir return_relative)
@@ -166,20 +167,20 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot)
 
 # Install python files
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/*py)
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/*py)
 FOREACH(header ${HEADERS_FILES})
 	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/)
 ENDFOREACH(header)
 
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/python/jderobot/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/)
 
 # install all libraries 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*/*.so*)
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/*/*.so*)
 FOREACH (lib ${LIB_FILES})
 	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
 ENDFOREACH(lib)
 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/visionlib/*/*.so*)
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/visionlib/*/*.so*)
 FOREACH (lib ${LIB_FILES})
 	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot)
 ENDFOREACH(lib)
@@ -212,8 +213,10 @@ FOREACH (currentBin ${LIST_COMPONENTS})
 ENDFOREACH(currentBin)
 
 # Install interfaces headers
-FILE(GLOB HEADER_INTERFACE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/cpp/jderobot/*.h)
-INSTALL (FILES ${HEADER_INTERFACE_FILES} DESTINATION /usr/local/include/jderobot)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot/
+    DESTINATION /usr/local/include/jderobot
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
 
 # Install slice
 FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice/jderobot/*.ice)
