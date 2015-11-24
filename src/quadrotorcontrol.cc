@@ -99,10 +99,9 @@ QuadrotorControl::setTargetVelocity(Twist twist){
 
 
 void
-QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
-    Pose pose = base_link->GetWorldPose();
+QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & /*_info*/){
+    //Pose pose = base_link->GetWorldPose();
     double altitude = sensors->altitude;
-    //std::cout<<"altotude "<<altitude<<std::endl;
 
     switch(my_state){
     case Unknown:
@@ -124,12 +123,13 @@ QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & _info){
             std::cout<<_log_prefix << "QuadrotorState::Flying" << std::endl;
         }
     break;
+    default: break;
     }
 }
 
 
 void
-QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){
+QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & /*_info*/){
     //// Forces and velocities are handled bt a physics engine
     /// This means that we must apply a counter-gravity force
     /// each cicle to model "fly" state.
@@ -158,6 +158,7 @@ QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & _info){
         vel_model = vel_model+up_down_vel;// pose.rot.RotateVector(vel_world+up_down_vel);
         base_link->SetLinearVel(vel_model);
     break;
+    default: break;
     }
 
     if (my_state != QuadrotorState::Landed){

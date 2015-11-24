@@ -53,7 +53,7 @@ public:
 
     /// jderobot::Camera
     jderobot::CameraDescriptionPtr getCameraDescription(const Ice::Current& c);
-    virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) { return 0; }
+    virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &/*description*/, const Ice::Current& /*c*/) { return 0; }
 
 
     /// jderobot::StreamableCamera

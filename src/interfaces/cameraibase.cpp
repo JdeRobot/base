@@ -35,7 +35,7 @@ CameraIBase::~CameraIBase(){
 
 
 ImageDescriptionPtr
-CameraIBase::getImageDescription(const Ice::Current& c){
+CameraIBase::getImageDescription(const Ice::Current& /*c*/){
     ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getImageDescription()"<<std::endl;)
     lock_guard_t RAII_lock(mutex);
     if (!imageDescription)
@@ -46,7 +46,7 @@ CameraIBase::getImageDescription(const Ice::Current& c){
 
 
 ImageFormats
-CameraIBase::getImageFormat(const Ice::Current& c) {
+CameraIBase::getImageFormat(const Ice::Current& /*c*/) {
     ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getImageFormat()"<<std::endl;)
     lock_guard_t RAII_lock(mutex);
     if (imageFormats.empty())
@@ -67,7 +67,7 @@ CameraIBase::getImageData_async (const jderobot::AMD_ImageProvider_getImageDataP
 }
 
 void
-CameraIBase::_getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
+CameraIBase::_getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& /*format*/, const Ice::Current& /*c*/){
     //Non async response
     if (!imageData)
         throw DataNotExistException();
@@ -77,7 +77,7 @@ CameraIBase::_getImageData_async (const jderobot::AMD_ImageProvider_getImageData
 
 
 CameraDescriptionPtr
-CameraIBase::getCameraDescription(const Ice::Current& c){
+CameraIBase::getCameraDescription(const Ice::Current& /*c*/){
     ONDEBUG_VERBOSE(std::cout<<"CameraIBase::getCameraDescription()"<<std::endl;)
     lock_guard_t RAII_lock(mutex);
     if (!cameraDescription)
