@@ -32,6 +32,7 @@ PushCameraI::~PushCameraI ()
 void
 PushCameraI::onCameraSensorBoostrap(const cv::Mat img, const gazebo::sensors::CameraSensorPtr /*camerasensor*/){
     ONDEBUG_INFO(std::cout << "PushCameraI::onCameraSensorBoostrap()" << std::endl;)
+    lock_guard_t RAII_lock(mutex);
     imageDescription = new ImageDescription();
     imageDescription->format = "RGB8";// colorspaces::ImageRGB8::FORMAT_RGB8->name();
     imageDescription->height = img.rows;
@@ -46,11 +47,13 @@ PushCameraI::onCameraSensorBoostrap(const cv::Mat img, const gazebo::sensors::Ca
     imageData->pixelData.resize(imageDescription->size);
     memcpy(imageData->pixelData.data(), img.data, imageData->pixelData.size());
 
+    imageFormats = ImageFormats(1);
     imageFormats.push_back(imageDescription->format);
 }
 
 void
 PushCameraI::onCameraSensorUpdate(const cv::Mat img){
     ONDEBUG_VERBOSE(std::cout << "PushCameraI::onCameraSensorUpdate()" << std::endl;)
+    lock_guard_t RAII_lock(mutex);
     memcpy(imageData->pixelData.data(), img.data, imageData->pixelData.size());
 }

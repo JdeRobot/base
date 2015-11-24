@@ -90,7 +90,7 @@ QuadrotorPlugin::Init(){
 
 
 void
-QuadrotorPlugin::OnUpdate(const UpdateInfo & _info){
+QuadrotorPlugin::OnUpdate(const UpdateInfo & ONDEBUG_VERBOSE(_info)){
     ONDEBUG_VERBOSE(std::cout << _log_prefix << "QuadrotorPlugin::OnUpdate()\n\t" << _info.simTime << std::endl;)
 }
 

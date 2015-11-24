@@ -22,6 +22,8 @@
 
 #include <list>
 #include <iostream>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 #include <jderobot/camera.h>
 #include <jderobot/colorspaces/colorspacesmm.h>
@@ -51,13 +53,17 @@ public:
 
     /// jderobot::Camera
     jderobot::CameraDescriptionPtr getCameraDescription(const Ice::Current& c);
-    virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) { return 0; }
+    virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &/*description*/, const Ice::Current& /*c*/) { return 0; }
 
 
     /// jderobot::StreamableCamera
     virtual std::string startCameraStreaming(const Ice::Current&){ return ""; }
     virtual void stopCameraStreaming(const Ice::Current&) {}
     virtual void reset(const Ice::Current&){}
+
+protected:
+    boost::mutex mutex;
+    typedef boost::lock_guard<boost::mutex> lock_guard_t;
 
 protected:
     /// Ice

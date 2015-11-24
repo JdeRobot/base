@@ -50,7 +50,8 @@ Pose3DI::getPose3DData ( const Ice::Current& ){
 }
 
 Ice::Int
-Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data,
+Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & /*data*/,
                                  const Ice::Current& ){
     //ToDo: control
+    return 0;
 }
