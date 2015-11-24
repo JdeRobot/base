@@ -46,6 +46,7 @@ PushCameraI::onCameraSensorBoostrap(const cv::Mat img, const gazebo::sensors::Ca
     imageData->pixelData.resize(imageDescription->size);
     memcpy(imageData->pixelData.data(), img.data, imageData->pixelData.size());
 
+    imageFormats = ImageFormats(1);
     imageFormats.push_back(imageDescription->format);
 }
 
