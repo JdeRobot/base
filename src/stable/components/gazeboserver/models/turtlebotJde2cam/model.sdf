@@ -1453,13 +1453,13 @@
             </contact>
           </surface>
         </collision>
-<!--        <visual name='visual'>
+        <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://kinectJde/meshes/kinect.dae</uri>
+              <uri>model://kinect/meshes/kinect.dae</uri>
             </mesh>
           </geometry>
-        </visual>-->
+        </visual>
         <sensor name='kinect_model::kinect' type='depth'>
           <update_rate>5.000000</update_rate>
           <camera name='__default__'>

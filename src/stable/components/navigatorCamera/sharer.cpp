@@ -11,6 +11,8 @@ namespace navigatorCamera {
 
 		guiVisible = false;
 		controlActive = false;
+		speed_x = 0.0;
+		speed_y = 0.0;
 	}
 
 	Sharer::~Sharer()
@@ -60,6 +62,20 @@ namespace navigatorCamera {
 	{
 		pthread_mutex_lock(&this->synch);
 		this->rtnStp = step;
+		pthread_mutex_unlock(&this->synch);
+	}
+
+	void Sharer::setSpeedX(double spx)
+	{
+		pthread_mutex_lock(&this->synch);
+		this->speed_x = spx;
+		pthread_mutex_unlock(&this->synch);
+	}
+
+	void Sharer::setSpeedY(double spy)
+	{
+		pthread_mutex_lock(&this->synch);
+		this->speed_y = spy;
 		pthread_mutex_unlock(&this->synch);
 	}
 
@@ -117,8 +133,27 @@ namespace navigatorCamera {
 		return retVal;
 	}
 
+	double Sharer::getSpeedX()
+	{
+		pthread_mutex_lock(&this->synch);
+		double retVal = this->speed_x;
+		pthread_mutex_unlock(&this->synch);
+
+		return retVal;
+	}
+
+	double Sharer::getSpeedY()
+	{
+		pthread_mutex_lock(&this->synch);
+		double retVal = this->speed_y;
+		pthread_mutex_unlock(&this->synch);
+
+		return retVal;
+	}
+
 	void Sharer::changePose3dTranslation(double sX, double sY, double sZ)
 	{
+
 		pthread_mutex_lock(&this->synch);
 		double step = this->trlnStp;
 		pthread_mutex_unlock(&this->synch);
@@ -131,6 +166,32 @@ namespace navigatorCamera {
 
 		// Put in vector the translation relative.
 		Eigen::Vector3d vRel((sX * step), (sY * step), (sZ * step));
+
+		// Apply the rotation at vector relative to obtain the translation absolute.
+		Eigen::Vector3d vAbs = R * vRel;
+
+		pthread_mutex_lock(&this->synchPose3D);
+		this->pose3d->x += vAbs[0];
+		this->pose3d->y += vAbs[1];
+		this->pose3d->z += vAbs[2];
+		pthread_mutex_unlock(&this->synchPose3D);
+	}
+
+	void Sharer::changePose3dTranslationSpeed()
+	{
+
+		pthread_mutex_lock(&this->synch);
+		double step = this->trlnStp;
+		pthread_mutex_unlock(&this->synch);
+
+		// Obtain the rotation matrix (R) with the quaternion of the current Pose3D.
+		pthread_mutex_lock(&this->synchPose3D);
+		jderobot::math::Quaterniond q(this->pose3d->q0, this->pose3d->q1, this->pose3d->q2, this->pose3d->q3);
+		pthread_mutex_unlock(&this->synchPose3D);
+		Eigen::Matrix3d R(q.toRotationMatrix());
+
+		// Put in vector the translation relative.
+		Eigen::Vector3d vRel((1. * speed_x), (1. * speed_y), (0. * step));
 
 		// Apply the rotation at vector relative to obtain the translation absolute.
 		Eigen::Vector3d vAbs = R * vRel;

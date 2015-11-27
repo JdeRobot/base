@@ -280,9 +280,7 @@ void GLWidget::UpdateRobot()
     this->robot_y = this->robot->getSensors()->getRobotPoseY()/100;
     this->robot_theta = this->robot->getSensors()->getRobotPoseTheta();
     this->rueda_theta = -this->robot->getActuators()->getMotorW();
-
-    if(this->robot->getSensors()->getBoolLaser())
-        this->laserData = this->robot->getSensors()->getLaserData();
+    this->laserData = this->robot->getSensors()->getLaserData();
 
     mutex.unlock();
 }

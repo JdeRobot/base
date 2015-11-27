@@ -34,6 +34,9 @@ private:
 
     // ICE INTERFACES
     jderobot::MotorsPrx mprx;
+ 
+    //ICE interfaces available for connection on demand
+    bool motorsON ;
 
     float motorVin;
     float motorWin;

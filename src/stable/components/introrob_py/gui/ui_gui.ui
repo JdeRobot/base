@@ -131,19 +131,6 @@
      <string>Sensors</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="colorFilterCheck">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>280</y>
-      <width>94</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Color filter</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="altdLabel">
     <property name="geometry">
      <rect>
@@ -285,6 +272,19 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="resetButton">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>140</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
     </property>
    </widget>
   </widget>

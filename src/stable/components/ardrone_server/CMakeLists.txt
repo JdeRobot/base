@@ -11,8 +11,10 @@ if(ARDRONE_ALL_DEPS)
 		${Boost_INCLUDE_DIR}
 		${EIGEN_INCLUDE_DIR}
 		${libxmlpp_INCLUDE_DIRS}
-		)
-        
+		${ardronelib_INCLUDE_DIRS})
+
+	link_directories(
+		${ardronelib_LIBRARY_DIRS})
 
 	add_executable(ardrone_server src/ardrone_driver.cpp 
 					src/video.cpp 
@@ -28,12 +30,7 @@ if(ARDRONE_ALL_DEPS)
 					src/ardrone_config.cpp)
 
 	target_link_libraries(ardrone_server 
-				${ARDRONE_PCDRONE_LIB} 
-				${ARDRONE_AVCODEC_LIB} 
-				${ARDRONE_AVUTIL_LIB} 
-				${ARDRONE_SWSCALE_LIB} 
-				${ARDRONE_VLIB_LIB}  
-				${ARDRONE_SDK_LIB} 
+				${ardronelib_LIBRARIES}
 				SDL 
 				${CMAKE_THREAD_LIBS_INIT})
 
@@ -60,6 +57,6 @@ if(ARDRONE_ALL_DEPS)
 	endif()
 
 ELSE()
-	message(SEND_ERROR "ardrone_server marked to build, but required dependencies were not met.
+	message(WARNING "ardrone_server marked to build, but required dependencies were not met.
 		You should install third party library: ardonelib")
 ENDIF()

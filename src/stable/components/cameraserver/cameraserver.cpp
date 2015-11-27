@@ -44,6 +44,8 @@
 #include <log/Logger.h>
 #include <jderobotutil/CameraHandler.h>
 #include <jderobotutil/CameraTask.h>
+#include <ns/ns.h>
+
 
 namespace cameraserver{
 
@@ -162,6 +164,10 @@ class CameraI:  public jderobot::CameraHandler {
 
 } //namespace
 
+
+jderobot::ns* namingService = NULL;
+
+
 int main(int argc, char** argv)
 {
 	std::vector<Ice::ObjectPtr> cameras;
@@ -192,6 +198,23 @@ int main(int argc, char** argv)
 
 		std::string Endpoints = prop->getProperty("CameraSrv.Endpoints");
 
+        // Naming Service
+        int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
+
+        if (nsActive)
+        {
+            std::string ns_proxy = prop->getProperty("NamingService.Proxy");
+            try
+            {
+                namingService = new jderobot::ns(ic, ns_proxy);
+            }
+            catch (Ice::ConnectionRefusedException& ex)
+            {
+                jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
+                exit(-1);
+            }
+        }
+
 		int nCameras = prop->getPropertyAsInt("CameraSrv.NCameras");
 		cameras.resize(nCameras);
 		Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints("CameraServer", Endpoints);
@@ -205,6 +228,8 @@ int main(int argc, char** argv)
 
 			adapter->add(object, ic->stringToIdentity(cameraName));
 
+            if (namingService)
+                namingService->bind(cameraName, Endpoints, object->ice_staticId());
 
 		}
 		adapter->activate();
