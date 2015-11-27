@@ -14,7 +14,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors : 
- *       Alberto Martín Florido <almartinflorido@gmail.com>	
+ *       Alberto Martín Florido <almartinflorido@gmail.com>
+ *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
 #ifndef _DRONE_CAMERASERVER_H_
@@ -27,6 +28,14 @@
 
 namespace pose3D
 {
+	typedef struct pose3d{
+		union{double x; double roll;};
+		union{double y; double pitch;};
+		union{double z; double yaw;};
+	}pose3d_t;
+	#define Point3D_OP(c,a,op,b) {c.x = a.x op b.x; c.y = a.y op b.y; c.z = a.z op b.z;}
+
+
 	class Pose3DI : virtual public jderobot::Pose3D
 	{
 		public:
@@ -35,10 +44,19 @@ namespace pose3D
 			virtual jderobot::Pose3DDataPtr getPose3DData(const Ice::Current&);
 			virtual Ice::Int setPose3DData(const jderobot::Pose3DDataPtr& data, const Ice::Current&);		
 		private:
+			void poseBoostrapWithExternals(pose3d_t current_xyz, pose3d_t current_angles);
+
 			jderobot::Pose3DDataPtr pose3D;
-			float deg2rad(float d);
 			ARDroneDriver *driver;
+
+			bool gps_on, gps_valid;
+			bool gps_is_bootstrapped;
+
+			Eigen::Quaternion<float> qR;
+			pose3d_t xyzT;
 	};
+
+
 }
 
 #endif
