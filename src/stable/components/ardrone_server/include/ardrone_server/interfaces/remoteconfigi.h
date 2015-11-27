@@ -20,7 +20,7 @@
 #ifndef _DRONE_REMOTECONFIGI_H_
 #define _DRONE_REMOTECONFIGI_H_
 
-#include "../ardrone_driver.h"
+#include "ardrone_server/ardrone_driver.h"
 #include <jderobot/remoteConfig.h>
 #include <fstream>
 #include <Ice/Ice.h>

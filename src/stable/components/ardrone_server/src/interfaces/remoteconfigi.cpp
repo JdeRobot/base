@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "remoteconfigi.h"
+#include "ardrone_server/interfaces/remoteconfigi.h"
 #include <cstdlib>
 #include <ctime>
 #include <cstdio>

@@ -16,18 +16,24 @@ if(ARDRONE_ALL_DEPS)
 	link_directories(
 		${ardronelib_LIBRARY_DIRS})
 
+	include_directories(include)
+
+
 	add_executable(ardrone_server src/ardrone_driver.cpp 
 					src/video.cpp 
 					src/ardrone_sdk.cpp 
 					src/teleop_twist.cpp
-					src/components/cameraserver.cpp 
-					src/components/cmdveli.cpp				
-					src/components/pose3di.cpp
-					src/components/remoteconfigi.cpp
-					src/components/navdatai.cpp
-					src/components/ardroneextrai.cpp
+
+					include/ardrone_server/interfaces/cameraserver.cpp
+					src/interfaces/cmdveli.cpp
+					src/interfaces/pose3di.cpp
+					src/interfaces/remoteconfigi.cpp
+					src/interfaces/navdatai.cpp
+					src/interfaces/ardroneextrai.cpp
+
 					src/ardrone_parser.cpp
-					src/ardrone_config.cpp)
+					src/ardrone_config.cpp
+	)
 
 	target_link_libraries(ardrone_server 
 				${ardronelib_LIBRARIES}

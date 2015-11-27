@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "cmdveli.h"
+#include "ardrone_server/interfaces/cmdveli.h"
 
 namespace cmdvel
 {

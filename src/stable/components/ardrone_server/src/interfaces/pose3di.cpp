@@ -17,7 +17,8 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
-#include "pose3di.h"
+
+#include "ardrone_server/interfaces/pose3di.h"
 #include <cmath>
 
 

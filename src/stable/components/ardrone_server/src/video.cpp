@@ -22,7 +22,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 modified by: Alberto Martín Florido <almartinflorido@gmail.com>
 */
 
-#include "video.h"
+#include "ardrone_server/video.h"
 
 #define NB_STAGES 10
 #define CAMIF_H_CAMERA_USED CAMIF_CAMERA_OVTRULY

@@ -17,23 +17,30 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#ifndef _DRONE_CMDVELI_H_
-#define _DRONE_CMDVELI_H_
+#ifndef _DRONE_EXTRAI_H_
+#define _DRONE_EXTRAI_H_
 
-#include "../teleop_twist.h"
-#include <jderobot/cmdvel.h>
+#include <ardrone_server/teleop_twist.h>
+#include <jderobot/ardroneextra.h>
 #include <Ice/Ice.h>
 
-namespace cmdvel
+namespace ardrone_extra
 {
-	class CMDVelI: virtual public jderobot::CMDVel
+	class ExtraI: virtual public jderobot::ArDroneExtra
 	{
 		public:
-			CMDVelI();
-			virtual ~CMDVelI();
-			virtual Ice::Int setCMDVelData(jderobot::CMDVelDataPtr const & data, Ice::Current const & c);
+			ExtraI();
+			virtual ~ExtraI();
+			virtual void land(Ice::Current const & c);
+			virtual void takeoff(Ice::Current const & c);
+			virtual void reset(Ice::Current const & c);
+			virtual void toggleCam(Ice::Current const & c);
+			virtual void recordOnUsb(bool  record, Ice::Current const & c);
+			virtual void ledAnimation(Ice::Int type, Ice::Float duration, Ice::Float freq, Ice::Current const & c);
+			virtual void flightAnimation(Ice::Int type, Ice::Float duration, Ice::Current const & c);
+			virtual void flatTrim(Ice::Current const & c);			
 		private:
-
+					
 	};
 }
 #endif

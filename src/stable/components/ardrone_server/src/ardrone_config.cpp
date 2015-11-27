@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "ardrone_config.h"
+#include "ardrone_server/ardrone_config.h"
 
 ArDroneConfig::ArDroneConfig()
 {

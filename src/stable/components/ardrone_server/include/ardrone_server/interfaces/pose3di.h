@@ -21,8 +21,8 @@
 #ifndef _DRONE_CAMERASERVER_H_
 #define _DRONE_CAMERASERVER_H_
 
-#include "../ardrone_sdk.h"
-#include "../ardrone_driver.h"
+#include "ardrone_server/ardrone_sdk.h"
+#include "ardrone_server/ardrone_driver.h"
 #include <Ice/Ice.h>
 #include <jderobot/pose3d.h>
 

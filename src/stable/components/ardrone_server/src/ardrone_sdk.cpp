@@ -22,9 +22,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 modified by: Alberto Martín Florido <almartinflorido@gmail.com>
 */
 
-#include "ardrone_sdk.h"
-#include "teleop_twist.h"
-#include "video.h"
+#include "ardrone_server/ardrone_sdk.h"
+#include "ardrone_server/teleop_twist.h"
+#include "ardrone_server/video.h"
 
 navdata_unpacked_t *shared_raw_navdata;
 
