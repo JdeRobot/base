@@ -533,7 +533,7 @@ void reverse_update_camera_matrix(TPinHoleCamera *camera)
 	in.y = 0;
 	in.h = 0;
 
-	backproject(&out, in, camera);
+	backproject(&out, in, *camera);
 
 	camera->foa.X = out.X;
 	camera->foa.Y = out.Y;
@@ -558,7 +558,7 @@ void reverse_update_camera_matrix(TPinHoleCamera *camera)
 	p2_rt_complete.y = 1;
 	p2_rt_complete.h = 0;
 
-	backproject(&p3, p2_rt_complete, camera);
+	backproject(&p3, p2_rt_complete, *camera);
 
 	TPinHoleCamera cameraAux; 
 	cameraAux = *camera;
