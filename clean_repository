@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 # Authors:
-#   mikel, rocapal, mmoya, varhub
+#   mikel, rocapal, mmoya(mikel), varhub
 # Signed by:
-#   varhub (2015.12.01)
+#   varhub, fqez (2015.12.01)
 
 delete=-delete
 [ "$1" = "--dry-run" ] && delete='-print'
