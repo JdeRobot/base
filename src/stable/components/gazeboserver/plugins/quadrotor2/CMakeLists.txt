@@ -77,6 +77,6 @@ target_link_libraries(quadrotorplugin2
 
 set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
 
-INSTALL (TARGETS quadrotorplugin2 DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
+INSTALL (TARGETS quadrotorplugin2 DESTINATION share/jderobot/gazebo/plugins/quadrotor/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/quadrotor/ COMPONENT core)

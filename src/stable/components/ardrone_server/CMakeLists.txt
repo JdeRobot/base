@@ -1,4 +1,3 @@
-
 if(ARDRONE_ALL_DEPS)
 	project(ardrone_server)
 

@@ -57,8 +57,6 @@ target_link_libraries(togglecamplugin
 )
 
 
-INSTALL (TARGETS quadrotorplugin imuplugin poseplugin togglecamplugin DESTINATION share/jderobot/gazebo/plugins/quadrotor/ )
+INSTALL (TARGETS quadrotorplugin imuplugin poseplugin togglecamplugin DESTINATION share/jderobot/gazebo/plugins/quadrotor/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/quadrotor/)
-
-
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/quadrotor/ COMPONENT core)

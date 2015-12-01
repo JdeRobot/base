@@ -14,6 +14,7 @@ IF(with_fireware)
     include_directories(/usr/include)
     link_directories(/usr/lib)
     SET(DEPS "${DEPS} libdc1394-22,")
+    SET(DEPS_DEV "${DEPS_DEV} libdc1394-22-dev,")
 ENDIF(with_fireware)
 
 
