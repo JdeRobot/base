@@ -31,6 +31,7 @@ find . -type d -name CMakeFiles $delete -o -path '*/CMakeFiles/*' $delete
 # remove Makefile files
 # whitelist!
 find . -type f -name Makefile ! -path '*/doc/paper-autonomous_robots/Makefile' $delete
+find . -type f -name 'Makefile-*' $delete
 
 # remove CMakeCache.txt files
 find -type f -name CMakeCache.txt $delete
