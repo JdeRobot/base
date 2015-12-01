@@ -13,30 +13,32 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors : 
- *       Alberto Martín Florido <almartinflorido@gmail.com>	
+ *  Authors :
+ *       Victor Arribas Raigadas <.varribas.urjc@gmail.com>
  */
 
-#include "cmdveli.h"
+#ifndef NAVDATAGPSI_H
+#define NAVDATAGPSI_H
 
-namespace cmdvel
+#include "ardrone_server/ardrone_sdk.h"
+#include "navdatagps.h"
+
+
+namespace ardrone_server {
+namespace interfaces {
+
+
+class NavdataGPSI: public ardrone::NavdataGPS
 {
-	CMDVelI::CMDVelI()
-	{
-		std::cout << "cmdvel start" << std::endl;
+public:
+    NavdataGPSI();
+    virtual ~NavdataGPSI();
+    ardrone::NavdataGPSData getNavdataGPS(Ice::Current const &);
 
-	}
-	
-	CMDVelI::~CMDVelI()
-	{
-	
-	}
-	
-	Ice::Int CMDVelI::setCMDVelData(jderobot::CMDVelDataPtr const & data, Ice::Current const & c)
-	{
-		setCMDVel(data);
-	}
-}
+private:
+    ardrone::NavdataGPSData gpsdata_defaults_;
+};
 
+}}//NS
 
-
+#endif // NAVDATAGPSI_H

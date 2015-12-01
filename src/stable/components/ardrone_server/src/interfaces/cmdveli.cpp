@@ -17,23 +17,26 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#ifndef _DRONE_CMDVELI_H_
-#define _DRONE_CMDVELI_H_
-
-#include "../teleop_twist.h"
-#include <jderobot/cmdvel.h>
-#include <Ice/Ice.h>
+#include "ardrone_server/interfaces/cmdveli.h"
 
 namespace cmdvel
 {
-	class CMDVelI: virtual public jderobot::CMDVel
+	CMDVelI::CMDVelI()
 	{
-		public:
-			CMDVelI();
-			virtual ~CMDVelI();
-			virtual Ice::Int setCMDVelData(jderobot::CMDVelDataPtr const & data, Ice::Current const & c);
-		private:
+		std::cout << "cmdvel start" << std::endl;
 
-	};
+	}
+	
+	CMDVelI::~CMDVelI()
+	{
+	
+	}
+	
+	Ice::Int CMDVelI::setCMDVelData(jderobot::CMDVelDataPtr const & data, Ice::Current const & c)
+	{
+		setCMDVel(data);
+	}
 }
-#endif
+
+
+

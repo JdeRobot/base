@@ -22,7 +22,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 modified by: Alberto Martín Florido <almartinflorido@gmail.com>
 */
 
-#include "teleop_twist.h"
+#include "ardrone_server/teleop_twist.h"
 #include "utils/ardrone_date.h"
 
 inline float max(float a, float b) { return a > b ? a : b; }

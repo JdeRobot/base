@@ -20,7 +20,7 @@
 #ifndef _DRONE_NAVDATAI_H_
 #define _DRONE_NAVDATAI_H_
 
-#include "../ardrone_sdk.h"
+#include "ardrone_server/ardrone_sdk.h"
 #include <jderobot/navdata.h>
 #include <iostream>
 #include <vector>

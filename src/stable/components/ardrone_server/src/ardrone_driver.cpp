@@ -17,14 +17,16 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "ardrone_driver.h"
-#include "components/pose3di.h"
-#include "components/remoteconfigi.h"
-#include "components/cameraserver.cpp"
-#include "components/navdatai.h"
-#include "components/cmdveli.h"
-#include "components/ardroneextrai.h"
+#include "ardrone_server/ardrone_driver.h"
+#include "ardrone_server/interfaces/pose3di.h"
+#include "ardrone_server/interfaces/remoteconfigi.h"
+#include "ardrone_server/interfaces/cameraserver.cpp" /// FOUND A VERY DANGEROUS PROBLEM HERE
+#include "ardrone_server/interfaces/navdatai.h"
+#include "ardrone_server/interfaces/cmdveli.h"
+#include "ardrone_server/interfaces/ardroneextrai.h"
+#include "ardrone_server/interfaces/navdatagpsi.h"
 #include <signal.h>
+
 
 ARDroneDriver::ARDroneDriver()
 {
@@ -247,7 +249,15 @@ void ARDroneDriver::initInterfaces()
 		Ice::ObjectAdapterPtr adapterextra =ic->createObjectAdapterWithEndpoints("ArDroneExtra",extraEndpoints);
 		Ice::ObjectPtr extraO =new ardrone_extra::ExtraI();
 		adapterextra->add(extraO,ic->stringToIdentity(extraName));
-		adapterextra->activate();									
+		adapterextra->activate();
+		//Interface NavdataGPS
+		std::string gpsName = prop->getProperty("ArDrone.NavdataGPS.Name");
+		if (!gpsName.empty()){
+			Ice::ObjectAdapterPtr adapternavGPS =ic->createObjectAdapter("ArDrone.NavdataGPS");
+			Ice::ObjectPtr navGPSO = new ardrone_server::interfaces::NavdataGPSI();
+			adapternavGPS->add(navGPSO,ic->stringToIdentity(gpsName));
+			adapternavGPS->activate();
+		}
 
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;

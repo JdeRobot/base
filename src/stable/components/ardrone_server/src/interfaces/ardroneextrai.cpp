@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "ardroneextrai.h"
+#include "ardrone_server/interfaces/ardroneextrai.h"
 
 namespace ardrone_extra
 {

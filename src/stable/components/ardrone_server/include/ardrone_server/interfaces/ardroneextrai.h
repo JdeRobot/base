@@ -17,28 +17,30 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#ifndef _DRONE_REMOTECONFIGI_H_
-#define _DRONE_REMOTECONFIGI_H_
+#ifndef _DRONE_EXTRAI_H_
+#define _DRONE_EXTRAI_H_
 
-#include "../ardrone_driver.h"
-#include <jderobot/remoteConfig.h>
-#include <fstream>
+#include <ardrone_server/teleop_twist.h>
+#include <jderobot/ardroneextra.h>
 #include <Ice/Ice.h>
 
-namespace remoteconfig{
-	class RemoteConfigI: virtual public jderobot::remoteConfig {
+namespace ardrone_extra
+{
+	class ExtraI: virtual public jderobot::ArDroneExtra
+	{
 		public:
-			RemoteConfigI(ARDroneDriver *driver);
-			virtual ~RemoteConfigI();
-			virtual Ice::Int initConfiguration(const Ice::Current&);
-			virtual std::string read(Ice::Int id, const Ice::Current&);
-			virtual Ice::Int write(const std::string& data, Ice::Int id, const Ice::Current&);
-			virtual Ice::Int setConfiguration(Ice::Int id, const Ice::Current&);
+			ExtraI();
+			virtual ~ExtraI();
+			virtual void land(Ice::Current const & c);
+			virtual void takeoff(Ice::Current const & c);
+			virtual void reset(Ice::Current const & c);
+			virtual void toggleCam(Ice::Current const & c);
+			virtual void recordOnUsb(bool  record, Ice::Current const & c);
+			virtual void ledAnimation(Ice::Int type, Ice::Float duration, Ice::Float freq, Ice::Current const & c);
+			virtual void flightAnimation(Ice::Int type, Ice::Float duration, Ice::Current const & c);
+			virtual void flatTrim(Ice::Current const & c);			
 		private:
-			std::ofstream f2;
-			int idLocal;
-			std::string path;
-			ARDroneDriver *driver;
+					
 	};
 }
 #endif

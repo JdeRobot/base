@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "ardrone_parser.h"
+#include "ardrone_server/ardrone_parser.h"
 #include <fstream>
 
 using namespace boost;

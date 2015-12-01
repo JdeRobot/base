@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "navdatai.h"
+#include "ardrone_server/interfaces/navdatai.h"
 
 namespace navdata
 {
