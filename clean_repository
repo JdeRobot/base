@@ -41,5 +41,6 @@ find -type f -name CMakeCache.txt $delete
 find src/stable/interfaces/ ! -name '*.ice' ! -name 'CMakeLists.txt' ! -name '.keepme' -type f $delete
 
 ## remove generated libraries (*.so and *.a files)
-find -type f -name '*\.so*' $delete
+find -type f -name '*\.so' $delete
+find -type f -name '*\.so\.*' $delete
 find -type f -name '*\.a' $delete
