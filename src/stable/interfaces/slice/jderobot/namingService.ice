@@ -23,7 +23,7 @@
 #ifndef NAMING_SERVICE_ICE
 #define NAMING_SERVICE_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 module jderobot {
 

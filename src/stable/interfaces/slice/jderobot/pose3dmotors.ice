@@ -22,7 +22,7 @@
 #ifndef POSE3DMOTORS_ICE
 #define POSE3DMOTORS_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 module jderobot{  
 

@@ -17,7 +17,7 @@
  *       Alberto Martín Florido <almartinflorido@gmail.com>	
  */
 
-#include "ardrone_config.h"
+#include "ardrone_server/ardrone_config.h"
 
 ArDroneConfig::ArDroneConfig()
 {
@@ -40,7 +40,9 @@ bool ArDroneConfig::setParameterValue(std::string key, double value)
 	if(ret.second==false){
 		return false;
 	}
+#ifdef ARDRONE_TEST_PARSER
 	std::cout << "PUT Parameter: " << key << " value: " << value << std::endl;
+#endif
 	return true;
 }
 double ArDroneConfig::getParameterValue(std::string key)
@@ -50,7 +52,9 @@ double ArDroneConfig::getParameterValue(std::string key)
 	if(it==parameters.end()){
 		return -1;
 	}
+#ifdef ARDRONE_TEST_PARSER
 	std::cout << "GET Parameter: " << key << " value: " << it->second << std::endl;
+#endif
 	return it->second;
 }
 std::vector<double> ArDroneConfig::getValuesAsArray()

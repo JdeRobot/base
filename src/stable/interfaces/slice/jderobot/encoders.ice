@@ -22,7 +22,7 @@
 #ifndef ENCODERS_ICE
 #define ENCODERS_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 
 module jderobot{  

@@ -95,6 +95,16 @@ extern "C" {
 	int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera);
 	void display_camerainfo(TPinHoleCamera camera);
 }
+#else
+TPinHoleCamera xmlReader(TPinHoleCamera* camera, const char *filename);
+void xmlWriter(TPinHoleCamera camera, const char *filename);
+void update_camera_matrix(TPinHoleCamera *camera);
+void reverse_update_camera_matrix(TPinHoleCamera *camera);
+void update_stereocamera_matrix(TPinHoleStereocamera *stereo);
+int project(HPoint3D in, HPoint2D *out, TPinHoleCamera camera);
+int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera);
+int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera);
+void display_camerainfo(TPinHoleCamera camera);
 #endif
 
 #endif /*PROGEO_H*/

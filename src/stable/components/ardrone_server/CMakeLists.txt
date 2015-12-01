@@ -1,4 +1,15 @@
 if(ARDRONE_ALL_DEPS)
+	project(ardrone_server)
+
+	# Ice msg
+	set(SLICE_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include-slice)
+	file(MAKE_DIRECTORY ${SLICE_OUTPUT})
+	execute_process(
+		COMMAND slice2cpp ${CMAKE_CURRENT_SOURCE_DIR}/slice/navdatagps.ice --output-dir=${SLICE_OUTPUT}
+	)
+	include_directories(${SLICE_OUTPUT})
+	add_library(ardrone_server_msgs STATIC ${SLICE_OUTPUT}/navdatagps.cpp)
+
 
 	set(CMAKE_CXX_FLAGS "-w -lIce -lIceUtil")
 
@@ -15,18 +26,25 @@ if(ARDRONE_ALL_DEPS)
 	link_directories(
 		${ardronelib_LIBRARY_DIRS})
 
+	include_directories(include)
+
+
 	add_executable(ardrone_server src/ardrone_driver.cpp 
 					src/video.cpp 
 					src/ardrone_sdk.cpp 
 					src/teleop_twist.cpp
-					src/components/cameraserver.cpp 
-					src/components/cmdveli.cpp				
-					src/components/pose3di.cpp
-					src/components/remoteconfigi.cpp
-					src/components/navdatai.cpp			
-					src/components/ardroneextrai.cpp									
+
+					include/ardrone_server/interfaces/cameraserver.cpp
+					src/interfaces/cmdveli.cpp
+					src/interfaces/pose3di.cpp
+					src/interfaces/remoteconfigi.cpp
+					src/interfaces/navdatai.cpp
+					src/interfaces/ardroneextrai.cpp
+					src/interfaces/navdatagpsi.cpp
+
 					src/ardrone_parser.cpp
-					src/ardrone_config.cpp)
+					src/ardrone_config.cpp
+	)
 
 	target_link_libraries(ardrone_server 
 				${ardronelib_LIBRARIES}
@@ -40,6 +58,31 @@ if(ARDRONE_ALL_DEPS)
 				JderobotInterfaces
 				${libxmlpp_LIBRARIES})
 
+	target_link_libraries(ardrone_server
+				ardrone_server_msgs)
+
+
+	add_custom_command(TARGET ardrone_server POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_CURRENT_SOURCE_DIR}/config $<TARGET_FILE_DIR:ardrone_server>/config)
+
+	add_custom_command(TARGET ardrone_server POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg $<TARGET_FILE_DIR:ardrone_server>)
+
+
+	if(DEFINED ARDRONE_TEST_PARSER)
+		message(STATUS "Enable testing for ardrone_server")
+		add_executable(test_parser test/test_parser.cpp src/ardrone_parser.cpp src/ardrone_config.cpp)
+		set_target_properties(ardrone_server test_parser PROPERTIES COMPILE_DEFINITIONS "ARDRONE_TEST_PARSER")
+	endif()
+
+
+	add_executable(ardrone_print_gps_data test/print_gps_data.cpp)
+	target_link_libraries(ardrone_print_gps_data
+		${ZeroCIce_LIBRARIES}
+		ardrone_server_msgs
+		${CMAKE_THREAD_LIBS_INIT})
 
 ELSE()
 	message(WARNING "ardrone_server marked to build, but required dependencies were not met.

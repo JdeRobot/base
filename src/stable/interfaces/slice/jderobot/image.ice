@@ -24,7 +24,7 @@
 #ifndef IMAGE_ICE
 #define IMAGE_ICE
 
-#include <common.ice>
+#include <jderobot/common.ice>
 
 
 module jderobot{  
