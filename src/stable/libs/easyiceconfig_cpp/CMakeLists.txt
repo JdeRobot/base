@@ -60,3 +60,13 @@ set_target_properties(test_stdutils PROPERTIES COMPILE_FLAGS "-std=c++0x")
 add_executable(test_loader src/tests/test_loader.cpp)
 target_link_libraries(test_loader ${PROJECT_NAME} ${Ice_LIBRARIES})
 
+
+### Install
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)
+install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+    COMPONENT core
+)
