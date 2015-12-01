@@ -1,30 +1,44 @@
 #!/bin/sh
+#
+# Authors:
+#   mikel, rocapal, mmoya, varhub
+# Signed by:
+#   varhub (2015.12.01)
 
+delete=-delete
+[ "$1" = "--dry-run" ] && delete='-print'
+[ "$1" = "--verbose" ] && delete="-print $delete"
+
+# Execution is only allowed from root directory
+test -d src/stable && test -d src/testing
+if [ $? -ne 0 ]
+then
+    echo 'Execution is only allowed from root directory'>&2
+    exit 1
+fi
+
+# halt on fail
 set -e
 
-test -d src/stable && test -d src/testing
-
+## Remove CMake generated files
 # remove cmake_(un)?install.cmake files
-find -type f -name cmake_install.cmake -o -name cmake_uninstall.cmake -delete
+find -type f -name cmake_install.cmake $delete
+find -type f -name cmake_uninstall.cmake $delete
+
+# remove whole CMake build directories (a.k.a CMakeFiles subtree)
+find . -type d -name CMakeFiles $delete -o -path '*/CMakeFiles/*' $delete
 
 # remove Makefile files
-find src -type f -name Makefile | xargs -r rm
-test -d CMakeFiles \
-    && find CMakeFiles -type f -name Makefile -delete \
-    || true
-rm -f Makefile
-
-# remove CMakeFiles dirs
-find -type d -name CMakeFiles | xargs -r rm -r
+# whitelist!
+find . -type f -name Makefile ! -path '*/doc/paper-autonomous_robots/Makefile' $delete
 
 # remove CMakeCache.txt files
-find -type f -name CMakeCache.txt -delete
+find -type f -name CMakeCache.txt $delete
 
-# remove generated interface source files
-langdirs=`find src/stable/interfaces -mindepth 1 -maxdepth 1 -type d ! -name slice`
-for langdir in $langdirs; do
-    find "$langdir" -type f ! -name '*.tmp' -a ! -name '.keepme' -delete
-done
+## remove generated interface source files
+# whitelist approach
+find src/stable/interfaces/ ! -name '*.ice' ! -name 'CMakeLists.txt' ! -name '.keepme' -type f $delete
 
-# remove *.so and *.a files
-find src/stable -type f -name '*.so' -o -name '*.a' -delete
+## remove generated libraries (*.so and *.a files)
+find -type f -name '*\.so.*' $delete
+find -type f -name '*\.a' $delete
