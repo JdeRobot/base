@@ -7,4 +7,8 @@ CMakeFiles/
 *.cxx_parameters
 lib*.so.*
 Makefile
+src/stable/interfaces/cpp/
+src/stable/interfaces/java/
 src/stable/interfaces/python/
+
+*.qrc.depends

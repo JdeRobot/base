@@ -1,47 +1,46 @@
 #!/bin/sh
+#
+# Authors:
+#   mikel, rocapal, mmoya(mikel), varhub
+# Signed by:
+#   varhub, fqez (2015.12.01)
 
-mivar=`du -a | grep cmake_install.cmake | awk '{print $2}'`
+delete=-delete
+[ "$1" = "--dry-run" ] && delete='-print'
+[ "$1" = "--verbose" ] && delete="-print $delete"
 
-mv ./doc/paper-autonomous_robots/Makefile /tmp
+# Execution is only allowed from root directory
+test -d src/stable && test -d src/testing
+if [ $? -ne 0 ]
+then
+    echo 'Execution is only allowed from root directory'>&2
+    exit 1
+fi
 
-for file in $mivar; do
-	rm -f $file
-done
+# halt on fail
+set -e
 
-mivar=`du -a | grep Makefile$ | awk '{print $2}'`
+## Remove CMake generated files
+# remove cmake_(un)?install.cmake files
+find -type f -name cmake_install.cmake $delete
+find -type f -name cmake_uninstall.cmake $delete
 
+# remove whole CMake build directories (a.k.a CMakeFiles subtree)
+find . -type d -name CMakeFiles $delete -o -path '*/CMakeFiles/*' $delete
 
-for file in $mivar; do
-	rm -f $file
-done
+# remove Makefile files
+# whitelist!
+find . -type f -name Makefile ! -path '*/doc/paper-autonomous_robots/Makefile' $delete
+find . -type f -name 'Makefile-*' $delete
 
-mivar=`du -a | grep CMakeFiles | awk '{print $2}'`
+# remove CMakeCache.txt files
+find -type f -name CMakeCache.txt $delete
 
+## remove generated interface source files
+# whitelist approach
+find src/stable/interfaces/ ! -name '*.ice' ! -name 'CMakeLists.txt' ! -name '.keepme' -type f $delete
 
-for file in $mivar; do
-	rm -fr $file
-done
-
-mivar=`du -a | grep CMakeCache.txt | awk '{print $2}'`
-
-
-for file in $mivar; do
-	rm -fr $file
-done
-
-rm -f src/stable/interfaces/cpp/jderobot/*
-rm -rf src/stable/interfaces/python/jderobot/*
-
-mivar=`du -a | grep "cmake_uninstall.cmake$" | awk '{print $2}'`
-
-for file in $mivar; do
-	rm -fr $file
-done
-
-rm -f src/stable/libs/*/*.so
-rm -f src/stable/libs/*/*.a
-
-
-
-
-mv /tmp/Makefile ./doc/paper-autonomous_robots
+## remove generated libraries (*.so and *.a files)
+find -type f -name '*\.so' $delete
+find -type f -name '*\.so\.*' $delete
+find -type f -name '*\.a' $delete
