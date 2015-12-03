@@ -21,26 +21,41 @@ macro (project_suffix suffix)
 endmacro()
 
 
-## Tests
-if (test_quadrotor)
-	set(build_quadrotor2 ON)
-	set(build_introrob_py ON)
+## CMakeCache is a bad friend for this feature. Tweak it to avoid
+function (build_component component value)
+	if (NOT DEFINED build_${component})
+		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (defined by builtpresets)" ${ARGS})
+	elseif (NOT build_${component} EQUAL ${value})
+		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (overriden by builtpresets)" FORCE ${ARGS})
+	endif()
+endfunction()
 
-	set(build_core ON)
+
+## Tests
+if (test_ardrone)
+	build_component(ardrone_server ON)
+	build_component(introrob_py ON)
+
+	build_component(core ON)
+endif()
+
+if (test_quadrotor)
+	build_component(gazeboserver ON)
+	build_component(quadrotor2 ON)
+	build_component(quadrotor ON)
+	build_component(introrob_py ON)
+
+	build_component(core ON)
 endif()
 
 if (test_car)
-	set(build_car ON)
-	set(build_introrob_qt ON)
+	build_component(gazeboserver ON)
+	build_component(car ON)
+	build_component(introrob_qt ON)
 
-	set(build_core ON)
+	build_component(core ON)
 endif()
 
-
-# Gazebo plugins: patch to build parent dependency
-if (build_car OR build_quadrotor)
-	set(build_gazeboserver ON)
-endif()
 
 
 
@@ -49,24 +64,27 @@ endif()
 if (build_drivers)
 	project_suffix(drivers)
 	set(build-default OFF)
-	set(build_core ON)
-	# core drivers
+
+	build_component(core ON)
+	# todo: core drivers
 
 endif()
 
 if (build_core)
 	project_suffix(core)
 	set(build-default OFF)
-	set(build_msgs ON)
+
+	build_component(msgs ON)
 	# libs are included by default at now
 endif()
 
 if (build_msgs)
 	project_suffix(msgs)
 	set(build-default OFF)
-	set(build_interfaces_cpp ON)
-	set(build_interfaces_java ON)
-	set(build_interfaces_python ON)
+
+	build_component(interfaces_cpp ON)
+	build_component(interfaces_java ON)
+	build_component(interfaces_python ON)
 	# todo: remove libs from this build flavor
 endif()
 
