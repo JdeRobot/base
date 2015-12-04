@@ -23,6 +23,7 @@
 
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include <easyiceconfig/EasyIce.h>
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>

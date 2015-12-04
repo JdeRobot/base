@@ -121,7 +121,11 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
 #else
     Ice::InitializationData id;
     id.properties = Ice::createProperties();
+#if 0
     id.properties->load(iceConfigFile);
+#else /// EasyIce
+    easyiceconfig::loader::loadIceConfig(iceConfigFile, id.properties);
+#endif
     Ice::CommunicatorPtr ic = Ice::initialize(id);
 #endif
 
