@@ -3,6 +3,8 @@
 #include "gui/threadupdategui.h"
 #include "gui/stategui.h"
 
+#include "easyiceconfig/EasyIce.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -11,7 +13,7 @@ int main(int argc, char *argv[])
 
     try {
          //-----------------ICE----------------//
-         ic = Ice::initialize(argc, argv);
+         ic = EasyIce::initialize(argc, argv);
 
          // Variables Compartidas
          // Robot -> Sensores, navegacion, actuadores

@@ -27,6 +27,11 @@ if (${QT_COMPILE})
         ${INTERFACES_CPP_DIR}
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${easyiceconfig_INCLUDE_DIRS}
+    )
+
+    link_directories(
+        ${easyiceconfig_LIBRARY_DIRS}
     )
 
     add_executable( introrob_qt main.cpp depuratewindow.cpp MyAlgorithm.cpp
@@ -44,6 +49,7 @@ if (${QT_COMPILE})
 	    ${QT_LIBRARIES_JDE}
         JderobotInterfaces
         jderobotutil
+        ${easyiceconfig_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
 ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
     )

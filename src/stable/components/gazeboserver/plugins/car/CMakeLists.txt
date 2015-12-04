@@ -1,18 +1,26 @@
+
 include_directories(
 	${GAZEBO_INCLUDE_DIRS}
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR})
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${easyiceconfig_INCLUDE_DIRS}
+)
 
-link_directories(${GAZEBO_LIBRARY_DIRS})
+link_directories(
+    ${GAZEBO_LIBRARY_DIRS}
+    ${easyiceconfig_LIBRARY_DIRS}
+)
 #boost_system 
 add_library(carMotors SHARED carMotors.cc)
 target_link_libraries(carMotors 
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
 
+    ${easyiceconfig_LIBRARIES}
     colorspacesmm
-    JderobotInterfaces) 
+    JderobotInterfaces
+)
 
 
 INSTALL (TARGETS carMotors DESTINATION share/jderobot/gazebo/plugins/car/ COMPONENT core)

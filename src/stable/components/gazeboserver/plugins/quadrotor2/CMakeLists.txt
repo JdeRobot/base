@@ -4,12 +4,14 @@ include_directories(
 	${GAZEBO_INCLUDE_DIRS}
 	${INTERFACES_CPP_DIR}
 	${LIBS_DIR}
+	${easyiceconfig_INCLUDE_DIRS}
 )
 
 link_directories(
 	${GAZEBO_LIBRARY_DIRS}
 	${INTERFACES_CPP_DIR}
 	${LIBS_DIR}/visionlib/colorspaces
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 
@@ -67,6 +69,7 @@ target_link_libraries(quadrotorplugin2
 	IceUtil
 	JderobotInterfaces
 	${ZeroCIce_LIBRARIES}
+	${easyiceconfig_LIBRARIES}
 )
 
 # Application
