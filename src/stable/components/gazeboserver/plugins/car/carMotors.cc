@@ -232,7 +232,7 @@ namespace gazebo
 
         try {
 
-            ic = Ice::initialize(argc, argv);
+            ic = EasyIce::initialize(argc, argv);
 
             prop = ic->getProperties();
             std::string Endpoints = prop->getProperty("Motors.Endpoints");

@@ -12,6 +12,7 @@
 // ICE utils includes
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include <easyiceconfig/EasyIce.h>
 
 namespace gazebo {
     class Motors : public ModelPlugin
