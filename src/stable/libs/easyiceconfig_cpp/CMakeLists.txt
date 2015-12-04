@@ -7,14 +7,14 @@ project(easyiceconfig)
 # be ommited. Only Ice_LIBRARIES must be defined, and
 # we can handle it just like pkg-config
 #find_package(Ice)
-set(Ice_LIBRARIES "-lIce -lIceUtil")
+list(APPEND Ice_LIBRARIES Ice IceUtil)
 
 
 ### Project config
 include_directories(include)
 
 set(HEADERS
-    include/easyiceconfig/EasyIce.hpp
+    include/easyiceconfig/EasyIce.h
     include/easyiceconfig/hardcoredlocations.h
 
     include/easyiceconfig/loader.hpp
@@ -42,10 +42,10 @@ target_link_libraries(${PROJECT_NAME}-embedded ${Ice_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 ## Export library variables (like find_package)
-set_property(GLOBAL PROPERTY ${PROJECT_NAME}_FOUND 1)
-set_property(GLOBAL PROPERTY ${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
-set_property(GLOBAL PROPERTY ${PROJECT_NAME}_LIBRARY_DIRS "${CMAKE_CURRENT_BINARY_DIR}")
-set_property(GLOBAL PROPERTY ${PROJECT_NAME}_LIBRARIES "-l${PROJECT_NAME}")
+set(${PROJECT_NAME}_FOUND 1 CACHE BOOL "Find(${PROJECT_NAME})")
+set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "Find(${PROJECT_NAME})")
+set(${PROJECT_NAME}_LIBRARY_DIRS "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Find(${PROJECT_NAME})")
+set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NAME})")
 
 
 ## demo
