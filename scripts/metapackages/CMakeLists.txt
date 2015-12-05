@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 2.8)
+
+set(MAKE_PACKAGE_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/make_package.sh")
+set(MAKE_PACKAGE_CONFIG_DIR ${CMAKE_CURRENT_LIST_DIR})
+message(SEND_ERROR "CLD ${CMAKE_CURRENT_LIST_DIR}")
+
+SET (VERSION 5.3.0-rc1)
+SET (CPACK_PACKAGE_VERSION_MAJOR 5)
+SET (CPACK_PACKAGE_VERSION_MINOR 3)
+SET (CPACK_PACKAGE_VERSION_PATCH 0)
+SET (CPACK_DEBIAN_PACKAGE_VERSION ${VERSION})
+
+
+SET (PACKAGE_VERSION ${VERSION})
+set(PACKAGE_DEPENDS "${DEPS}")
+configure_file(jderobot-deps.info.in     jderobot-deps.info)
+
+set(PACKAGE_DEPENDS "${DEPS_DEV}")
+configure_file(jderobot-deps-dev.info.in jderobot-deps-dev.info)
+
+
