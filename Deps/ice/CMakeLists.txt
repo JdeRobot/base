@@ -1,4 +1,7 @@
-SET(CMAKE_MODULE_PATH "${DEPS_DIR}/ice")
+SET(CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH}
+	"${CMAKE_CURRENT_LIST_DIR}/CMake"
+)
 
 SET(slice_path /usr/share/slice)
 FIND_PACKAGE(ZeroCIceUtil)
