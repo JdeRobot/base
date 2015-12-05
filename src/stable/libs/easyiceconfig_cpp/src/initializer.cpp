@@ -24,9 +24,15 @@
 namespace easyiceconfig{
 namespace initializer{
 
+/**
+ * Like Ice::initialize but with path locator.
+ * Parses argv[0] like Ice::initialize (backward compatibility),
+ * but it should only parse from argv[1]. Take this into account
+ * for future.
+ */
 Ice::CommunicatorPtr
 initialize(int argc, char* argv[]){
-    Ice::StringSeq args(argv+1, argv+argc);
+    Ice::StringSeq args(argv, argv+argc);
     return initialize(args);
 }
 
@@ -39,7 +45,7 @@ initialize(Ice::StringSeq args){
 
 Ice::PropertiesPtr
 createProperties(int argc, char* argv[]){
-    Ice::StringSeq args(argv+1, argv+argc);
+    Ice::StringSeq args(argv, argv+argc);
     return easyiceconfig::loader::initializeProperties(args);
 }
 

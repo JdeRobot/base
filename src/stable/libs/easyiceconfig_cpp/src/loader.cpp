@@ -21,7 +21,6 @@
 #include "easyiceconfig/loader.hpp"
 #include "easyiceconfig/hardcoredlocations.h"
 
-
 namespace easyiceconfig{
 namespace loader{
 
@@ -53,6 +52,7 @@ loadIceConfig(std::string filename, Ice::PropertiesPtr properties){
         throw e;
     }
     properties->load(filepath);
+    std::cout<<"[Info] loaded Ice.Config file: "<<filepath<<std::endl;
     //properties->setProperty("Ice.Config", filepath);
     return properties;
 }
