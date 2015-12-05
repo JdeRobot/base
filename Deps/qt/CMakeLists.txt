@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 include(FindPkgConfig)
 
-FIND_PACKAGE(Qt4 COMPONENTS QtCore QtOpenGL QUIET)
+FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtOpenGL QUIET)
 include(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 

@@ -2,6 +2,7 @@ Package: jderobot-deps-dev
 Version: ${PACKAGE_VERSION}
 Architecture: all
 Section: net
+Priority: extra
 Size: 0
 Installed-Size: 0
 Depends: ${PACKAGE_DEPENDS}
