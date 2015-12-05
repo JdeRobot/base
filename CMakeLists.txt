@@ -232,9 +232,9 @@ FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/
 INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
 
 
-file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
-add_executable(dummy_main1 dummy_main1.c)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+#file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
+#add_executable(dummy_main1 dummy_main1.c)
+#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
 
 
 ###################
@@ -271,8 +271,8 @@ include (InstallRequiredSystemLibraries)
 SET (CPACK_GENERATOR "DEB")
 SET (CPACK_SOURCE_GENERATOR TGZ)
 SET (CPACK_SET_DESTDIR ON)
-SET (CPACK_DEB_COMPONENT_INSTALL ON)
-#SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+SET (CPACK_DEB_COMPONENT_INSTALL OFF)
+SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 
@@ -299,8 +299,8 @@ SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
 SET(DEPS "${DEPS} libvtk5.8")
 SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5-dev")
-set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
-set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
+#set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
+#set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
 
 if(DEFINED debug_deps)
 MESSAGE("Dependencias: ${DEPS}")
@@ -316,6 +316,24 @@ SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for rob
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
 SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+
+
+## Metapackages (at cmake time)
+include(scripts/metapackages/FindMetapackages.cmake)
+
+SET (PACKAGE_VERSION ${VERSION})
+set(PACKAGE_DEPENDS "${DEPS}")
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
+
+set(PACKAGE_DEPENDS "${DEPS_DEV}")
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev.info)
+
+execute_process(
+    COMMAND ${MAKE_PACKAGE_EXECUTABLE}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)
