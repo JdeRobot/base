@@ -16,8 +16,8 @@ FIND_PACKAGE(ZeroCIce)
 			include_directories(${ZeroCIce_INCLUDE_DIR})
 			link_directories(${ZeroCIce_LIBRARIES})
 
-			SET(DEPS "${DEPS} libzeroc-ice35, libiceutil35, libicestorm35,")
-			SET(DEPS_DEV "${DEPS_DEV} ice35-slice, ice35-translators, libzeroc-ice35-dev, ice35-services,")
+			list(APPEND DEPS libzeroc-ice35 libiceutil35 libicestorm35)
+			list(APPEND DEPS_DEV ice35-slice ice35-translators libzeroc-ice35-dev ice35-services)
 			
 
 		ENDIF( ZeroCIceUtil_LIBRARY )

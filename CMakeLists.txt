@@ -145,13 +145,14 @@ include(${DEPS_DIR}/matplotlib_py/CMakeLists.txt)
 include(${DEPS_DIR}/qwt5/CMakeLists.txt)
 include(${DEPS_DIR}/cuda/CMakeLists.txt)
 include(${DEPS_DIR}/ardrone_sdk/CMakeLists.txt)
+list(APPEND DEPS libvtk5.8)
+list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
 
 
-#include(${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CMakeLists.txt)
+STRING(REGEX REPLACE ";" ", " DEPS "${DEPS}")
+STRING(REGEX REPLACE ";" ", " DEPS_DEV "${DEPS_DEV}")
 
 
-
-#file(READ ${CMAKE_CURRENT_SOURCE_DIR}/jderobot.cfg contents)
 
 # START RECURSIVE
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -298,8 +299,6 @@ SET (CPACK_MONOLITHIC_INSTALL ON)
 #SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
 
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
-SET(DEPS "${DEPS} libvtk5.8")
-SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5-dev")
 #set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
 #set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
 

@@ -7,7 +7,7 @@ IF( xerces_INCLUDE_DIR )
 		MESSAGE ("${xerces_INCLUDE_DIR}")
 		include_directories(${xerces_INCLUDE_DIR})
 		link_directories(${xerces_LIBRARIES})
-		SET(DEPS "${DEPS} libxerces-c3.1,")
+		list(APPEND DEPS libxerces-c3.1)
 
     ENDIF( xerces_LIBRARIES )
 ENDIF(xerces_INCLUDE_DIR)

@@ -13,7 +13,7 @@ if (QT_LIBRARIES_JDE)
     SET(QT_COMPILE TRUE)
 		MESSAGE("*** QT LIBRARIES Found LIBRARIES FOUND")
 
-	SET(DEPS "${DEPS} libqtcore4, libqt4-opengl,")
+	list(APPEND DEPS libqtcore4 libqt4-opengl)
 else()
     SET(QT_COMPILE FALSE)
 		MESSAGE("*** QT LIBRARIES NOT FOUND")
