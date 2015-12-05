@@ -1,7 +1,7 @@
 #  Copyright (C) 2015 JDE Developers Team
 #  Authors:
 #    Victor Arribas <v.arribas.urjc@gmail.com>
-#    Francisco Perez
+#    Francisco Perez <f.perez475@gmail.com>
 
 
 ## New alias for build-default
@@ -56,6 +56,14 @@ if (test_car)
 	build_component(core ON)
 endif()
 
+if (test_flyingKinect)
+	build_component(gazeboserver ON)
+	build_component(flyingKinect ON)
+	build_component(navigatorCamera ON)
+	build_component(rgbdViewer ON)
+
+	build_component(core ON)
+endif()
 
 
 
