@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+
+set(MAKE_PACKAGE_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/make_packages.sh")
+set(MAKE_PACKAGE_CONFIG_DIR ${CMAKE_CURRENT_LIST_DIR})
+
+

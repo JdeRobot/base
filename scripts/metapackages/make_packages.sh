@@ -24,13 +24,16 @@
 #   - clean argument as alias for rm -fr ./build
 
 
+build=.dpkg_pkgs
+mkdir -p $build
 for pkginfo in *.info
 do
 	pkgname=${pkginfo%.info}
 	echo $pkgname
-	target=build/$pkgname/DEBIAN
+	target=$build/$pkgname/DEBIAN
 	mkdir -p $target
 	cp $pkginfo $target/control
-	dpkg --build build/$pkgname
+	dpkg --build $build/$pkgname
+	cp $build/${pkgname}.deb .
 done
 
