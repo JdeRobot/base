@@ -23,7 +23,7 @@
 
 
 #include <Ice/Ice.h>
-#include <easyiceconfig/EasyIce.hpp>
+#include <easyiceconfig/EasyIce.h>
 #include <easyiceconfig/debug.hpp>
 #include <iostream>
 
