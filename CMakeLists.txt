@@ -119,6 +119,7 @@ endforeach()
 
 list(APPEND DEPS libvtk5.8)
 list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
+list(APPEND DEPS_DEV "${DEPS}")
 
 # list(APPEND uses ; separator. We need ,
 STRING(REGEX REPLACE ";" ", " DEPS "${DEPS}")
@@ -294,8 +295,8 @@ SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PA
 include(scripts/metapackages/FindMetapackages.cmake)
 
 SET (PACKAGE_VERSION ${VERSION})
-set(PACKAGE_DEPENDS "${DEPS}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
+#set(PACKAGE_DEPENDS "${DEPS}")
+#configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
 
 set(PACKAGE_DEPENDS "${DEPS_DEV}")
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev.info)
