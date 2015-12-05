@@ -12,3 +12,5 @@ src/stable/interfaces/java/
 src/stable/interfaces/python/
 
 *.qrc.depends
+
+.dpkg_pkgs/
