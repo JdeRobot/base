@@ -20,7 +20,10 @@
 #ifndef REPLAYCONTROL_ICE
 #define REPLAYCONTROL_ICE
 
-module jderobot{  
+module jderobot{
+
+	enum ReplayerStatus { WAITING, PLAYING,PAUSED,FINISHED};
+
 
 	interface replayControl{
 		
@@ -30,6 +33,7 @@ module jderobot{
 		bool setStep(int step);
 		long getTime();
 		bool goTo(long seek);
+		ReplayerStatus getStatus();
 	};
 };
 #endif 
