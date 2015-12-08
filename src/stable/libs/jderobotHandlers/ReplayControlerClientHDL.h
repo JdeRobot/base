@@ -7,7 +7,7 @@
 
 #include <jderobot/replayControl.h>
 #include <boost/shared_ptr.hpp>
-#include <jderobot/ns/ns.h>
+#include <ns/ns.h>
 #include <jderobotHandlers/common/CommonHandler.h>
 
 
