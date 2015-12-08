@@ -107,7 +107,7 @@ namespace jderobot
 
 
 		/**
-		 * \brief Return a proxy using the registered name
+		 * \brief Return a NamingNodePtr using the registered name
 		 */
 		jderobot::NamingNodePtr getProxy(std::string name);
 
@@ -116,6 +116,12 @@ namespace jderobot
 		 * \brief Returns the ICE proxy to namingService
 		 */
 		jderobot::NamingServicePrx getIceProxy();
+
+
+		/**
+ * \brief Return a NamingNodePtr using the registered name
+ */
+		std::string getProxyStrFromName(std::string name);
 
 	private:
 

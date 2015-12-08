@@ -164,5 +164,8 @@ jderobot::NamingNodePtr ns::getProxy(std::string name)
 	}
 
 
-
+	std::string ns::getProxyStrFromName(std::string name) {
+		jderobot::NamingNodePtr proxy = getProxy(name);
+		return getProxyStr(*proxy);
+	}
 }
