@@ -288,7 +288,28 @@ public:
 };
 
 
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
+}
+
+
 int main(int argc, char** argv){
+
+	std::string replayerFilePath("data/replayer.cfg");
+	std::ofstream replayerFile;
+	replayerFile.open(replayerFilePath.c_str());
 
 
 
@@ -382,6 +403,7 @@ int main(int argc, char** argv){
       
 
 		nCameras = prop->getPropertyAsIntWithDefault("Recorder.nCameras",0);
+		replayerFile << "Replayer.nCameras=" << nCameras << std::endl;
 		if (nCameras > 0 ){
 			struct stat buf;
 			char dire[]="./data/images/";
@@ -405,8 +427,6 @@ int main(int argc, char** argv){
 			}
 			nConsumidores=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
 			poolSize=prop->getPropertyAsIntWithDefault("Recorder.poolSize",10);
-
-
 		}
 
 
@@ -429,6 +449,17 @@ int main(int argc, char** argv){
 			std::stringstream sProxy;
 			// Get driver camera
 			sProxy << "Recorder.Camera" << i+1 << ".Proxy";
+
+
+			//get the camera name
+			std::string cameraName = prop->getProperty(sProxy.str());
+
+			std::vector<std::string> splitedName = split(cameraName, ':');
+			replayerFile << "Replayer.Camera." << i << ".Name=" << splitedName[0] << std::endl;
+			replayerFile << "Replayer.Camera." << i << ".Dir=" << cameraPath << std::endl;
+			replayerFile << "Replayer.Camera." << i << ".FileFormat=" << imageFormat << std::endl;
+
+
 			Ice::ObjectPrx camara = ic->propertyToProxy(sProxy.str());
 			if (0==camara)
 				throw "Could not create proxy to camera1 server";
@@ -471,26 +502,17 @@ int main(int argc, char** argv){
 			// Naming Service
 			int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
 
-			if (nsActive)
-			{
+			if (nsActive) {
 				std::string ns_proxy = prop->getProperty("NamingService.Proxy");
-				try
-				{
+				try {
 					namingService = new jderobot::ns(ic, ns_proxy);
 				}
-				catch (Ice::ConnectionRefusedException& ex)
-				{
+				catch (Ice::ConnectionRefusedException &ex) {
 					jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
 					exit(-1);
 				}
-
 				namingService->bind(name, Endpoints, recorder_prx->ice_staticId());
-
 			}
-
-
-
-
 		}
 
 
