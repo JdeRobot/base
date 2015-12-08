@@ -24,6 +24,7 @@
 #include <pthread.h>
 #include <fstream>
 #include <vector>
+#include <Ice/Properties.h>
 
 
 namespace jderobot
@@ -109,6 +110,9 @@ namespace jderobot
 		 *
 		 */
 		void error (std::string message);
+
+
+		void analizeProperties(Ice::PropertiesPtr& prop, const std::string& componentPrefix);
 
 	private:
 
