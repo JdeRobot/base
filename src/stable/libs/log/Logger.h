@@ -112,6 +112,12 @@ namespace jderobot
 		void error (std::string message);
 
 
+		/**
+		 * \brief Analyzes the configuration keys related to the logger
+		 *
+		 * @param prop the Ice properties
+		 * @param componentPrefix The string prefix of the component
+		 */
 		void analizeProperties(Ice::PropertiesPtr& prop, const std::string& componentPrefix);
 
 	private:
