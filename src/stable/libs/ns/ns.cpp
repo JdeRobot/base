@@ -25,7 +25,23 @@ namespace jderobot
 
 ns::ns(Ice::CommunicatorPtr& ic, std::string proxy)
 {
+	constructor(ic,proxy);
+}
 
+ns::ns(const Ice::CommunicatorPtr& ic, const std::string& configKey, bool active){
+	if (active) {
+		Ice::PropertiesPtr prop = ic->getProperties();
+		std::string ns_proxy = prop->getProperty(configKey);
+		try {
+			constructor(ic, ns_proxy);
+		}
+		catch (Ice::ConnectionRefusedException &ex) {
+			jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
+		}
+	}
+}
+
+bool ns::constructor(const Ice::CommunicatorPtr& ic, const std::string& proxy){
 	Ice::ObjectPrx namingService = ic->stringToProxy(proxy);
 
 	if (0==namingService)
@@ -37,8 +53,11 @@ ns::ns(Ice::CommunicatorPtr& ic, std::string proxy)
 		throw "NamingService: Invalid proxy to remote namingService";
 	else
 		jderobot::Logger::getInstance()->info("NamingService connection OK! - " + proxy);
-
+	return true;
 }
+
+
+
 ns::~ns()
 {
 }
@@ -119,6 +138,30 @@ std::vector<std::string>& ns::split(const std::string &s, char delim, std::vecto
     return elems;
 }
 
+
+
+jderobot::NamingNodePtr ns::getProxy(std::string name)
+{
+
+	jderobot::NodeContainerPtr list;
+	try{
+		list = resolveByName(name);
+	}
+	catch (const jderobot::NameNotExistException &ex) {
+		jderobot::Logger::getInstance()->error("getProxy: Not resolve naming service: " + name);
+		throw;
+	}
+
+	jderobot::NamingNodePtr proxy = list->nodes[0];
+	jderobot::Logger::getInstance()->info ("Proxy ("+ name +"): " + getProxyStr(*proxy));
+
+	return proxy;
+}
+
+
+	jderobot::NamingServicePrx ns::getIceProxy(){
+		return this->mNamingService;
+	}
 
 
 
