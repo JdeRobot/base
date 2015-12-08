@@ -309,7 +309,7 @@ int main(int argc, char** argv){
 
 	std::string replayerFilePath("data/replayer.cfg");
 	std::ofstream replayerFile;
-	replayerFile.open(replayerFilePath.c_str());
+
 
 
 
@@ -388,6 +388,7 @@ int main(int argc, char** argv){
 		{
 			system("mkdir data");
 		}
+		replayerFile.open(replayerFilePath.c_str());
    
 		Ice::PropertiesPtr prop;
 
@@ -456,7 +457,7 @@ int main(int argc, char** argv){
 
 			std::vector<std::string> splitedName = split(cameraName, ':');
 			replayerFile << "Replayer.Camera." << i << ".Name=" << splitedName[0] << std::endl;
-			replayerFile << "Replayer.Camera." << i << ".Dir=" << cameraPath << std::endl;
+			replayerFile << "Replayer.Camera." << i << ".Dir=" << cameraPath.str() << std::endl;
 			replayerFile << "Replayer.Camera." << i << ".FileFormat=" << imageFormat << std::endl;
 
 
