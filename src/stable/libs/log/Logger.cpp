@@ -157,4 +157,29 @@ void Logger::error (std::string message)
 }
 
 
+void Logger::analizeProperties(Ice::PropertiesPtr &prop, const std::string &componentPrefix) {
+	// Analyze LOG section
+
+	std::string logFile = prop->getProperty(componentPrefix + ".Log.File.Name");
+	if (logFile.size()==0)
+		warning("You didn't set log file!");
+	else
+		setFileLog(logFile);
+
+	std::string logLevel = prop->getProperty(componentPrefix + ".Log.File.Level");
+	if (logLevel.size()==0)
+		warning("You didn't set *.Log.File.Level key!");
+	else
+		setFileLevel(jderobot::Levels(boost::lexical_cast<int>(logLevel)));
+
+	std::string screenLevel = prop->getProperty(componentPrefix + ".Log.Screen.Level");
+	if (screenLevel.size()==0)
+		warning("You didn't set *.Log.Screen.Level key!");
+	else
+		setScreenLevel(jderobot::Levels(boost::lexical_cast<int>(screenLevel)));
+
+	info("Logger:: screenLevel=" + screenLevel + " logLevel=" + logLevel + " LogFile=" + logFile);
+}
+
+
 }

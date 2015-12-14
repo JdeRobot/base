@@ -21,7 +21,6 @@ add_executable (replayController ${SOURCE_FILES})
 
 
 TARGET_LINK_LIBRARIES(replayController
-    ${CMAKE_THREAD_LIBS_INIT} 
     ${GLUT_LIBRARIES}
     ${OpenCV_LIBRARIES}
     ${OpenCVGUI_LIBRARIES}
@@ -33,5 +32,7 @@ TARGET_LINK_LIBRARIES(replayController
     jderobotutil
     progeo
     pioneer
+    jderobotHandlers
     ${ZeroCIce_LIBRARIES}
-)
+    ${CMAKE_THREAD_LIBS_INIT}
+    )

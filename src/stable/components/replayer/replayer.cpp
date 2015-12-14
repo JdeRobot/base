@@ -966,6 +966,11 @@ namespace replayer {
 				//set the current position to seek
 				return 0;
 			}
+            virtual jderobot::ReplayerStatus  getStatus(const Ice::Current&){
+                return controller->getstatus();
+            }
+
+
 		private:
 
 		};
@@ -974,10 +979,9 @@ namespace replayer {
 
 } //namespace
 
-jderobot::ns* namingService = NULL;
 bool killed;
 Ice::CommunicatorPtr ic;
-
+jderobot::nsPtr ns;
 void exitApplication(int s){
 
 
@@ -985,11 +989,9 @@ void exitApplication(int s){
 	componentAlive=false;
 
 	// NamingService
-	if (namingService != NULL)
+	if (ns)
 	{
-		namingService->unbindAll();
-
-		delete(namingService);
+		ns->unbindAll();
 	}
 
 	ic->shutdown();
@@ -1022,50 +1024,20 @@ int main(int argc, char** argv) {
 		ic = Ice::initialize(argc, argv);
 		Ice::PropertiesPtr prop = ic->getProperties();
 
-		replayer::controller= new replayer::control(initState);
+		bool startPlaying = (bool)prop->getPropertyAsIntWithDefault(componentPrefix+".startPlaying",1);
+		bool repeat = (bool)prop->getPropertyAsIntWithDefault(componentPrefix+".repeat",1);
 
+		replayer::controller= new replayer::control(initState,startPlaying,repeat);
 
 		// Naming Service
 		int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
-
-		if (nsActive)
-		{
-			std::string ns_proxy = prop->getProperty("NamingService.Proxy");
-			try
-			{
-				namingService = new jderobot::ns(ic, ns_proxy);
-			}
-			catch (Ice::ConnectionRefusedException& ex)
-			{
-				jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
-				exit(-1);
-			}
+		ns = jderobot::nsPtr(new jderobot::ns(ic,"NamingService.Proxy",nsActive));
+		if (nsActive && !ns->getIceProxy()){
+			return -1;
 		}
 
 		// Analyze LOG section
-
-		std::string logFile = prop->getProperty(componentPrefix + ".Log.File.Name");
-		if (logFile.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set log file!");
-		else
-			jderobot::Logger::getInstance()->setFileLog(logFile);
-
-		std::string logLevel = prop->getProperty(componentPrefix + ".Log.File.Level");
-		if (logLevel.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set *.Log.File.Level key!");
-		else
-			jderobot::Logger::getInstance()->setFileLevel(jderobot::Levels(boost::lexical_cast<int>(logLevel)));
-
-		std::string screenLevel = prop->getProperty(componentPrefix + ".Log.Screen.Level");
-		if (screenLevel.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set *.Log.Screen.Level key!");
-		else
-			jderobot::Logger::getInstance()->setScreenLevel(jderobot::Levels(boost::lexical_cast<int>(screenLevel)));
-
-		jderobot::Logger::getInstance()->info("Logger:: screenLevel=" + screenLevel + " logLevel=" + logLevel + " LogFile=" + logFile);
-
-
-
+		jderobot::Logger::getInstance()->analizeProperties(prop,componentPrefix);
 
 		int nCameras = prop->getPropertyAsIntWithDefault(componentPrefix+".nCameras",0);
 		jderobot::Logger::getInstance()->info( "Cameras to load: " + boost::lexical_cast<std::string>(nCameras));
@@ -1084,17 +1056,10 @@ int main(int argc, char** argv) {
 				cameraName = "camera" + objId;
 				prop->setProperty(objPrefix + "Name",cameraName);//set the value
 			}
-
-
-
-
 			cameras[i] = new replayer::CameraI(objPrefix,ic,initState);
-
-
-
 			adapter->add(cameras[i], ic->stringToIdentity(cameraName));
-			if (namingService)
-						namingService->bind(cameraName, Endpoints, "::jderobot::Camera");
+			if (ns)
+				ns->bind(cameraName, Endpoints, "::jderobot::Camera");
 			nProcs++;
 		}
 		int nPointClouds = prop->getPropertyAsIntWithDefault(componentPrefix+".nPointClouds",0);
@@ -1120,8 +1085,8 @@ int main(int argc, char** argv) {
 
 
 			adapter->add(object, ic->stringToIdentity(Name));
-			if (namingService)
-				namingService->bind(Name, Endpoints, object->ice_staticId());
+			if (ns)
+				ns->bind(Name, Endpoints, object->ice_staticId());
 			nProcs++;
 		}
 
@@ -1146,8 +1111,8 @@ int main(int argc, char** argv) {
 
 
 			adapter->add(object, ic->stringToIdentity(Name));
-			if (namingService)
-				namingService->bind(Name, Endpoints, object->ice_staticId());
+			if (ns)
+				ns->bind(Name, Endpoints, object->ice_staticId());
 			nProcs++;
 		}
 
@@ -1172,8 +1137,8 @@ int main(int argc, char** argv) {
 
 
 			adapter->add(object, ic->stringToIdentity(Name));
-			if (namingService)
-				namingService->bind(Name, Endpoints, object->ice_staticId());
+			if (ns)
+				ns->bind(Name, Endpoints, object->ice_staticId());
 			nProcs++;
 		}
 
@@ -1197,8 +1162,8 @@ int main(int argc, char** argv) {
 
 
 			adapter->add(object, ic->stringToIdentity(Name));
-			if (namingService)
-				namingService->bind(Name, Endpoints, object->ice_staticId());
+			if (ns)
+				ns->bind(Name, Endpoints, object->ice_staticId());
 			nProcs++;
 		}
 
@@ -1210,8 +1175,8 @@ int main(int argc, char** argv) {
 			std::string Name = prop->getProperty(objPrefix + "Name");
 
 			adapter->add(rc, ic->stringToIdentity(Name));
-			if (namingService)
-				namingService->bind(Name, Endpoints, rc->ice_staticId());
+			if (ns)
+				ns->bind(Name, Endpoints, rc->ice_staticId());
 		}
 
 		adapter->activate();
@@ -1223,6 +1188,7 @@ int main(int argc, char** argv) {
 		while (1){
 			//gui->update();
 			replayer::controller->checkStatus();
+			usleep(1000000);
 		}
 
 

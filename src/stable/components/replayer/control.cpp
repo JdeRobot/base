@@ -9,12 +9,19 @@
 
 namespace replayer {
 
-control::control(long long int initState) {
+control::control(long long int initState, bool play_in, bool repeat_in) {
 	this->nProcFinished=0;
-	this->play=true;
-	this->repeat=true;
+	this->play=play_in;
+	this->paused=false;
+	this->repeat=repeat_in;
 	this->newTime=initState;
 	this->nRepetitions=0;
+	if (play_in){
+		this->status=jderobot::PLAYING;
+	}
+	else{
+		this->status=jderobot::WAITING;
+	}
 
 }
 
@@ -75,13 +82,15 @@ void control::checkStatus(){
 	}
 	else{
 		if (this->repeat){
-			jderobot::Logger::getInstance()->info("--------------REINICIO");
+			jderobot::Logger::getInstance()->info("-------------- STARTING THE LOG AGAIN --------------");
 			IceUtil::Time now = IceUtil::Time::now();
 			long long int nowInt=(now.toMicroSeconds())/1000;
 			this->newTime=nowInt;
 			this->nProcFinished=0;
 			this->sem.broadcast();
 		}
+		this->status=jderobot::FINISHED;
+		jderobot::Logger::getInstance()->info("-------------- FINISHED --------------");
 	}
 	this->controlMutex.unlock();
 }
@@ -89,6 +98,7 @@ void control::checkStatus(){
 void control::stop(){
 	this->controlMutex.lock();
 		this->play=false;
+		this->paused=true;
 		IceUtil::Time now = IceUtil::Time::now();
 		long long int nowInt=(now.toMicroSeconds())/1000;
 		//std::cout << "now_ " << nowInt << std::endl;
@@ -100,6 +110,8 @@ void control::stop(){
 void control::resume(){
 	this->controlMutex.lock();
 		this->play=true;
+		this->paused=false;
+
 		IceUtil::Time now = IceUtil::Time::now();
 		long long int nowInt=(now.toMicroSeconds())/1000;
 		//std::cout << "now_ " << nowInt << std::endl;
@@ -124,6 +136,24 @@ void control::setStep(int step){
 		this->newTime=nowInt-this->timeToResume;
 	this->controlMutex.unlock();
 }
+
+
+jderobot::ReplayerStatus control::getstatus(){
+	if (status==jderobot::FINISHED){
+	}
+	else if (this->paused){
+		status=jderobot::PAUSED;
+	}
+	else if (!play){
+		status=jderobot::WAITING;
+	}
+	else{
+		status=jderobot::PLAYING;
+	}
+	return status;
+
+}
+
 
 } /* namespace replayer */
 

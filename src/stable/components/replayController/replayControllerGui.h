@@ -15,12 +15,13 @@
 #include <IceUtil/Thread.h>
 #include <IceUtil/Time.h>
 #include <jderobot/replayControl.h>
+#include <jderobotHandlers/ReplayControlerClientHDL.h>
 
 namespace replayController {
 
 class replayControllergui {
 public:
-	replayControllergui(jderobot::replayControlPrx c);
+	replayControllergui(jderobot::ReplayControlerClientHDLPtr& c);
 	virtual ~replayControllergui();
 	bool update();
 
@@ -34,7 +35,7 @@ private:
 	Gtk::Button* w_exit;
 	Gtk::ToggleButton* w_repeat;
 
-	jderobot::replayControlPrx controller;
+	jderobot::ReplayControlerClientHDLPtr controller;
 	bool exit;
 
 	//gtk functions

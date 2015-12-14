@@ -25,12 +25,12 @@
 #include <pthread.h>
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include <jderobotHandlers/ReplayControlerClientHDL.h>
 
 int main(int argc, char** argv){
 	Ice::CommunicatorPtr ic;
 	Ice::PropertiesPtr prop;
 	std::string prefix("replayController.");
-	jderobot::replayControlPrx prx;
 
 	try{
 		ic = Ice::initialize(argc,argv);
@@ -44,29 +44,14 @@ int main(int argc, char** argv){
 		return 1;
 	}
 
-
-	try{
-		Ice::ObjectPrx base = ic->propertyToProxy(prefix+"control.Proxy");
-		if (0==base){
-			throw "replayController: Could not create proxy with replayControl";
-		}
-		else {
-			prx= jderobot::replayControlPrx::checkedCast(base);
-			if (0==prx)
-				throw "Invalid " + prefix + ".Proxy";
-		}
-	}catch (const Ice::Exception& ex) {
-		std::cerr << ex << std::endl;
-	}
-	catch (const char* msg) {
-		std::cerr << msg << std::endl;
-		std::cout << "replayController: Not camera provided" << std::endl;
-	}
+	jderobot::ReplayControlerClientHDLPtr replayController( new jderobot::ReplayControlerClientHDL(ic,prefix+"control.Proxy",false));
+	if (!replayController->getProxy())
+		exit(-1);
 
 	int ips=prop->getPropertyAsIntWithDefault(prefix+"IPS",10);
 	float cycle=(float)(1/(float)ips)*1000000;
 
-	replayController::replayControllergui* gui = new replayController::replayControllergui(prx);
+	replayController::replayControllergui* gui = new replayController::replayControllergui(replayController);
 	struct timeval post;
 	long long int totalpre=0;
 	long long int totalpost=0;

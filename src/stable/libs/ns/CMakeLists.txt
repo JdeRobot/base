@@ -10,6 +10,7 @@ ADD_LIBRARY(ns SHARED ${SRC_FILES})
 
 target_link_libraries(ns 
     JderobotInterfaces
+	logger
 	${Boost_LIBRARIES}
 	${ZeroCIce_LIBRARIES}
 )

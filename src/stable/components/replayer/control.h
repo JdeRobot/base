@@ -26,12 +26,14 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 #include <log/Logger.h>
+#include <jderobot/replayControl.h>
+
 
 namespace replayer {
 
 class control {
 public:
-	control(long long int initState);
+	control(long long int initState, bool play_in, bool repeat_in);
 	virtual ~control();
 	void lock();
 	void unlock();
@@ -45,6 +47,7 @@ public:
 	void setRepeat(bool active);
 	void setProcesses(int procs);
 	void setStep(int step);
+	jderobot::ReplayerStatus getstatus();
 
 private:
 	//controladores de video
@@ -65,6 +68,10 @@ private:
 	bool play;
 	//numero de repeticiones
 	bool nRepetitions;
+	//replayer status
+	jderobot::ReplayerStatus status;
+	//paused
+	bool paused;
 
 };
 

@@ -5,12 +5,13 @@
  *      Author: frivas
  */
 
+#include <jderobotHandlers/ReplayControlerClientHDL.h>
 #include "replayControllerGui.h"
 
 
 namespace replayController {
 
-replayControllergui::replayControllergui(jderobot::replayControlPrx c): gtkmain(0,0) {
+replayControllergui::replayControllergui(jderobot::ReplayControlerClientHDLPtr& c): gtkmain(0,0) {
 	// TODO Auto-generated constructor stub
 
 	this->controller=c;
@@ -50,19 +51,19 @@ bool replayControllergui::update(){
 }
 
 void replayControllergui::on_clicked_stop(){
-	this->controller->pause();
+	this->controller->getProxy()->pause();
 }
 
 void replayControllergui::on_clicked_resume(){
-	this->controller->resume();
+	this->controller->getProxy()->resume();
 }
 
 void replayControllergui::on_change_repeat(){
-	this->controller->setReplay(this->w_repeat->get_active());
+	this->controller->getProxy()->setReplay(this->w_repeat->get_active());
 }
 
 void replayControllergui::on_clicked_step(){
-	this->controller->setStep(100);
+	this->controller->getProxy()->setStep(100);
 }
 
 void replayControllergui::on_clicked_exit(){

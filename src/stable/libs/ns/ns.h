@@ -27,9 +27,14 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 #include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace jderobot
 {
+
+	class ns;
+	typedef boost::shared_ptr<ns> nsPtr;
+
 
 	/**
 	 * ns class implements facade to access namingService ICE
@@ -46,6 +51,10 @@ namespace jderobot
 		 * @param proxy The proxy to connect with naming service
 		 */
 		ns(Ice::CommunicatorPtr& ic, std::string proxy);
+
+
+		ns(const Ice::CommunicatorPtr& ic, const std::string& configKey, bool active=true);
+
 		~ns();
 
 		/**
@@ -96,6 +105,24 @@ namespace jderobot
 		 */
 		std::string getProxyStr (const NamingNode& node);
 
+
+		/**
+		 * \brief Return a NamingNodePtr using the registered name
+		 */
+		jderobot::NamingNodePtr getProxy(std::string name);
+
+
+		/**
+		 * \brief Returns the ICE proxy to namingService
+		 */
+		jderobot::NamingServicePrx getIceProxy();
+
+
+		/**
+ * \brief Return a NamingNodePtr using the registered name
+ */
+		std::string getProxyStrFromName(std::string name);
+
 	private:
 
 		NamingServicePrx mNamingService;
@@ -103,7 +130,10 @@ namespace jderobot
 		std::vector<std::string> mBinds;
 
 		std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
-	};
+
+		bool constructor(const Ice::CommunicatorPtr& ic, const std::string& proxy);
+
+		};
 
 }
 
