@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 include(FindPkgConfig)
 
-FIND_PACKAGE(Qt4) 
-
-SET(QT_USE_QTOPENGL TRUE)
-INCLUDE(${QT_USE_FILE})
+FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtOpenGL QUIET)
+include(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 SET(QT_LIBRARIES_JDE ${QT_LIBRARIES})
@@ -13,7 +11,8 @@ if (QT_LIBRARIES_JDE)
     SET(QT_COMPILE TRUE)
 		MESSAGE("*** QT LIBRARIES Found LIBRARIES FOUND")
 
-	SET(DEPS "${DEPS} libqtcore4, libqt4-opengl,")
+	list(APPEND DEPS libqtcore4 libqt4-opengl)
+	list(APPEND DEPS_DEV libqt4-opengl-dev)
 else()
     SET(QT_COMPILE FALSE)
 		MESSAGE("*** QT LIBRARIES NOT FOUND")

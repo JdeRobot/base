@@ -114,50 +114,24 @@ ENDFOREACH(LibFile)
 
   # FIND AND CHECK OTHER DEPENDENCES
 
-include(${DEPS_DIR}/gazebo/CMakeLists.txt)
-include(${DEPS_DIR}/fireware/CMakeLists.txt)
-include(${DEPS_DIR}/pcl/CMakeLists.txt)
-include(${DEPS_DIR}/openni/CMakeLists.txt)
-include(${DEPS_DIR}/nite/CMakeLists.txt)
-include(${DEPS_DIR}/xerces/CMakeLists.txt)
-include(${DEPS_DIR}/ice/CMakeLists.txt)
-include(${DEPS_DIR}/cwiid/CMakeLists.txt)
-include(${DEPS_DIR}/opencv/CMakeLists.txt)
-include(${DEPS_DIR}/opengl/CMakeLists.txt)
-include(${DEPS_DIR}/openni2/CMakeLists.txt)
-include(${DEPS_DIR}/nite2/CMakeLists.txt)
-include(${DEPS_DIR}/pthread/CMakeLists.txt)
-include(${DEPS_DIR}/libxml++/CMakeLists.txt)
-include(${DEPS_DIR}/libxml2/CMakeLists.txt)
-include(${DEPS_DIR}/boost/CMakeLists.txt)
-include(${DEPS_DIR}/alut/CMakeLists.txt)
-include(${DEPS_DIR}/tinyxml/CMakeLists.txt)
-include(${DEPS_DIR}/gtk2/CMakeLists.txt)
-include(${DEPS_DIR}/qt/CMakeLists.txt)
-include(${DEPS_DIR}/gtk3/CMakeLists.txt)
-include(${DEPS_DIR}/kobuki/CMakeLists.txt)
-include(${DEPS_DIR}/libusb/CMakeLists.txt)
-include(${DEPS_DIR}/zlib/CMakeLists.txt)
-include(${DEPS_DIR}/openssl/CMakeLists.txt)
-include(${DEPS_DIR}/libfreenect2/CMakeLists.txt)
-include(${DEPS_DIR}/ogre/CMakeLists.txt)
-include(${DEPS_DIR}/findPythonModules/CMakeLists.txt)
-include(${DEPS_DIR}/opencv_py/CMakeLists.txt)
-include(${DEPS_DIR}/ice_py/CMakeLists.txt)
-include(${DEPS_DIR}/numpy/CMakeLists.txt)
-include(${DEPS_DIR}/pyqt4/CMakeLists.txt)
-include(${DEPS_DIR}/qwt5_py/CMakeLists.txt)
-include(${DEPS_DIR}/matplotlib_py/CMakeLists.txt)
-include(${DEPS_DIR}/qwt5/CMakeLists.txt)
-include(${DEPS_DIR}/cuda/CMakeLists.txt)
-include(${DEPS_DIR}/ardrone_sdk/CMakeLists.txt)
+## Alphabetical sorted to handle dependency order
+# this means that you must to prepend letter based sort at directory level
+## To disable a dependency rename CMaleLists.txt (for example, add .disabled)
+file(GLOB_RECURSE CMakeLists_files "Deps/**/CMakeLists.txt")
+list(SORT CMakeLists_files)
+foreach(CMakeLists_file ${CMakeLists_files})
+    include(${CMakeLists_file})
+endforeach()
+
+list(APPEND DEPS libvtk5.8)
+list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
+list(APPEND DEPS_DEV "${DEPS}")
+
+# list(APPEND uses ; separator. We need ,
+STRING(REGEX REPLACE ";" ", " DEPS "${DEPS}")
+STRING(REGEX REPLACE ";" ", " DEPS_DEV "${DEPS_DEV}")
 
 
-#include(${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CMakeLists.txt)
-
-
-
-#file(READ ${CMAKE_CURRENT_SOURCE_DIR}/jderobot.cfg contents)
 
 # START RECURSIVE
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -238,9 +212,9 @@ FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/
 INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
 
 
-file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
-add_executable(dummy_main1 dummy_main1.c)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
+#file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
+#add_executable(dummy_main1 dummy_main1.c)
+#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
 
 
 ###################
@@ -277,16 +251,16 @@ include (InstallRequiredSystemLibraries)
 SET (CPACK_GENERATOR "DEB")
 SET (CPACK_SOURCE_GENERATOR TGZ)
 SET (CPACK_SET_DESTDIR ON)
-SET (CPACK_DEB_COMPONENT_INSTALL ON)
-#SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+SET (CPACK_DEB_COMPONENT_INSTALL OFF)
+SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 
-SET (VERSION 5.3.0-rc1)
+SET (VERSION 5.3.1-rc1)
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
 SET (CPACK_PACKAGE_VERSION_MINOR 3)
-SET (CPACK_PACKAGE_VERSION_PATCH 0)
+SET (CPACK_PACKAGE_VERSION_PATCH 1)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${VERSION})
 
 
@@ -294,19 +268,18 @@ SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
 dpkg_arch(CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
 
-set(CPACK_COMPONENTS_ALL core deps)
+SET (CPACK_MONOLITHIC_INSTALL ON)
+#set(CPACK_COMPONENTS_ALL core deps)
 #set(CPACK_COMPONENT_NONAME_FOR core)
 #set(CPACK_COMPONENT_CORE_GROUP "Core")
 #set(CPACK_COMPONENT_DEPS_GROUP "Development")
 
-SET (CPACK_DEBIAN_CORE_PACKAGE_SHLIBDEPS ON)
-SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
+#SET (CPACK_DEBIAN_CORE_PACKAGE_SHLIBDEPS ON)
+#SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
 
-#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
-SET(DEPS "${DEPS} libvtk5.8")
-SET(DEPS_DEV "${DEPS_DEV} git, cmake, make, gcc-4.6, g++-4.6, gcc, g++, pkg-config, libeigen3-dev, libgsl0ldbl, libgsl0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libvtk5-dev")
-set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
-set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
+#set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
+#set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
 
 if(DEFINED debug_deps)
 MESSAGE("Dependencias: ${DEPS}")
@@ -322,6 +295,22 @@ SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for rob
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
 SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+
+
+## Metapackages (at cmake time)
+include(scripts/metapackages/FindMetapackages.cmake)
+
+SET (PACKAGE_VERSION ${VERSION})
+#set(PACKAGE_DEPENDS "${DEPS}")
+#configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
+
+set(PACKAGE_DEPENDS "${DEPS_DEV}")
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev.info)
+
+execute_process(
+    COMMAND ${MAKE_PACKAGE_EXECUTABLE}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)

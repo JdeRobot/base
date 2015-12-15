@@ -26,7 +26,6 @@
 #include <boost/thread/lock_guard.hpp>
 
 #include <jderobot/camera.h>
-#include <jderobot/colorspaces/colorspacesmm.h>
 
 #include <quadrotor/debugtools.h>
 

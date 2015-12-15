@@ -1,0 +1,12 @@
+Package: jderobot-deps-dev
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: ${PACKAGE_DEPENDS}
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Description: Metapackage that gathers all library headers required to compile JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/RoboticsURJC/JdeRobot

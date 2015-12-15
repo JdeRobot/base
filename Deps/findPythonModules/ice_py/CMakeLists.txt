@@ -5,6 +5,6 @@ string(TOUPPER ${module} module_upper)
 
 if(PY_${module_upper})
 	SET (ICE_PY_MODULES  PY_${module_upper})
-	SET(DEPS "${DEPS} python-zeroc-ice,")
-	SET(DEPS_DEV "${DEPS_DEV} python-zeroc-ice,")
+	list(APPEND DEPS python-zeroc-ice)
+	list(APPEND DEPS_DEV python-zeroc-ice)
 endif(PY_${module_upper})

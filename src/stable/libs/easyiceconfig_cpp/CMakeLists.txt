@@ -51,7 +51,7 @@ set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NA
 ## demo
 add_executable(demo src/demo/demo.cpp)
 target_link_libraries(demo ${Ice_LIBRARIES})
-configure_file(src/demo/ice.cfg ice.cfg COPY_ONLY)
+configure_file(src/demo/ice.cfg ice.cfg)
 
 ## tests
 add_executable(test_stdutils src/tests/test_stdutils.cpp)
