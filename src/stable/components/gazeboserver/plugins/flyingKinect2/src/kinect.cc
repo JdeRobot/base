@@ -42,6 +42,7 @@
 // Jderobot
 #include <jderobot/pose3d.h>
 #include <quadrotor/interfaces/pushcamerai.h>
+#include "src/pointcloudi.hpp"
 
 // debug
 #include <quadrotor/debugtools.h>
@@ -288,7 +289,8 @@ private:
 
         // pose
         adapter->add(this, ic->stringToIdentity("Pose3d"));
-
+        // pointcloud
+        adapter->add(&point_cloudI, ic->stringToIdentity("pointcloud1"));
         // cameras
         adapter->add(&cam_depthI, ic->stringToIdentity("cameraDepth"));
         adapter->add(&cam_rgbI, ic->stringToIdentity("cameraRGB"));
@@ -325,8 +327,9 @@ public:
         return 0;
     }
 
-
-
+/// Ice (PCL
+private:
+    jderobot::interfaces::PointCloudI point_cloudI;
 
 /// Ice (Camera)
 private:

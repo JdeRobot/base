@@ -35,6 +35,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x" ) # Opciones para el 
 
 set(SOURCES
 	src/kinect.cc
+	src/pointcloudi.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
