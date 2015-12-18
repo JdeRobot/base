@@ -93,8 +93,16 @@ void QuadrotorIce::bootstrap(){
 
     std::string name;
     name = prop->getProperty("Quadrotor.Pose3D.Name");
-    ObjectPtr posei = new Pose3DI(sensor);
+    ObjectPtr posei = new Pose3DI(sensor, control);
     adapter->add(posei, ic->stringToIdentity(name));
+
+    ObjectPtr posei_alt = new Pose3DI_altitude(sensor, control);
+#if 0 /// Facet
+    adapter->addFacet(posei_alt, ic->stringToIdentity(name), "altitude");
+    // client side MUST do jderobot::Pose3D::checkedCast(baseprx, "altitude");
+#else
+    adapter->add(posei_alt, ic->stringToIdentity(name+"_altitude"));
+#endif
 
     ObjectPtr navdatai = new NavdataI(sensor);
     name = prop->getProperty("Quadrotor.Navdata.Name");

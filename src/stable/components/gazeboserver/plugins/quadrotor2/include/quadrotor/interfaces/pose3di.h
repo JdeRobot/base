@@ -24,6 +24,7 @@
 
 #include <jderobot/pose3d.h>
 #include <quadrotor/quadrotorsensors.hh>
+#include <quadrotor/quadrotorcontrol.hh>
 
 
 namespace quadrotor{
@@ -31,17 +32,25 @@ namespace interfaces{
 
 class Pose3DI : public jderobot::Pose3D {
 public:
-    Pose3DI (const quadrotor::QuadRotorSensors *sensor);
+    Pose3DI (const quadrotor::QuadRotorSensors *sensor, quadrotor::QuadrotorControl *control);
     virtual ~Pose3DI ();
 
+    virtual
     jderobot::Pose3DDataPtr getPose3DData ( const Ice::Current& );
     Ice::Int setPose3DData ( const jderobot::Pose3DDataPtr & data,
                                      const Ice::Current& );
 
 
-private:
+protected:
     jderobot::Pose3DDataPtr data;
-    const quadrotor::QuadRotorSensors *sensor;
+    const quadrotor::QuadRotorSensors* const sensor;
+    quadrotor::QuadrotorControl* const control;
+};
+
+class Pose3DI_altitude : public Pose3DI{
+public:
+    Pose3DI_altitude (const quadrotor::QuadRotorSensors *sensor, quadrotor::QuadrotorControl *control): Pose3DI(sensor, control){}
+    jderobot::Pose3DDataPtr getPose3DData ( const Ice::Current& );
 };
 
 
