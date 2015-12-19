@@ -294,8 +294,16 @@ set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "JdeRobot is a software development suite for robotics applications.")
-SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for robotics applications, written in C++ language. It provides a programming environment where the robot control program is made up of a collection of several concurrent asynchronous threads named schemas. It is based on JDE cognitive architecture for autonomous robots.")
+## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
+"JdeRobot is a software development suite for robotics applications.")
+SET (CPACK_PACKAGE_DESCRIPTION
+"JdeRobot is a software development suite for robotics applications, written
+in C++ language.
+It provides a programming environment where the robot control program is made
+up of a collection of several concurrent asynchronous threads named schemas.
+It is based on JDE cognitive architecture for autonomous robots.")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CPACK_PACKAGE_DESCRIPTION})
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
 SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_DEBIAN_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
