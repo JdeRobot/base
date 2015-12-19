@@ -294,15 +294,27 @@ set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
-## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
+
+## Include Git HEAD into description (feature: traceback builds)
+execute_process(COMMAND git rev-parse HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_HEAD
+)
+string(STRIP "${GIT_HEAD}" GIT_HEAD)
+
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
 "JdeRobot is a software development suite for robotics applications.")
 SET (CPACK_PACKAGE_DESCRIPTION
-"JdeRobot is a software development suite for robotics applications, written
-in C++ language.
+"JdeRobot is a software development suite for robotics applications,
+written in C++ language.
 It provides a programming environment where the robot control program is made
 up of a collection of several concurrent asynchronous threads named schemas.
-It is based on JDE cognitive architecture for autonomous robots.")
+It is based on JDE cognitive architecture for autonomous robots.
+.
+Get source from https://github.com/RoboticsURJC/JdeRobot
+Package created with revision ${GIT_HEAD}")
+
+## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CPACK_PACKAGE_DESCRIPTION})
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
