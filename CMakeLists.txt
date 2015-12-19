@@ -306,13 +306,13 @@ SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
 "JdeRobot is a software development suite for robotics applications.")
 SET (CPACK_PACKAGE_DESCRIPTION
 "JdeRobot is a software development suite for robotics applications,
-written in C++ language.
-It provides a programming environment where the robot control program is made
-up of a collection of several concurrent asynchronous threads named schemas.
-It is based on JDE cognitive architecture for autonomous robots.
-.
-Get source from https://github.com/RoboticsURJC/JdeRobot
-Package created with revision ${GIT_HEAD}")
+ written in C++ language.
+ It provides a programming environment where the robot control program is made
+ up of a collection of several concurrent asynchronous threads named schemas.
+ It is based on JDE cognitive architecture for autonomous robots.
+ .
+ Get source from https://github.com/RoboticsURJC/JdeRobot
+ Package created with revision ${GIT_HEAD}")
 
 ## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CPACK_PACKAGE_DESCRIPTION})
