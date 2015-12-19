@@ -9,9 +9,13 @@
 
 
 # input parameters
-pkg=${1-jderobot*}
-version=${2-5.3.0}
+pkg=${1}
+version=${2}
 
+[ "$pkg" = "" ] && return 2
+[ "$version" = "" ] && return 2
+
+status=0
 
 ## Gather all possible versions from repository
 versions=$(apt-cache show $pkg 2>&1 | grep Version | awk '{print $2}')
@@ -25,10 +29,14 @@ then
 else
   ## Case 2: this version is already into repository.
   # look for '-rcX' prefix and increment it
-  repo_last=$(echo "$versions" | grep "$version" | grep -- '-rc' | sort -nr | head -n 1)
-  number=${repo_last#${version}-rc}
+  versions_rc_numbers=$(echo "$versions" | grep "$version" | grep -- '-rc' | sed "s,$version-rc\([0-9]+\)*,\1,")
+  number=$(echo "$versions_rc_numbers" | sort -nr | head -n 1)
+  [ "$number" = "" ] && status=1
   number=$((number + 1))
   out_version=${version}-rc${number}
 fi
 
+[ "$out_version" = "" ] && status=1
 echo -n $out_version
+
+return $status
