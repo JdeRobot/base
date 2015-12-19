@@ -31,4 +31,4 @@ else
   out_version=${version}-rc${number}
 fi
 
-echo $out_version
+echo -n $out_version
