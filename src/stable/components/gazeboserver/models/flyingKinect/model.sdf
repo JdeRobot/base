@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="flyingKinect">
-    <plugin filename="libgazebo_kinectplugin.so" name="kinectplugin"/>
       <static>true</static>
       <link name="flyingKinect">
         <inertial>
@@ -17,7 +16,6 @@
           </geometry>
         </visual>
         <sensor name="flyingKinect" type="depth">
-          <!--plugin name="depth_camera_plugin" filename="libkinect.so" /-->
           <update_rate>5</update_rate>
           <camera>
             <horizontal_fov>1.047198</horizontal_fov>
@@ -31,7 +29,9 @@
               <far>5</far>
             </clip>
           </camera>
+          <plugin name="depth_camera_plugin" filename="libkinect.so" />
         </sensor>
       </link>
+        <plugin filename="libpose3d.so" name="pose3d"/>
     </model>
 </sdf>
