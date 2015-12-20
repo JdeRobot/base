@@ -47,8 +47,8 @@
 #include <jderobotutil/CameraHandler.h>
 #include <jderobotutil/CameraTask.h>
 #include <ns/ns.h>
-bool flag=false;
 
+bool flag=false; /** boolean to keep a check on signal */
 
 namespace cameraserver{
 
@@ -123,9 +123,7 @@ class CameraI:  public jderobot::CameraHandler {
     replyTask->pushJob(cb, format);
   }
 
-  cv::VideoCapture getCapture(){
-    return capture;
-  }
+  
 
  private:
   class ReplyTask: public jderobot::CameraTask {
@@ -180,7 +178,7 @@ class CameraI:  public jderobot::CameraHandler {
 jderobot::ns* namingService = NULL;
 
 
-void signalHandler(int signum){
+void signalHandler(int signum){   /*** signal handler to handle SIGINT signal */
    flag=true;
 }
 
