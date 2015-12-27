@@ -16,7 +16,7 @@
  *  along with this program.  If not, see http://www.gnu.org/licenses/. 
  *
  *  Authors : David Lobato Bravo <dav.lobato@gmail.com>
- *	      Sara Marugán Alonso <smarugan@gsyc.es>
+ *        Sara Marugán Alonso <smarugan@gsyc.es>
  *
  */
 
@@ -36,8 +36,10 @@
 
 #include <string.h>
 #include <sstream>
-#include <stdlib.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <csignal>
+#include <unistd.h> 
+#include <cstdlib>
 #include <list>
 
 #include <zlib.h>
@@ -46,13 +48,14 @@
 #include <jderobotutil/CameraTask.h>
 #include <ns/ns.h>
 
+bool flag=false; /** boolean to keep a check on signal */
 
 namespace cameraserver{
 
 class CameraI:  public jderobot::CameraHandler {
  public:
   CameraI(std::string propertyPrefix, Ice::CommunicatorPtr ic):jderobot::CameraHandler(propertyPrefix,ic){
-    //we use formats acording to colorspaces
+    //we use formats acording to colorspace
     std::string fmtStr = prop->getPropertyWithDefault(prefix+"Format","YUY2");//default format YUY2
     imageFmt = colorspaces::Image::Format::searchFormat(fmtStr);
     if (!imageFmt)
@@ -108,16 +111,19 @@ class CameraI:  public jderobot::CameraHandler {
         }
       }
 
+     
       replyTask->start(); // my own thread
 
     }else{
       exit(-1);
     }
+     
   }
   void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c){
     replyTask->pushJob(cb, format);
   }
 
+  
 
  private:
   class ReplyTask: public jderobot::CameraTask {
@@ -131,7 +137,11 @@ class CameraI:  public jderobot::CameraHandler {
         if(!capture.isOpened()){
           exit(-1);
         }
-
+        if(flag){
+          capture.release();
+          exit(-1);
+        }
+       
         capture >> frame;
 
         if(!frame.data){
@@ -168,35 +178,39 @@ class CameraI:  public jderobot::CameraHandler {
 jderobot::ns* namingService = NULL;
 
 
+void signalHandler(int signum){   /*** signal handler to handle SIGINT signal */
+   flag=true;
+}
+
 int main(int argc, char** argv)
 {
-	std::vector<Ice::ObjectPtr> cameras;
+  std::vector<Ice::ObjectPtr> cameras;
+  signal(SIGINT,signalHandler);
+  Ice::CommunicatorPtr ic;
+  try{
+    ic = Ice::initialize(argc, argv);
 
-	Ice::CommunicatorPtr ic;
-	try{
-		ic = Ice::initialize(argc, argv);
-
-		Ice::PropertiesPtr prop = ic->getProperties();
+    Ice::PropertiesPtr prop = ic->getProperties();
 
 
 
-		// check default service mode
-		/*int rpc = prop->getPropertyAsIntWithDefault("CameraSrv.DefaultMode",0);
+    // check default service mode
+    /*int rpc = prop->getPropertyAsIntWithDefault("CameraSrv.DefaultMode",0);
 
-		if(rpc!=0){
-			// check publish/subscribe service mode
-			Ice::ObjectPrx obj = ic->propertyToProxy("CameraSrv.TopicManager");
+    if(rpc!=0){
+      // check publish/subscribe service mode
+      Ice::ObjectPrx obj = ic->propertyToProxy("CameraSrv.TopicManager");
 
-			if(obj==0){
-				// no service mode configuration
-				std::cerr << "Error: cameraserver needs server configuration mode\n" << std::endl;
-				fflush(NULL);
+      if(obj==0){
+        // no service mode configuration
+        std::cerr << "Error: cameraserver needs server configuration mode\n" << std::endl;
+        fflush(NULL);
 
-				exit(0);
-			}
-		}*/
+        exit(0);
+      }
+    }*/
 
-		std::string Endpoints = prop->getProperty("CameraSrv.Endpoints");
+    std::string Endpoints = prop->getProperty("CameraSrv.Endpoints");
 
         // Naming Service
         int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
@@ -215,32 +229,32 @@ int main(int argc, char** argv)
             }
         }
 
-		int nCameras = prop->getPropertyAsInt("CameraSrv.NCameras");
-		cameras.resize(nCameras);
-		Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints("CameraServer", Endpoints);
-		for (int i=0; i<nCameras; i++){//build camera objects
-			std::stringstream objIdS;
-			objIdS <<  i;
-			std::string objId = objIdS.str();// should this be something unique??
-			std::string objPrefix("CameraSrv.Camera." + objId + ".");
-			std::string cameraName = prop->getProperty(objPrefix + "Name");
-			Ice::ObjectPtr object = new cameraserver::CameraI(objPrefix, ic);
+    int nCameras = prop->getPropertyAsInt("CameraSrv.NCameras");
+    cameras.resize(nCameras);
+    Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints("CameraServer", Endpoints);
+    for (int i=0; i<nCameras; i++){//build camera objects
+      std::stringstream objIdS;
+      objIdS <<  i;
+      std::string objId = objIdS.str();// should this be something unique??
+      std::string objPrefix("CameraSrv.Camera." + objId + ".");
+      std::string cameraName = prop->getProperty(objPrefix + "Name");
+      Ice::ObjectPtr object = new cameraserver::CameraI(objPrefix, ic);
 
-			adapter->add(object, ic->stringToIdentity(cameraName));
+      adapter->add(object, ic->stringToIdentity(cameraName));
 
             if (namingService)
                 namingService->bind(cameraName, Endpoints, object->ice_staticId());
 
-		}
-		adapter->activate();
-		ic->waitForShutdown();
+    }
+    adapter->activate();
+    ic->waitForShutdown();
 
-	}catch (const Ice::Exception& ex) {
-		std::cerr << ex << std::endl;
-		exit(-1);
-	} catch (const char* msg) {
-		std::cerr << msg << std::endl;
-		exit(-1);
-	}
+  }catch (const Ice::Exception& ex) {
+    std::cerr << ex<<" 1 " << std::endl;
+    exit(-1);
+  } catch (const char* msg) {
+    std::cerr << msg<< " 2 " << std::endl;
+    exit(-1);
+  }
 
 }
