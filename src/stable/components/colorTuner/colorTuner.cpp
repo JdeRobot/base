@@ -26,7 +26,9 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "viewer.h"
 #include <cv.h>
+#include <opencv2/core/core.hpp>
 #include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 int main(int argc, char** argv){
     int status;
@@ -48,16 +50,17 @@ int main(int argc, char** argv){
         while(viewer.isVisible()){
             jderobot::ImageDataPtr data = cprx->getImageData(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
 
-            IplImage* image = cvCreateImage(cvSize(data->description->width,data->description->height), 8 ,3);
+            
+           
+            cv::Mat image = cv::Mat(cvSize(data->description->width,data->description->height),CV_8UC3,&(data->pixelData[0]));
 
-            memcpy((unsigned char *) image->imageData,&(data->pixelData[0]),image->width*image->height * 3);
 
             colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);
             if (!fmt)
                 throw "Format not supported";
 
             viewer.display(image);
-            cvReleaseImage(&image);
+            image.release();
         }
 
     }catch (const Ice::Exception& ex) {

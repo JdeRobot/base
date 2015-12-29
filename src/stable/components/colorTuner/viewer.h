@@ -29,6 +29,8 @@
 #include <string>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp> 
 #include <sstream>
 #include <fstream>
 
@@ -51,7 +53,7 @@ namespace cameraview{
     bool isVisible();
 
     //! function that actually displays the image in a window
-    void display( IplImage* image );
+    void display( cv::Mat &image );
 
   private:
     Gtk::Image* gtkimage;
@@ -94,7 +96,7 @@ namespace cameraview{
     int radio_HSV;
     int radio_YUV;
 
-	IplImage* imageDemo;
+	cv::Mat imageDemo;
 	pthread_mutex_t mutex;
 	
     IceUtil::Time currentFrameTime,oldFrameTime;
@@ -110,9 +112,9 @@ namespace cameraview{
     void on_active_HSV_toggled();
     void on_active_YUV_toggled();
     
-    void filter_RGB(IplImage* cvResultado);
-    void filter_HSV(IplImage* cvResultado);
-    void filter_YUV(IplImage* cvResultado);	
+    void filter_RGB(const cv::Mat &cvResultado);
+    void filter_HSV(const cv::Mat &cvResultado);
+    void filter_YUV(const cv::Mat &cvResultado);	
     
     double rmax,rmin,gmax, gmin, bmax, bmin;
     
@@ -191,8 +193,8 @@ namespace cameraview{
 	#define WHITE 6
 	#define BLACK 7  
 	
-    IplImage* hsv;
-    IplImage* yuv;
+    cv::Mat hsv;
+    cv::Mat yuv;
         
     double getH(double r, double g, double b);
     double getS(double r, double g, double b);
