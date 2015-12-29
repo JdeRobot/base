@@ -59,6 +59,8 @@ endif()
 if (test_flyingKinect)
 	build_component(gazeboserver ON)
 	build_component(flyingKinect ON)
+	build_component(flyingKinect2 ON)
+		build_component(quadrotor2 ON) # dependency
 	build_component(navigatorCamera ON)
 	build_component(rgbdViewer ON)
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="flyingKinect">
+    <plugin filename="libgazebo_kinectplugin.so" name="kinectplugin"/>
+    <static>true</static>
+    <include>
+        <uri>model://kinect</uri>
+    </include>
+  </model>
+</sdf>
