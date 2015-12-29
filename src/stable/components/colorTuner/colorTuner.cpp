@@ -61,6 +61,7 @@ int main(int argc, char** argv){
 
             viewer.display(image);
             image.release();
+
         }
 
     }catch (const Ice::Exception& ex) {
