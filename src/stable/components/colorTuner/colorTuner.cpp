@@ -52,7 +52,7 @@ int main(int argc, char** argv){
 
             
            
-            cv::Mat image = cv::Mat(cvSize(data->description->width,data->description->height),CV_8UC3,&(data->pixelData[0]));
+            cv::Mat image = cv::Mat(cv::Size(data->description->width,data->description->height),CV_8UC3,&(data->pixelData[0]));
 
 
             colorspaces::Image::FormatPtr fmt = colorspaces::Image::Format::searchFormat(data->description->format);

@@ -21,11 +21,11 @@
 
 #include "viewer.h" 
 #include <iostream>
-#include <thread>
-#include <chrono>
 #include <cmath>
 #include <cv.h>
 #include <highgui.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp> 
 #include <visionlib/colorspaces/colorspaces.h>
 
 namespace cameraview{
