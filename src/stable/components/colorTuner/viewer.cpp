@@ -22,8 +22,6 @@
 #include "viewer.h" 
 #include <iostream>
 #include <cmath>
-#include <cv.h>
-#include <highgui.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp> 
 #include <visionlib/colorspaces/colorspaces.h>
@@ -1349,9 +1347,9 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
     void colorTuner::display( cv::Mat &image  )
     {
     
-        cv::Mat cvResultado = cv::Mat(cvSize(image.size().width,image.size().height),CV_8UC3);
+        cv::Mat cvResultado = cv::Mat(image.size(),CV_8UC3);
         
-        imageDemo = cv::Mat(cvSize(image.size().width,image.size().height),CV_8UC3);
+        imageDemo = cv::Mat(image.size(),CV_8UC3);
         //cvCopy(image, imageDemo);
         imageDemo = image.clone();
         pthread_mutex_unlock(&mutex);

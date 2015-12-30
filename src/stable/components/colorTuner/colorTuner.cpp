@@ -25,9 +25,7 @@
 #include <jderobot/camera.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "viewer.h"
-#include <cv.h>
 #include <opencv2/core/core.hpp>
-#include <highgui.h>
 #include <opencv2/highgui/highgui.hpp>
 
 int main(int argc, char** argv){

@@ -28,7 +28,6 @@
 #include <IceUtil/Time.h>
 #include <string>
 #include <visionlib/colorspaces/colorspacesmm.h>
-#include <highgui.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp> 
 #include <sstream>
