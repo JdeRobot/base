@@ -3,14 +3,50 @@
 #    Victor Arribas <v.arribas.urjc@gmail.com>
 #    Francisco Perez <f.perez475@gmail.com>
 
+cmake_minimum_required(VERSION 2.6)
 
-## New alias for build-default
-if (build_all)
-	set(build-default ON)
-	return()
+### Auxiliary functions
+## A function to get all user defined variables with a specified prefix
+function (getListOfVarsStartingWith _prefix _varResult)
+    get_cmake_property(_vars CACHE_VARIABLES)
+    string (REGEX MATCHALL "(^|;)${_prefix}[A-Za-z0-9_]*" _matchedVars "${_vars}")
+    set (${_varResult} ${_matchedVars} PARENT_SCOPE)
+endfunction()
+
+## Helper to override cache variables without specify neither lost type nor description
+function(override_cache _var _value)
+    get_property(_HelpString CACHE "${_var}" PROPERTY HELPSTRING)
+    get_property(_Type CACHE "${_var}" PROPERTY TYPE)
+    set(${_var} ${_value} CACHE ${_Type} "${_HelpString}" ${ARGV2})
+endfunction()
+
+## Helper to simplify set build_X variables and toggle behavior
+# CMakeCache is a bad friend for this feature. So we require override_cache()
+function (build_component component value)
+	if (DEFINED ${ARGV2})
+		if(${ARGV2} STREQUAL "ONLY_ON" AND NOT build_${component})
+			return()
+		endif()
+	endif()
+
+	if (NOT DEFINED build_${component})
+		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (defined by builtpresets)")
+	elseif (NOT build_${component} EQUAL ${value})
+		override_cache(build_${component} OFF FORCE)
+	endif()
+endfunction()
+
+## Mass toggle OFF.
+# all of the variables starting with build_ are set to OFF.
+if (build_purge)
+    message(STATUS "Purging build configuration\n\tdisabling any 'build_' (setting to OFF)")
+    set(build-default OFF)
+    getListOfVarsStartingWith("build_" matchedVars)
+    foreach (_var IN LISTS matchedVars)
+        override_cache(${_var} OFF FORCE)
+    endforeach()
+    override_cache(build_purge OFF FORCE)  # Set itself back to off, as this is a one time thing.
 endif()
-
-### Notice: definition should be from large to core to allow chainning
 
 ## A run once macro to add suffix to project name ;)
 macro (project_suffix suffix)
@@ -21,22 +57,25 @@ macro (project_suffix suffix)
 endmacro()
 
 
-## CMakeCache is a bad friend for this feature. Tweak it to avoid
-function (build_component component value)
-	if (NOT DEFINED build_${component})
-		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (defined by builtpresets)" ${ARGS})
-	elseif (NOT build_${component} EQUAL ${value})
-		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (overriden by builtpresets)" FORCE ${ARGS})
-	endif()
-endfunction()
+### Start buildpresets
 
+## Mass toggle OFF (purge build_X configurations)
+option(build_purge "Turn off all build_ variables." OFF)
+
+## New alias for build-default
+if (build_all)
+	set(build-default ON)
+	return()
+endif()
+
+### Notice: definition should be from large to core to allow chainning
 
 ## Tests
 if (test_ardrone)
 	build_component(ardrone_server ON)
 	build_component(introrob_py ON)
 
-	build_component(core ON)
+	build_component(core ON "ONLY_ON")
 endif()
 
 if (test_quadrotor)
@@ -45,7 +84,7 @@ if (test_quadrotor)
 	build_component(quadrotor ON)
 	build_component(introrob_py ON)
 
-	build_component(core ON)
+	build_component(core ON "ONLY_ON")
 endif()
 
 if (test_car)
@@ -53,7 +92,7 @@ if (test_car)
 	build_component(car ON)
 	build_component(introrob_qt ON)
 
-	build_component(core ON)
+	build_component(core ON "ONLY_ON")
 endif()
 
 if (test_flyingKinect)
@@ -64,10 +103,8 @@ if (test_flyingKinect)
 	build_component(navigatorCamera ON)
 	build_component(rgbdViewer ON)
 
-	build_component(core ON)
+	build_component(core ON "ONLY_ON")
 endif()
-
-
 
 
 ## Build aliases (real packages for cpack)
@@ -75,8 +112,9 @@ if (build_drivers)
 	project_suffix(drivers)
 	set(build-default OFF)
 
-	build_component(core ON)
-	# todo: core drivers
+	build_component(core ON "ONLY_ON")
+
+	# core drivers
 	build_component(ardrone_server ON)
 	build_component(basic_server ON)
 	build_component(cameraserver ON)
@@ -102,7 +140,7 @@ if (build_core)
 	project_suffix(core)
 	set(build-default OFF)
 
-	build_component(msgs ON)
+	build_component(msgs ON "ONLY_ON")
 	# libs are included by default at now
 endif()
 
