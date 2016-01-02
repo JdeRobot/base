@@ -32,7 +32,7 @@ function (build_component component value)
 	if (NOT DEFINED build_${component})
 		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (defined by builtpresets)")
 	elseif (NOT build_${component} EQUAL ${value})
-		override_cache(build_${component} OFF FORCE)
+		override_cache(build_${component} ${value} FORCE)
 	endif()
 endfunction()
 
