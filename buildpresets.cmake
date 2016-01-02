@@ -141,7 +141,23 @@ if (build_core)
 	set(build-default OFF)
 
 	build_component(msgs ON "ONLY_ON")
-	# libs are included by default at now
+
+	# libs
+	build_component(depthLib ON)
+	build_component(easyiceconfig_cpp ON)
+	build_component(easyiceconfig_py ON)
+	build_component(fuzzylib ON)
+	build_component(geometry ON)
+	build_component(jderobotHandlers ON)
+	build_component(jderobotViewer ON)
+	build_component(jderobotutil ON)
+	build_component(log ON)
+	build_component(ns ON)
+	build_component(parallelIce ON)
+	build_component(pioneer ON)
+	build_component(progeo ON)
+	build_component(visionlib ON)
+	build_component(xmlParser ON)
 endif()
 
 if (build_msgs)
@@ -151,7 +167,6 @@ if (build_msgs)
 	build_component(interfaces_cpp ON)
 	build_component(interfaces_java ON)
 	build_component(interfaces_python ON)
-	# todo: remove libs from this build flavor
 endif()
 
 #message(SEND_ERROR "PROJECT_NAME: ${PROJECT_NAME}")
