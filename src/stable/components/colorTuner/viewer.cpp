@@ -22,8 +22,8 @@
 #include "viewer.h" 
 #include <iostream>
 #include <cmath>
-#include <cv.h>
-#include <highgui.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp> 
 #include <visionlib/colorspaces/colorspaces.h>
 
 namespace cameraview{
@@ -453,7 +453,7 @@ namespace cameraview{
 
     void colorTuner::draw_hsvmap(int size){
         
-        hsv = cvCreateImage(cvSize(320, 320), 8, 3);
+        hsv = cv::Mat(cvSize(320, 320), CV_8UC3);
         
         int i,j,ind; 
         float x, y, H, S, scale;
@@ -492,9 +492,11 @@ namespace cameraview{
 
                 //printf("Valores R: %u G: %u B: %u ind: %d H: %2f S: %2f \n",R,G,B,ind,H,S);
 
-                hsv->imageData[ind]   = R; /* Blue */
-                hsv->imageData[ind+1] = G; /* Green */
-                hsv->imageData[ind+2] = B; /* Red */
+               
+                hsv.data[ind]   = R; /* Blue */
+                hsv.data[ind+1] = G; /* Green */
+                hsv.data[ind+2] = B; /* Red */
+                
             }
 
         }
@@ -731,7 +733,7 @@ namespace cameraview{
     ////////////////////////////////////////////////////////////////YUV ///////////////////////////////////////////////////////
     void colorTuner::draw_yuvmap( int size){
     
-        yuv = cvCreateImage(cvSize(320, 320), 8, 3);
+        yuv = cv::Mat(cvSize(320,320),CV_8UC3);
         float ymax = 1.0;
         float ymin = 0.0;
        int i,j,ind,ysize; 
@@ -758,9 +760,9 @@ namespace cameraview{
 	     B = (unsigned char) (unsigned int) (float) (scale * b);
 	     
 	     //printf("Valores R: %u G: %u B: %u\n",R,G,B);
-                yuv->imageData[ind]   = R; /* Blue */
-                yuv->imageData[ind+1] = G; /* Green */
-                yuv->imageData[ind+2] = B; /* Red */
+                yuv.data[ind]   = R; /* Blue */
+                yuv.data[ind+1] = G; /* Green */
+                yuv.data[ind+2] = B; /* Red */
             }
 
         }
@@ -995,11 +997,11 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
                        
         pthread_mutex_lock(&mutex);
         
-        indice = posY*imageDemo->widthStep+posX*imageDemo->nChannels;
+        indice = posY*imageDemo.step+posX*imageDemo.channels();
         
-        r = (float)(unsigned int) (unsigned char)imageDemo->imageData[indice];
-        g = (float)(unsigned int) (unsigned char)imageDemo->imageData[indice+1];
-        b = (float)(unsigned int) (unsigned char)imageDemo->imageData[indice+2];   
+        r = (float)(unsigned int) (unsigned char)imageDemo.data[indice];
+        g = (float)(unsigned int) (unsigned char)imageDemo.data[indice+1];
+        b = (float)(unsigned int) (unsigned char)imageDemo.data[indice+2];   
         
         std::fstream fs;
         fs.open("filterRGB.txt", std::fstream::out);
@@ -1177,29 +1179,29 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
         return true;
     }
     
-    void colorTuner::filter_RGB(IplImage* cvResultado)
+    void colorTuner::filter_RGB(const cv::Mat &cvResultado)
     {
      //       Para color
-        for(int x = 0; x< imageDemo->width; x++){
-            for(int y = 0; y < imageDemo->height; y++ ){
-                int indice = y*imageDemo->widthStep+x*imageDemo->nChannels;
+        for(int x = 0; x< imageDemo.size().width; x++){
+            for(int y = 0; y < imageDemo.size().height; y++ ){
+                int indice = y*imageDemo.step+x*imageDemo.channels();
                 
-                int red   = abs(( int)imageDemo->imageData[indice]) ;
-                int blue  = abs(( int)imageDemo->imageData[indice+1]);
-                int green = abs(( int)imageDemo->imageData[indice+2]);
+                int red   = abs(( int)imageDemo.data[indice]) ;
+                int blue  = abs(( int)imageDemo.data[indice+1]);
+                int green = abs(( int)imageDemo.data[indice+2]);
                 
                 bool condR = ( red <= sliderRMax->get_value()) & ( red  >= sliderRMin->get_value());
                 bool condG = (blue <= sliderGMax->get_value()) & (blue  >= sliderGMin->get_value());
                 bool condB = (green<= sliderBMax->get_value()) & (green >= sliderBMin->get_value());
                 
                 if(condR & condG & condB){
-                    cvResultado->imageData[indice]   = imageDemo->imageData[indice];
-                    cvResultado->imageData[indice+1] = imageDemo->imageData[indice+1];
-                    cvResultado->imageData[indice+2] = imageDemo->imageData[indice+2];
+                    cvResultado.data[indice]   = imageDemo.data[indice];
+                    cvResultado.data[indice+1] = imageDemo.data[indice+1];
+                    cvResultado.data[indice+2] = imageDemo.data[indice+2];
                 }else{
-                    cvResultado->imageData[indice]   = 0;
-                    cvResultado->imageData[indice+1] = 0;
-                    cvResultado->imageData[indice+2] = 0;
+                    cvResultado.data[indice]   = 0;
+                    cvResultado.data[indice+1] = 0;
+                    cvResultado.data[indice+2] = 0;
                 }
             }
         } 
@@ -1276,18 +1278,18 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
         return 0;
     }
 
-    void colorTuner::filter_YUV(IplImage* cvResultado)
+    void colorTuner::filter_YUV(const cv::Mat& cvResultado)
     {
-        cvCopy(imageDemo, cvResultado);
+        imageDemo = cvResultado.clone();
         double r,g,b;
 	    int i;
 	    double y,u,v;
 
-	    for (i=0;i< cvResultado->width*cvResultado->height; i++){
-			    r = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3];
-			    g = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3+1];
-			    b = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3+2];
-			
+	    for (i=0;i< cvResultado.size().width*cvResultado.size().height; i++){
+			    r = (float)(unsigned int)(unsigned char) cvResultado.data[i*3];
+			    g = (float)(unsigned int)(unsigned char) cvResultado.data[i*3+1];
+			    b = (float)(unsigned int)(unsigned char) cvResultado.data[i*3+2];
+				
                 y = 0.299*r/255.0  +0.578*g/255.0    +0.114*b/255.0 ;
                 u =-0.147*r/255.0  -0.289*g/255.0    +0.436*b/255.0 ;
                 v = 0.615*r/255.0  -0.515*g/255.0    -0.100*b/255.0 ;
@@ -1296,27 +1298,27 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
 			        && sliderBMax->get_value()>=v && sliderBMin->get_value()<=v ){
 			    }  else {
 	        		/* Gray Scale */
-				    cvResultado->imageData[i*3]   = 0;//(unsigned char) (v*100/255);
-				    cvResultado->imageData[i*3+1] = 0;//(unsigned char) (v*100/255);
-				    cvResultado->imageData[i*3+2] = 0;//(unsigned char) (v*100/255);
+				    cvResultado.data[i*3]   = 0;//(unsigned char) (v*100/255);
+				    cvResultado.data[i*3+1] = 0;//(unsigned char) (v*100/255);
+				    cvResultado.data[i*3+2] = 0;//(unsigned char) (v*100/255);
 			    }
 	    }
     }
 
 
-    void colorTuner::filter_HSV(IplImage* cvResultado)
+    void colorTuner::filter_HSV(const cv::Mat& cvResultado)
     {
-        cvCopy(imageDemo, cvResultado);
         
+        cvResultado.copyTo(imageDemo);
         double r,g,b;
 	    int i;
 	    double h,s,v;
 
-	    for (i=0;i< cvResultado->width*cvResultado->height; i++){
-			    r = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3];
-			    g = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3+1];
-			    b = (float)(unsigned int)(unsigned char) cvResultado->imageData[i*3+2];
-			
+	     for (i=0;i< cvResultado.size().width*cvResultado.size().height; i++){
+			    r = (float)(unsigned int)(unsigned char) cvResultado.data[i*3];
+			    g = (float)(unsigned int)(unsigned char) cvResultado.data[i*3+1];
+			    b = (float)(unsigned int)(unsigned char) cvResultado.data[i*3+2];
+
                 h = getH(r, g, b);
                 s = getS(r, g, b);
                 v = getV(r, g, b);
@@ -1329,32 +1331,32 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
 				    //hsv->imageData[i*3+2] = hsv->imageData[i*3+2];
 			    }  else {
 	        		/* Gray Scale */
-				    cvResultado->imageData[i*3]   = 0;//(unsigned char) (v*100/255);
-				    cvResultado->imageData[i*3+1] = 0;//(unsigned char) (v*100/255);
-				    cvResultado->imageData[i*3+2] = 0;//(unsigned char) (v*100/255);
-			    }
-	    }
-        
+				    cvResultado.data[i*3]   = 0;//(unsigned char) (v*100/255);
+				    cvResultado.data[i*3+1] = 0;//(unsigned char) (v*100/255);
+				    cvResultado.data[i*3+2] = 0;//(unsigned char) (v*100/255);
+			    }	
+	    }    
     }
+    
     
     bool colorTuner::isVisible()
     {
 	    return mainwindow->is_visible();
     }
 
-    void colorTuner::display( IplImage* image  )
+    void colorTuner::display( cv::Mat &image  )
     {
     
-        IplImage* cvResultado;
+        cv::Mat cvResultado = cv::Mat(image.size(),CV_8UC3);
         
-        cvResultado = cvCreateImage(cvSize(image->width,image->height), 8 ,3);
-    
-        imageDemo =  cvCreateImage(cvSize(image->width,image->height), 8 ,3);
-        cvCopy(image, imageDemo);
+        imageDemo = cv::Mat(image.size(),CV_8UC3);
+        //cvCopy(image, imageDemo);
+        imageDemo = image.clone();
         pthread_mutex_unlock(&mutex);
         
+        image.copyTo(cvResultado);
+        
         if(radio_original){
-            cvCopy(image, cvResultado);
             cajaSpacesHSV->set_child_visible(false);
             cajaSpacesYUV->set_child_visible(false);
         }
@@ -1392,27 +1394,26 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
             sliderBMin->set_range(0,255.1);
             filter_HSV(cvResultado);
             
-            IplImage* hsvAux = cvCreateImage(cvSize(hsv->width, hsv->height), 8, 3);
-            cvCopy(hsv, hsvAux);
-            drawcheese(hsvAux->imageData ,centro_x,centro_y,
+           cv::Mat hsvAux;
+
+            hsv.copyTo(hsvAux);
+            drawcheese((char *)hsvAux.data ,centro_x,centro_y,
 	                    (double)sliderRMax->get_value(),(double)sliderRMin->get_value(),
 	                    (double)sliderGMax->get_value(),(double)sliderGMin->get_value(),
 	                    1);
-
-            
             Glib::RefPtr<Gdk::Pixbuf> imgBuffHSV = 
-            Gdk::Pixbuf:: create_from_data((const guint8*)hsvAux->imageData,
+            Gdk::Pixbuf:: create_from_data((const guint8*)hsvAux.data,
 	                                Gdk::COLORSPACE_RGB,
 	                                false,
-	                                hsvAux->depth,
-	                                hsvAux->width,
-	                                hsvAux->height,
-	                                hsvAux->widthStep);
+	                                8,
+	                                hsvAux.cols,
+	                                hsvAux.rows,
+	                                hsvAux.step);
 
             gtkimageColorSpaceHSV->clear();
             gtkimageColorSpaceHSV->set(imgBuffHSV);
             
-            cvReleaseImage(&hsvAux);                 
+            hsvAux.release();                 
         }
         if(radio_YUV){
         
@@ -1432,51 +1433,50 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
             sliderBMin->set_range(-0.615, 0.615); 
             filter_YUV(cvResultado);
             
-            IplImage* yuvAux = cvCreateImage(cvSize(yuv->width, yuv->height), 8, 3);
-            cvCopy(yuv, yuvAux);
-            drawsquare(yuvAux->imageData,
+            cv::Mat yuvAux = yuv.clone();
+            drawsquare((char *)yuvAux.data,
 						(double)sliderGMax->get_value(),(double)sliderGMin->get_value(),
 						(double)sliderBMax->get_value(),(double)sliderBMin->get_value(),
 						1);
-            
             Glib::RefPtr<Gdk::Pixbuf> imgBuffYUV = 
-            Gdk::Pixbuf:: create_from_data((const guint8*)yuvAux->imageData,
+            Gdk::Pixbuf:: create_from_data((const guint8*)yuvAux.data,
 	                                Gdk::COLORSPACE_RGB,
 	                                false,
-	                                yuvAux->depth,
-	                                yuvAux->width,
-	                                yuvAux->height,
-	                                yuvAux->widthStep);
+	                                8,
+	                                yuvAux.cols,
+	                                yuvAux.rows,
+	                                yuvAux.step);
 
             gtkimageColorSpaceYUV->clear();
             gtkimageColorSpaceYUV->set(imgBuffYUV);
             
-            cvReleaseImage(&yuvAux);   
+            yuvAux.release();  
               
         }
         
         Glib::RefPtr<Gdk::Pixbuf> imgBuff = 
-				        Gdk::Pixbuf:: create_from_data((const guint8*)cvResultado->imageData,
+				        Gdk::Pixbuf:: create_from_data((const guint8*)cvResultado.data,
 										        Gdk::COLORSPACE_RGB,
 										        false,
-										        cvResultado->depth,
-										        cvResultado->width,
-										        cvResultado->height,
-										        cvResultado->widthStep);
-										        
+										        8,
+										        cvResultado.cols,
+										        cvResultado.rows,
+										        cvResultado.step);
+
         Glib::RefPtr<Gdk::Pixbuf> imgBuffOriginal = 
-                        Gdk::Pixbuf:: create_from_data((const guint8*)image->imageData,
+                        Gdk::Pixbuf:: create_from_data((const guint8*)image.data,
 						                        Gdk::COLORSPACE_RGB,
 						                        false,
-						                        image->depth,
-						                        image->width,
-						                        image->height,
-						                        image->widthStep);
+						                        8,
+						                        image.cols,
+						                        image.rows,
+						                        image.step);
 
     	displayFrameRate();
         mainwindow->resize(1,1);
-        while (gtkmain.events_pending())
-          gtkmain.iteration();
+        while (gtkmain.events_pending()){
+         gtkmain.iteration();}
+
         gtkimage->clear();
         gtkimage->set(imgBuff);
         
@@ -1486,8 +1486,8 @@ bool colorTuner::on_yuv_image_space_button_release_event (GdkEventButton *event)
              
         
         pthread_mutex_lock(&mutex);
-        cvReleaseImage(&cvResultado);
-        cvReleaseImage(&imageDemo);
+        cvResultado.release();
+        imageDemo.release();
 
     }
     
