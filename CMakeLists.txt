@@ -184,12 +184,12 @@ ENDFOREACH(currentSourceFile)
 list_subdirectories2( LIST_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/ 1)
 
 FOREACH (currentBin ${LIST_COMPONENTS})
-    #SET(EXIST EXIST-NOTFOUND)
-    find_file(EXIST NAMES ${currentBin} PATHS ${CMAKE_CURRENT_SOURCE_DIR}/src/components/${currentBin})
-    #IF (EXIST)
-    INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
-    #ENDIF(EXIST)
-    #MESSAGE("${EXIST}")
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin})
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+    endif()
+    if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin})
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+    endif()
 ENDFOREACH(currentBin)
 
 # Install interfaces headers

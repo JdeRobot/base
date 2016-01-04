@@ -54,11 +54,9 @@ else()
         ${OpenCV_INCLUDE_DIRS}
     )
 
-    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+    add_executable (followBall ${SOURCE_FILES_FOLLOWBALL})
 
-    add_executable (followball ${SOURCE_FILES_FOLLOWBALL})
-
-    TARGET_LINK_LIBRARIES ( followball
+    TARGET_LINK_LIBRARIES ( followBall
         JderobotInterfaces
         jderobotutil
         colorspacesmm
