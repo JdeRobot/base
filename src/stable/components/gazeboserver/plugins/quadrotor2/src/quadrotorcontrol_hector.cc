@@ -57,7 +57,7 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
     if (dt == 0.0) return;
 
     // Max force (vel<=10m/s)
-    double max_force_ = mass*10/dt;
+    //double max_force_ = mass*10/dt;
 
     // Get kinematics
     Pose pose = base_link->GetWorldPose();
@@ -71,9 +71,9 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
 #ifdef VELOCITY_BASED_TAKEOFF
     // Inject landing/takingoff
     if (my_state == QuadrotorState::Landing)
-        velocity_command_linear_z = std::min(velocity_command.linear.z, -3.0/*m/s*/);
+        velocity_command_linear_z = std::min(velocity_command.linear.z, -land_speed);
     if (my_state == QuadrotorState::TakingOff)
-        velocity_command_linear_z = std::max(velocity_command.linear.z, +3.0/*m/s*/);
+        velocity_command_linear_z = std::max(velocity_command.linear.z, +takeoff_speed);
 #endif
 
     // Get gravity
@@ -97,7 +97,7 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
     torque.y = inertia.y *  controllers.pitch.update(pitch_command, euler.y, angular_velocity_body.y, dt);
     torque.z = inertia.z *  controllers.yaw.update(velocity_command.angular.z, angular_velocity.z, 0, dt);
     force.z  = mass      * (controllers.velocity_z.update(velocity_command_linear_z,  linear_velocity.z, acceleration.z, dt) + load_factor * gravity_module);
-    if (max_force_ > 0.0 && force.z > max_force_) force.z = max_force_;
+    //if (max_force_ > 0.0 && force.z > max_force_) force.z = max_force_;
     if (force.z < 0.0) force.z = 0.0;
 
     if (my_state != QuadrotorState::Landed){

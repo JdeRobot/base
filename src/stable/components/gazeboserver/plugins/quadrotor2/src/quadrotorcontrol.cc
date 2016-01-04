@@ -38,6 +38,8 @@ QuadrotorControl::~QuadrotorControl(){
 
 }
 
+template <typename T> T sdf2value(const sdf::ElementPtr &_sdf, std::string _str){ return _sdf->GetElement(_str)->Get<T>(); }
+template <typename T> T sdf2value(const sdf::ElementPtr &_sdf, std::string _str, T _default){ if (_sdf->HasElement(_str)) return sdf2value<T>(_sdf, _str); else return _default; }
 
 void
 QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
@@ -45,8 +47,10 @@ QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
     inertial = _base_link->GetInertial();
     mass = inertial->GetMass();
 
-    fly_state_thresholds.first = 0.2;
-    fly_state_thresholds.second = 1.5;
+    fly_state_thresholds.first = sdf2value<double>(_sdf, "landCompletedAt", 0.2);
+    fly_state_thresholds.second = sdf2value<double>(_sdf, "takeoffCompletedAt", 1.5);
+    takeoff_speed = sdf2value<double>(_sdf, "takeoffSpeed", 3);
+    land_speed = sdf2value<double>(_sdf, "landSpeed", 1);
 
     controllers.roll.Load(_sdf, "rollpitch");
     controllers.pitch.Load(_sdf, "rollpitch");
@@ -96,12 +100,21 @@ QuadrotorControl::setTargetVelocity(Twist twist){
     velocity_command = twist;
 }
 
+void
+QuadrotorControl::teleport(gazebo::math::Pose pose){
+    base_link->GetModel()->SetWorldPose(pose);
+}
 
 
 void
 QuadrotorControl::_update_state(const gazebo::common::UpdateInfo & /*_info*/){
     //Pose pose = base_link->GetWorldPose();
     double altitude = sensors->altitude;
+    /// **altitude** is a big deal due sensor limitations.
+    /// "real" sensor has a very tiny range (3 meters). It should
+    /// be merged with barometer to fit a real best hardware case.
+    /// otherways there is impossible to merge absolute obstacle aware
+    /// position with real altotude feedbak.
 
     switch(my_state){
     case Unknown:

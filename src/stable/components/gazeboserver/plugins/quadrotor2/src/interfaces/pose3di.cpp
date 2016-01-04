@@ -25,9 +25,10 @@ using namespace quadrotor::interfaces;
 using namespace jderobot;
 
 
-Pose3DI::Pose3DI (const QuadRotorSensors *sensor):
+Pose3DI::Pose3DI (const QuadRotorSensors *sensor, quadrotor::QuadrotorControl *control):
     data(new Pose3DData(0,0,0,0,0,0,0,0)),
-    sensor(sensor)
+    sensor(sensor),
+    control(control)
 {}
 
 Pose3DI::~Pose3DI ()
@@ -50,8 +51,18 @@ Pose3DI::getPose3DData ( const Ice::Current& ){
 }
 
 Ice::Int
-Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & /*data*/,
-                                 const Ice::Current& ){
-    //ToDo: control
+Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data, const Ice::Current& ){
+    gazebo::math::Pose pose(gazebo::math::Vector3(data->x, data->y, data->z),
+                            gazebo::math::Quaternion(data->q0, data->q1, data->q2, data->q3));
+    control->teleport(pose);
     return 0;
+}
+
+
+Pose3DDataPtr
+Pose3DI_altitude::getPose3DData ( const Ice::Current& c){
+    Pose3DI::getPose3DData(c);
+    data->z = sensor->altitude;
+
+    return data;
 }
