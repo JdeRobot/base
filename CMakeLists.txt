@@ -256,12 +256,16 @@ SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 
-SET (VERSION 5.3.1-rc1)
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
 SET (CPACK_PACKAGE_VERSION_MINOR 3)
 SET (CPACK_PACKAGE_VERSION_PATCH 1)
-SET (CPACK_DEBIAN_PACKAGE_VERSION ${VERSION})
+SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
+
+## Inject release roll up (incremental releases)
+set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
+include(scripts/incremental_releases/incremental-releases.cmake)
+set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
 
 
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
@@ -290,17 +294,37 @@ set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "JdeRobot is a software development suite for robotics applications.")
-SET (CPACK_PACKAGE_DESCRIPTION "JdeRobot is a software development suite for robotics applications, written in C++ language. It provides a programming environment where the robot control program is made up of a collection of several concurrent asynchronous threads named schemas. It is based on JDE cognitive architecture for autonomous robots.")
+
+## Include Git HEAD into description (feature: traceback builds)
+execute_process(COMMAND git rev-parse HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_HEAD
+)
+string(STRIP "${GIT_HEAD}" GIT_HEAD)
+
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
+"JdeRobot is a software development suite for robotics applications.")
+SET (CPACK_PACKAGE_DESCRIPTION
+"JdeRobot is a software development suite for robotics applications,
+ written in C++ language.
+ It provides a programming environment where the robot control program is made
+ up of a collection of several concurrent asynchronous threads named schemas.
+ It is based on JDE cognitive architecture for autonomous robots.
+ .
+ Get source from https://github.com/RoboticsURJC/JdeRobot
+ Package created with revision ${GIT_HEAD}")
+
+## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CPACK_PACKAGE_DESCRIPTION})
 
 SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
-SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_DEBIAN_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 
 
 ## Metapackages (at cmake time)
 include(scripts/metapackages/FindMetapackages.cmake)
 
-SET (PACKAGE_VERSION ${VERSION})
+SET (PACKAGE_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
 #set(PACKAGE_DEPENDS "${DEPS}")
 #configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
 
