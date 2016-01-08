@@ -1,11 +1,11 @@
-#  Copyright (C) 2015 JDE Developers Team
+#  Copyright (C) 2015-2016 JDE Developers Team
 #  Authors:
 #    Victor Arribas <v.arribas.urjc@gmail.com>
 #    Francisco Perez <f.perez475@gmail.com>
 
 cmake_minimum_required(VERSION 2.6)
 
-### Auxiliary functions
+### Auxiliary functions >>>
 ## A function to get all user defined variables with a specified prefix
 function (getListOfVarsStartingWith _prefix _varResult)
     get_cmake_property(_vars CACHE_VARIABLES)
@@ -17,14 +17,14 @@ endfunction()
 function(override_cache _var _value)
     get_property(_HelpString CACHE "${_var}" PROPERTY HELPSTRING)
     get_property(_Type CACHE "${_var}" PROPERTY TYPE)
-    set(${_var} ${_value} CACHE ${_Type} "${_HelpString}" ${ARGV2})
+	set(${_var} ${_value} CACHE ${_Type} "${_HelpString}" FORCE)
 endfunction()
 
 ## Helper to simplify set build_X variables and toggle behavior
 # CMakeCache is a bad friend for this feature. So we require override_cache()
 function (build_component component value)
 	if (DEFINED ${ARGV2})
-		if(${ARGV2} STREQUAL "ONLY_ON" AND NOT build_${component})
+		if(${ARGV2} STREQUAL "ONLY_ON" AND NOT ${value})
 			return()
 		endif()
 	endif()
@@ -32,10 +32,12 @@ function (build_component component value)
 	if (NOT DEFINED build_${component})
 		set(build_${component} ${value} CACHE BOOL "Build flag for JdeRobot component: ${component} (defined by builtpresets)")
 	elseif (NOT build_${component} EQUAL ${value})
-		override_cache(build_${component} ${value} FORCE)
+		override_cache(build_${component} ${value})
 	endif()
 endfunction()
+### <<<
 
+### buildpresets pre-job >>>
 ## Mass toggle OFF.
 # all of the variables starting with build_ are set to OFF.
 if (build_purge)
@@ -43,9 +45,9 @@ if (build_purge)
     set(build-default OFF)
     getListOfVarsStartingWith("build_" matchedVars)
     foreach (_var IN LISTS matchedVars)
-        override_cache(${_var} OFF FORCE)
+		override_cache(${_var} OFF)
     endforeach()
-    override_cache(build_purge OFF FORCE)  # Set itself back to off, as this is a one time thing.
+	override_cache(build_purge OFF)  # Set itself back to off, as this is a one time thing.
 endif()
 
 ## A run once macro to add suffix to project name ;)
@@ -56,9 +58,6 @@ macro (project_suffix suffix)
 	endif()
 endmacro()
 
-
-### Start buildpresets
-
 ## Mass toggle OFF (purge build_X configurations)
 option(build_purge "Turn off all build_ variables." OFF)
 
@@ -67,10 +66,18 @@ if (build_all)
 	set(build-default ON)
 	return()
 endif()
+### <<<
 
-### Notice: definition should be from large to core to allow chainning
+
+### Start buildpresets
+# Here you can define build groups and aliases to simplify fine grained build
+# Notice: definition should be from large to core to allow chainning
 
 ## Tests
+# test are planned to provide a full testing environment will all dependencies
+# it makes sense for fast verify of any improvement, pull request or patch
+# related to a component.
+
 if (test_ardrone)
 	build_component(ardrone_server ON)
 	build_component(introrob_py ON)
@@ -108,6 +115,11 @@ endif()
 
 
 ## Build aliases (real packages for cpack)
+# These alises provides semantic grouping framework's components by layers
+# They are mainly planned for:
+#   a) reduce built time for custom "tiny" components
+#   b) provide multiple package flavors easily
+
 if (build_drivers)
 	project_suffix(drivers)
 	set(build-default OFF)
