@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 JDE Developers Team
+ *  Copyright (C) 2015-2016 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,26 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#include "../include/kinect.hh"
+#include "../include/kinect/kinect.hh"
+
+// OpenCV
+#include <opencv2/core/core.hpp>
+
+// Gazebo (private)
+//#include <gazebo/gazebo.hh>
+#include <gazebo/common/common.hh>
+#include <gazebo/common/Events.hh>
+
+#include <gazebo/sensors/SensorManager.hh>
+#include <gazebo/math/Pose.hh>
+
+// Ice
+#include <easyiceconfig/EasyIce.h>
+//#include <easyiceconfig/debug.hpp>
+
+// debug
+#include <quadrotor/debugtools.h>
+
 
 GZ_REGISTER_MODEL_PLUGIN(kinect::KinectPlugin)
 
@@ -37,11 +56,6 @@ void depth2rgb(const cv::Mat &image_raw, cv::Mat &image_8UC3)
 }
 
 using namespace kinect;
-using namespace gazebo::physics;
-using namespace gazebo::sensors;
-using namespace gazebo::math;
-using namespace gazebo::event;
-using namespace gazebo::common;
 
 KinectPlugin::KinectPlugin(){
 	ice_pose3ddata = new jderobot::Pose3DData(0,0,0,0,0,0,0,0);
@@ -52,7 +66,7 @@ KinectPlugin::~KinectPlugin(){
 }
 
 void 
-KinectPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
+KinectPlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr _sdf){
 	_log_prefix = "["+_model->GetName()+"] ";
 	model = _model;
 
@@ -60,7 +74,7 @@ KinectPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
 	InitializeIce(_sdf);
 
 	sigintConnection = gazebo::event::Events::ConnectSigInt(
-	boost::bind(&KinectPlugin::OnSigInt, this));
+		boost::bind(&KinectPlugin::OnSigInt, this));
 }
 
 void 
@@ -74,7 +88,7 @@ KinectPlugin::Init(){
 		camera_sensor->SetActive(true);
 
 		sub_camera = camera_sensor->ConnectUpdated(
-		boost::bind(&KinectPlugin::_on_cam_bootstrap, this));
+			boost::bind(&KinectPlugin::_on_cam_bootstrap, this));
 	}else{
 		std::cerr << _log_prefix << "\t camera was not connected (NULL pointer)" << std::endl;
 	}
@@ -83,9 +97,9 @@ KinectPlugin::Init(){
 		camera_sensor->SetActive(true);
 
 		sub_cam_depth = camera_impl->ConnectNewDepthFrame(
-		boost::bind(&KinectPlugin::_on_cam_update_depth_data, this, _1,_2,_3,_4,_5));
+			boost::bind(&KinectPlugin::_on_cam_update_depth_data, this, _1,_2,_3,_4,_5));
 		sub_cam_rgb = camera_impl->ConnectNewImageFrame(
-		boost::bind(&KinectPlugin::_on_cam_update_rgb_data, this, _1,_2,_3,_4,_5));
+			boost::bind(&KinectPlugin::_on_cam_update_rgb_data, this, _1,_2,_3,_4,_5));
 	}else{
 		std::cerr << _log_prefix << "\t camera was not connected (NULL pointer)" << std::endl;
 	}
@@ -93,7 +107,7 @@ KinectPlugin::Init(){
 }
 
 void
-KinectPlugin::OnUpdate(const UpdateInfo & /*_info*/){
+KinectPlugin::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 	_on_pose_update();
 }
 
@@ -109,12 +123,12 @@ KinectPlugin::OnSigInt(){
 }
 
 void
-KinectPlugin::LoadSensors(ModelPtr _model){
+KinectPlugin::LoadSensors(gazebo::physics::ModelPtr _model){
 	ONDEBUG_INFO(std::cout << _log_prefix << "KinectPlugin::LoadSensors()" << std::endl;)
-	SensorManager *sm = SensorManager::Instance();
+	gazebo::sensors::SensorManager *sm = gazebo::sensors::SensorManager::Instance();
 	this->base_link_id = _model->GetChild(0)->GetId();
 
-	for (SensorPtr s: sm->GetSensors()){
+	for (gazebo::sensors::SensorPtr s: sm->GetSensors()){
 		if (s->GetParentId() == base_link_id){
 			camera_sensor = boost::static_pointer_cast<gazebo::sensors::DepthCameraSensor>(s);
 			camera_impl = camera_sensor->GetDepthCamera();
@@ -153,7 +167,7 @@ KinectPlugin::_on_cam_bootstrap(){
 	}
 
 	sub_camera = camera_sensor->ConnectUpdated(
-	boost::bind(&KinectPlugin::_on_cam_update, this));
+		boost::bind(&KinectPlugin::_on_cam_update, this));
 }
 
 void
@@ -185,7 +199,7 @@ KinectPlugin::_on_cam_bootstrap_depth_data(const float *_data, unsigned int _wid
 	_on_pose_update();
 
 	sub_cam_depth = camera_impl->ConnectNewDepthFrame(
-	boost::bind(&KinectPlugin::_on_cam_update_depth_data, this, _1,_2,_3,_4,_5));
+		boost::bind(&KinectPlugin::_on_cam_update_depth_data, this, _1,_2,_3,_4,_5));
 }
 
 void
@@ -214,7 +228,7 @@ v_on_cam_bootstrap_rgb_data(const unsigned char * _data, unsigned int _width, un
 	}
 
 	sub_cam_rgb = camera_impl->ConnectNewImageFrame(
-	boost::bind(&KinectPlugin::_on_cam_update_rgb_data, this, _1,_2,_3,_4,_5));
+		boost::bind(&KinectPlugin::_on_cam_update_rgb_data, this, _1,_2,_3,_4,_5));
 }
 
 void

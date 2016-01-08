@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 JDE Developers Team
+ *  Copyright (C) 2015-2016 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,35 +17,23 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-// OpenCV
-#include <opencv2/core/core.hpp>
 
 // Gazebo
-#include <gazebo/gazebo.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo/common/Events.hh>
-
 #include <gazebo/physics/Model.hh>
 #include <gazebo/physics/Link.hh>
-#include <gazebo/math/Pose.hh>
 
 #include <sensors/DepthCameraSensor.hh>
 #include <rendering/DepthCamera.hh>
-#include <gazebo/sensors/SensorManager.hh>
 
 // Ice
 #include <Ice/Ice.h>
-#include <IceUtil/IceUtil.h>
-#include <easyiceconfig/EasyIce.h>
-#include <easyiceconfig/debug.hpp>
 
 // Jderobot
 #include <jderobot/pose3d.h>
 #include <quadrotor/interfaces/pushcamerai.h>
-#include "src/pointcloudi.hpp"
+#include <kinect/pointcloudi.hpp>
 
-// debug
-#include <quadrotor/debugtools.h>
 
 
 namespace kinect{
@@ -130,7 +118,7 @@ public:
     Ice::Int setPose3DData ( const jderobot::Pose3DDataPtr & pose3dData,
                                      const Ice::Current& );
 
-/// Ice (PCL
+/// Ice (PCL)
 private:
     jderobot::interfaces::PointCloudI point_cloudI;
 
