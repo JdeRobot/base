@@ -13,12 +13,14 @@ function (getListOfVarsStartingWith _prefix _varResult)
     set (${_varResult} ${_matchedVars} PARENT_SCOPE)
 endfunction()
 
+
 ## Helper to override cache variables without specify neither lost type nor description
 function(override_cache _var _value)
     get_property(_HelpString CACHE "${_var}" PROPERTY HELPSTRING)
     get_property(_Type CACHE "${_var}" PROPERTY TYPE)
 	set(${_var} ${_value} CACHE ${_Type} "${_HelpString}" FORCE)
 endfunction()
+
 
 ## Helper to simplify set build_X variables and toggle behavior
 # CMakeCache is a bad friend for this feature. So we require override_cache()
@@ -37,18 +39,28 @@ function (build_component component value)
 endfunction()
 ### <<<
 
+
 ### buildpresets pre-job >>>
 ## Mass toggle OFF.
 # all of the variables starting with build_ are set to OFF.
+# You MUST do it isolatelly. Therefore requires two steps:
+#   1) cmake -Dbuild_purge=ON
+#   2) cmake -Dbuild_<whatever> (your normal cmake invocation)
+option(build_purge "Turn off all build_ variables." OFF)
 if (build_purge)
-    message(STATUS "Purging build configuration\n\tdisabling any 'build_' (setting to OFF)")
-    set(build-default OFF)
-    getListOfVarsStartingWith("build_" matchedVars)
-    foreach (_var IN LISTS matchedVars)
+	message(STATUS "Purging build configuration\n\tdisabling any 'build_' (setting to OFF)")
+	set(build-default OFF)
+	getListOfVarsStartingWith("build_" matchedVars)
+	foreach (_var IN LISTS matchedVars)
 		override_cache(${_var} OFF)
-    endforeach()
+	endforeach()
+	getListOfVarsStartingWith("test_" matchedVars)
+	foreach (_var IN LISTS matchedVars)
+		override_cache(${_var} OFF)
+	endforeach()
 	override_cache(build_purge OFF)  # Set itself back to off, as this is a one time thing.
 endif()
+
 
 ## A run once macro to add suffix to project name ;)
 macro (project_suffix suffix)
@@ -57,16 +69,21 @@ macro (project_suffix suffix)
 		set(_project_suffix_done ON)
 	endif()
 endmacro()
+set(_project_suffix_done OFF) # allow package rename without clean CACHE
 
-## Mass toggle OFF (purge build_X configurations)
-option(build_purge "Turn off all build_ variables." OFF)
 
 ## New alias for build-default
 if (build_all)
+	message(STATUS "Buildpresets: using old build workflow")
 	set(build-default ON)
+	getListOfVarsStartingWith("build_" matchedVars)
+	foreach (_var IN LISTS matchedVars)
+		unset(${_var} CACHE)
+	endforeach()
 	return()
 endif()
 ### <<<
+
 
 
 ### Start buildpresets
