@@ -114,14 +114,7 @@ ENDFOREACH(LibFile)
 
   # FIND AND CHECK OTHER DEPENDENCES
 
-## Alphabetical sorted to handle dependency order
-# this means that you must to prepend letter based sort at directory level
-## To disable a dependency rename CMaleLists.txt (for example, add .disabled)
-file(GLOB_RECURSE CMakeLists_files "Deps/**/CMakeLists.txt")
-list(SORT CMakeLists_files)
-foreach(CMakeLists_file ${CMakeLists_files})
-    include(${CMakeLists_file})
-endforeach()
+include(Deps/LoadJderobotDependencies.cmake)
 
 list(APPEND DEPS libvtk5.8)
 list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
@@ -210,6 +203,9 @@ INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf COMPONEN
 # Install Glade
 FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.glade)
 INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
+
+# Install Deps cmake's tree
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
 
 
 #file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
