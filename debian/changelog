@@ -1,3 +1,9 @@
+jderobot (5.3.1-rc1) unstable; urgency=low
+
+  * release 5.3.1-rc1
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Mon, 18 Jan 2016 10:29:44 +0100
+
 jderobot (5.3.0-rc1) unstable; urgency=low
 
   *New JdeRobot release
