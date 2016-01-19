@@ -17,6 +17,12 @@
  *       Victor Arribas Raigadas <.varribas.urjc@gmail.com>
  */
 
+
+/*
+ * WARNING:
+ * DO NOT modify this file. It may cause problems due to a redefinition in:
+ * src/stable/libs/easyiceconfig_cpp/include/easyiceconfig/stdutils.h
+ */
 #ifndef STDUTILS_HPP
 #define STDUTILS_HPP
 

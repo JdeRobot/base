@@ -27,15 +27,12 @@
 
 namespace resourcelocator {
 
-
-
-
 /**
  * @brief Find filename into all defined search paths.
  * Order is:
  * 1. current dir
- * 2. $ICE_CONFIG_PATH
- * 3. jderobot paths (*)
+ * 2. specified environment variable
+ * 3. specified paths
  *
  * @return empty if file was not found.
  */
