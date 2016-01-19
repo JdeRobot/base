@@ -1,4 +1,5 @@
 #include "gui.h"
+#include <resourcelocator/gladelocator.hpp>
 
 namespace navigatorCamera {
 
@@ -9,7 +10,7 @@ namespace navigatorCamera {
 
 		std::cout << "Loading glade." << std::endl;
 
-		const std::string gladepath = std::string(GLADE_DIR) + gladeFile;
+		const std::string gladepath = resourcelocator::findGladeFile(gladeFile);
 		refXml = Gnome::Glade::Xml::create(gladepath);
 
 		refXml->get_widget("showWindow", showWindow);
