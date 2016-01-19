@@ -5,25 +5,25 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
     this-> ic = ic;
     Ice::PropertiesPtr prop = ic->getProperties();
 
-    ////////////////////////////// ENCODERS //////////////////////////////
-    // Contact to ENCODERS interface
-    Ice::ObjectPrx baseEncoders = ic->propertyToProxy("introrob.Encoders.Proxy");
-    if (0 == baseEncoders) {
-		encodersON = false;
-		std::cout << "Encoders configuration not specified" <<std::endl;
-        //throw "Could not create proxy with encoders";
+    ////////////////////////////// Pose3D //////////////////////////////
+    // Contact to POSE3D interface
+    Ice::ObjectPrx basePose3D = ic->propertyToProxy("introrob.Pose3D.Proxy");
+    if (0 == basePose3D) {
+		pose3dON = false;
+		std::cout << "Pose3D configuration not specified" <<std::endl;
+        //throw "Could not create proxy with pose3D";
 	}else{
-		// Cast to encoders
+		// Cast to pose3D
 		try {
-			eprx = jderobot::EncodersPrx::checkedCast(baseEncoders);
-			if (0 == eprx)
-				throw "Invalid proxy introrob.Encoders.Proxy";
+			p3dprx = jderobot::Pose3DPrx::checkedCast(basePose3D);
+			if (0 == p3dprx)
+				throw "Invalid proxy introrob.Pose3D.Proxy";
 
-			encodersON = true;
-			std::cout << "Encoders connected" << std::endl;
+			pose3dON = true;
+			std::cout << "Pose3D connected" << std::endl;
 		}catch (Ice::ConnectionRefusedException& e){
-			encodersON=false;
-			std::cout << "Encoders inactive" << std::endl;
+			pose3dON=false;
+			std::cout << "Pose3D inactive" << std::endl;
 		}
 	}
 
@@ -143,13 +143,8 @@ cv::Mat Sensors::getCamera2()
 
 void Sensors::update()
 {
-	if (encodersON) {
-    	encodersData = this->eprx->getEncodersData();
-	    mutex.lock();
-		robotx = encodersData->robotx;
-		roboty = encodersData->roboty;
-		robottheta = encodersData->robottheta;
-	    mutex.unlock();
+	if (pose3dON) {
+    	pose3ddata = this->p3dprx->getPose3DData();
 	}
 
 	if (camera1ON) {
@@ -184,8 +179,8 @@ float Sensors::getRobotPoseX()
 
 	float x;
 	mutex.lock();
-	if (encodersON) 
-	    x = robotx;
+	if (pose3dON) 
+	    x = this->pose3ddata->x;
    	else
 		x = 0;
 	mutex.unlock();
@@ -197,8 +192,8 @@ float Sensors::getRobotPoseY()
 {
     float y;
 	mutex.lock();
-	if (encodersON) 
-	    y = roboty;
+	if (pose3dON) 
+	    y = this->pose3ddata->y;
    	else
 		y = 0;
 	mutex.unlock();
@@ -210,8 +205,8 @@ float Sensors::getRobotPoseTheta()
 {
     float theta;
 	mutex.lock();
-	if (encodersON) 
-	    theta = robottheta;
+	if (pose3dON) 
+	    theta = 180;
    	else
 		theta = 0;
 	mutex.unlock();

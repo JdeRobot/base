@@ -22,7 +22,6 @@ public:
     void updateThreadGUI();
 
 private:
-    QPushButton* buttonMyAlgorithm;
     QPushButton* buttonStopRobot;
 
     controlVW* canvasVW;
@@ -44,7 +43,6 @@ signals:
 
 public slots:
     void on_updateGUI_recieved();
-    void on_buttonMyAlgorithm_clicked();
     void on_buttonStopRobot_clicked();
 
     void on_update_canvas_recieved(int v, int w);

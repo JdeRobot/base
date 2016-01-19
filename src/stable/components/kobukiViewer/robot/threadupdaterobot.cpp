@@ -20,10 +20,6 @@ void ThreadUpdateRobot::run()
         this->robot->getActuators()->setActuators();
 
 
-        if(state->getMyAlgorithm()){
-            RunNavigationAlgorithm();
-        }
-
         gettimeofday(&b, NULL);
         totalb = b.tv_sec * 1000000 + b.tv_usec;
         diff = (totalb - totala) / 1000;
