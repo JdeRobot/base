@@ -23,12 +23,13 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include "controller.h"
+#include <resourcelocator/gladelocator.hpp>
 
 namespace rgbdManualCalibrator {
 
   Controller::Controller(Ice::PropertiesPtr prop, int w, int h, int nCameras) {
 	cameras.resize(nCameras);
-    this->gladepath = std::string("./rgbdManualCalibrator.glade");
+    this->gladepath = resourcelocator::findGladeFile("rgbdManualCalibrator.glade");
 
     this->world = prop->getProperty("rgbdManualCalibrator.World.File");
     //cout << "world es " << this->world << endl;

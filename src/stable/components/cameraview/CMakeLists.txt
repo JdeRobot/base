@@ -12,7 +12,12 @@ include_directories(
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
+
 
 add_executable (cameraview ${SOURCE_FILES})
 
@@ -30,4 +35,5 @@ TARGET_LINK_LIBRARIES(cameraview
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
 ${CMAKE_THREAD_LIBS_INIT}
+	${resourcelocator_LIBRARIES}
 )

@@ -1,7 +1,5 @@
 SET(SOURCE_FILES rgbdViewer.cpp drawarea.cpp rgbdViewergui.cpp myprogeo.cpp)
 
-add_definitions(-DGLADE_DIR="${gladedir}")
-
 set( CMAKE_CXX_FLAGS "-Wno-deprecated" ) # Opciones para el compilador-lgsl -lgslcblas -lGL -lGLU -lglut -lgazebo
 
 include_directories(
@@ -12,6 +10,11 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+	${resourcelocator_INCLUDE_DIRS}
+)
+
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
 )
 
 add_executable (rgbdViewer ${SOURCE_FILES})
@@ -35,4 +38,5 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     ${gsl_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
+	${resourcelocator_LIBRARIES}
 )

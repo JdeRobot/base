@@ -13,17 +13,21 @@ include_directories(
     ${gtkglextmm_INCLUDE_DIRS}
     ${libgnomecanvas_INCLUDE_DIRS}
     ${libgnomecanvasmm_INCLUDE_DIRS}
+	${resourcelocator_INCLUDE_DIRS}
 )
 
 set( CMAKE_CXX_FLAGS "-Wno-deprecated")  # Opciones para el compilador
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/conf/ COMPONENT core)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/glade/ COMPONENT core)
 
 FILE(GLOB XML_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameras/*xml)
 FOREACH (xml ${XML_FILES})
         INSTALL (FILES ${xml} DESTINATION /usr/local/share/jderobot/conf/cameras/ COMPONENT core)
 ENDFOREACH(xml)
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
 
 add_executable (introrob  ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(introrob
@@ -48,4 +52,5 @@ TARGET_LINK_LIBRARIES(introrob
 #	${gsl_LIBRARIES}
 	${ZeroCIce_LIBRARIES}
 	${Gearbox_LIBRARIES}
+	${resourcelocator_LIBRARIES}
 )

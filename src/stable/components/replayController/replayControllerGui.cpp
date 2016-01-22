@@ -7,6 +7,7 @@
 
 #include <jderobotHandlers/ReplayControlerClientHDL.h>
 #include "replayControllerGui.h"
+#include <resourcelocator/gladelocator.hpp>
 
 
 namespace replayController {
@@ -17,7 +18,8 @@ replayControllergui::replayControllergui(jderobot::ReplayControlerClientHDLPtr& 
 	this->controller=c;
 	this->exit=false;
 	std::cout << "Loading glade\n";
-	refXml = Gnome::Glade::Xml::create("./replayControllerGui.glade");
+	const std::string gladepath = resourcelocator::findGladeFile("replayControllerGui.glade");
+	refXml = Gnome::Glade::Xml::create(gladepath);
 
 		/*Get widgets*/
 	refXml->get_widget("window1",mainwindow);

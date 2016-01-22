@@ -1,5 +1,4 @@
 SET( SOURCE_FILES common.h controller.cpp drawarea.cpp view.h rgbdManualCalibrator.cpp controller.h drawarea.h view.cpp)
-add_definitions(-DGLADE_DIR="${gladedir}")
 
 include_directories(
     ${INTERFACES_CPP_DIR}
@@ -11,7 +10,12 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+	${resourcelocator_INCLUDE_DIRS}
     )
+
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
 
 add_executable (rgbdManualCalibrator ${SOURCE_FILES})
 
@@ -35,4 +39,5 @@ TARGET_LINK_LIBRARIES( rgbdManualCalibrator
  progeo
  parallelIce
  ${ZLIB_LIBRARIES}    
+${resourcelocator_LIBRARIES}
 )
