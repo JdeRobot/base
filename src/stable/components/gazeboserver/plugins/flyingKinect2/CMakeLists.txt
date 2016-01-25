@@ -33,9 +33,13 @@ link_directories(
 ## Project
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x" ) # Opciones para el compilador
 
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 set(SOURCES
 	src/kinect.cc
-	src/pointcloudi.hpp
+
+	include/kinect/kinect.hh
+	include/kinect/pointcloudi.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
