@@ -258,11 +258,6 @@ SET (CPACK_PACKAGE_VERSION_MINOR 3)
 SET (CPACK_PACKAGE_VERSION_PATCH 1)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 
-## Inject release roll up (incremental releases)
-set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-include(scripts/incremental_releases/incremental-releases.cmake)
-set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
-
 
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
 SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
@@ -321,16 +316,24 @@ SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_DEBIAN_PACKAGE_VERSI
 include(scripts/metapackages/FindMetapackages.cmake)
 
 SET (PACKAGE_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-#set(PACKAGE_DEPENDS "${DEPS}")
-#configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
+set(PACKAGE_DEPENDS "${DEPS}")
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps_${PACKAGE_VERSION}_all.info)
 
 set(PACKAGE_DEPENDS "${DEPS_DEV}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev_${PACKAGE_VERSION}_all.info)
 
 execute_process(
     COMMAND ${MAKE_PACKAGE_EXECUTABLE}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+
+## Inject release roll up (incremental releases)
+# this step should be only for jderobot package
+set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
+include(scripts/incremental_releases/incremental-releases.cmake)
+set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
+
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)
