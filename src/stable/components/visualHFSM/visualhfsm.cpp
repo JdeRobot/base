@@ -1104,11 +1104,16 @@ void VisualHFSM::on_menubar_clicked_generate_cpp_code () {
         std::string cpppath(this->filepath);
         std::string cfgpath(this->filepath);
         std::string cmakepath(this->filepath);
+        std::string execpath(this->filepath);
+        std::size_t found = execpath.find_last_of("/");
+        execpath = execpath.substr(found);
+        found = execpath.find_last_of(".");
+        execpath = execpath.substr(1,found-1);
 
         if ( (this->replace(cpppath, std::string(".xml"), std::string(".cpp"))) &&
             (this->replace(cfgpath, std::string(".xml"), std::string(".cfg"))) &&
-            (this->replaceFile(cmakepath, std::string("/"), std::string("CMakeLists.txt"))) ) {
-            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, cmakepath,
+            (this->replaceFile(cmakepath, std::string("/"), std::string("CMakeLists.txt")))) {
+            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, cmakepath, execpath,
                 &(this->listInterfaces), this->mapInterfacesHeader, this->listLibraries);
             generate.init();
 
@@ -1176,11 +1181,17 @@ void VisualHFSM::on_menubar_clicked_generate_python_code (){
   
         std::string cpppath(this->filepath);
         std::string cfgpath(this->filepath);
+        std::string execpath(this->filepath);
+        std::size_t found = execpath.find_last_of("/");
+        execpath = execpath.substr(found);
+        found = execpath.find_last_of(".");
+        execpath = execpath.substr(1,found-1);
+        //home/samuelvm/TFG/examples/example2
 
         if ( (this->replace(cpppath, std::string(".xml"), std::string(".py"))) &&
             (this->replace(cfgpath, std::string(".xml"), std::string(".cfg")))) {
 
-            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, "",
+            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, "", execpath,
                 &(this->listInterfaces), this->mapInterfacesHeader, this->listLibraries);
             generate.init_py();
 
