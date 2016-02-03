@@ -27,13 +27,15 @@
 #include <IceUtil/IceUtil.h>
 #include <jderobotHandlers/ReplayControlerClientHDL.h>
 
+#include "easyiceconfig/EasyIce.h" 
+
 int main(int argc, char** argv){
 	Ice::CommunicatorPtr ic;
 	Ice::PropertiesPtr prop;
 	std::string prefix("replayController.");
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
