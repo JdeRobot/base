@@ -25,13 +25,15 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "viewer.h"
 
+#include "easyiceconfig/EasyIce.h" 
+
 int main(int argc, char** argv){
   int status;
   opencvdemo::Viewer viewer;
   Ice::CommunicatorPtr ic;
 
   try{
-    ic = Ice::initialize(argc,argv);
+    ic = EasyIce::initialize(argc,argv);
     Ice::ObjectPrx base = ic->propertyToProxy("Opencvdemo.Camera.Proxy");
     if (0==base)
       throw "Could not create proxy";
