@@ -6,6 +6,11 @@ include_directories(
     ${LIBS_DIR}
     ${gtkmm_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${easyiceconfig_INCLUDE_DIRS}
+)
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 set( CMAKE_CXX_FLAGS "-Wno-deprecated" ) # Opciones para el compilador
@@ -18,6 +23,7 @@ TARGET_LINK_LIBRARIES(teleoperatorPC
     colorspacesmm
     ${OpenCV_LIBRARIES}        
     ${OpenCVGUI_LIBRARIES}
+    ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}    
     ${gtkmm_LIBRARIES}  
     ${gthread_LIBRARIES}
