@@ -47,6 +47,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "easyiceconfig/EasyIce.h" 
 
 
 bool componentAlive;
@@ -1021,7 +1022,7 @@ int main(int argc, char** argv) {
 
 
 	try{
-		ic = Ice::initialize(argc, argv);
+		ic = EasyIce::initialize(argc, argv);
 		Ice::PropertiesPtr prop = ic->getProperties();
 
 		bool startPlaying = (bool)prop->getPropertyAsIntWithDefault(componentPrefix+".startPlaying",1);

@@ -1,4 +1,4 @@
-SET(SOURCE_FILES replayer.cpp replayergui.cpp control.cpp)
+	SET(SOURCE_FILES replayer.cpp replayergui.cpp control.cpp)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -12,6 +12,11 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
+)
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 add_executable (replayer ${SOURCE_FILES})
@@ -31,5 +36,6 @@ TARGET_LINK_LIBRARIES(replayer
     JderobotInterfaces
     jderobotutil
     ${gsl_LIBRARIES}
+    ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
 )
