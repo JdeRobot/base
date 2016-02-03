@@ -30,6 +30,7 @@
 #include "controller.h"
 #include "common.h"
 
+#include "easyiceconfig/EasyIce.h" 
 
 //namespace calibrator{
 
@@ -43,7 +44,7 @@ int main(int argc, char** argv){
 	int height, width, nCameras;
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		
 
 		Ice::PropertiesPtr prop = ic->getProperties();
