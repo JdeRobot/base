@@ -28,6 +28,7 @@
 #include <cv.h>
 #include <highgui.h>
 
+#include "easyiceconfig/EasyIce.h" 
 
 
 int main(int argc, char** argv){
@@ -36,7 +37,7 @@ int main(int argc, char** argv){
 	Ice::CommunicatorPtr ic;
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		Ice::ObjectPrx base = ic->propertyToProxy("rgbdCalibrator.CameraColor.Proxy");
 		if (0==base)
 			throw "Could not create proxy";
