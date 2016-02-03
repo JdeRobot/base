@@ -9,7 +9,7 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
-
+#include <easyiceconfig/EasyIce.h> 
 
 //#include <jderobot/motors.h>
 #include <jderobot/pose3d.h>

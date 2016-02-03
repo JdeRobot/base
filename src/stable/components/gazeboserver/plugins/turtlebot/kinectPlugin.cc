@@ -616,7 +616,7 @@ void *mainKinect(void* v)
 	char* argv[] = {name};
     try {
         
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
         prop = ic->getProperties();
         
         std::string Endpoints = prop->getProperty("Kinect.Endpoints");
