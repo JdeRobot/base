@@ -12,11 +12,14 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
             ${CMAKE_CURRENT_SOURCE_DIR}/cameras
             ${openni_INCLUDE_DIR}
             ${LIBUSB_INCLUDE_DIRS}
-        )
+       		${easyiceconfig_INCLUDE_DIRS}
+		)
+
+		link_directories(
+			${easyiceconfig_LIBRARY_DIRS}
+		)
 
 	    add_executable (openni1Server ${SOURCE_FILES})
-
-
 
 			IF( nite_LIBRARIES)
 
@@ -32,6 +35,7 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 				  ${OpenCV_LIBRARIES}
 				  ${OpenCVGUI_LIBRARIES}
 				  ${gsl_LIBRARIES}
+				  ${easyiceconfig_LIBRARIES} 
 				  ${ZeroCIce_LIBRARIES} 
 				  ${openni_LIBRARIES}
 				  ${nite_LIBRARIES}
@@ -48,6 +52,7 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 				  ${OpenCV_LIBRARIES}
 				  ${OpenCVGUI_LIBRARIES}
 				  ${gsl_LIBRARIES}
+				  ${easyiceconfig_LIBRARIES} 
 				  ${ZeroCIce_LIBRARIES} 
 				  ${openni_LIBRARIES}
 				  ${CMAKE_THREAD_LIBS_INIT}
