@@ -51,6 +51,7 @@
 #include "myprogeo.h"
 #include <iostream>
 #include <fstream>
+#include "easyiceconfig/EasyIce.h" 
 
 #ifdef WITH_NITE
 	#include <XnVCircleDetector.h>
@@ -1259,7 +1260,7 @@ int main(int argc, char** argv){
 	std::string componentPrefix("openni1Server");
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}
 	catch (const Ice::Exception& ex) {

@@ -16,6 +16,11 @@ IF (libxmlpp_INCLUDE_DIRS)
 		${gtkmm_INCLUDE_DIRS}
         ${libglademm_INCLUDE_DIRS}
         ${gtkglextmm_INCLUDE_DIRS}
+    	${easyiceconfig_INCLUDE_DIRS}
+	)
+
+	link_directories(
+		${easyiceconfig_LIBRARY_DIRS}
 	)
 
 	add_executable (remoteConfiguration ${SOURCE_FILES})
@@ -31,6 +36,7 @@ IF (libxmlpp_INCLUDE_DIRS)
 		  JderobotInterfaces
 		  jderobotutil
 		${CMAKE_THREAD_LIBS_INIT} 
+		${easyiceconfig_LIBRARIES} 
 		${ZeroCIce_LIBRARIES}
 	)
 endif()

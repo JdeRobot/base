@@ -12,6 +12,11 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
+)
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 add_executable (recorder ${SOURCE_FILES})
@@ -26,6 +31,7 @@ TARGET_LINK_LIBRARIES(recorder
     ${libglademm_LIBRARIES}
     ${gtkglextmm_LIBRARIES}
     ${gsl_LIBRARIES}
+    ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${Boost_LIBRARIES}
     colorspacesmm

@@ -17,9 +17,11 @@ include_directories(
 	${gtkglextmm_INCLUDE_DIRS}
 	${ZLIB_INCLUDE_DIRS}
 	${resourcelocator_INCLUDE_DIRS}
+	${easyiceconfig_INCLUDE_DIRS}
 )
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 
@@ -34,6 +36,7 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 	colorspacesmm
 	JderobotInterfaces
 	parallelIce
+	${easyiceconfig_LIBRARIES} 
 	${ZeroCIce_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${resourcelocator_LIBRARIES}

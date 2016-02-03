@@ -32,6 +32,8 @@
 #include "parallelIce/cameraClient.h"
 #include "parallelIce/pointcloudClient.h"
 
+#include "easyiceconfig/EasyIce.h" 
+
 
 
 #define MAX_COMPONENTS 20	
@@ -122,7 +124,7 @@ int main(int argc, char** argv){
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;

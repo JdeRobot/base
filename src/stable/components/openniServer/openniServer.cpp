@@ -48,6 +48,8 @@
 #include <zlib.h>
 #include <openssl/md5.h>
 
+#include "easyiceconfig/EasyIce.h" 
+
 #ifdef WITH_NITE2
 #include "NiTE.h"
 #endif
@@ -1372,7 +1374,7 @@ int main(int argc, char** argv){
 
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}
 	catch (const Ice::Exception& ex) {

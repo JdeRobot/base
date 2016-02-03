@@ -15,6 +15,7 @@
 // ICE utils includes
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include <easyiceconfig/EasyIce.h> 
 
 #include <jderobot/laser.h>
 
@@ -120,7 +121,7 @@ void *mainLaser(void* v)
 	char* argv[] = {name};
     try {
         
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
         prop = ic->getProperties();
         
         std::string Endpoints = prop->getProperty("Laser.Endpoints");

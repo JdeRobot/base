@@ -7,6 +7,7 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
+#include <easyiceconfig/EasyIce.h> 
 
 // JDErobot general ice component includes
 #include <jderobot/pose3dencoders.h>

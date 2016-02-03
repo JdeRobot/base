@@ -19,8 +19,13 @@ IF(OPENNI2_LIB)
         ${CMAKE_CURRENT_SOURCE_DIR}/cameras
 		${NITE2_INC}
 		${ZLIB_INCLUDE_DIRS}
-		
-    )
+       ${easyiceconfig_INCLUDE_DIRS}
+	)
+
+	link_directories(
+		${easyiceconfig_LIBRARY_DIRS}
+	)
+
 
     add_executable (openniServer ${SOURCE_FILES})
 	#copy openni libs to local path
@@ -45,6 +50,7 @@ IF(OPENNI2_LIB)
 		TARGET_LINK_LIBRARIES(openniServer
 	        ${CMAKE_THREAD_LIBS_INIT}
 			${CMAKE_THREAD_LIBS_INIT}
+			${easyiceconfig_LIBRARIES} 
 	        ${ZeroCIce_LIBRARIES}
 	        ${OpenCV_LIBRARIES}
 	        ${OpenCVGUI_LIBRARIES} 
@@ -64,6 +70,7 @@ IF(OPENNI2_LIB)
 	else()
 		TARGET_LINK_LIBRARIES(openniServer
 	        ${CMAKE_THREAD_LIBS_INIT}
+			${easyiceconfig_LIBRARIES} 
 			${ZeroCIce_LIBRARIES}
 			${OpenCV_LIBRARIES}
 	        ${OpenCVGUI_LIBRARIES}

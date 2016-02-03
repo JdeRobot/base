@@ -112,7 +112,7 @@ namespace gazebo {
 
         try {
 
-            ic = Ice::initialize(argc, argv);
+            ic = EasyIce::initialize(argc, argv);
 
 
             prop = ic->getProperties();

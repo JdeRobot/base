@@ -7,6 +7,8 @@
 #include "gui.h"
 #include "sharer.h"
 
+#include "easyiceconfig/EasyIce.h" 
+
 #define cycle_camera 100000 //microseconds
 #define cycle_gui 50000 //microseconds
 #define cycle_speed 20000 //microseconds
@@ -159,7 +161,7 @@ int main(int argc, char** argv)
 	try
 	{
 		//--------------------ICE--------------------//
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		Ice::PropertiesPtr prop = ic->getProperties();
 
 		gladeFile = prop->getPropertyWithDefault(prefix + ".gladeFile", "./" + prefix + ".glade");

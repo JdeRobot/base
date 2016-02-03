@@ -10,11 +10,13 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
-	${resourcelocator_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
 )
 
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 add_executable (rgbdViewer ${SOURCE_FILES})
@@ -36,6 +38,7 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     pioneer
     parallelIce
     ${gsl_LIBRARIES}
+    ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
 	${resourcelocator_LIBRARIES}

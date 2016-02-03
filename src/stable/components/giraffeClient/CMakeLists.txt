@@ -8,11 +8,13 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
-${resourcelocator_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
 )
 
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 
@@ -29,6 +31,7 @@ TARGET_LINK_LIBRARIES(giraffeClient
     JderobotInterfaces
     jderobotutil
     progeo
+    ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
-	${resourcelocator_LIBRARIES}
+    ${resourcelocator_LIBRARIES}
 )

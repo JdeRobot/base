@@ -22,6 +22,7 @@
 
 #include <opencv2/core/core_c.h>
 #include "controlICE.h"
+#include "easyiceconfig/EasyIce.h" 
 
 controlICE::controlICE(SharedMemory *interfacesData) {
     this->interfacesData = interfacesData;
@@ -224,7 +225,7 @@ void controlICE::initLaser() {
         char* argv[] = {name};
         int argc = 1;
 
-        this->icLaser = Ice::initialize(argc, argv);
+        this->icLaser = EasyIce::initialize(argc, argv);
 
         Ice::ObjectPrx baseLaser = this->icLaser->propertyToProxy("introrob.Laser.Proxy");
         if (0 == baseLaser)

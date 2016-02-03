@@ -33,7 +33,7 @@
 // ICE utils includes
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
-
+#include <easyiceconfig/EasyIce.h> 
 
 #include <visionlib/colorspaces/colorspacesmm.h>
 

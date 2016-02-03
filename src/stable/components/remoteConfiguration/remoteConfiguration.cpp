@@ -33,6 +33,8 @@
 #include <gtkmm/main.h>
 #include "myparser.h"
 
+#include "easyiceconfig/EasyIce.h" 
+
 
 
 void *gui_thread(void* arg){
@@ -70,7 +72,7 @@ int main(int argc, char** argv){
 	jderobot::remoteConfigPrx configPrx;
 
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
