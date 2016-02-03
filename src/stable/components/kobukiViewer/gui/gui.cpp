@@ -13,7 +13,6 @@ GUI::GUI(Robot* robot, StateGUI *state)
     camerasWidget = new CamerasWidget(robot);
     glwidget = new GLWidget(state, robot);
 
-    buttonMyAlgorithm = new QPushButton(QIcon(":/images/play.png"), "");
     buttonStopRobot = new QPushButton("Stop Robot");
     checkLaser = new QCheckBox("Laser");
     checkCameras = new QCheckBox("Cameras");
@@ -29,7 +28,6 @@ GUI::GUI(Robot* robot, StateGUI *state)
     layoutControl->addWidget(canvasVW, 0, 0);
 
     layoutButtons->addWidget(buttonStopRobot, indiceFilaGui, 0);
-    layoutButtons->addWidget(buttonMyAlgorithm, indiceFilaGui++, 1);
     layoutButtons->addWidget(check3DWorld, indiceFilaGui++, 1);
     layoutButtons->addWidget(checkCameras, indiceFilaGui++, 1);
     layoutButtons->addWidget(checkLaser, indiceFilaGui++, 1);
@@ -46,7 +44,6 @@ GUI::GUI(Robot* robot, StateGUI *state)
     connect(this, SIGNAL(signal_updateGUI()), this, SLOT(on_updateGUI_recieved()));
 
     connect(buttonStopRobot, SIGNAL(clicked()),this, SLOT(on_buttonStopRobot_clicked()) );
-    connect(buttonMyAlgorithm, SIGNAL(clicked()),this, SLOT(on_buttonMyAlgorithm_clicked()) );
 
     connect(canvasVW, SIGNAL(VW_changed(int,int)), this, SLOT(on_update_canvas_recieved(int, int)));
 
@@ -71,16 +68,6 @@ void GUI::on_update_canvas_recieved(int v, int w)
 {
     this->robot->getActuators()->setMotorV((float)v);
     this->robot->getActuators()->setMotorW((float)w);
-}
-
-void GUI::on_buttonMyAlgorithm_clicked()
-{
-    state->setMyAlgorithm();
-    if(state->getMyAlgorithm()){
-        buttonMyAlgorithm->setIcon(QIcon(":/images/stop.png"));
-    }else{
-        buttonMyAlgorithm->setIcon(QIcon(":/images/play.png"));
-    }
 }
 
 void GUI::on_buttonStopRobot_clicked()

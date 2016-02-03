@@ -150,8 +150,6 @@ void GLWidget::paintGL()
     //robot
     drawRobot();
 
-    RunGraphicsAlgorithm();
-
 }
 
 void GLWidget::resizeGL(int width, int height)

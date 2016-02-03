@@ -16,7 +16,6 @@ class ThreadUpdateRobot:public QThread
 {
 public:
     ThreadUpdateRobot(Robot *robot, StateGUI* state);
-    void RunNavigationAlgorithm();
 
 private:
     Robot *robot;

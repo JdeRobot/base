@@ -6,7 +6,7 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
-#include <jderobot/encoders.h>
+#include <jderobot/pose3d.h>
 #include <jderobot/camera.h>
 #include <jderobot/laser.h>
 
@@ -38,14 +38,14 @@ private:
     Ice::CommunicatorPtr ic;
 
     // ICE INTERFACES
-    jderobot::EncodersPrx eprx;
-    jderobot::EncodersDataPtr encodersData;
+    jderobot::Pose3DPrx p3dprx;
+    jderobot::Pose3DDataPtr pose3ddata;
     jderobot::CameraPrx camera2;
     jderobot::CameraPrx camera1;
 
     //ICE interfaces available for connection on demand
     bool laserON;
-    bool encodersON;
+    bool pose3dON;
     bool camera1ON;
     bool camera2ON;
 
