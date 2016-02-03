@@ -1,3 +1,14 @@
+jderobot (5.3.1-rc2) unstable; urgency=low
+
+  * release 5.3.1-rc2
+  * [PR #311] Changes in cameraserver .cfg file: framerate updated, and disable namingservice
+  * [PR #298] Installation of JdeRobot dependencies to reuse it
+  * [PR #291] Added toggeable build to the project
+  * [PR #287] Refactorization of flyingKinect2 plugin
+  
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Mon, 18 Jan 2016 10:29:44 +0100
+
 jderobot (5.3.1-rc1) unstable; urgency=low
 
   * release 5.3.1-rc1
