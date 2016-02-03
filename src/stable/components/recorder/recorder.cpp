@@ -32,6 +32,8 @@
 #include "poolWriteEncoders.h"
 #include <ns/ns.h>
 
+#include "easyiceconfig/EasyIce.h" 
+
 bool recording=false;
 struct timeval inicio;
 bool globalActive=true;
@@ -392,7 +394,7 @@ int main(int argc, char** argv){
    
 		Ice::PropertiesPtr prop;
 
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 
 		prop = ic->getProperties();
 
