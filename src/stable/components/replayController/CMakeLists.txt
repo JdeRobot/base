@@ -15,8 +15,12 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+	${resourcelocator_INCLUDE_DIRS}
 )
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
 add_executable (replayController ${SOURCE_FILES})
 
 
@@ -35,4 +39,5 @@ TARGET_LINK_LIBRARIES(replayController
     jderobotHandlers
     ${ZeroCIce_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+	${resourcelocator_LIBRARIES}
     )

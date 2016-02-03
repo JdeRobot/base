@@ -16,7 +16,12 @@ include_directories(
 	${libglademm_INCLUDE_DIRS}
 	${gtkglextmm_INCLUDE_DIRS}
 	${ZLIB_INCLUDE_DIRS}
+	${resourcelocator_INCLUDE_DIRS}
 )
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
+
 
 add_executable (navigatorCamera  ${SOURCE_FILES})
 
@@ -31,4 +36,5 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 	parallelIce
 	${ZeroCIce_LIBRARIES}
 	${ZLIB_LIBRARIES}
+	${resourcelocator_LIBRARIES}
 )

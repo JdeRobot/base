@@ -21,11 +21,12 @@
  */
 
 #include "controller.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 namespace giraffeClient {
 
 	Controller::Controller(RoboCompJointMotor::JointMotorPrx jprx) {
-		this->gladepath = std::string(GLADE_DIR) + std::string("/giraffeClient.glade");
+		this->gladepath =  resourcelocator::findGladeFile("giraffeClient.glade");
 		this->jprx = jprx;
 		this->camera = new CameraConf(this->jprx);
 	}

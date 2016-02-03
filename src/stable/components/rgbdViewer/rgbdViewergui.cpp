@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <resourcelocator/gladelocator.hpp>
 
 namespace rgbdViewer {
 rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
@@ -70,7 +71,8 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
     lines_depth_active=false;
     lines_rgb_active=false;
     std::cout << "Loading glade\n";
-    refXml = Gnome::Glade::Xml::create("./rgbdViewergui.glade");
+    const std::string gladepath = resourcelocator::findGladeFile("rgbdViewergui.glade");
+    refXml = Gnome::Glade::Xml::create(gladepath);
     myDepthSize=sizeDEPTH;
     myRGBSize=sizeRGB;
 

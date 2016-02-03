@@ -25,6 +25,7 @@
 #include <IceUtil/IceUtil.h>
 #include <boost/filesystem.hpp>
 #include <visionlib/cvBlob/cvblob.h>
+#include <resourcelocator/gladelocator.hpp>
 
 #define DEGTORAD     (3.14159264 / 180.0)
 #define DEBUG TRUE
@@ -34,9 +35,7 @@ using namespace cvb;
 
 namespace rgbdCalibrator{
 
-
-const std::string gladepath = std::string(GLADE_DIR) +
-		std::string("/rgbdCalibrator.glade");
+const std::string gladepath = resourcelocator::findGladeFile("rgbdCalibrator.glade");
 
 const std::string pathImage = "./images/";
 

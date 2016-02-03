@@ -20,6 +20,7 @@
  */
 
 #include "gui.h"
+#include <resourcelocator/gladelocator.hpp>
 
 namespace introrob {
 
@@ -50,8 +51,8 @@ namespace introrob {
         }
         Gnome::Canvas::init();
         std::cout << "Loading glade\n";
-        refXml = Gnome::Glade::Xml::create("./introrob.glade");
-        this->gladepath = std::string("./introrob.glade");
+	this->gladepath = resourcelocator::findGladeFile("introrob.glade");
+        refXml = Gnome::Glade::Xml::create(gladepath);
 
         // GET WIDGETS & WINDOWS
 
@@ -149,7 +150,7 @@ namespace introrob {
         windowLaser->hide();
         secondarywindow->hide();
 
-        m_image = Gdk::Pixbuf::create_from_file("myimage.png");
+        m_image = Gdk::Pixbuf::create_from_file(resourcelocator::findGladeFile("myimage.png"));
     }
 
     Gui::~Gui() {

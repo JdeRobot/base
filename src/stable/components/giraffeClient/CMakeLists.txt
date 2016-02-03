@@ -8,8 +8,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
+${resourcelocator_INCLUDE_DIRS}
 )
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
 
 
 add_executable (giraffeClient ${SOURCE_FILES})
@@ -26,5 +30,5 @@ TARGET_LINK_LIBRARIES(giraffeClient
     jderobotutil
     progeo
     ${ZeroCIce_LIBRARIES}
+	${resourcelocator_LIBRARIES}
 )
-

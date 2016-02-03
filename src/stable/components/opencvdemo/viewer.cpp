@@ -28,6 +28,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
 /*#include <highgui.h>*/
+#include <resourcelocator/gladelocator.hpp>
 
 using namespace cv;
 
@@ -35,7 +36,7 @@ using namespace cv;
 #define PI 3.141592654
 namespace opencvdemo{
 
-  const std::string gladepath = std::string("./opencvdemo.glade");
+  const std::string gladepath =  resourcelocator::findGladeFile("opencvdemo.glade");
 
 	int opflow_first=1;
 	Mat previous;
