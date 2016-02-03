@@ -9,6 +9,8 @@
 #include "../sensors/sensors.h"
 #include "../sensors/threadsensors.h"
 
+#include "easyiceconfig/EasyIce.h" 
+
 int main(int argc, char* argv[])
 {
 
@@ -17,7 +19,7 @@ int main(int argc, char* argv[])
     QApplication a(argc, argv);
     Ice::CommunicatorPtr ic;
     try{
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
 
         Sensors* sensors = new Sensors(ic);
         threadGUI* gui = new threadGUI(sensors);

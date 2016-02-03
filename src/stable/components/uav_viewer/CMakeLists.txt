@@ -4,18 +4,18 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
 
 	MACRO (QT4_WRAP_UI_CUSTOM outfiles )
 
-  		QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+  	QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
 
-		FOREACH (it ${ui_files})
-    		GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
-    		GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
-    		SET(outfile ${GUI_OUTPUT_PATH}/ui_${outfile}.h)
-    		ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      		COMMAND ${QT_UIC_EXECUTABLE}
-      		ARGS ${ui_options} -o ${outfile} ${infile}
-      		MAIN_DEPENDENCY ${infile})
-    		SET(${outfiles} ${${outfiles}} ${outfile})
-  		ENDFOREACH (it)
+	FOREACH (it ${ui_files})
+		GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
+		GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
+		SET(outfile ${GUI_OUTPUT_PATH}/ui_${outfile}.h)
+		ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+  		COMMAND ${QT_UIC_EXECUTABLE}
+  		ARGS ${ui_options} -o ${outfile} ${infile}
+  		MAIN_DEPENDENCY ${infile})
+		SET(${outfiles} ${${outfiles}} ${outfile})
+	ENDFOREACH (it)
 
 	ENDMACRO (QT4_WRAP_UI_CUSTOM)
 
@@ -38,9 +38,14 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
 		${OpenCV_INCLUDE_DIR}
         ${Ice_INCLUDE_DIR}
 		${QWT_INCLUDE_DIR}
-		${INTERFACES_CPP_DIR})
+		${INTERFACES_CPP_DIR}
+    	${easyiceconfig_INCLUDE_DIRS}
+	)
 
-	link_directories(${JDE_LIBS})
+	link_directories(
+		${JDE_LIBS}
+		${easyiceconfig_LIBRARY_DIRS}
+	)
 
 	add_executable(uav_viewer 
 		${SOURCE_FILES}
@@ -56,6 +61,7 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
 		${OpenCV_LIBRARIES}
         ${OpenCVGUI_LIBRARIES}
         ${Ice_LIBRARIES}
+		${easyiceconfig_LIBRARIES} 
 		${ZeroCIce_LIBRARIES}
 		JderobotInterfaces
 		jderobotutil)
