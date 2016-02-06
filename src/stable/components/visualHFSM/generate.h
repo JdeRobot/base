@@ -79,6 +79,7 @@ private:
 	void generateCreateGuiSubautomataList();
 	void generateSubautomatas ();
 	void generateAutomataGui();
+	void generateReadArgs();
 	void generateMain ();
 
 	void generateCfg ();
@@ -89,6 +90,7 @@ private:
 	void generateSpecificHeaders_py();
 	void generateAutomataClass_py();
 	void generateAutomataInit_py();
+	void generateStartThreads_py();
 	void generateCreateGuiSubautomataList_py();
 	void generateEnums_py();
 	void generateVariables_py();

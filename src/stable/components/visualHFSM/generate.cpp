@@ -69,6 +69,7 @@ int Generate::init () {
 		this->generateCreateGuiSubautomataList();
 		this->generateSubautomatas();
 		this->generateAutomataGui();
+		this->generateReadArgs();
 		this->generateMain();
 		this->fs.close();
 
@@ -406,7 +407,7 @@ void Generate::generateSubautomatas () {
 						std::string line;
 						while (std::getline(f, line))
 							this->fs << "\t\t\t\t\t\t" << line << std::endl;
-						this->fs << "\t\t\t\t\tif(displayGui){" < std::endl;
+						this->fs << "\t\t\t\t\tif(displayGui){" << std::endl;
 						this->fs << "\t\t\t\t\t\tautomatagui->notifySetNodeAsActive(\"" << subListIterator->getNodeName(idDestiny) << "\");" << std::endl;
 						this->fs << "\t\t\t\t\t}" << std::endl;
 						this->fs << "\t\t\t\t}" << std::endl;
@@ -430,7 +431,7 @@ void Generate::generateSubautomatas () {
 							this->fs << "\t\t\t\t\t\t" << line << std::endl;
 						this->fs << "\t\t\t\t\t\tif (displayGui){" <<std::endl;
 						this->fs << "\t\t\t\t\t\t\tautomatagui->notifySetNodeAsActive(\"" << subListIterator->getNodeName(idDestiny) << "\");" << std::endl;
-						this->fs << "\t\t\t\t\t\t}" << std::endl:
+						this->fs << "\t\t\t\t\t\t}" << std::endl;
 						if (id != 1)
 							this->fs << "\t\t\t\t\t\tt_" << subListIterator->getNodeName(idNode) << "_max = " << mapNameTime[subListIterator->getNodeName(idNode)] << ";" << std::endl;
 						this->fs << "\t\t\t\t\t}" << std::endl;
@@ -519,22 +520,26 @@ void Generate::generateAutomataGui () {
 
 void Generate::generateReadArgs() {
 	this->fs << 
-"	void readArgs(int argc, char* argv){\n\
-		int i;\n\
-		char* splitedArg;\n\n\
-		for(i = 0; i < argc; i++){\n\
-			splitedArg = strtok(argv[i], \"=\");\n\
-			if (splitedArg.compare(\"--displaygui\" == 0)){\n\
-				splitedArg = strtok(NULL, \"=\");\n\
-				if (splitedArg.compare(\"true\") == 0 || splitedArg.compare(\"True\") == 0){\n\
-					displayGui = true;\n\
-					std::cout << \"displayGui ENABLED\" << std::endl;\n\
-				}else{\n\
-					displayGui = false\n\
-					std::cout << \"displayGui DISABLED\" << std::endl;\n\
-				}\n\
+"void readArgs(int *argc, char* argv[]){\n\
+	int i;\n\
+	std::string splitedArg;\n\n\
+	for(i = 0; i < *argc; i++){\n\
+		splitedArg = strtok(argv[i], \"=\");\n\
+		if (splitedArg.compare(\"--displaygui\") == 0){\n\
+			splitedArg = strtok(NULL, \"=\");\n\
+			if (splitedArg.compare(\"true\") == 0 || splitedArg.compare(\"True\") == 0){\n\
+				displayGui = true;\n\
+				std::cout << \"displayGui ENABLED\" << std::endl;\n\
+			}else{\n\
+				displayGui = false;\n\
+				std::cout << \"displayGui DISABLED\" << std::endl;\n\
 			}\n\
-		}\n" << std::endl;
+		}\n\
+		if(i == *argc -1){\n\
+			(*argc)--;\n\
+		}\n\
+	}\n\
+}\n" << std::endl;
 }
 
 void Generate::generateMain () {
@@ -544,7 +549,7 @@ void Generate::generateMain () {
 	this->fs << std::endl;
 	this->fs << "\ttry {" << std::endl;
 	this->fs << "\t\tic = Ice::initialize(argc, argv);" << std::endl;
-	this->fs << "\t\treadArgs(argc, argv);" << std::endl;
+	this->fs << "\t\treadArgs(&argc, argv);\n" << std::endl;
 	this->fs << std::endl;
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
@@ -559,10 +564,11 @@ void Generate::generateMain () {
 		this->fs << "\t\tstd::cout << \"" << listInterfacesIterator->getName() << " connected\" << std::endl;" << std::endl;
 		this->fs << std::endl;
 	}
-	this.>fs <<
+	this->fs <<
 "		if (displayGui){\n\
 			automatagui = new AutomataGui(argc, argv);\n\
-			displayGui = showAutomataGui();\n" << std::endl;
+			displayGui = showAutomataGui();\n\
+		}\n" << std::endl;
 	this->fs.flush();
 
 	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
@@ -579,7 +585,6 @@ void Generate::generateMain () {
 	}
 	this->fs << "\t\tif (displayGui)" << std::endl;
 	this->fs << "\t\t\tpthread_join(thr_automatagui, NULL);" << std::endl;
-	this->fs << std::endl;
 
 	this->fs.flush();
 
@@ -702,7 +707,7 @@ import Ice\n\
 import sys, signal\n\
 sys.path.append('/usr/local/share/jderobot/python/visualHFSM_py')\n\
 import traceback, threading, time\n\
-from automatagui import AutomataGui, QtGui, GuiSubautomata\n";
+from automatagui import AutomataGui, QtGui, GuiSubautomata\n\n";
 
 	for ( std::list<std::string>::iterator listLibsIterator = this->listLibraries.begin();
 			listLibsIterator != this->listLibraries.end(); listLibsIterator++ )
@@ -725,6 +730,7 @@ void Generate::generateAutomataClass_py(){
 	this->fs << "class Automata():" << std::endl;
 	this->fs << std::endl;
 	this->generateAutomataInit_py();
+	this->generateStartThreads_py();
 	this->generateCreateGuiSubautomataList_py();
 	this->generateShutDown_py();
 	this->generateRunGui_py();
@@ -739,9 +745,27 @@ void Generate::generateAutomataClass_py(){
 void Generate::generateAutomataInit_py(){
 	this->fs <<
 "	def __init__(self):\n\
+		self.lock = threading.Lock()\n\
 		self.displayGui = False" << std::endl;
+
 	this->generateEnums_py();
 	this->generateVariables_py();
+}
+
+void Generate::generateStartThreads_py(){
+	this->fs << 
+"	def startThreads(self):" << std::endl;
+
+	boost::format fmt_threads(
+"		self.t%1% = threading.Thread(target=self.subautomata%1%)\n\
+		self.t%1%.start()\n");
+
+	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
+            subListIterator != this->subautomataList.end(); subListIterator++ ) {
+		int id = subListIterator->getId();
+		this->fs << boost::str(fmt_threads % id);
+	}
+	this->fs << std::endl;
 }
 
 void Generate::generateEnums_py(){
@@ -894,6 +918,7 @@ void Generate::generateRunGui_py(){
 		self.automataGui = AutomataGui()\n\
 		self.automataGui.setAutomata(self.createAutomata())\n\
 		self.automataGui.loadAutomata()\n\
+		self.startThreads()\n\
 		self.automataGui.show()\n\
 		app.exec_()\n\n";
 }
@@ -1024,9 +1049,10 @@ void Generate::generateSubautomatas_py(){
 						this->fs << "self.sub" << id << " = \"" << subListIterator->getNodeName(idDestiny) << "\"" << std::endl;
 						std::istringstream f(transListIterator->getCode());
 						std::string line;
-						while (std::getline(f, line))
+						while (std::getline(f, line)){
 							this->fs << this->mapTab[(TabEnum)(T_FIVE + addTab)];
 							this->fs << line << std::endl;
+						}
 						this->fs << this->mapTab[(TabEnum)(T_FIVE + addTab)];
 						this->fs << "if self.displayGui:" << std::endl;
 						this->fs << this->mapTab[(TabEnum)(T_FIVE + addTab)];
@@ -1110,7 +1136,7 @@ void Generate::generateSubautomatas_py(){
 				if (mapNameTime.find(nodeListIterator->getName()) != mapNameTime.end()) {
 					this->fs << this->mapTab[T_FIVE];
 					this->fs << "t_" << nodeListIterator->getName() << "_max = " << mapNameTime[nodeListIterator->getName()] << " - (t_fin - t_ini)" << std::endl;
-				}				}
+				}
 				this->fs << this->mapTab[T_FIVE];
 				this->fs << "ghostStateIndex = self.StatesSub" << id << ".index(self.sub" << id << ") + 1" << std::endl;					
 				this->fs << this->mapTab[T_FIVE];
@@ -1172,18 +1198,9 @@ void Generate::generateStart_py(){
 "	def start(self):\n\
 		if self.displayGui:\n\
 			self.guiThread = threading.Thread(target=self.runGui)\n\
-			self.guiThread.start()\n\n";
-
-	boost::format fmt_threads(
-"		self.t%1% = threading.Thread(target=self.subautomata%1%)\n\
-		self.t%1%.start()\n");
-
-	for ( std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
-            subListIterator != this->subautomataList.end(); subListIterator++ ) {
-		int id = subListIterator->getId();
-		this->fs << boost::str(fmt_threads % id);
-	}
-
+			self.guiThread.start()\n\
+		else:\n\
+			self.startThreads()\n\n";
 	this->fs << std::endl << std::endl;
 }
 
