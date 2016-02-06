@@ -177,23 +177,26 @@ class AutomataGui(QtGui.QMainWindow, Ui_visualHFSM):
 			self.changeCurrentSubautomata(node.subautomata.id)
 
 
+	def lastExpandedIsFather(self, index):
+		if not self.lastExpanded.isValid():
+			return False
+
+		indexAux = index
+		while(indexAux.parent().isValid()):
+			indexAux = indexAux.parent()
+			if indexAux == self.lastExpanded:
+				return True
+		return False
+
+
 	def treeViewAutoFocus(self, index):	
-		print "autofocus: ", index.internalPointer().name
-		if index.parent() != self.lastExpanded:
-			if self.treeView.isExpanded(self.lastExpanded):
-				print "collapsing", self.lastExpanded.internalPointer().name
+		if not self.treeView.isExpanded(index.parent()):
+			if not self.lastExpandedIsFather(index):
 				self.treeView.collapse(self.lastExpanded)
 
-			self.treeView.expand(index.parent())
 			if index.parent().isValid():
-				print "expanding", index.parent().internalPointer().name
-			else:
-				print "has no parent"
+				self.treeView.expand(index.parent())
 		self.lastExpanded = index.parent()
-		if index.parent().isValid():
-			print "last expanded:", index.parent().internalPointer().name
-		else:
-			print "has no parent"
 
 
 	def refreshTreeView(self, index):
