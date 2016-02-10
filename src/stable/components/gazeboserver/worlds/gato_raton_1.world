@@ -7,7 +7,7 @@
     </include>
     <!-- My robots -->
     <include>
-      <uri>model://ArDrone</uri>
+      <uri>model://ArDrone2</uri>
       <name>Blacky</name>
       <pose>-3 0 0.5 0 0 0</pose>
     </include>

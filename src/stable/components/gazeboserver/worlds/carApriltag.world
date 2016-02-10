@@ -12,7 +12,7 @@
     <!-- My robots -->
 
 	<include>
-      <uri>model://ArDrone</uri>
+      <uri>model://ArDrone2</uri>
       <pose>0 -3.2 0.2 0 0 0</pose>
     </include>
     <include>

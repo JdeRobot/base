@@ -27,7 +27,7 @@
 
     <!-- quadrotor model -->
     <include>
-      <uri>model://ArDrone</uri>
+      <uri>model://ArDrone2</uri>
       <pose>50 0 0.3 0 0 3.14</pose>
     </include>
 

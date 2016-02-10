@@ -151,7 +151,7 @@
     </include>
 
     <include>
-      <uri>model://ArDrone</uri>
+      <uri>model://ArDrone2</uri>
       <pose>8 0 0.3 0 0 1.57</pose>
     </include>
     <road name="my_road">
