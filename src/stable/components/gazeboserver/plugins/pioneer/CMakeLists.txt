@@ -14,14 +14,6 @@ target_link_libraries(motors
     colorspacesmm
     JderobotInterfaces) 
     
-add_library(encoders SHARED encoders.cc)
-target_link_libraries(encoders 
-	${GAZEBO_libraries} 
-
-	${ZeroCIce_LIBRARIES} 
-    colorspacesmm
-    JderobotInterfaces)   
-
 add_library(pose3d_pioneer SHARED pose3d.cc)
 target_link_libraries(pose3d_pioneer
 	${GAZEBO_libraries} 
@@ -54,6 +46,6 @@ target_link_libraries(pose3dencoders ${GAZEBO_libraries}
     JderobotInterfaces)
 
 
-INSTALL (TARGETS motors encoders laser camera_dump pose3dencoders pose3d_pioneer DESTINATION share/jderobot/gazebo/plugins/pioneer/ COMPONENT core)
+INSTALL (TARGETS motors laser camera_dump pose3dencoders pose3d_pioneer DESTINATION share/jderobot/gazebo/plugins/pioneer/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
 INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/pioneer/ COMPONENT core)
