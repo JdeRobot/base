@@ -1,3 +1,20 @@
+jderobot (5.3.1-rc4) unstable; urgency=low
+
+  * release 5.3.1-rc4
+  * [PR #304] New feature: resourcelocator library. Used to find files given a filename, used to find .glade files.
+  * [PR #305] Update: changed introrob_qt to kobukiViewer. Deleted teaching oriented features.
+  * [PR #310] New distribution folders added. Tools and drivers folders instead components folder. Will be migrated progressively
+  * [PR #326] Added easyIceLib in the rest of the JdeRobot components.
+  * [PR #335] Removed encoders for simulated pioneer, it uses pose3D exclusively now.
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Mon, 18 Jan 2016 10:29:44 +0100
+
+jderobot (5.3.1-rc3) unstable; urgency=low
+
+  * release 5.3.1-rc3
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Mon, 18 Jan 2016 10:29:44 +0100
+
 jderobot (5.3.1-rc2) unstable; urgency=low
 
   * release 5.3.1-rc2
