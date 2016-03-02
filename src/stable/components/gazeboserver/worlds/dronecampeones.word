@@ -10,13 +10,13 @@
    <include>
       <uri>model://ArDrone2</uri>
       <name>black-9000</name>
-      <pose>-2 -2 0.2 0 0 0</pose>
+      <pose>2 -2 0.2 0 0 -3.14</pose>
     </include>
 
     <include>
       <uri>model://RedArDrone2</uri>
       <name>red-9900</name>
-      <pose>2 -2 0.2 0 0 -3.14</pose>
+      <pose>-2 -2 0.2 0 0 0</pose>
     </include>
 
     <!-- A global light source -->
