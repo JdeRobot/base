@@ -4,6 +4,7 @@
 #include <QtGui>
 
 #include <iostream>
+#include <string>
 
 class controlVW : public QWidget
 {
@@ -17,12 +18,14 @@ private:
     QPointF line;
     QImage qimage;
 
+	float v, w;
+
 protected:
     void paintEvent(QPaintEvent *);
     void mouseMoveEvent ( QMouseEvent * event );
 
 signals:
-    void VW_changed(int, int);
+    void VW_changed(float, float);
 
 public slots:
     

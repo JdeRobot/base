@@ -21,6 +21,10 @@ controlVW::controlVW(QWidget *parent) :
     setMinimumSize(400, 400);
     qimage.load(":/images/pelota.png");
 
+	setMouseTracking(true);
+	this->v = 0;
+	this->w = 0;
+
 }
 
 void controlVW::Stop()
@@ -41,9 +45,14 @@ void controlVW::mouseMoveEvent ( QMouseEvent * event )
 
         line = QPointF(x, y);
 
+		//Show tooltip with the current v and w
+		QString aa = "v: " + QString::number(v) + " , w: " + QString::number(w);
+		QToolTip::showText(QPoint(QCursor::pos()), aa);
+
         repaint();
 
     }
+
 }
 
 void controlVW::paintEvent(QPaintEvent *)
@@ -87,12 +96,18 @@ void controlVW::paintEvent(QPaintEvent *)
    float k = 0.01;
    float p = 0;
 
-   float v_normalized = 40 * (k * line.y() + p)*(-1);
-   float w_normalized = 20 * (k * line.x() + p)*(-1);
+   //float v_normalized = 40 * (k * line.y() + p)*(-1);
+   //float w_normalized = 20 * (k * line.x() + p)*(-1);
+
+	float v_normalized = (line.y()/40.0)*(-1);
+   	float w_normalized = (line.x()/400.0)*(-1);
+
+	this->v = v_normalized;
+	this->w = w_normalized;
 
 //   std::cout << "v_normalized: " << v_normalized << " w_normalized: " << w_normalized << std::endl;
 
-   emit VW_changed((int)v_normalized, (int)w_normalized);
+   emit VW_changed(v_normalized, w_normalized);
 
    painter.drawImage(line.x()-qimage.width()/2, line.y()-qimage.height()/2, qimage);
 

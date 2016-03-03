@@ -45,7 +45,7 @@ GUI::GUI(Robot* robot, StateGUI *state)
 
     connect(buttonStopRobot, SIGNAL(clicked()),this, SLOT(on_buttonStopRobot_clicked()) );
 
-    connect(canvasVW, SIGNAL(VW_changed(int,int)), this, SLOT(on_update_canvas_recieved(int, int)));
+    connect(canvasVW, SIGNAL(VW_changed(float,float)), this, SLOT(on_update_canvas_recieved(float, float)));
 
     connect(check3DWorld, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
     connect(checkLaser, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
@@ -64,8 +64,9 @@ void GUI::on_checks_changed()
     laserWidget->setVisible(checkLaser->isChecked());
 }
 
-void GUI::on_update_canvas_recieved(int v, int w)
+void GUI::on_update_canvas_recieved(float v, float w)
 {
+
     this->robot->getActuators()->setMotorV((float)v);
     this->robot->getActuators()->setMotorW((float)w);
 }
