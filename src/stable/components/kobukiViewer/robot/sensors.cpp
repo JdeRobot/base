@@ -145,6 +145,36 @@ void Sensors::update()
 {
 	if (pose3dON) {
     	pose3ddata = this->p3dprx->getPose3DData();
+	    mutex.lock();
+		robotx = pose3ddata->x;
+		roboty = pose3ddata->y;
+
+		//theta
+		double magnitude,w,x,y,z,squ,sqx,sqy,sqz;
+		magnitude = sqrt(this->pose3ddata->q0 * this->pose3ddata->q0 + this->pose3ddata->q1 * this->pose3ddata->q1 + this->pose3ddata->q2 * this->pose3ddata->q2 + this->pose3ddata->q3 * this->pose3ddata->q3);
+
+		w = this->pose3ddata->q0 / magnitude;
+		x = this->pose3ddata->q1 / magnitude;
+		y = this->pose3ddata->q2 / magnitude;
+		z = this->pose3ddata->q3 / magnitude;
+
+		squ = w * w;
+		sqx = x * x;
+		sqy = y * y;
+		sqz = z * z;
+
+		double angle;
+
+		angle = atan2( 2 * (x * y + w * z), squ + sqx - sqy - sqz) * 180.0 / M_PI;
+
+		if(angle < 0)
+		{
+		    angle += 360.0;
+		}
+
+		this->robottheta = angle;
+
+	    mutex.unlock();
 	}
 
 	if (camera1ON) {
@@ -180,7 +210,7 @@ float Sensors::getRobotPoseX()
 	float x;
 	mutex.lock();
 	if (pose3dON) 
-	    x = this->pose3ddata->x;
+	    x = this->robotx;
    	else
 		x = 0;
 	mutex.unlock();
@@ -193,7 +223,7 @@ float Sensors::getRobotPoseY()
     float y;
 	mutex.lock();
 	if (pose3dON) 
-	    y = this->pose3ddata->y;
+	    y = this->roboty;
    	else
 		y = 0;
 	mutex.unlock();
@@ -206,7 +236,7 @@ float Sensors::getRobotPoseTheta()
     float theta;
 	mutex.lock();
 	if (pose3dON) 
-	    theta = 180;
+	    theta = this->robottheta;
    	else
 		theta = 0;
 	mutex.unlock();
