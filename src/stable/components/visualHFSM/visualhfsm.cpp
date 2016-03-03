@@ -1104,11 +1104,16 @@ void VisualHFSM::on_menubar_clicked_generate_cpp_code () {
         std::string cpppath(this->filepath);
         std::string cfgpath(this->filepath);
         std::string cmakepath(this->filepath);
+        std::string execpath(this->filepath);
+        std::size_t found = execpath.find_last_of("/");
+        execpath = execpath.substr(found);
+        found = execpath.find_last_of(".");
+        execpath = execpath.substr(1,found-1);
 
         if ( (this->replace(cpppath, std::string(".xml"), std::string(".cpp"))) &&
             (this->replace(cfgpath, std::string(".xml"), std::string(".cfg"))) &&
-            (this->replaceFile(cmakepath, std::string("/"), std::string("CMakeLists.txt"))) ) {
-            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, cmakepath,
+            (this->replaceFile(cmakepath, std::string("/"), std::string("CMakeLists.txt")))) {
+            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, cmakepath, execpath,
                 &(this->listInterfaces), this->mapInterfacesHeader, this->listLibraries);
             generate.init();
 
@@ -1176,11 +1181,17 @@ void VisualHFSM::on_menubar_clicked_generate_python_code (){
   
         std::string cpppath(this->filepath);
         std::string cfgpath(this->filepath);
+        std::string execpath(this->filepath);
+        std::size_t found = execpath.find_last_of("/");
+        execpath = execpath.substr(found);
+        found = execpath.find_last_of(".");
+        execpath = execpath.substr(1,found-1);
+        //home/samuelvm/TFG/examples/example2
 
         if ( (this->replace(cpppath, std::string(".xml"), std::string(".py"))) &&
             (this->replace(cfgpath, std::string(".xml"), std::string(".cfg")))) {
 
-            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, "",
+            Generate generate(parser.getListSubautomata(), cpppath, cfgpath, "", execpath,
                 &(this->listInterfaces), this->mapInterfacesHeader, this->listLibraries);
             generate.init_py();
 
@@ -1337,6 +1348,10 @@ GuiSubautomata* VisualHFSM::getSubautomataWithIdFather ( int idFather ) {
 
 // Load a subautomata
 int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
+    int maxId = 0;
+    int maxNodeId = 0;
+    int maxTransId = 0;
+
     this->removeAllSubautomata();
     std::list<SubAutomata>::iterator subListIterator = subList.begin();
     while ( subListIterator != subList.end() ) {
@@ -1346,6 +1361,11 @@ int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
         GuiSubautomata guisub(id, idFather);
         this->subautomataList.push_back(guisub);
         this->currentSubautomata = this->getSubautomata(id);
+
+        std::cerr << "subautomata ID: " << id << std::endl;
+        if (id > maxId){
+            maxId = id;
+        }
         this->id = id + 1;
 
         this->currentSubautomata->setFunctions(subListIterator->getFunctions());
@@ -1359,7 +1379,13 @@ int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
             Point* nodePoint = subListIterator->getNodePoint(idNode);
             this->event_x = nodePoint->getX();
             this->event_y = nodePoint->getY();
+
+            std::cerr << "node ID: " << idNode << std::endl;
+            if(idNode > maxNodeId){
+                maxNodeId = idNode;
+            }
             this->idguinode = idNode;
+
             this->nameNode = std::string(nodeListIterator->getName());
             this->create_new_state(nodeListIterator->getIdSubautomataSon());
             this->currentSubautomata->setIsInitialLastGuiNode(nodeListIterator->isInitial());
@@ -1389,6 +1415,10 @@ int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
             this->currentSubautomata->setCodeLastGuiTransition(transListIterator->getCode());
             this->state = NONE;
             
+            if(idTransition > maxTransId){
+                maxTransId = idTransition;
+            }
+
             transListIterator++;
         }
 
@@ -1401,6 +1431,9 @@ int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
     }
 
     this->currentSubautomata = this->getSubautomataWithIdFather(0);
+    this->id = maxId + 1;
+    this->idguinode = maxNodeId + 1;
+    this->idguitransition = maxTransId + 1;
 
     return 1;
 }

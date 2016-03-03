@@ -20,11 +20,9 @@ int AutomataGui::init(){
 	this->refBuilder = Gtk::Builder::create();
 	try{
 		if(access("/usr/local/share/jderobot/glade/visualHFSM/automatagui.glade", F_OK) == 0){
-			std::cerr << "/usr/local/share/jderobot/glade/visualHFSM/automatagui.glade" << std::endl;
 			refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/automatagui.glade");
 		}else{
 			refBuilder->add_from_file("./automatagui.glade");
-			std::cerr << "otro sitio" << std::endl;
 		}
 	}catch (const Glib::FileError& ex){
 		std::cerr << "FileError: " << ex.what() << std::endl;
@@ -98,7 +96,6 @@ int AutomataGui::init(){
 
 
 void AutomataGui::run(){			
-	std::cerr << "running gui in PID:" << getpid() << std::endl;
 	this->app->run(*guiDialog);
   	delete guiDialog;
 }
@@ -140,7 +137,6 @@ GuiSubautomata* AutomataGui::getSubautomata(int id){
 
 
 bool AutomataGui::isFirstActiveNode(GuiNode* gnode){
-	bool isActive = true;
 	int sonSubId, nodeId;
 	GuiSubautomata* subAux = this->currentGuiSubautomata;
 
@@ -174,13 +170,11 @@ void AutomataGui::loadGuiSubautomata(){
 		std::list<GuiNode>::iterator nodeListIterator = nodeList.begin();
 		while (nodeListIterator != nodeList.end()){
 			this->idGuiNode = nodeListIterator->getId();
+
 			if (nodeListIterator->itIsInitial())
 				currentGuiSubautomata->setActiveNode(nodeListIterator->getName());
 			if (this->isFirstActiveNode(&*nodeListIterator)){
 				nodeListIterator->changeColor(ITEM_COLOR_GREEN);
-				this->setActiveTreeView(nodeListIterator->getName(), true,
-											this->refTreeModel->children());
-				std::cerr << "firstActiveNode marked as active " << nodeListIterator->getName() << std::endl;
 				color = ITEM_COLOR_GREEN;
 			}else{
 				color = "white";
@@ -192,8 +186,6 @@ void AutomataGui::loadGuiSubautomata(){
 		std::list<GuiTransition> transList = *(subListIterator->getListGuiTransitions());
 		std::list<GuiTransition>:: iterator transListIterator = transList.begin();
 		while (transListIterator != transList.end()){
-			int idOrigin = transListIterator->getIdOrigin();
-			int idDestiny = transListIterator->getIdDestiny();
 
 			this->create_new_transition(&(*transListIterator));
 			transListIterator++;
@@ -442,7 +434,6 @@ void AutomataGui::showSubautomata(int id){
 
 
 //HANDLERS
-
 bool AutomataGui::on_item_button_press_event(const Glib::RefPtr<Goocanvas::Item>& item,
                                               GdkEventButton* event ){
 
