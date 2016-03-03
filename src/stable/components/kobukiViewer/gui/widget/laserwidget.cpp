@@ -1,4 +1,5 @@
 #include "laserwidget.h"
+#include <iostream>
 
 LaserWidget::LaserWidget()
 {
@@ -18,10 +19,10 @@ LaserWidget::LaserWidget()
 
 void LaserWidget::update(std::vector<float> laserData)
 {
-
     mutex.lock();
 
     this->laserData = laserData;
+    QWidget::update();
 
     mutex.unlock();
 
