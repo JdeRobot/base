@@ -6,6 +6,7 @@
 #Parameters for max distance and threshold are given to the __init__() in VisioPainter
 import jderobot
 import sys,traceback, Ice
+import easyiceconfig as EasyIce
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -23,22 +24,20 @@ class Pose:
 		self.dist=0
 		self.ic = None
 		try:
-			self.ic = Ice.initialize(argv)
-		#	base = ic.stringToProxy("Referee:default -p 10000")
-		#	ref = jderobot.RefereePrx.checkedCast(base)
+			self.ic = ic = EasyIce.initialize(sys.argv)
 			self.properties = self.ic.getProperties()
 	
-			self.basePoseAr = self.ic.propertyToProxy("Introrob.Pose3D.Proxy")
+			self.basePoseAr = self.ic.propertyToProxy("Referee.Cat.Pose3D.Proxy")
 			self.poseProxy = jderobot.Pose3DPrx.checkedCast(self.basePoseAr)
 			print self.poseProxy
 			if not self.basePoseAr:
-				raise Runtime("Pose3D -> Invalid proxy")
+				raise Runtime("Cat Pose3D -> Invalid proxy")
 	
-			self.baseRedPoseAr = self.ic.propertyToProxy("Introrob.RedPose3D.Proxy")
+			self.baseRedPoseAr = self.ic.propertyToProxy("Referee.Mouse.Pose3D.Proxy")
 			self.poseRedProxy = jderobot.Pose3DPrx.checkedCast(self.baseRedPoseAr)
 			print self.poseRedProxy
 			if not self.baseRedPoseAr:
-				raise Runtime("RedPose3D -> Invalid proxy")
+				raise Runtime("Mouse Pose3D -> Invalid proxy")
 		except:
 			traceback.print_exc()
 			status = 1
