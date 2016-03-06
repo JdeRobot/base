@@ -24,7 +24,7 @@ class Pose:
 		self.dist=0
 		self.ic = None
 		try:
-			self.ic = ic = EasyIce.initialize(sys.argv)
+			self.ic = EasyIce.initialize(sys.argv)
 			self.properties = self.ic.getProperties()
 	
 			self.basePoseAr = self.ic.propertyToProxy("Referee.Cat.Pose3D.Proxy")
