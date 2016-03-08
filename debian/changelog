@@ -1,3 +1,22 @@
+jderobot (5.3.1-rc5) unstable; urgency=low
+
+  * release 5.3.1-rc5
+  * [PR #333] VisualHFSM improvements and fixes.
+  * [PR #348] Added the RedArDrone2 model.
+  * [PR #350] new F1 model car.
+  * [PR #351] Added sponsors logos and dronecampeones world.
+  * [PR #352] New plugin and model fixes for F1 car.
+  * [PR #353] Added circuit model.
+  * [PR #355] Fix for Gazebo worlds path lookup.
+  * [PR #356] Removed introrob and introrob_py
+  * [PR #357] HotFix for kobukiViewer.
+  * [PR #360] Added new versions of Recorder/Replayer.
+  * [PR #362] Added GreenArDrone2 model and improved the lighting of dronecampeones.world
+  * [PR #364] Refactor refereeViewer.
+  * [PR #366] Moved recorder2 and replayer2 from testing to stable
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 8 Mar 2016 21:00:00 +0100
+
 jderobot (5.3.1-rc4) unstable; urgency=low
 
   * release 5.3.1-rc4
