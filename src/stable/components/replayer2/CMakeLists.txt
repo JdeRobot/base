@@ -19,10 +19,10 @@ link_directories(
 	${easyiceconfig_LIBRARY_DIRS}
 )
 
-add_executable (replayer ${SOURCE_FILES})
+add_executable (replayer2 ${SOURCE_FILES})
 
 
-TARGET_LINK_LIBRARIES(replayer
+TARGET_LINK_LIBRARIES(replayer2
     ns
     logger
     ${CMAKE_THREAD_LIBS_INIT} 
