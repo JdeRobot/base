@@ -351,6 +351,7 @@
         <front_left_steering_joint>front_left_steering_wheel</front_left_steering_joint>
         <!--<torque>5</torque>-->
       </plugin>
+      <plugin name="pose3d" filename="libpose3dTurtlebotJde.so"/> 
   </model>
 </sdf>
 

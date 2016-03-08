@@ -151,7 +151,7 @@ namespace gazebo
         this->steerLeftJoint->SetForce(0,580*robotMotors.targetLeftSteerPos);
 #else
         float z = model->GetRelativeLinearVel().z;
-        math::Vector3 vel(0,-robotMotors.v/10.0,z);
+        math::Vector3 vel(0,-robotMotors.v/1.0,z);
 
         math::Quaternion rot = model->GetWorldPose().rot;
         vel = rot.GetAsMatrix3()*vel;
