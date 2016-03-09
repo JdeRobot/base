@@ -31,14 +31,14 @@ IF (kobuki_INCLUDE_DIR)
                           ${kobuki_LIBRARY7} ${kobuki_LIBRARY8} ${kobuki_LIBRARY9} ${kobuki_LIBRARY10} ${kobuki_LIBRARY11} ${kobuki_LIBRARY12}
                           ${kobuki_LIBRARY13} ${kobuki_LIBRARY14} ${kobuki_LIBRARY15} ${kobuki_LIBRARY16})
     
-    IF( OpenCV_LIBRARIES )
+    IF( kobuki_LIBRARIES )
 		MESSAGE("kobuki LIBRARY FOUND IN ${kobuki_LIBRARIES}")
 		SET(kobuki_COMPILE TRUE)
-		list(APPEND DEPS kobuki)
+		list(APPEND DEPS kobukilib)
     else()
 		MESSAGE("kobuki LIBRARY NOT FOUND IN ${kobuki_LIBRARIES}")
 		SET(kobuki_COMPILE FALSE)
-    ENDIF(  )
+    ENDIF( )
 
 else() 
 	MESSAGE("*** kobuki not found")
