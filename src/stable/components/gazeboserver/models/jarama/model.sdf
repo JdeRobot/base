@@ -6,17 +6,18 @@
 
       
       <link name="link2">    
-      <!--
+
       	<collision name="coliision">
 		     <geometry>
 	        	<heightmap>
 		          <uri>model://jarama/images/jaramaCircuitoRetocado.png</uri>
+				<uri>model://jarama/images/monaco.png</uri>
 		          <size>50 50 10</size>
 		          <pos>0 0 0</pos>
 	        	</heightmap>
 		     </geometry>
       	</collision>
-         -->
+
         <visual name="visual">
 		     <geometry>
 	        	<heightmap>   
