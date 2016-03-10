@@ -1,3 +1,12 @@
+jderobot (5.3.1-rc6) unstable; urgency=low
+
+  * release 5.3.1-rc6
+  * [PR #367] Added pose3D to taxi models.
+  * [PR #368] Moved visualHFSM to tools from components. 
+  * [PR #372] Allow compilation for kobuki_driver (kobuki_driver integration).
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 8 Mar 2016 21:00:00 +0100
+
 jderobot (5.3.1-rc5) unstable; urgency=low
 
   * release 5.3.1-rc5
