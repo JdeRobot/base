@@ -1,0 +1,26 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="f1">
+  <pose>0 0 0 0 0 0</pose>
+  <static>false</static>
+    <link name="car">
+    	<pose>0 0 0 0 0 0</pose>
+      <collision name="collision">
+            <geometry>
+              <mesh>
+            		<uri>model://f1_dummy/meshes/F1.dae</uri>
+          		</mesh>
+            </geometry>
+       </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://f1_dummy/meshes/F1.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    
+  </model>
+</sdf>
+
