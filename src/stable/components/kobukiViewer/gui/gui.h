@@ -45,7 +45,7 @@ public slots:
     void on_updateGUI_recieved();
     void on_buttonStopRobot_clicked();
 
-    void on_update_canvas_recieved(int v, int w);
+    void on_update_canvas_recieved(float v, float w);
     void on_checks_changed();
 
 };

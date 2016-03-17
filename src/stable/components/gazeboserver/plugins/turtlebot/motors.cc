@@ -112,10 +112,10 @@ namespace gazebo {
 
         pthread_mutex_lock(&mutex);
 
-        vr = robotMotors.v/100;
+        vr = robotMotors.v;
 
-        va = robotMotors.w/10;
-
+        va = robotMotors.w;
+	
         pthread_mutex_unlock(&mutex);
 
 
