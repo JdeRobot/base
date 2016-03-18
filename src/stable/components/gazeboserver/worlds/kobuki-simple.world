@@ -16,5 +16,9 @@
       <uri>model://sun</uri>
     </include>
 
+    <include>
+      <uri>model://simpleWorld</uri>
+    </include>
+
   </world>
 </sdf>
