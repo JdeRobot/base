@@ -36,17 +36,30 @@
       </div>
    </div>
    <div class="row">
-      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+      <div class=" col-xs-12 col-sm-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
          <div class="border-carbon panel panel-info">
-            <div class=" letrero panel-heading hidden-sm hidden-xs">
-               <span class="panel-title">Camera</span>
+            <div id="teleoperator" class="panel-body padding0 border-blue container-fluid">
+               <canvas id="camView" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  padding0 cam">Your browser does not support the HTML5 canvas tag.</canvas>
+               <div class="indicators">
+               <span class="left" id="attitude"></span>
+                <span class="left" id="altimeter"></span>
+                <span class="right" id="turn_coordinator"></span>
+               <span class="right" id="heading"></span>
+               </div>
+                <div class="controls">
+               <canvas id="control1" class="control" width=150 height=150>Your browser does not support the HTML5 canvas tag.</canvas>
+               <canvas id="control2" class="control right" width=150 height=150 >Your browser does not support the HTML5 canvas tag.</canvas>
+                   <div class="btn-group-vertical buttons" role="group" aria-label="bextra">
+            <button id="takeoff" type="button" class="btn btn-info sinBackColor">Takeoff</button>
+            <button id="land" type="button" class="btn btn-info sinBackColor">Land</button>
+            <button id="toggle" type="button" class="btn btn-info sinBackColor" >Toggle Camera</button>
+         </div>
+<!--               <canvas id="control1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your browser does not support the HTML5 canvas tag.</canvas>-->
             </div>
-            <div class="panel-body padding0 border-blue container-fluid">
-               <canvas id="camView" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 cam">Your browser does not support the HTML5 canvas tag.</canvas>
             </div>
          </div>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+     <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
          <div class="border-carbon panel panel-info">
             <div class=" letrero panel-heading hidden-sm hidden-xs">
                <span class="panel-title">Flight Indicators</span>
@@ -58,42 +71,42 @@
                <span id="heading"></span>
             </div>
          </div>
-      </div>
+      </div>-->
    </div>
       
    <div class="row">
-      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 col-md-offset-3 col-lg-offset-4">
          <div class="border-carbon panel panel-info">
-            <div class=" letrero panel-heading hidden-sm hidden-xs">
-               <span class="panel-title">3D Model</span>
-            </div>
             <div class="panel-body padding0 border-blue container-fluid">
-               <canvas id="model" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your browser does not support the HTML5 canvas tag.</canvas>
+               <canvas id="model" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding0">Your browser does not support the HTML5 canvas tag.</canvas>
             </div>
          </div>
       </div>
-      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+     <!-- <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
          <div class="border-carbon panel panel-info">
             <div class=" letrero panel-heading hidden-sm hidden-xs">
                <span class="panel-title">Control X + Y</span>
             </div>
             <div class="panel-body padding0 border-blue container-fluid">
+               <canvas id="control1" class="control" width=150 height=150>Your browser does not support the HTML5 canvas tag.</canvas>
+               <canvas id="control2" class="control right" width=150 height=150 >Your browser does not support the HTML5 canvas tag.</canvas>
                <canvas id="control1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your browser does not support the HTML5 canvas tag.</canvas>
             </div>
          </div>
-      </div>
-      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+      </div>-->
+      <!--<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
          <div class="border-carbon panel panel-info">
             <div class=" letrero panel-heading hidden-sm hidden-xs">
                <span class="panel-title">Control Z + angle of rotation</span>
             </div>
             <div class="panel-body padding0 border-blue container-fluid">
+               <canvas id="control2" class="control" width=150 height=150 >Your browser does not support the HTML5 canvas tag.</canvas>
                <canvas id="control2" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your browser does not support the HTML5 canvas tag.</canvas>
             </div>
          </div>
-      </div>
+      </div>-->
    </div>
-   <div class="row">
+   <!--<div class="row">
       <div id="buttons2" class="btn-toolbar col-xs-12 col-sm-12 col-md-12 col-lg-12" role="toolbar" aria-label="buttons2">
          <div class="btn-group" role="group" aria-label="bextra">
             <button id="takeoff" type="button" class="btn btn-info">Takeoff</button>
@@ -104,7 +117,7 @@
             <button id="stopb" type="button" class="btn btn-info" >Stop drone</button>
          </div>
       </div>
-   </div>
+   </div>-->
 </div>
 
 <div class="modal fade" id="configure" tabindex="-1" role="dialog" aria-labelledby="configLabel">
@@ -189,7 +202,8 @@
    <script src="js/libs/camera/camera.js"></script>
    <script src="js/libs/cmdvel/cmdvel.js"></script>
    <script src="js/libs/pose3d/pose3d.js"></script>
-   <script src="js/libs/control/control.js"></script>
+   <script src="js/libs/joystick.js"></script>
+<!--   <script src="js/libs/control/control.js"></script>-->
    <script src="js/libs/ardroneextra/ardroneextra.js"></script>
    <script src="js/libs/cmdvel/cmdvel.js"></script>
    <script src="js/uavviewerjs/uavviewer.js"></script>

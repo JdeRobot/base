@@ -164,8 +164,8 @@ GUI.Joystick = function (config){
    canvas.addEventListener('touchend', onEnd, false);
    canvas.addEventListener('touchup', onEnd, false);
    
-   document.body.addEventListener("touchstart", preventDefault, false);
-   document.body.addEventListener("touchend", preventDefault, false);
-   document.body.addEventListener("touchmove", preventDefault, false);
+   //document.body.addEventListener("touchstart", preventDefault, false);
+   //document.body.addEventListener("touchend", preventDefault, false);
+   //document.body.addEventListener("touchmove", preventDefault, false);
 
 };

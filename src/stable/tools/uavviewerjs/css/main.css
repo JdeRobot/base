@@ -33,6 +33,46 @@
    border-width: 2px;
 }
 
+.right{
+   float:right;
+}
+
+.left{
+   float: left;
+}
+.indicators{
+   position: absolute;
+   z-index: 10;
+   top: 0;
+   left: 0;
+   width: 100%;
+   padding-left: 15px;
+   padding-right: 15px;
+}
+
+.controls{
+   position: absolute;
+   z-index: 10;
+   bottom: 0;
+   left: 0;
+   width: 100%;
+   padding-left: 15px;
+   padding-right: 15px;
+   padding-bottom: 15px;
+}
+.buttons{
+   position: absolute;
+   bottom: 31px;
+   left: 41%;
+}
+
+.sinBackColor{
+   background-color: rgba(0,0,0,0);
+}
+.sinBackColor:focus{
+   background-color: rgba(0,0,0,0);
+}
+
 .padding0 {
     padding: 0px 0px 0px 0px;
 }

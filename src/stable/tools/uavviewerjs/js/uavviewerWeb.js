@@ -27,7 +27,7 @@ $(document).ready(function() {
 	});
    
    var resize = function (){
-      $(".cam").height( $(".cam").width()*3/4);
+      $(".cam").height( $(".cam").width()*9/16);
       if (client && client.isRunning()){
          client.resizeCameraModel();
       }
@@ -54,6 +54,52 @@ $(document).ready(function() {
 	});
    
    resize();
+   
+   var pfx = ["webkit", "moz", "ms", "o", ""];
+   function RunPrefixMethod(obj, method) {
+	
+	  var p = 0, m, t;
+	  while (p < pfx.length && !obj[m]) {
+		m = method;
+		if (pfx[p] == "") {
+			m = m.substr(0,1).toLowerCase() + m.substr(1);
+		}
+		m = pfx[p] + m;
+		t = typeof obj[m];
+		if (t != "undefined") {
+			pfx = [pfx[p]];
+			return (t == "function" ? obj[m]() : obj[m]);
+		}
+		p++;
+	  }
+
+   }
+   
+   //document.getElementById(“myvideo”).requestFullScreen()
+   var fullScreen = function(){
+      
+      if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
+		RunPrefixMethod(document, "CancelFullScreen");
+         $("#camView").width("100%");
+	  }
+	  else {
+		RunPrefixMethod(document.getElementById("teleoperator"), "RequestFullScreen");
+         $("#camView").width($( window ).width());
+	  }
+   };
+   /*var fullScreen = function(){
+      if (!document.webkitIsFullScreen){
+         //$("#teleoperator").requestFullScreen();
+         document.getElementById("teleoperator").webkitRequestFullScreen();
+         $("#camView").width($( window ).width());
+      }else{
+         document.webkitCancelFullScreen();
+         $("#camView").width("100%");
+      }
+   };*/
+   $("#camView").on("dblclick", fullScreen);
+   $("#camView").on("touchstart", fullScreen);
+   
 });
 
 function load(){

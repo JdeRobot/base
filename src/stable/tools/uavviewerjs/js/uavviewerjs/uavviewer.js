@@ -115,7 +115,56 @@ function UavViewer (config){
    
 
    var initControls = function (){
-      control1 = new GUI.Control ({id:self.control1id});
+      var v = 0.3,
+          w = 0.3;
+      var distSend = v/30;
+      
+      function sendlxly (x,y) {
+         var lx = v*y;
+         var ly = v*x*(-1);
+         var send = false;
+         
+         if (calcDist(ly,cmdSend.linearY)>=distSend){
+            cmdSend.linearY = ly;
+            send = true;
+         }
+         if (calcDist(lx,cmdSend.linearX)>=distSend){
+            cmdSend.linearX = lx;
+            send = true;
+         }
+         if (send){
+            cmdvel.setCmdVel(cmdSend);
+         }
+         //console.log(cmdSend);
+      }
+      
+      function sendlzaz (x,y) {
+         var lz = v*y;
+         var az = w*x*(-1);
+         
+         var send = false;
+         
+         if (calcDist(az,cmdSend.angularZ)>=distSend){
+            cmdSend.angularZ = az;
+            send = true;
+         }
+         
+         if (calcDist(lz,cmdSend.linearZ)>=distSend){
+            cmdSend.linearZ = lz;
+            send = true;
+         }
+         
+         if (send){
+            cmdvel.setCmdVel(cmdSend);
+         }
+         //console.log(cmdSend);
+         //cmdvel.setCmdVel(cmdSend);
+      }
+      
+      control1 = new GUI.Joystick({id:self.control1id, onMove: sendlxly, onUp: sendlxly});
+      control2 = new GUI.Joystick({id:self.control2id, onMove: sendlzaz, onUp: sendlzaz});
+      
+      /*control1 = new GUI.Control ({id:self.control1id});
       control2 = new GUI.Control ({id:self.control2id});
       
       
@@ -171,7 +220,7 @@ function UavViewer (config){
       control1.initControl();
       control2.initControl();
       
-      
+      */
    };
    
    
@@ -336,11 +385,11 @@ function UavViewer (config){
          alert("Not defined modelid");
          return;
       }
-      
-      attitude = $.flightIndicator('#'+this.attitudeid, 'attitude', {showBox : false}); // Horizon
-      heading = $.flightIndicator('#'+this.headingid, 'heading', {showBox:false}); // Compass
-      altimeter = $.flightIndicator('#'+this.altimeterid, 'altimeter', {showBox : false}); // drone altitude
-      turn_coordinator = $.flightIndicator('#'+this.turn_coordinatorid, 'turn_coordinator', {showBox : false});
+      var sizeInd = $("#camView").height()/5;
+      attitude = $.flightIndicator('#'+this.attitudeid, 'attitude', {showBox : false, size: sizeInd}); // Horizon
+      heading = $.flightIndicator('#'+this.headingid, 'heading', {showBox:false, size: sizeInd}); // Compass
+      altimeter = $.flightIndicator('#'+this.altimeterid, 'altimeter', {showBox : false, size: sizeInd}); // drone altitude
+      turn_coordinator = $.flightIndicator('#'+this.turn_coordinatorid, 'turn_coordinator', {showBox : false, size: sizeInd});
       
       //pose3d in initModel
       
