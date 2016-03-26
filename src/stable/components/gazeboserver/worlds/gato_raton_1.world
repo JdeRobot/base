@@ -3,7 +3,7 @@
   <world name="default">
     <!-- Ground -->
     <include>
-      <uri>model://ground_plane_transparent</uri>
+      <uri>model://ground_plane</uri>
     </include>
     <!-- My robots -->
     <include>
