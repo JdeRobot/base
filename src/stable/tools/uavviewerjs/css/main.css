@@ -13,15 +13,7 @@
 @btn-info-border darken(@btn-info-bg, 5%)
 */
 
-.bg-carbon {
-/*    background-image: url("../img/blank_sheet.png");*/
-/*   background: #225F72;*/
-/*   background: #333333;*/
-}
 #body{ width: inherit;
-}
-.bg-orange{
-   /*background-color: #e67e22;*/
 }
 .color-light, .input-group-addon{
 /*   color:#eee;*/
@@ -86,6 +78,11 @@
 }
 .border-blue{
    border: 1px solid #58D9FF;
+}
+
+.border-bottom-padding{
+   padding-bottom: 15px;
+   border-bottom: 1px solid #58D9FF;
 }
 
 .row{

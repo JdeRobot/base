@@ -13,7 +13,6 @@
  *       + pose3dserv (server's direction and port)={dir:direction,port: port}
  *       + pose3depname (name of Motors endpoint, default Pose3DEncoders1)
  *       + takeoffbtnid (button to takeoff drone)
- *       + stopbtnid (button to stop drone)
  *       + landbtnid (button to land drone)
  *       + togcambtnid (button to switch drone camera)
  *       + attitudeid, headingid, altimeterid, turn_coordinatorid (ids to show flying indicators)
@@ -115,7 +114,7 @@ function UavViewer (config){
    
 
    var initControls = function (){
-      var v = 0.3,
+      var v = 0.4,
           w = 0.3;
       var distSend = v/30;
       
@@ -157,70 +156,11 @@ function UavViewer (config){
          if (send){
             cmdvel.setCmdVel(cmdSend);
          }
-         //console.log(cmdSend);
-         //cmdvel.setCmdVel(cmdSend);
       }
       
       control1 = new GUI.Joystick({id:self.control1id, onMove: sendlxly, onUp: sendlxly});
       control2 = new GUI.Joystick({id:self.control2id, onMove: sendlzaz, onUp: sendlzaz});
       
-      /*control1 = new GUI.Control ({id:self.control1id});
-      control2 = new GUI.Control ({id:self.control2id});
-      
-      
-      control1.onPointerM = function (event){
-         var v = 0.5; //max vel
-         control1.onPointerMDefault(event);
-         var distSend = 1/45;
-         var pos = control1.position;
-         var send = false;
-         
-         var ly = v*pos.x/45;
-         if (calcDist(ly,cmdSend.linearY)>=distSend){
-            cmdSend.linearY = ly;
-            send = true;
-         }
-         
-         var lx = v*pos.z/45;
-         if (calcDist(lx,cmdSend.linearX)>=distSend){
-            cmdSend.linearX = lx;
-            send = true;
-         }
-         if (send){
-            cmdvel.setCmdVel(cmdSend);
-         }
-      };
-      
-     control2.onPointerM = function (event){
-         control2.onPointerMDefault(event);
-         var v = 0.5;
-         var w = 0.5;
-         var distSend = 1/45;
-         var pos = control2.position;
-         var send = false;
-         
-         var az=w*pos.x/45;
-         if (calcDist(az,cmdSend.angularZ)>=distSend){
-            cmdSend.angularZ = az;
-            send = true;
-         }
-         
-         var lz = v*pos.z/45;
-         if (calcDist(lz,cmdSend.linearZ)>=distSend){
-            cmdSend.linearZ = lz;
-            send = true;
-         }
-         
-         if (send){
-            cmdvel.setCmdVel(cmdSend);
-         }
-         
-      };
-      
-      control1.initControl();
-      control2.initControl();
-      
-      */
    };
    
    

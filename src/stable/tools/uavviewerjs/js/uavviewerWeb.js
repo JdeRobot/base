@@ -32,6 +32,9 @@ $(document).ready(function() {
          client.resizeCameraModel();
       }
       
+      $(".instrument").width($("#camView").height()/5);
+      $(".instrument").height($("#camView").height()/5);
+      
    };
    
    
@@ -52,6 +55,21 @@ $(document).ready(function() {
       config.cmdvelepname= $('#epcmdvel').val();
       localStorage["uavviewer"]=JSON.stringify(config);
 	});
+   
+   function sameaddr (){
+      var value = $( "#globaladdr" ).val();
+      $( ".in-addr" ).val( value );
+   }
+   
+   $( "#globaladdr" ).keyup(sameaddr);
+   
+   $('#sa-toggle').change(function(evt) {
+       $(".in-addr").prop('disabled',!$(".in-addr").prop('disabled'));
+       $("#globaladdr").prop('disabled',!$("#globaladdr").prop('disabled'));
+      if ($(this).prop('checked')){
+         sameaddr();
+      }
+    });
    
    resize();
    
@@ -75,29 +93,23 @@ $(document).ready(function() {
 
    }
    
-   //document.getElementById(“myvideo”).requestFullScreen()
    var fullScreen = function(){
+      var canvas = $("#camView");
       
       if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
 		RunPrefixMethod(document, "CancelFullScreen");
-         $("#camView").width("100%");
+         canvas.width("100%");
+         $("#model").show();
 	  }
 	  else {
 		RunPrefixMethod(document.getElementById("teleoperator"), "RequestFullScreen");
-         $("#camView").width($( window ).width());
-	  }
+         canvas.width($( window ).width());
+         $("#model").hide();
+	  } 
    };
-   /*var fullScreen = function(){
-      if (!document.webkitIsFullScreen){
-         //$("#teleoperator").requestFullScreen();
-         document.getElementById("teleoperator").webkitRequestFullScreen();
-         $("#camView").width($( window ).width());
-      }else{
-         document.webkitCancelFullScreen();
-         $("#camView").width("100%");
-      }
-   };*/
-   $("#camView").on("dblclick", fullScreen);
+   
+   
+   $("#camView").on("click", fullScreen);
    $("#camView").on("touchstart", fullScreen);
    
 });

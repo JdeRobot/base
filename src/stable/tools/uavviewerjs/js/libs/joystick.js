@@ -18,10 +18,10 @@ GUI.Joystick = function (config){
    console.log("cw:"+cw+" ch: "+ch);
    var X = cw / 2;
    var Y = ch / 2;
-   var lineWidth = 7;
+   var lineWidth = 1;
    ctx.lineWidth = lineWidth;
    var RHoop = X * 0.7; //Diametro de aro
-   var RCircle = RHoop * 0.4; // Diametro del circulo
+   var RCircle = RHoop * 0.3; // Diametro del circulo
    var maxR = RHoop; // Distancia maxima a la que puede moverse
         
    var arrastrar = false;
@@ -51,8 +51,6 @@ GUI.Joystick = function (config){
       console.log(touchEvent);
         return {
                 x: touchEvent.targetTouches[0].clientX - rect.left,
-                //x: touchEvent.touches[0].clientX - rect.left,
-                //y: touchEvent.touches[0].clientY - rect.top
                 y: touchEvent.targetTouches[0].clientY - rect.top
         };
    }
@@ -60,14 +58,13 @@ GUI.Joystick = function (config){
    function dibujarAro(x, y, r) {
       ctx.beginPath();
       ctx.arc(x, y, r, 0, 2 * Math.PI, true);
-      //ctx.lineWidth = 7;
-      ctx.strokeStyle = "rgb(87,125,25)";
+      ctx.strokeStyle = "rgb(88, 217, 255)";
       ctx.stroke();
    }
 
    function dibujarCirculo(x, y, r) {
       ctx.beginPath();
-      ctx.fillStyle = "rgb(75, 144, 176)";
+      ctx.fillStyle = "rgb(88, 217, 255)";
       ctx.arc(x, y, r, 0, 2 * Math.PI, true);
       ctx.fill();
    }
@@ -86,13 +83,7 @@ GUI.Joystick = function (config){
 
       var x = (x0 - X)/maxR;
       var y = (y0 - Y)/maxR*(-1);
-      //var x = (elR * Math.cos(angulo))/maxR;
-      //var y = (elR * Math.sin(angulo))/maxR;
       
-      console.log("x0: "+x0+" y0: "+y0+" x: "+x+" y: "+y);
-      
-      //sendAltYaw(((y - Y)/maxR)*(-1), ((x - X)/maxR));
-
       ctx.clearRect(0, 0, cw, ch); // Clear and redraw the joystick
       dibujarAro(X, Y, RHoop);
       dibujarCirculo(x0, y0, RCircle);
