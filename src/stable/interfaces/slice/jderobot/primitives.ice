@@ -45,8 +45,8 @@ module jderobot{
 	};
 
 	struct Segment{
-	    Point from;
-	    Point to;
+	    Point fromPoint;
+	    Point toPoint;
 	};
 
 };
