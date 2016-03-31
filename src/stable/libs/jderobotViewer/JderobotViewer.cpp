@@ -77,13 +77,13 @@ void JderobotViewer::refresh_thread(){
 	while (!viewer->wasStopped() || this->exitSinal)
    {
 		this->new_data_mutex.lock();
-		viewer->spinOnce (100);
+		viewer->spinOnce ();
 		if (this->signalSave){
 			this->viewer->saveScreenshot(name2save);
 			this->signalSave=false;
 		}
 		this->new_data_mutex.unlock();
-		boost::this_thread::sleep (boost::posix_time::microseconds (100000));
+		boost::this_thread::sleep (boost::posix_time::microseconds (10000));
    }
 }
 
