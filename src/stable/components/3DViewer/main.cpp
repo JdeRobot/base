@@ -63,8 +63,10 @@ namespace visualization{
     public:
         VisualizationI(std::string propertyPrefix, Ice::CommunicatorPtr ic){
             jViewer=boost::shared_ptr<jderobot::JderobotViewer> (new jderobot::JderobotViewer("3D viewer",1,true));
+            this->jViewer->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 8,"trace");
             cloud = pcl::PointCloud<pcl::PointXYZRGB>::Ptr( new pcl::PointCloud<pcl::PointXYZRGB>());
             linesID=0;
+            pointsID=0;
         }
 
         ~VisualizationI(){
@@ -74,12 +76,12 @@ namespace visualization{
 
         virtual void drawSegment(const jderobot::Segment& segment,const jderobot::Color& color,  const Ice::Current&){
             pcl::PointXYZ from,to;
-            from.x=segment.from.x;
-            from.y=segment.from.y;
-            from.z=segment.from.z;
-            to.x=segment.to.x;
-            to.y=segment.to.y;
-            to.z=segment.to.z;
+            from.x=segment.fromPoint.x;
+            from.y=segment.fromPoint.y;
+            from.z=segment.fromPoint.z;
+            to.x=segment.toPoint.x;
+            to.y=segment.toPoint.y;
+            to.z=segment.toPoint.z;
             this->jViewer->addLine(from,to,color.r,color.g,color.b,boost::lexical_cast<std::string>(this->linesID));
             linesID++;
 
@@ -95,9 +97,12 @@ namespace visualization{
             pointPcl.b = color.b;
 
             cloud->push_back(pointPcl);
-            this->jViewer->addPointCloud(this->cloud);
+            this->jViewer->addPointCloud(this->cloud,boost::lexical_cast<std::string>(this->pointsID));
+            pointsID++;
         }
         virtual void clearAll(const Ice::Current&){
+            pointsID=0;
+            linesID=0;
             this->jViewer->removeAllShapes();
         }
 
@@ -106,6 +111,7 @@ namespace visualization{
         boost::shared_ptr<jderobot::JderobotViewer> jViewer;
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
         int linesID;
+        long int pointsID;
     };
 
 } //namespace
