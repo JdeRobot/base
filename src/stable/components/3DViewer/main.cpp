@@ -133,7 +133,7 @@ int main(int argc, char** argv)
         ic = EasyIce::initialize(argc, argv);
 
         Ice::PropertiesPtr prop = ic->getProperties();
-        std::string Endpoints = prop->getProperty("Visualization.Endpoints");
+        std::string Endpoints = prop->getProperty("3DViewer.Endpoints");
 
         // Naming Service
         int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
@@ -152,8 +152,8 @@ int main(int argc, char** argv)
             }
         }
 
-        Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints("Visualization", Endpoints);
-        std::string objPrefix("Visualization.");
+        Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints("3DViewer", Endpoints);
+        std::string objPrefix("3DViewer.");
         std::string viewerName = prop->getProperty(objPrefix + "Name");
         Ice::ObjectPtr object = new visualization::VisualizationI(objPrefix, ic);
 
