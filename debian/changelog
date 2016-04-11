@@ -1,3 +1,10 @@
+jderobot (5.3.2) unstable; urgency=low
+
+  * release 5.3.2
+  * [PR #405] Fix: broken gazebo-setup.sh paths.
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Mon, 11 Apr 2016 23:29:00 +0100
+
 jderobot (5.3.1-rc7) unstable; urgency=low
 
   * release 5.3.1-rc7
