@@ -255,7 +255,7 @@ SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
 SET (CPACK_PACKAGE_VERSION_MINOR 3)
-SET (CPACK_PACKAGE_VERSION_PATCH 1)
+SET (CPACK_PACKAGE_VERSION_PATCH 2)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 
 
@@ -330,9 +330,9 @@ execute_process(
 
 ## Inject release roll up (incremental releases)
 # this step should be only for jderobot package
-set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-include(scripts/incremental_releases/incremental-releases.cmake)
-set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
+#set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
+#include(scripts/incremental_releases/incremental-releases.cmake)
+#set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
 
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
