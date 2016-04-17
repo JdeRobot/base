@@ -21,7 +21,7 @@ GUI.Joystick = function (config){
    var lineWidth = 1;
    ctx.lineWidth = lineWidth;
    var RHoop = X * 0.7; //Diametro de aro
-   var RCircle = RHoop * 0.3; // Diametro del circulo
+   var RCircle = RHoop * 0.4; // Diametro del circulo
    var maxR = RHoop; // Distancia maxima a la que puede moverse
         
    var arrastrar = false;

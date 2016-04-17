@@ -110,13 +110,14 @@ function UavViewer (config){
       imgData.data.set(data.imgData);
       ctx2.putImageData(imgData,0,0);
       ctx.drawImage(canvas2, 0, 0,ctx.canvas.width,ctx.canvas.height);
+	console.log(data.width);
    };
    
 
    var initControls = function (){
-      var v = 0.4,
+      var v = 0.3,
           w = 0.3;
-      var distSend = v/30;
+      var distSend = v/90;
       
       function sendlxly (x,y) {
          var lx = v*y;
