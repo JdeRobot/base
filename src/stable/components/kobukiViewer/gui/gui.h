@@ -18,7 +18,7 @@ class GUI:public QWidget
     Q_OBJECT
 
 public:
-    GUI(Robot* robot, StateGUI* state);
+    GUI(Robot* robot, StateGUI* state, Ice::CommunicatorPtr ic);
     void updateThreadGUI();
 
 private:

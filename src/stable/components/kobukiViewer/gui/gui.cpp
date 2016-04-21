@@ -1,6 +1,6 @@
 #include "gui.h"
 
-GUI::GUI(Robot* robot, StateGUI *state)
+GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 {
 
     this->state = state;
@@ -19,6 +19,7 @@ GUI::GUI(Robot* robot, StateGUI *state)
     check3DWorld = new QCheckBox("3DWorld");
 
     canvasVW = new controlVW();
+    canvasVW->setIC(ic);
     laserWidget =new LaserWidget();
 
     depurateWindow = new DepurateWindow();

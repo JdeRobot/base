@@ -14,7 +14,7 @@
 class ThreadUpdateGUI: public QThread
 {
 public:
-    ThreadUpdateGUI(Robot *robot, StateGUI *state);
+    ThreadUpdateGUI(Robot *robot, StateGUI *state, Ice::CommunicatorPtr ic);
 
 private:
     GUI* gui;
