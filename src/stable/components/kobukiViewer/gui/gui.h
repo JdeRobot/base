@@ -37,6 +37,11 @@ private:
     QCheckBox* checkCameras;
     QCheckBox* checkLaser;
 
+    QLabel* currentV;
+    QLabel* currentW;
+    QLabel* InfoCurrentV;
+    QLabel* InfoCurrentW;
+
 
 signals:
     void signal_updateGUI();

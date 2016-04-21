@@ -16,6 +16,8 @@ public:
     
     void Stop();
     void setIC(Ice::CommunicatorPtr ic);
+	float getV();
+	float getW();
 
 private:
     QPointF line;

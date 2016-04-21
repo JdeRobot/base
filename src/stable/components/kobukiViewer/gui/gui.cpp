@@ -8,7 +8,8 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
     QGridLayout* mainLayout = new QGridLayout();
     QGridLayout* layoutControl = new QGridLayout();
-    QGridLayout* layoutButtons = new QGridLayout();
+    QVBoxLayout* layoutButtons = new QVBoxLayout();
+
 
     camerasWidget = new CamerasWidget(robot);
     glwidget = new GLWidget(state, robot);
@@ -17,6 +18,11 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
     checkLaser = new QCheckBox("Laser");
     checkCameras = new QCheckBox("Cameras");
     check3DWorld = new QCheckBox("3DWorld");
+
+	InfoCurrentV = new QLabel("Current v (m/s):");
+	InfoCurrentW = new QLabel("Current w (rad/s):");
+	currentV = new QLabel("0");
+	currentW = new QLabel("0");
 
     canvasVW = new controlVW();
     canvasVW->setIC(ic);
@@ -28,10 +34,20 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
     int indiceFilaGui = 0;
     layoutControl->addWidget(canvasVW, 0, 0);
 
-    layoutButtons->addWidget(buttonStopRobot, indiceFilaGui, 0);
-    layoutButtons->addWidget(check3DWorld, indiceFilaGui++, 1);
-    layoutButtons->addWidget(checkCameras, indiceFilaGui++, 1);
-    layoutButtons->addWidget(checkLaser, indiceFilaGui++, 1);
+    layoutButtons->addWidget(InfoCurrentV, 0);
+    layoutButtons->addWidget(currentV, 1);
+    layoutButtons->addWidget(InfoCurrentW, 2);
+    layoutButtons->addWidget(currentW, 3);
+
+	QSpacerItem *item = new QSpacerItem(0,200, QSizePolicy::Expanding, QSizePolicy::Fixed);
+	layoutButtons->addItem(item);
+
+    layoutButtons->addWidget(buttonStopRobot, 2);
+    layoutButtons->addWidget(check3DWorld, 3);
+    layoutButtons->addWidget(checkCameras, 4);
+    layoutButtons->addWidget(checkLaser, 5);
+
+
 
     mainLayout->addLayout(layoutControl, 0, 0);
     mainLayout->addLayout(layoutButtons, 0, 1);
@@ -54,7 +70,7 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
     show();
 
-    depurateWindow->setVisible(true);
+    depurateWindow->setVisible(false);
 
 }
 
@@ -87,6 +103,8 @@ void GUI::on_updateGUI_recieved()
     camerasWidget->update();
     glwidget->updateGL();
     laserWidget->update(this->robot->getSensors()->getLaserData());
+	currentV->setText( QString::number(canvasVW->getV()));
+	currentW->setText( QString::number(canvasVW->getW()));
     depurateWindow->update();
 }
 

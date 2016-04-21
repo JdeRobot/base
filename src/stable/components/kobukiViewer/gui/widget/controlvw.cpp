@@ -64,6 +64,16 @@ void controlVW::mouseMoveEvent ( QMouseEvent * event )
 
 }
 
+float controlVW::getV()
+{
+	return this->v;
+}
+
+float controlVW::getW()
+{
+	return this->w;
+}
+
 void controlVW::paintEvent(QPaintEvent *)
 {
 
