@@ -15,9 +15,9 @@ IF (with_pcl)
 			${easyiceconfig_LIBRARY_DIRS}
 	)
 	
-	add_executable (jdeViewer ${SOURCE_FILES})
+	add_executable (3DViewer ${SOURCE_FILES})
 	
-	TARGET_LINK_LIBRARIES(jdeViewer
+	TARGET_LINK_LIBRARIES(3DViewer
 			jderobotutil
 			${OpenCV_LIBRARIES}
 			${OpenCVGUI_LIBRARIES}

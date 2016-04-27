@@ -255,13 +255,8 @@ SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
 SET (CPACK_PACKAGE_VERSION_MINOR 3)
-SET (CPACK_PACKAGE_VERSION_PATCH 1)
+SET (CPACK_PACKAGE_VERSION_PATCH 2)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-
-## Inject release roll up (incremental releases)
-set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-include(scripts/incremental_releases/incremental-releases.cmake)
-set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
 
 
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
@@ -299,14 +294,13 @@ execute_process(COMMAND git rev-parse HEAD
 string(STRIP "${GIT_HEAD}" GIT_HEAD)
 
 SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
-"JdeRobot is a software development suite for robotics applications.")
+"Software development suite for robotics and computer vision applications.")
 SET (CPACK_PACKAGE_DESCRIPTION
-"JdeRobot is a software development suite for robotics applications,
- written in C++ language.
- It provides a programming environment where the robot control program is made
- up of a collection of several concurrent asynchronous threads named schemas.
- It is based on JDE cognitive architecture for autonomous robots.
- .
+"JdeRobot is a software development suite for robotics and computer vision applications. 
+The applications are made up of a collection of concurrent processes (named components) that
+interoperate among them. They exchange messages using ICE communication middleware. The components may 
+run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
+JdeRobot includes a collection of drivers and tools.
  Get source from https://github.com/RoboticsURJC/JdeRobot
  Package created with revision ${GIT_HEAD}")
 
@@ -321,16 +315,24 @@ SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_DEBIAN_PACKAGE_VERSI
 include(scripts/metapackages/FindMetapackages.cmake)
 
 SET (PACKAGE_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-#set(PACKAGE_DEPENDS "${DEPS}")
-#configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps.info)
+set(PACKAGE_DEPENDS "${DEPS}")
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps_${PACKAGE_VERSION}_all.info)
 
 set(PACKAGE_DEPENDS "${DEPS_DEV}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev_${PACKAGE_VERSION}_all.info)
 
 execute_process(
     COMMAND ${MAKE_PACKAGE_EXECUTABLE}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+
+## Inject release roll up (incremental releases)
+# this step should be only for jderobot package
+#set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
+#include(scripts/incremental_releases/incremental-releases.cmake)
+#set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
+
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)
