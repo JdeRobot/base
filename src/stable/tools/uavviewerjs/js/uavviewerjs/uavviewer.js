@@ -110,7 +110,6 @@ function UavViewer (config){
       imgData.data.set(data.imgData);
       ctx2.putImageData(imgData,0,0);
       ctx.drawImage(canvas2, 0, 0,ctx.canvas.width,ctx.canvas.height);
-	console.log(data.width);
    };
    
 
@@ -275,7 +274,9 @@ function UavViewer (config){
     */
    var initGL = function(){
       initControls();
-      initModel();
+      if (self.modelid){
+         initModel();
+      }
    }
 
    /*************************
@@ -333,7 +334,6 @@ function UavViewer (config){
       turn_coordinator = $.flightIndicator('#'+this.turn_coordinatorid, 'turn_coordinator', {showBox : false, size: sizeInd});
       
       //pose3d in initModel
-      
       cmdvel = new API.CmdVel ({server:this.cmdvelserv,epname:this.cmdvelepname});
       cmdvel.connect();
       extra = new API.ArDroneExtra ({server:this.extraserv,epname:this.extraepname});
@@ -345,21 +345,6 @@ function UavViewer (config){
 	  });
        $('#'+this.landbtnid).on('click', function(){
          extra.land();
-	  });
-      $('#'+this.stopbtnid).on('click', function(){
-         control1.removeListeners();
-         control2.removeListeners();
-         initControls();
-         cmdSend = {
-            linearX:0,
-            linearY:0,
-            linearZ:0,
-            angularX:0,
-            angularY:0,
-            angularZ:0		
-         };
-         cmdvel.setCmdVel(cmdSend);
-         
 	  });
       extra.connect();
       camera1 = new API.Camera ({server:this.cam1serv,epname:this.cam1epname});

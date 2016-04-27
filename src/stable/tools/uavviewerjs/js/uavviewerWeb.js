@@ -1,4 +1,24 @@
+
 var config={};
+var realEP={
+   cam: "ardrone_camera",
+   pose3d: "ardrone_pose3d",
+   cmdvel: "ardrone_cmdvel",
+   extra: "ardrone_extra"
+};
+var simEP={
+   cam: "Camera",
+   pose3d: "ImuPlugin",
+   cmdvel: "CMDVel",
+   extra: "Extra"
+};
+
+function putDfEP (eps){
+   $('#epcam1').val(eps.cam);
+   $('#eppose3d').val(eps.pose3d);
+   $('#epextra').val(eps.extra);
+   $('#epcmdvel').val(eps.cmdvel);
+}
 $(document).ready(function() {
    
    var client;
@@ -17,14 +37,25 @@ $(document).ready(function() {
    config.altimeterid="altimeter";
    config.turn_coordinatorid="turn_coordinator";
    
+   
    $('#start').on('click', function(){
+      
 		client = new UavViewer(config);
          client.start();
       $("canvas.border-light").removeClass("border-light");
 	});
+   
    $('#stop').on('click', function(){
          client.stop();
 	});
+   
+    $('#DfReal').on('click', function(){
+         putDfEP(realEP);
+	});
+    $('#DfGazebo').on('click', function(){
+         putDfEP(simEP);
+	});
+   
    
    var resize = function (){
       $(".cam").height( $(".cam").width()*9/16);
@@ -92,22 +123,21 @@ $(document).ready(function() {
 	  }
 
    }
-   
+      
    var fullScreen = function(){
       var canvas = $("#camView");
       
       if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
 		RunPrefixMethod(document, "CancelFullScreen");
          canvas.width("100%");
-         $("#model").show();
+         //$("#model").show();
 	  }
 	  else {
 		RunPrefixMethod(document.getElementById("teleoperator"), "RequestFullScreen");
          canvas.width($( window ).width());
-         $("#model").hide();
+         //$("#model").hide();
 	  } 
    };
-   
    
    $("#camView").on("click", fullScreen);
    $("#camView").on("touchstart", fullScreen);
