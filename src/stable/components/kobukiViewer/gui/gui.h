@@ -18,7 +18,7 @@ class GUI:public QWidget
     Q_OBJECT
 
 public:
-    GUI(Robot* robot, StateGUI* state);
+    GUI(Robot* robot, StateGUI* state, Ice::CommunicatorPtr ic);
     void updateThreadGUI();
 
 private:
@@ -36,6 +36,11 @@ private:
     QCheckBox* check3DWorld;
     QCheckBox* checkCameras;
     QCheckBox* checkLaser;
+
+    QLabel* currentV;
+    QLabel* currentW;
+    QLabel* InfoCurrentV;
+    QLabel* InfoCurrentW;
 
 
 signals:

@@ -27,6 +27,15 @@ controlVW::controlVW(QWidget *parent) :
 
 }
 
+void controlVW::setIC(Ice::CommunicatorPtr ic)
+{
+	this->ic = ic;
+ 	Ice::PropertiesPtr prop = ic->getProperties();
+
+	this->v_max = std::atof( prop->getPropertyWithDefault("kobukiViewer.Vmax", "5").c_str() );
+	this->w_max = std::atof( prop->getPropertyWithDefault("kobukiViewer.Wmax", "0.5").c_str() );
+}
+
 void controlVW::Stop()
 {
     line = QPointF(0, 0);
@@ -53,6 +62,16 @@ void controlVW::mouseMoveEvent ( QMouseEvent * event )
 
     }
 
+}
+
+float controlVW::getV()
+{
+	return this->v;
+}
+
+float controlVW::getW()
+{
+	return this->w;
 }
 
 void controlVW::paintEvent(QPaintEvent *)
@@ -93,14 +112,17 @@ void controlVW::paintEvent(QPaintEvent *)
 
 //   std::cout << "x: " << line.x() << " y: " << -line.y() << std::endl;
 
-   float k = 0.01;
-   float p = 0;
+   //float k = 0.01;
+   //float p = 0;
 
    //float v_normalized = 40 * (k * line.y() + p)*(-1);
    //float w_normalized = 20 * (k * line.x() + p)*(-1);
 
-	float v_normalized = (line.y()/40.0)*(-1);
-   	float w_normalized = (line.x()/400.0)*(-1);
+	float v_div = 200/(v_max)*1.0;
+	float w_div = 200/(w_max)*1.0;
+
+	float v_normalized = (line.y()/v_div)*(-1);
+   	float w_normalized = (line.x()/w_div)*(-1);
 
 	this->v = v_normalized;
 	this->w = w_normalized;

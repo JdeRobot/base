@@ -7,7 +7,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 
     ////////////////////////////// Pose3D //////////////////////////////
     // Contact to POSE3D interface
-    Ice::ObjectPrx basePose3D = ic->propertyToProxy("introrob.Pose3D.Proxy");
+    Ice::ObjectPrx basePose3D = ic->propertyToProxy("kobukiViewer.Pose3D.Proxy");
     if (0 == basePose3D) {
 		pose3dON = false;
 		std::cout << "Pose3D configuration not specified" <<std::endl;
@@ -17,7 +17,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 		try {
 			p3dprx = jderobot::Pose3DPrx::checkedCast(basePose3D);
 			if (0 == p3dprx)
-				throw "Invalid proxy introrob.Pose3D.Proxy";
+				throw "Invalid proxy kobukiViewer.Pose3D.Proxy";
 
 			pose3dON = true;
 			std::cout << "Pose3D connected" << std::endl;
@@ -32,7 +32,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 
 	jderobot::ImageDataPtr data;
 
-    Ice::ObjectPrx baseCamera1 = ic->propertyToProxy("introrob.Camera1.Proxy");
+    Ice::ObjectPrx baseCamera1 = ic->propertyToProxy("kobukiViewer.Camera1.Proxy");
     if (0==baseCamera1) {
 		camera1ON = false;
 		image1.create(400, 400, CV_8UC3);
@@ -59,7 +59,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 	}}
 
     ////////////////////////////// CAMERA2 /////////////////////////////2
-	Ice::ObjectPrx baseCamera2 = ic->propertyToProxy("introrob.Camera2.Proxy");
+	Ice::ObjectPrx baseCamera2 = ic->propertyToProxy("kobukiViewer.Camera2.Proxy");
     if (0==baseCamera2) {
 		camera2ON = false;
 		image2.create(400, 400, CV_8UC3);
@@ -87,7 +87,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
-    Ice::ObjectPrx laserICE = ic->propertyToProxy("introrob.Laser.Proxy");
+    Ice::ObjectPrx laserICE = ic->propertyToProxy("kobukiViewer.Laser.Proxy");
     if (0 == laserICE) {
 		laserON = false;
 		std::cout << "Laser configuration not specified" <<std::endl;
@@ -97,7 +97,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 	try {
 		laserprx = jderobot::LaserPrx::checkedCast(laserICE);
 		if (0 == laserprx){
-		   throw std::string("Invalid proxy introrob.Laser.Proxy");
+		   throw std::string("Invalid proxy kobukiViewer.Laser.Proxy");
 		}
 
 		laserON = true;
@@ -107,19 +107,19 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 		std::cout << "Laser inactive" << std::endl;
 	}}
 
-    /*boolLaser = prop->getPropertyAsInt("introrob.Laser");
+    /*boolLaser = prop->getPropertyAsInt("kobukiViewer.Laser");
 
     std::cout << "Laser " <<  boolLaser << std::endl;
     if(boolLaser){
         // Contact to LASER interface
-        Ice::ObjectPrx laserICE = ic->propertyToProxy("introrob.Laser.Proxy");
+        Ice::ObjectPrx laserICE = ic->propertyToProxy("kobukiViewer.Laser.Proxy");
         if (0 == laserICE)
             throw "Could not create proxy with Laser";
 
         // Cast to LASER
         laserprx = jderobot::LaserPrx::checkedCast(laserICE);
         if (0 == laserprx){
-           throw std::string("Invalid proxy introrob.Laser.Proxy");
+           throw std::string("Invalid proxy kobukiViewer.Laser.Proxy");
         }
     }*/
 }
