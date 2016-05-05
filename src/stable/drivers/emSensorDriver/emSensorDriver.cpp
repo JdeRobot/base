@@ -93,9 +93,9 @@ int main(int argc, char** argv){
         
         sharer = new Sharer();
 
-        Ice::ObjectAdapterPtr adapter = ic->createObjectAdapterWithEndpoints("emSensor",
+        Ice::ObjectAdapterPtr adapter = ic->createObjectAdapterWithEndpoints(componentPrefix,
         		Endpoints);
-        adapter->add(sharer->interface, ic->stringToIdentity(componentPrefix));
+        adapter->add(sharer->interface, ic->stringToIdentity("emSensor"));
         
         adapter->activate();
         std::cout << "Adapter ready: " << Endpoints << std::endl;
