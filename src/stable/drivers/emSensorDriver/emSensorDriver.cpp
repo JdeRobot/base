@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     PWM_analyzer* pwm_analyzer;
 
     int GPIO_port = 7;
-    unsigned int maxRestCount = 100; 
+    unsigned int maxRestCount = 2000; 
 
     // Setup signal handler
     finish=false;
@@ -77,7 +77,7 @@ int main(int argc, char** argv){
         
         try {
             maxRestCount = boost::lexical_cast<unsigned int>(
-                prop->getPropertyWithDefault(componentPrefix+".Signal.maxRestCount", "100"));
+                prop->getPropertyWithDefault(componentPrefix+".Signal.maxRestCount", "2000"));
         
         } catch (boost::bad_lexical_cast&) {
             std::cerr << "Wrong value for "
