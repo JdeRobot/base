@@ -7,7 +7,7 @@
 #include <wiringPi.h>
 #include "gpio_reader.h"
 
-#define cycle 50
+#define cycle 0.05
 
 namespace EMSensor {
 
@@ -35,6 +35,7 @@ void GPIO_reader::run(){
     long totalb, totala;	// Time difference operand holders (actual operands)
     long diff;				// Time difference result
 
+    struct timeval stamp;	// Time difference operand holders (time request)
     Sharer::DataValue dv;	// Data/time value to store
     Sharer::DataValue last_dv;	// Last DT
 
@@ -48,12 +49,14 @@ void GPIO_reader::run(){
         totala = a.tv_sec * 1000000 + a.tv_usec;
 
         datum =  digitalRead(GPIO_pin);
+        gettimeofday(&stamp, NULL);
 
         dv.d = datum;
-        dv.t = totala;
+        dv.t = stamp.tv_sec * 1000000 + stamp.tv_usec;
         
        
         sharer->writeBufferData(dv);
+
 
 
         gettimeofday(&b, NULL);
@@ -63,8 +66,8 @@ void GPIO_reader::run(){
 
         /*Sleep Algorithm*/
         usleep(diff * 1000);
-        if (diff < 33)
-            usleep(33 * 1000);
+//        if (diff < 33)
+//            usleep(33 * 1000);
 	}
 }
 
