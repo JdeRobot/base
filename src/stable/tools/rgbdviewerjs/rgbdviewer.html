@@ -7,11 +7,11 @@
    <meta name="description" content="">
    <!-- core CSS -->
    <link href="css/bootstrap.min.css" rel="stylesheet">
-   <link href="css/main.css" rel="stylesheet">
+   <link href="css/rgbdviewer.css" rel="stylesheet">
 </head>
 <!--/head-->
 
-<body class="bg-carbon">
+<body>
 <header id="header">
   <nav class="navbar navbar-inverse" role="banner">
     <div class="container">
@@ -74,16 +74,16 @@
 
 <div class="modal fade" id="configure" tabindex="-1" role="dialog" aria-labelledby="configLabel">
   <div class="modal-dialog" role="document">
-    <div class="modal-content bg-carbon">
-      <div class="modal-header bg-orange">
+    <div class="modal-content">
+      <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="configLabel">Introrob Config</h4>
       </div>
       <div class="modal-body">
          <label for="dir">Server</label>
          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">Dir</span>
-           <input  id="dir" type="text" class="form-control" placeholder="Direction" value="localhost" aria-describedby="basic-addon1">
+            <span class="input-group-addon" id="basic-addon1">Addr</span>
+           <input  id="dir" type="text" class="form-control" placeholder="Address" value="localhost" aria-describedby="basic-addon1">
          </div>
          <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">Port</span>
@@ -109,13 +109,13 @@
     </div>
   </div>
 </div>
-   <script src="js/jquery-1.11.3.min.js"></script>
+   <script src="js/jquery.min.js"></script>
    <script src="js/bootstrap.min.js"></script>
-   <script src="js/libs/three.min.js"></script>
-   <script src="js/libs/TrackballControls.js"></script>
-   <script src="js/libs/camera/camera.js"></script>
-   <script src="js/libs/progeo.js"></script>
-   <script src="js/rgbdviewerjs/rgbdviewer.js"></script>
+   <script src="js/three.min.js"></script>
+   <script src="js/TrackballControls.js"></script>
+   <script src="js/progeo.js"></script>
+   <script src="js/api.js"></script>
+   <script src="js/rgbdviewer.js"></script>
    <script src="js/rgbdviewerWeb.js"></script>
 </body>
 </html>

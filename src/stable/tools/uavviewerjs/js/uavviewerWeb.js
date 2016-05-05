@@ -20,7 +20,6 @@ function putDfEP (eps){
    $('#epcmdvel').val(eps.cmdvel);
 }
 $(document).ready(function() {
-   
    var client;
    load();
    config.control1id="control1";
@@ -37,14 +36,11 @@ $(document).ready(function() {
    config.altimeterid="altimeter";
    config.turn_coordinatorid="turn_coordinator";
    
-   
    $('#start').on('click', function(){
-      
 		client = new UavViewer(config);
          client.start();
       $("canvas.border-light").removeClass("border-light");
 	});
-   
    $('#stop').on('click', function(){
          client.stop();
 	});
@@ -121,9 +117,8 @@ $(document).ready(function() {
 		}
 		p++;
 	  }
-
    }
-      
+   
    var fullScreen = function(){
       var canvas = $("#camView");
       
@@ -138,6 +133,7 @@ $(document).ready(function() {
          //$("#model").hide();
 	  } 
    };
+   
    
    $("#camView").on("click", fullScreen);
    $("#camView").on("touchstart", fullScreen);

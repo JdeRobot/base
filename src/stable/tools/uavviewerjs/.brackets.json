@@ -1,6 +1,0 @@
-{
-    "jscodehints.detectedExclusions": [
-        "/home/kasillas77/git/JdeRobot/src/stable/tools/uavviewerjs/js/libs/ColladaLoader.js",
-        "/home/kasillas77/git/JdeRobot/src/stable/tools/uavviewerjs/js/bootstrap-toggle.min.js"
-    ]
-}
