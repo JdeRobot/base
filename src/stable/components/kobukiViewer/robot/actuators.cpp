@@ -5,7 +5,7 @@ Actuators::Actuators(Ice::CommunicatorPtr ic)
     this->ic = ic;
 
     // Contact to MOTORS interface
-    Ice::ObjectPrx baseMotors = ic->propertyToProxy("introrob.Motors.Proxy");
+    Ice::ObjectPrx baseMotors = ic->propertyToProxy("kobukiViewer.Motors.Proxy");
     if (0 == baseMotors){
         motorsON = false;
 		std::cout << "Motors configuration not specified" <<std::endl;
@@ -16,7 +16,7 @@ Actuators::Actuators(Ice::CommunicatorPtr ic)
 		try{
 			mprx = jderobot::MotorsPrx::checkedCast(baseMotors);
 			if (0 == mprx)
-				throw "Invalid proxy introrob.Motors.Proxy";
+				throw "Invalid proxy kobukiViewer.Motors.Proxy";
 
 			motorsON = true;
 			std::cout << "Motors connected" << std::endl;

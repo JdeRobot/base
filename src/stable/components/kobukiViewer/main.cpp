@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
          ThreadUpdateRobot* thread_update_robot = new ThreadUpdateRobot(robot,state);
          thread_update_robot->start();
 
-         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, state);
+         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, state, ic);
          thread_update_gui->start();
 
     } catch (const Ice::Exception& ex) {
