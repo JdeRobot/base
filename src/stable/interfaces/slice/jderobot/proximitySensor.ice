@@ -30,13 +30,12 @@ module jderobot{
 		State status;
 		float d;
 		//time stamp
-		float tm;
+		long tm;
 	};
 	
 	interface ProximitySensor
 	{
 		idempotent ProximitySensorData getProximitySensorData();
-		//void setProximitySensorData(float tm, float d, State status);
 	};	
 };
 
