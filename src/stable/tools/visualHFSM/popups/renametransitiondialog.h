@@ -22,6 +22,8 @@
 #ifndef RENAMEDIALOGTRANSITION_H
 #define RENAMEDIALOGTRANSITION_H
 
+#include <unistd.h>
+
 #include "../guitransition.h"
 
 // Definition of this class

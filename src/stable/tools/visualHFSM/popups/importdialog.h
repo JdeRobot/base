@@ -21,6 +21,8 @@
 #ifndef IMPORTDIALOG_H
 #define IMPORTDIALOG_H
 
+#include <unistd.h>
+
 #include "../guisubautomata.h"
 
 // Definition of this class

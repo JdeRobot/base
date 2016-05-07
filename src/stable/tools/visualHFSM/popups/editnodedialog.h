@@ -22,6 +22,7 @@
 #ifndef EDITNODEDIALOG_H
 #define EDITNODEDIALOG_H
 
+#include <unistd.h>
 #include <string>
 #include <iostream>
 

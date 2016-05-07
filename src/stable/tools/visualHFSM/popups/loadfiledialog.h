@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <stdio.h>
+ #include <unistd.h>
 #include <gtkmm-3.0/gtkmm.h>
 #include <sigc++/sigc++.h>
 

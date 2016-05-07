@@ -19,6 +19,7 @@
  *
  */
 
+#include <unistd.h>
 #include "visualhfsm.h"
 
 int main (int argc, char **argv) {
@@ -28,7 +29,11 @@ int main (int argc, char **argv) {
     //Load the Glade file and instiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
     try {
-        refBuilder->add_from_file("gui/main_gui.glade");
+        if(access("/usr/local/share/jderobot/glade/visualHFSM/main_gui.glade", F_OK) == 0){
+            refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/main_gui.glade");
+        }else{
+            refBuilder->add_from_file("gui/main_gui.glade");
+        }
     } catch ( const Glib::FileError& ex ) {
         std::cerr << BEGIN_RED << "FileError: " << ex.what() << END_COLOR << std::endl;
         return 1;
