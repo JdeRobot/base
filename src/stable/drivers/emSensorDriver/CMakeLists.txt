@@ -18,7 +18,7 @@ if(wiringPi_LIBRARY)
               sharer.cpp
               pwm_analyzer.cpp
               gpio_reader.cpp
-              proximitySensorI.cpp
+              emSensorI.cpp
         )
 
         target_link_libraries(emSensorDriver

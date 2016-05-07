@@ -12,7 +12,7 @@ namespace EMSensor {
 
 Sharer::Sharer(){
 	this->data_buffer = boost::circular_buffer<DataValue>(1000);
-	this->interface = new ProximitySensorI();
+	this->interface = new EMSensorI();
 }
 
 

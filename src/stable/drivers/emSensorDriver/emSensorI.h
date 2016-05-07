@@ -5,21 +5,20 @@
  *      Author: roberto
  */
 
-#ifndef PROXIMITY_SENSOR_H_
-#define PROXIMITY_SENSOR_H_
+#ifndef EM_SENSOR_H_
+#define EM_SENSOR_H_
 
 #include <boost/thread/mutex.hpp>
-#include <jderobot/proximitySensor.h>
+#include <jderobot/emSensor.h>
 
 namespace EMSensor {
 
-class ProximitySensorI :  virtual public jderobot::ProximitySensor {
+class EMSensorI :  virtual public jderobot::EMSensor {
 public:
-	ProximitySensorI();
+	EMSensorI();
 
 	void setData(float t, float d, jderobot::State status);
-	virtual jderobot::ProximitySensorDataPtr getProximitySensorData(const ::Ice::Current&);
-	//virtual ~ProximitySensorI();
+	virtual jderobot::EMSensorDataPtr getEMSensorData(const ::Ice::Current&);
 
 protected:
 	mutable boost::mutex synch; ///< Mutex for thread-safe access to internal data.
@@ -31,4 +30,4 @@ protected:
 
 } /* namespace EMSensor */
 
-#endif /* PROXIMITY_SENSOR_H_ */
+#endif /* EM_SENSOR_H_ */

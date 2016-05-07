@@ -17,14 +17,14 @@
  *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>
  */
 
-#ifndef PROXIMITYSENSOR_ICE
-#define PROXIMITYSENSOR_ICE
+#ifndef EMSENSOR_ICE
+#define EMSENSOR_ICE
 
 module jderobot{
 
 	enum State { Error, OutRange, FarRange, NearRange, Close }; 
 	
-	class ProximitySensorData 
+	class EMSensorData 
 	{
 	        
 		State status;
@@ -33,9 +33,9 @@ module jderobot{
 		long tm;
 	};
 	
-	interface ProximitySensor
+	interface EMSensor
 	{
-		idempotent ProximitySensorData getProximitySensorData();
+		idempotent EMSensorData getEMSensorData();
 	};	
 };
 

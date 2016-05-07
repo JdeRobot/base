@@ -11,7 +11,7 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/container/list.hpp>
 #include <boost/thread/mutex.hpp>
-#include "proximitySensorI.h"
+#include "EMSensorI.h"
 
 namespace EMSensor {
 
@@ -35,7 +35,7 @@ public:
 	/// Default destructor.
 	virtual ~Sharer();
 
-	ProximitySensorI* interface;
+	EMSensorI* interface;
 
 private:
 
