@@ -1,8 +1,20 @@
 /*
- * pwm_analyzer.h
+ *  Copyright (C) 1997-2016 JDE Developers Team
  *
- *  Created on: 6 de abr. de 2016
- *      Author: roberto
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see http://www.gnu.org/licenses/.
+ *  Authors : 
+ *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>	
  */
 
 #ifndef PWM_ANALYZER_H_
@@ -13,6 +25,11 @@
 
 namespace EMSensor {
 
+/** Signal analysis thread.
+ *
+ * This class defines a thread dedicated to signal analysis and
+ * sending data via ICE interface.
+ */
 class PWM_analyzer {
 
 public:
@@ -41,7 +58,9 @@ public:
      */
     void join();
 
-
+    /** Signal a stop command to the associated thread, ending its work safely.
+     *
+     */
     void stop();
 
 protected:
@@ -52,9 +71,9 @@ protected:
      */
     void run();
 
-    boost::thread thread;   ///< Thread holder.
-    Sharer* sharer;			///< Shared memory object.
-    bool _stop;				///< Thread stop flag.
+    boost::thread thread;       ///< Thread holder.
+    Sharer* sharer;             ///< Shared memory object.
+    bool _stop;                 ///< Thread stop flag.
     
     unsigned int maxRestCount; ///< Maximum number of samples without variation.
 };
