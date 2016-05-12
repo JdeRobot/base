@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
         ic = EasyIce::initialize(argc, argv);
 
         Sensors* sensors = new Sensors(ic);
-        threadGUI* gui = new threadGUI(sensors);
+        threadGUI* gui = new threadGUI(sensors, ic);
         ThreadSensors* threadSensors = new ThreadSensors(sensors);
 
         gui->start();

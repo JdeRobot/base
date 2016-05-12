@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 		explicit MainWindow(QWidget *parent = 0);
 		void setSensors(Sensors* sensors);
 		void updateThreadGUI();    
+		void setSpeeds(Ice::CommunicatorPtr ic);
 		~MainWindow();
 	    
 	signals:
@@ -92,6 +93,7 @@ class MainWindow : public QMainWindow
 		void printNavdata(jderobot::NavdataDataPtr data);		  
 		float vx,vy,vz,pitch,roll,yaw;    
 		float linx,liny,linz;
+		float max_x, max_y, max_z, max_yaw;
 		QwtCompass *createCompass(int pos);
 		QwtDial *createDial(int pos);
 		Ui::MainWindow *ui;
