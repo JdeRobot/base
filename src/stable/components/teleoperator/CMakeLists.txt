@@ -13,7 +13,7 @@ link_directories(
 	${easyiceconfig_LIBRARY_DIRS}
 )
 
-set( CMAKE_CXX_FLAGS "-Wno-deprecated" ) # Opciones para el compilador
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" ) # Opciones para el compilador
 
 add_executable (teleoperatorPC  ${SOURCE_FILES})
 

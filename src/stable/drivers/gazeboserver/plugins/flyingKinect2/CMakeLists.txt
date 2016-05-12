@@ -31,7 +31,7 @@ link_directories(
 
 
 ## Project
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x" ) # Opciones para el compilador
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" ) # Opciones para el compilador
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
