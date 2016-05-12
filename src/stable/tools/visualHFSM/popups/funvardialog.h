@@ -22,6 +22,8 @@
 #ifndef FUNVARDIALOG_H
 #define FUNVARDIALOG_H
 
+#include <unistd.h>
+
 #include "../guisubautomata.h"
 
 // Definition of this class

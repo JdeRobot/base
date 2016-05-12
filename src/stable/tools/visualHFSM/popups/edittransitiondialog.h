@@ -22,6 +22,7 @@
 #ifndef EDITTRANSITIONDIALOG_H
 #define EDITTRANSITIONDIALOG_H
 
+#include <unistd.h>
 #include <string>
 #include <iostream>
 

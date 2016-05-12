@@ -22,6 +22,8 @@
 #ifndef TIMERDIALOG_H
 #define TIMERDIALOG_H
 
+#include <unistd.h>
+
 #include "../guisubautomata.h"
 
 // Definition of this class

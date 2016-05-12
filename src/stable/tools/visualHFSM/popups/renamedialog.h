@@ -23,6 +23,7 @@
 #define RENAMEDIALOG_H
 
 #include <sigc++/sigc++.h>
+#include <unistd.h>
 
 #include "../guinode.h"
 
