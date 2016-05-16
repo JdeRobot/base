@@ -16,7 +16,7 @@
 class threadGUI:public QThread
 {
 public:
-    threadGUI(Sensors* sensors);
+    threadGUI(Sensors* sensors, Ice::CommunicatorPtr ic);
 
 private:
     MainWindow* gui;

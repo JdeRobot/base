@@ -53,6 +53,16 @@ MainWindow::MainWindow(QWidget *parent) :
     this->initButtons();
 }
 
+void MainWindow::setSpeeds(Ice::CommunicatorPtr ic){
+
+ 	Ice::PropertiesPtr prop = ic->getProperties();
+
+	this->max_x = std::atof( prop->getPropertyWithDefault("UAVViewer.Xmax", "0.3").c_str() );
+	this->max_y = std::atof( prop->getPropertyWithDefault("UAVViewer.Ymax", "0.3").c_str() );
+	this->max_z = std::atof( prop->getPropertyWithDefault("UAVViewer.Zmax", "0.3").c_str() );
+	this->max_yaw = std::atof( prop->getPropertyWithDefault("UAVViewer.Yawmax", "0.3").c_str() );
+}
+
 void MainWindow::initButtons(){
     QPixmap rotateLeft(":images/rotate_left.png");
     QIcon rotateLeftIcon(rotateLeft);
@@ -511,7 +521,7 @@ void MainWindow::on_reset_button_clicked()
 void MainWindow::on_linZU_pressed()
 {
     qDebug() << "Up pressed";
-    this->linz=LINZ;
+    this->linz=max_z;
     this->sendVelocitiesToUAV();
 }
 
@@ -525,7 +535,7 @@ void MainWindow::on_linZU_released()
 void MainWindow::on_linZD_pressed()
 {
     qDebug() << "Down pressed";
-    this->linz=-LINZ;
+    this->linz=-max_z;
     this->sendVelocitiesToUAV();
 }
 
@@ -539,7 +549,7 @@ void MainWindow::on_linZD_released()
 void MainWindow::on_angZL_pressed()
 {
     qDebug() << "Rotate Left pressed";
-    this->yaw=ANGZ;
+    this->yaw=max_yaw;
     this->sendVelocitiesToUAV();
 }
 
@@ -553,7 +563,7 @@ void MainWindow::on_angZL_released()
 void MainWindow::on_angZR_pressed()
 {
     qDebug() << "Rotate Right pressed";
-    this->yaw=-ANGZ;
+    this->yaw=-max_yaw;
     this->sendVelocitiesToUAV();
 }
 
@@ -567,7 +577,7 @@ void MainWindow::on_angZR_released()
 void MainWindow::on_linXF_pressed()
 {
     qDebug() << "Forward pressed";
-    this->linx=LINX;
+    this->linx=this->max_x;
     this->sendVelocitiesToUAV();
 }
 
@@ -581,7 +591,7 @@ void MainWindow::on_linXF_released()
 void MainWindow::on_linXB_pressed()
 {
     qDebug() << "Backward pressed";
-    this->linx=-LINX;
+    this->linx=-max_x;
     this->sendVelocitiesToUAV();
 }
 
@@ -595,7 +605,7 @@ void MainWindow::on_linXB_released()
 void MainWindow::on_linYL_pressed()
 {
     qDebug() << "Left pressed";
-    this->liny=LINY;
+    this->liny=max_y;
     this->sendVelocitiesToUAV();
 }
 
@@ -609,7 +619,7 @@ void MainWindow::on_linYL_released()
 void MainWindow::on_linYR_pressed()
 {
     qDebug() << "Right pressed";
-    this->liny=-LINY;
+    this->liny=-max_y;
     this->sendVelocitiesToUAV();
 }
 
