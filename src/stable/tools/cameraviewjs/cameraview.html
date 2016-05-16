@@ -8,11 +8,11 @@
 
    <!-- core CSS -->
    <link href="css/bootstrap.min.css" rel="stylesheet">
-   <link href="css/main.css" rel="stylesheet">
+   <link href="css/cameraview.css" rel="stylesheet">
 </head>
 <!--/head-->
 
-<body class="bg-carbon">
+<body>
 <header id="header">
   <nav class="navbar navbar-inverse" role="banner">
     <div class="container">
@@ -62,15 +62,15 @@
 </div>
 <div class="modal fade" id="configure" tabindex="-1" role="dialog" aria-labelledby="configLabel">
   <div class="modal-dialog" role="document">
-    <div class="modal-content bg-carbon">
-      <div class="modal-header bg-orange">
+    <div class="modal-content">
+      <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="configLabel">CameraView Config</h4>
       </div>
       <div class="modal-body">
          <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">Dir</span>
-           <input  id="dir" type="text" class="form-control" placeholder="Direction" value="localhost" aria-describedby="basic-addon1">
+            <span class="input-group-addon" id="basic-addon1">Addr</span>
+           <input  id="dir" type="text" class="form-control" placeholder="Address" value="localhost" aria-describedby="basic-addon1">
          </div>
          <br>
          <div class="input-group">
@@ -91,10 +91,10 @@
   </div>
 </div>
    
-   <script src="js/jquery-1.11.3.min.js"></script>
+   <script src="js/jquery.min.js"></script>
    <script src="js/bootstrap.min.js"></script>
-   <script src="js/libs/camera/camera.js"></script>
-   <script src="js/cameraviewjs/cameraview.js"></script>
+   <script src="js/api.js"></script>
+   <script src="js/cameraview.js"></script>
    <script src="js/cameraviewWeb.js"></script>
    
 </body>
