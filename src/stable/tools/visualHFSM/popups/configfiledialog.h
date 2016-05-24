@@ -54,7 +54,7 @@ private:
 	Gtk::Dialog* dialog;
 	Gtk::Button *button_accept, *button_cancel, *button_confirm;
 	Gtk::Grid* grid;
-	Gtk::Entry *entry_name, *entry_ip, *entry_port;
+	Gtk::Entry *entry_name, *entry_proxyName, *entry_ip, *entry_port;
 	Gtk::ComboBox* combobox_interface;
 
 	int row;

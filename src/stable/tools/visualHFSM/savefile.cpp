@@ -164,6 +164,9 @@ void SaveFile::init () {
 			xmlpp::Element* nodeConfigChild = nodeIceInterface->add_child("nameinterface");
 			nodeConfigChild->set_child_text(listInterfacesIterator->getName());
 
+			nodeConfigChild = nodeIceInterface->add_child("nameproxy");
+			nodeConfigChild->set_child_text(listInterfacesIterator->getProxyName());
+
 			nodeConfigChild = nodeIceInterface->add_child("ip");
 			nodeConfigChild->set_child_text(listInterfacesIterator->getIp());
 
