@@ -23,6 +23,7 @@
 #include "recordergui.h"
 
 namespace recorder {
+const std::string gladepath = resourcelocator::findGladeFile("recordergui.glade");
 
 	recordergui::recordergui(): gtkmain(0,0) {
 		recording=false;
@@ -30,7 +31,7 @@ namespace recorder {
 
 
 		std::cout << "Loading glade\n";
-	refXml = Gnome::Glade::Xml::create("./recordergui.glade");
+	refXml = Gnome::Glade::Xml::create(gladepath);
 
 		/*Get widgets*/
     refXml->get_widget("window1",mainwindow);
