@@ -50,6 +50,7 @@ function KobukiViewer (config){
    var control=undefined;
    
    var model = {id: this.modelid,
+                container: $('#'+this.modelid),
                 WIDTH: 320,
                 HEIGHT: 320,
                 VIEW_ANGLE: 50,
@@ -59,7 +60,9 @@ function KobukiViewer (config){
                 renderer:undefined,
                 camera: undefined,
                 controls: undefined,
-                laser:undefined
+                laser:undefined,
+                animation: undefined,
+                active: false,
    };
    model.ASPECT=model.WIDTH / model.HEIGHT;
    
@@ -147,12 +150,14 @@ function KobukiViewer (config){
    
     var initModel = function (){
       var canv = document.getElementById(model.id);
+      model.ASPECT=canv.width/canv.height;
       model.camera = new THREE.PerspectiveCamera(model.VIEW_ANGLE, model.ASPECT, model.NEAR, model.FAR);
       model.camera.position.set( -5, 5, 2 );
       
       model.camera.lookAt(new THREE.Vector3( 0,0,0 ));
       
-      model.renderer = new THREE.WebGLRenderer({canvas:canv});
+      model.renderer = new THREE.WebGLRenderer({canvas:canv, antialias: true});
+      model.renderer.setPixelRatio( window.devicePixelRatio );
       model.renderer.setClearColor( 0xffffff);
       
       model.scene=new THREE.Scene();
@@ -208,71 +213,24 @@ function KobukiViewer (config){
       
                                         
       var modelAnimation = function(){
-         requestAnimationFrame(modelAnimation);
+         model.animation = requestAnimationFrame(modelAnimation);
          model.controls.update();
          model.renderer.render(model.scene,model.camera);
          
       };
-      
-      var loader = new GUI.RobotLoader();
        
-      loader.loadKobuki(1,function () {
-               model.robot=loader.robot;
-               model.scene.add( model.robot );
-                  
-               pose3d = new API.Pose3D({server:self.pose3dserv,epname:self.pose3depname});
-               pose3d.onmessage= function (event){
-                  pose3d.onmessageDefault(event);
-                  model.robot.position.set(pose3d.data.x/1000,pose3d.data.z/1000,-pose3d.data.y/1000);
-                  model.robot.rotation.y=(pose3d.data.yaw);
-                  model.robot.updateMatrix();
-                  model.renderer.render(model.scene,model.camera);
-               };
-         
-               pose3d.timeoutE=timeout;
-         
-               pose3d.connect();
-               pose3d.startStreaming();
-         
-               laser= new API.Laser({server:self.laserserv,epname:self.laserepname,canv2dWidth:lasercanv.width,scale3d:0.001,convertUpAxis:true});
-               laser.onmessage= function (event){
-                  laser.onmessageDefault(event);
-                  //2D
-                  var dist = laser.data.canv2dData;
-                  var ctx = lasercanv.getContext("2d");
-                  ctx.beginPath();
-                  ctx.clearRect(0,0,lasercanv.width,lasercanv.height);
-                  ctx.fillRect(0,0,lasercanv.width,lasercanv.height);
-                  ctx.strokeStyle="white";
-                  ctx.moveTo(dist[0], dist[1]);
-                  for (var i = 2;i<dist.length; i = i+2 ){
-                     ctx.lineTo(dist[i], dist[i+1]);
-                  }   
-                  ctx.moveTo(lasercanv.width/2, lasercanv.height);
-                  ctx.lineTo(lasercanv.width/2, lasercanv.height-10);
-                  ctx.stroke();
-                  
-                  //3D
-                  var geometry = new THREE.BufferGeometry();
-                  geometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(laser.data.array3dData), 3 ) );
-                  var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                  material.transparent = true;
-                  material.opacity=0.5;
-                  material.side = THREE.DoubleSide;
-			      var las = new THREE.Mesh( geometry, material );
-                  if (model.laser){
-                     model.robot.remove(model.laser);
-                  };
-                  model.robot.add(las);
-                  model.laser = las;
-
-               };
-               laser.connect();
-               laser.startStreaming();
-               
-               modelAnimation();
-	        });
-      //modelAnimation();
+      if (model.robot==undefined) {
+         var loader = new GUI.RobotLoader();
+         loader.loadKobuki(1,function () {
+            model.robot=loader.robot;
+            model.scene.add( model.robot );
+            modelAnimation();
+	     });
+      } else {
+         model.scene.add( model.robot );
+         modelAnimation();
+      }
+      
    };
    
    /*
@@ -281,8 +239,9 @@ function KobukiViewer (config){
     */
    var initGL = function(){
       initControl();
-      initModel();
-      //animation();
+       if (self.modelid && model.active){
+         initModel();
+      }
    }
    
    /*************************
@@ -350,7 +309,55 @@ function KobukiViewer (config){
       lasercanv = document.getElementById("laser");
       lasercanv.height = lasercanv.width/2;
       
-      //pose3d in initModel
+      laser= new API.Laser({server:self.laserserv,epname:self.laserepname,canv2dWidth:lasercanv.width,scale3d:0.001,convertUpAxis:true});
+      laser.onmessage= function (event){
+         laser.onmessageDefault(event);
+         //2D
+         var dist = laser.data.canv2dData;
+         var ctx = lasercanv.getContext("2d");
+         ctx.beginPath();
+         ctx.clearRect(0,0,lasercanv.width,lasercanv.height);
+         ctx.fillRect(0,0,lasercanv.width,lasercanv.height);
+         ctx.strokeStyle="white";
+         ctx.moveTo(dist[0], dist[1]);
+         for (var i = 2;i<dist.length; i = i+2 ){
+            ctx.lineTo(dist[i], dist[i+1]);
+         }   
+         ctx.moveTo(lasercanv.width/2, lasercanv.height);
+         ctx.lineTo(lasercanv.width/2, lasercanv.height-10);
+         ctx.stroke();
+
+         //3D
+         if (model.active){
+            var geometry = new THREE.BufferGeometry();
+            geometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(laser.data.array3dData), 3 ) );
+            var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+            material.transparent = true;
+            material.opacity=0.5;
+            material.side = THREE.DoubleSide;
+            var las = new THREE.Mesh( geometry, material );
+            if (model.laser){
+               model.robot.remove(model.laser);
+            };
+            model.robot.add(las);
+            model.laser = las;
+         }
+      };
+      laser.connect();
+      laser.startStreaming();
+      
+      pose3d = new API.Pose3D({server:self.pose3dserv,epname:self.pose3depname});
+      pose3d.onmessage = function(event) {
+         pose3d.onmessageDefault(event);
+         if (model.active) {
+            model.robot.position.set(pose3d.data.x/1000,pose3d.data.z/1000,-pose3d.data.y/1000);
+            model.robot.rotation.y=(pose3d.data.yaw);
+            model.robot.updateMatrix();
+         }
+      };
+      pose3d.timeoutE=timeout;
+      pose3d.connect();
+      pose3d.startStreaming();
       
       motors= new API.Motors({server:this.motorserv,onmessage:onGetMotors,epname:this.motorsepname});
       cameraleft = new API.Camera ({server:this.camleftserv,epname:this.camleftepname});
@@ -376,9 +383,6 @@ function KobukiViewer (config){
       cameraleft.startStreaming();
       cameraright.startStreaming();
       initGL();
-       
-      
-      
    };
    
    this.stop = function(){
@@ -399,9 +403,37 @@ function KobukiViewer (config){
    };
    
    this.resizeCameraModel= function(){
-      model.camera.aspect = model.renderer.domElement.width / model.renderer.domElement.height;
-      model.camera.updateProjectionMatrix();
-      model.renderer.render(model.scene,model.camera);
+      if (model.active) {
+         model.camera.aspect = model.renderer.domElement.width / model.renderer.domElement.height;
+         model.camera.updateProjectionMatrix();
+         model.renderer.render(model.scene,model.camera);
+      }
    
+   };
+    
+    this.modelON = function() {
+      model.active = true;
+      if (self.modelid && !model.renderer){
+         initModel();
+      }
+   };
+   
+   this.modelOFF = function() {
+      
+      model.active = false;
+      if (self.modelid && model.renderer){
+         cancelAnimationFrame(model.animation);// Stop the animation
+          
+         model.scene = null;
+         model.renderer = undefined;
+         model.camera = undefined;
+         model.controls = undefined;
+         var m = model.container.clone();
+         var parent = model.container.parent();
+         model.container.remove();
+         parent.append(m);
+         model.container = m;
+         
+      }
    };
 }

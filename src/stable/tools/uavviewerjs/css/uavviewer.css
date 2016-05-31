@@ -32,6 +32,13 @@
 .left{
    float: left;
 }
+
+.center{
+	text-align: center;
+}
+.mtop20{
+	margin-top: 20px;
+}
 .indicators{
    position: absolute;
    z-index: 10;
