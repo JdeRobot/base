@@ -13,6 +13,7 @@ include_directories(
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
     ${easyiceconfig_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -39,4 +40,5 @@ TARGET_LINK_LIBRARIES(recorder
     jderobotutil
     logger
     ns
+    ${resourcelocator_LIBRARIES}
 )
