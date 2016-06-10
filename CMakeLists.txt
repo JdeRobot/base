@@ -327,10 +327,10 @@ SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
 "Software development suite for robotics and computer vision applications.")
 SET (CPACK_PACKAGE_DESCRIPTION
 "JdeRobot is a software development suite for robotics and computer vision applications. 
-The applications are made up of a collection of concurrent processes (named components) that
-interoperate among them. They exchange messages using ICE communication middleware. The components may 
-run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
-JdeRobot includes a collection of drivers and tools.
+ The applications are made up of a collection of concurrent processes (named components) that
+ interoperate among them. They exchange messages using ICE communication middleware. The components may 
+ run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
+ JdeRobot includes a collection of drivers and tools.
  Get source from https://github.com/RoboticsURJC/JdeRobot
  Package created with revision ${GIT_HEAD}")
 
