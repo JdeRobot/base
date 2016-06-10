@@ -6,7 +6,7 @@ IF (libxmlpp_INCLUDE_DIRS)
 
 	add_definitions(-DGLADE_DIR="${gladedir}")
 
-	set( CMAKE_CXX_FLAGS "-Wno-deprecated" ) # Opciones para el compilador-lgsl -lgslcblas -lGL -lGLU -lglut -lgazebo
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" ) # Opciones para el compilador
 
 	include_directories(
 		${INTERFACES_CPP_DIR}

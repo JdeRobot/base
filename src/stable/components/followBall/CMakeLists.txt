@@ -42,7 +42,7 @@ if (COMPILEFORNAO)
 else()
     SET( SOURCE_FILES_FOLLOWBALL viewer.cpp sensors.cpp control.cpp handler.cpp main.cpp )
 
-    SET( CMAKE_CXX_FLAGS "-Wno-deprecated" ) # Opciones para el compilador
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" ) # Opciones para el compilador
 
     include_directories (
         ${INTERFACES_CPP_DIR}
