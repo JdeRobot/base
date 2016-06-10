@@ -64,6 +64,7 @@ void ConfigFileDialog::init () {
 
         refBuilder->get_widget("grid", this->grid);
         refBuilder->get_widget("entry_name", this->entry_name);
+        refBuilder->get_widget("entry_proxyName", this->entry_proxyName);
         refBuilder->get_widget("entry_ip", this->entry_ip);
         refBuilder->get_widget("entry_port", this->entry_port);
         refBuilder->get_widget("combobox_interface", this->combobox_interface);
@@ -87,6 +88,7 @@ void ConfigFileDialog::init () {
         for ( std::list<IceInterface>::iterator listInterfaceIterator = this->listInterfaces.begin();
                 listInterfaceIterator != this->listInterfaces.end(); listInterfaceIterator++ ) {
             Gtk::Label* label_name = Gtk::manage(new Gtk::Label(listInterfaceIterator->getName()));
+            Gtk::Label* label_proxyName = Gtk::manage(new Gtk::Label(listInterfaceIterator->getProxyName()));
             Gtk::Label* label_ip = Gtk::manage(new Gtk::Label(listInterfaceIterator->getIp()));
             Gtk::Label* label_port = Gtk::manage(new Gtk::Label(listInterfaceIterator->getPort()));
             Gtk::Label* label_interface = Gtk::manage(new Gtk::Label(listInterfaceIterator->getInterface()));
@@ -96,10 +98,11 @@ void ConfigFileDialog::init () {
                             sigc::mem_fun(this, &ConfigFileDialog::on_button_delete), this->row));
 
             this->grid->attach(*label_name, 0, this->row, 1, 1);
-            this->grid->attach(*label_ip, 1, this->row, 1, 1);
-            this->grid->attach(*label_port, 2, this->row, 1, 1);
-            this->grid->attach(*label_interface, 3, this->row, 1, 1);
-            this->grid->attach(*button, 4, this->row, 1, 1);
+            this->grid->attach(*label_proxyName, 1, this->row, 1, 1);
+            this->grid->attach(*label_ip, 2, this->row, 1, 1);
+            this->grid->attach(*label_port, 3, this->row, 1, 1);
+            this->grid->attach(*label_interface, 4, this->row, 1, 1);
+            this->grid->attach(*button, 5, this->row, 1, 1);
 
             this->row++;
         }
@@ -130,12 +133,14 @@ void ConfigFileDialog::on_button_confirm () {
         std::cout << "Invalid iter" << std::endl;
 
     IceInterface iceinterface(std::string(this->entry_name->get_text()),
+                                std::string(this->entry_proxyName->get_text()),
                                 std::string(this->entry_ip->get_text()),
                                 std::string(this->entry_port->get_text()),
                                 std::string(name));
     this->listInterfaces.push_back(iceinterface);
 
     Gtk::Label* label_name = Gtk::manage(new Gtk::Label(this->entry_name->get_text()));
+    Gtk::Label* label_proxyName = Gtk::manage(new Gtk::Label(this->entry_proxyName->get_text()));
     Gtk::Label* label_ip = Gtk::manage(new Gtk::Label(this->entry_ip->get_text()));
     Gtk::Label* label_port = Gtk::manage(new Gtk::Label(this->entry_port->get_text()));
     Gtk::Label* label_interface = Gtk::manage(new Gtk::Label(name));
@@ -145,26 +150,34 @@ void ConfigFileDialog::on_button_confirm () {
                         sigc::mem_fun(this, &ConfigFileDialog::on_button_delete), this->row));
 
     this->grid->attach(*label_name, 0, this->row, 1, 1);
-    this->grid->attach(*label_ip, 1, this->row, 1, 1);
-    this->grid->attach(*label_port, 2, this->row, 1, 1);
-    this->grid->attach(*label_interface, 3, this->row, 1, 1);
-    this->grid->attach(*button, 4, this->row, 1, 1);
+    this->grid->attach(*label_proxyName, 1, this->row, 1, 1);
+    this->grid->attach(*label_ip, 2, this->row, 1, 1);
+    this->grid->attach(*label_port, 3, this->row, 1, 1);
+    this->grid->attach(*label_interface, 4, this->row, 1, 1);
+    this->grid->attach(*button, 5, this->row, 1, 1);
 
     this->grid->show_all_children();
+
+    this->entry_name->set_text("");
+    this->entry_proxyName->set_text("");
+    this->entry_ip->set_text("");
+    this->entry_port->set_text("");
 
     this->row++;
 }
 
 void ConfigFileDialog::on_button_delete ( int row ) {
     std::map<int, std::string> mapNames;
-    for ( int i = 0; i < 5; i++ ) {
-        if (i != 4)
+
+    for ( int i = 0; i < 6; i++ ) {
+        std::cerr << "i: " << i << std::endl;
+        if (i != 5)
             mapNames[i] = std::string(((Gtk::Label*)this->grid->get_child_at(i, row))->get_text());
         this->grid->remove(*this->grid->get_child_at(i, row));
     }
 
     std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces.begin();
-    while ( (!listInterfacesIterator->equals(mapNames[0], mapNames[1], mapNames[2], mapNames[3])) &&
+    while ( (!listInterfacesIterator->equals(mapNames[0], mapNames[1], mapNames[2], mapNames[3], mapNames[4])) &&
             (listInterfacesIterator != this->listInterfaces.end()) )
         listInterfacesIterator++;
 

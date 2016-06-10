@@ -29,7 +29,7 @@ class IceInterface {
 public:
 	// Constructor
 	IceInterface ();
-	IceInterface ( std::string name, std::string ip, std::string port, std::string interface );
+	IceInterface ( std::string name, std::string proxyName, std::string ip, std::string port, std::string interface );
 
 	// Destructor
 	virtual ~IceInterface ();
@@ -37,22 +37,24 @@ public:
 	// Setters
 	void setAll ( std::string name, std::string ip, std::string port, std::string interface );
 	void setName ( std::string name );
+	void setProxyName ( std::string name );
 	void setIp ( std::string ip );
 	void setPort ( std::string port );
 	void setInterface ( std::string interface );
 
 	// Getters
 	std::string getName ();
+	std::string getProxyName ();
 	std::string getIp ();
 	std::string getPort ();
 	std::string getInterface ();
 
 	// Another functions
 	bool equals ( IceInterface* iceinterface );
-	bool equals ( std::string name, std::string ip, std::string port, std::string interface );
+	bool equals ( std::string name, std::string proxyName, std::string ip, std::string port, std::string interface );
 
 private:
-	std::string name, ip, port, interface;
+	std::string name, proxyName, ip, port, interface;
 };
 
 #endif // ICEINTERFACE_H

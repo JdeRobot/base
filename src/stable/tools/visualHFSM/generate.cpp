@@ -606,16 +606,19 @@ void Generate::generateMain () {
 
 void Generate::generateCfg () {
 	std::string interfaceName;
+	std::string proxyName;
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ){
 		if(listInterfacesIterator->getInterface().compare("ArDroneExtra") == 0){
 			interfaceName = "Extra";
-		}else if(listInterfacesIterator->getInterface().compare("Pose3D") == 0){
-			interfaceName = "ImuPlugin";
 		}else{
 			interfaceName = listInterfacesIterator->getInterface();
 		}
-		this->fs << "automata." << listInterfacesIterator->getInterface() << ".Proxy=" << interfaceName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
+		proxyName = listInterfacesIterator->getProxyName();
+		if(proxyName.compare("") == 0){
+			proxyName = interfaceName;
+		}
+		this->fs << "automata." << listInterfacesIterator->getInterface() << ".Proxy=" << proxyName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
 	}
 	this->fs.flush();
 }

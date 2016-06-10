@@ -26,8 +26,9 @@
  *************************************************************/
 IceInterface::IceInterface () {}
 
-IceInterface::IceInterface ( std::string name, std::string ip, std::string port, std::string interface ) {
+IceInterface::IceInterface ( std::string name, std::string proxyName, std::string ip, std::string port, std::string interface ) {
 	this->name = name;
+	this->proxyName = proxyName;
 	this->ip = ip;
 	this->port = port;
 	this->interface = interface;
@@ -52,6 +53,10 @@ void IceInterface::setName ( std::string name ) {
 	this->name = name;
 }
 
+void IceInterface::setProxyName ( std::string name ){
+	this->proxyName = name;
+}
+
 void IceInterface::setIp ( std::string ip ) {
 	this->ip = ip;
 }
@@ -69,6 +74,10 @@ void IceInterface::setInterface ( std::string interface ) {
  *************************************************************/
 std::string IceInterface::getName () {
 	return this->name;
+}
+
+std::string IceInterface::getProxyName () {
+	return this->proxyName;
 }
 
 std::string IceInterface::getIp () {
@@ -90,8 +99,10 @@ bool IceInterface::equals ( IceInterface* iceinterface ) {
 	return (this->name.compare(iceinterface->getName()) == 0);
 }
 
-bool IceInterface::equals ( std::string name, std::string ip,
-							std::string port, std::string interface ) {
-	return ( (this->name.compare(name) == 0) && (this->ip.compare(ip) == 0) &&
-			(this->port.compare(port) == 0) && (this->interface.compare(interface) == 0) );
+bool IceInterface::equals ( std::string name, std::string proxyName,
+							std::string ip, std::string port,
+							std::string interface ) {
+	return ( (this->name.compare(name) == 0) && (this->proxyName.compare(proxyName) == 0) 
+			&& (this->ip.compare(ip) == 0) && (this->port.compare(port) == 0)
+			&& (this->interface.compare(interface) == 0) );
 }

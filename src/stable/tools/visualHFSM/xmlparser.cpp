@@ -46,6 +46,7 @@ MySaxParser::MySaxParser () : xmlpp::SaxParser() {
     this->mapStringValues["config"] = E_CONFIGFILE;
     this->mapStringValues["iceinterface"] = E_ICEINTERFACE;
     this->mapStringValues["nameinterface"] = E_INTERFACENAME;
+    this->mapStringValues["nameproxy"] = E_PROXYNAME;
     this->mapStringValues["ip"] = E_INTERFACEIP;
     this->mapStringValues["port"] = E_INTERFACEPORT;
     this->mapStringValues["interface"] = E_INTERFACEINTERFACE;
@@ -205,6 +206,9 @@ void MySaxParser::on_start_element ( const Glib::ustring& name,
         case E_INTERFACENAME:
             this->option = E_INTERFACENAME;
             break;
+        case E_PROXYNAME:
+            this->option = E_PROXYNAME;
+            break;
         case E_INTERFACEIP:
             this->option = E_INTERFACEIP;
             break;
@@ -334,6 +338,10 @@ void MySaxParser::on_characters ( const Glib::ustring& text ) {
         }
         case E_INTERFACENAME: {
             this->iceinterface->setName(text);
+            break;
+        }
+        case E_PROXYNAME: {
+            this->iceinterface->setProxyName(text);
             break;
         }
         case E_INTERFACEIP: {
