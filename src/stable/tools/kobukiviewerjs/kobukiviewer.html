@@ -8,6 +8,7 @@
 
    <!-- core CSS -->
    <link href="css/bootstrap.min.css" rel="stylesheet">
+   <link href="css/bootstrap-toggle.min.css" rel="stylesheet">
    <link href="css/kobukiviewer.css" rel="stylesheet">
 </head>
 <!--/head-->
@@ -17,7 +18,7 @@
   <nav class="navbar navbar-inverse" role="banner">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#"><i class="fa fa-bolt"></i> JdeRobot Web Clients KobukiViewer</a></a> </div>
+        <a class="navbar-brand" href="#"><i class="fa fa-bolt"></i> JdeRobot Web Clients KobukiViewer</a> </div>
     </div>
     <!--/.container--> 
   </nav>
@@ -70,8 +71,8 @@
    <div class="row">
       <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
          <div class="border-carbon panel panel-info">
-            <div class=" letrero panel-heading hidden-sm hidden-xs">
-               <span class="panel-title">3D Model</span>
+            <div class=" letrero panel-heading">
+               <span class="panel-title">3D Model</span>   <input id="mod-toggle" disabled type="checkbox" data-toggle="toggle" data-onstyle="info" data-size="mini" data-offstyle="info">
             </div>
             <div class="panel-body padding0 border-blue container-fluid">
                <canvas id="model" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your browser does not support the HTML5 canvas tag.</canvas>
@@ -180,6 +181,7 @@
 </div>
    <script src="js/jquery.min.js"></script>
    <script src="js/bootstrap.min.js"></script>
+   <script src="js/bootstrap-toggle.min.js"></script>
    <script src="js/three.min.js"></script>
    <script src="js/JoyStickControls.js"></script>
    <script src="js/TrackballControls.js"></script>

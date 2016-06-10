@@ -10,12 +10,14 @@
 
 namespace replayer {
 
+const std::string gladepath = resourcelocator::findGladeFile("replayergui.glade");
+
 replayergui::replayergui(control* c): gtkmain(0,0) {
 	// TODO Auto-generated constructor stub
 
 	this->controller=c;
 			std::cout << "Loading glade\n";
-		refXml = Gnome::Glade::Xml::create("./replayergui.glade");
+		refXml = Gnome::Glade::Xml::create(gladepath);
 
 			/*Get widgets*/
 	    refXml->get_widget("window1",mainwindow);

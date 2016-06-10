@@ -10,13 +10,13 @@ var API = API || {};
  *       + epname (name of camera endpoint, default cameraA)
  *       + imgFormat (format of image that is going to request to the server, default RGB8)
  */
-API.Camera= function (config){
-   var conf = config || {};
+API.Camera = function (config) {
+	 var conf = config || {};
    
    
    this.workerFile = "js/api_workers/camera_worker.js";
    this.w = undefined; 
-   this.onmessage= undefined;
+   this.onmessage = undefined;
    this.isRunning = false;
    
    
@@ -37,14 +37,14 @@ API.Camera= function (config){
    var self = this;
    
    
-   this.createWork = function(){
+   this.createWork = function () {
       this.w = new Worker(this.workerFile);
-      this.w.onerror = function (err){
+      this.w.onerror = function (err) {
          console.log ("worker error: "+ err.message);
       };
    };
    
-   this.deleteWork = function (){
+   this.deleteWork = function () {
       if (this.w){
          this.w.terminate();
          this.w = undefined;
@@ -55,12 +55,12 @@ API.Camera= function (config){
       }
    };
    
-   this.connect = function (){
+   this.connect = function () {
       this.conPromise = new Promise(
         // The resolver function is called with the ability to resolve or
         // reject the promise
         function(resolve, reject) {
-            self.w.onmessage = function(mes){
+            self.w.onmessage = function(mes) {
                if (mes.data){
                   self.isRunning = true;
                   resolve();
@@ -124,7 +124,12 @@ API.Camera= function (config){
             self.toError=setTimeout(self.conErr, self.timeoutE+10);
          }
          self.data=event.data.img;
-         self.description=event.data.desc;
+         self.description=event.data.desc || self.description;
+		   if (event.data.delay){
+				 var tt = new Date().getTime();
+				 self.delay = event.data.delay;
+				 self.delay.worker = tt - event.data.delay._ctime;
+			}
       };
    
    /*
@@ -401,7 +406,7 @@ API.Pose3D= function (config){
     */
    this.conErr=function(){
       alert ("connection to server "+self.epname+" "+self.server.dir+":"+self.server.port+" failed");
-     // self.deleteWork();
+     self.deleteWork();
    };
    
    this.createWork();

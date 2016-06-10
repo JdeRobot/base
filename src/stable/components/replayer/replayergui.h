@@ -29,6 +29,7 @@
 #include <IceUtil/Thread.h>
 #include <IceUtil/Time.h>
 #include "control.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 namespace replayer {
 

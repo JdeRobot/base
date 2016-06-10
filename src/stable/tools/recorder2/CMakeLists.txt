@@ -12,6 +12,7 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
 
 add_executable (recorder2
@@ -34,4 +35,5 @@ TARGET_LINK_LIBRARIES(recorder2
     colorspacesmm
     JderobotInterfaces
     jderobotutil
+    ${resourcelocator_LIBRARIES}
 )

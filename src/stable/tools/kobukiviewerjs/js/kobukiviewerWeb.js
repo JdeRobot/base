@@ -12,10 +12,20 @@ $(document).ready(function() {
    $('#start').on('click', function(){
       viewer = new KobukiViewer(config);
       viewer.start();
+       $('#mod-toggle').prop( "disabled", false );
 	});
    $('#stop').on('click', function(){
          viewer.stop();
+       $('#mod-toggle').prop( "disabled", true );
 	});
+    
+    $('#mod-toggle').change(function(evt) {
+      if ($(this).prop('checked') && viewer){
+         viewer.modelON();
+      }else if (viewer){
+         viewer.modelOFF();
+      }
+    });
    
    var resize = function (){
       $(".cam").height( $(".cam").width()*3/4);

@@ -44,8 +44,13 @@
                <div class="indicators">
                   <span class="left" id="attitude"></span>
                   <span class="left" id="altimeter"></span>
+						 
                   <span class="right" id="turn_coordinator"></span>
                   <span class="right" id="heading"></span>
+						 <!--<span class="center">
+						 	<p class="mtop20"><span class="bold">Delay Network: </span><span id="delay1"></span></p>
+               		<p><span class="bold">Delay Worker: </span><span id="delay2"></span></p>
+						 </span>-->
                </div>
                <div class="controls">
                   <canvas id="control1" class="control" width=150 height=150>Your browser does not support the HTML5 canvas tag.</canvas>
@@ -64,12 +69,26 @@
    <div class="row">
       <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 col-md-offset-3 col-lg-offset-4">
          <div class="border-carbon panel panel-info">
+            <div class=" letrero panel-heading">
+               <span class="panel-title">3D Model</span>   <input id="mod-toggle" disabled type="checkbox" data-toggle="toggle" data-onstyle="info" data-size="mini" data-offstyle="info">
+            </div>
             <div class="panel-body padding0 border-blue container-fluid">
                <canvas id="model" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding0">Your browser does not support the HTML5 canvas tag.</canvas>
             </div>
          </div>
       </div>
    </div>
+   <!--<div class="row">
+      <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4 col-md-offset-3 col-lg-offset-4">
+         <div class="border-carbon panel panel-info">
+            <div class="panel-body padding0 border-blue container-fluid">
+               <textarea id="debug" rows="6" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding0"></textarea>
+               <p id="media1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></p>
+               <p id="media2" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></p>
+            </div>
+         </div>
+      </div>
+   </div>-->
 </div>
 
 <div class="modal fade" id="configure" tabindex="-1" role="dialog" aria-labelledby="configLabel">
@@ -85,18 +104,14 @@
             <div class="form-group">
                <div class="input-group">
                   <span class="input-group-addon" id="basic-addon1">Addr</span>
-                  <input  id="globaladdr" type="text" class="form-control" disabled placeholder="Address" value="localhost" aria-describedby="basic-addon1">
+                  <input  id="globaladdr" type="text" class="form-control" placeholder="Address" value="localhost" aria-describedby="basic-addon1">
                </div>
             </div>
-            <input id="sa-toggle" type="checkbox" data-toggle="toggle" data-onstyle="info" data-offstyle="info">
-            <!--<div class="checkbox">
-               <label>
-                  <input type="checkbox" data-toggle="toggle">
-               </label>
-            </div>-->
+            <!--<input id="sa-toggle" type="checkbox" data-toggle="toggle" data-onstyle="info" data-offstyle="info">-->
+            <button id="sa-button" type="button" class="btn btn-info">Put</button>
          </form>
          <br>
-         <label class="" for="DfReal">Default EndPoints</label>
+         <label class="" for="DfReal">Default EndPoints and Ports</label>
          <form class="form-inline">
             <button id="DfReal" type="button" class="btn btn-info">Real</button>
             <button id="DfGazebo" type="button" class="btn btn-info">Simulated</button>

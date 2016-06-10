@@ -30,6 +30,8 @@
 #include <IceUtil/Thread.h>
 #include <IceUtil/Time.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
+#include <resourcelocator/gladelocator.hpp> 
+ 
 
 namespace recorder {
   class recordergui {

@@ -8,9 +8,22 @@ var realEP={
 };
 var simEP={
    cam: "Camera",
-   pose3d: "ImuPlugin",
+   pose3d: "Pose3D",
    cmdvel: "CMDVel",
    extra: "Extra"
+};
+
+var realPort={
+   cam: 11000,
+   pose3d: 11003,
+   cmdvel: 11002,
+   extra: 11004
+};
+var simPort={
+   cam: 11000,
+   pose3d: 11000,
+   cmdvel: 11000,
+   extra: 11000
 };
 
 function putDfEP (eps){
@@ -18,6 +31,12 @@ function putDfEP (eps){
    $('#eppose3d').val(eps.pose3d);
    $('#epextra').val(eps.extra);
    $('#epcmdvel').val(eps.cmdvel);
+}
+function putDfPort (ports){
+   $('#portcam1').val(ports.cam);
+   $('#portpose3d').val(ports.pose3d);
+   $('#portextra').val(ports.extra);
+   $('#portcmdvel').val(ports.cmdvel);
 }
 $(document).ready(function() {
    var client;
@@ -39,17 +58,29 @@ $(document).ready(function() {
    $('#start').on('click', function(){
 		client = new UavViewer(config);
          client.start();
-      $("canvas.border-light").removeClass("border-light");
+       $('#mod-toggle').prop( "disabled", false );
 	});
+    
    $('#stop').on('click', function(){
          client.stop();
+       $('#mod-toggle').prop( "disabled", true );
 	});
+   
+   $('#mod-toggle').change(function(evt) {
+      if ($(this).prop('checked') && client){
+         client.modelON();
+      }else if (client){
+         client.modelOFF();
+      }
+    });
    
     $('#DfReal').on('click', function(){
          putDfEP(realEP);
+         putDfPort(realPort);
 	});
     $('#DfGazebo').on('click', function(){
          putDfEP(simEP);
+         putDfPort(simPort);
 	});
    
    
@@ -88,15 +119,17 @@ $(document).ready(function() {
       $( ".in-addr" ).val( value );
    }
    
-   $( "#globaladdr" ).keyup(sameaddr);
+   $('#sa-button').on('click', sameaddr);
    
-   $('#sa-toggle').change(function(evt) {
+   //$( "#globaladdr" ).keyup(sameaddr);
+   
+   /*$('#sa-toggle').change(function(evt) {
        $(".in-addr").prop('disabled',!$(".in-addr").prop('disabled'));
        $("#globaladdr").prop('disabled',!$("#globaladdr").prop('disabled'));
       if ($(this).prop('checked')){
          sameaddr();
       }
-    });
+    });*/
    
    resize();
    
