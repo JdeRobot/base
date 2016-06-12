@@ -9,6 +9,8 @@
 #include "attitudeindicator.h"
 #include "speedometer.h"
 #include "../sensors/sensors.h"
+#include "velwidget.h"
+#include "datawidget.h"
 
 
 namespace Ui {
@@ -80,32 +82,17 @@ class MainWindow : public QMainWindow
 
 	private:
 		void sendVelocitiesToUAV();
-		void drawYawValues(float degress);
-		void drawAltd(float meters);
-		void drawPitchRollValues(float pitch,float roll); 
-		static float quatToRoll(float, float, float, float);
-		static float quatToPitch(float, float, float, float);
-		static float quatToYaw(float, float, float, float);    
-		float rad2deg(float r);
+
         void initButtons();
-		void drawVelocitiesValues(float vx,float vy,float vz); 
 		void setDroneStatus(int state);    
 		void printNavdata(jderobot::NavdataDataPtr data);		  
-		float vx,vy,vz,pitch,roll,yaw;    
 		float linx,liny,linz;
+        float roll, pitch, yaw;
 		float max_x, max_y, max_z, max_yaw;
-		QwtCompass *createCompass(int pos);
-		QwtDial *createDial(int pos);
 		Ui::MainWindow *ui;
-		SpeedoMeter *d_speedo;
-		AttitudeIndicator *d_ai;
-		QwtDial *velLinZ;
-		QwtDial *velLinY;
-		QwtDial *velLinX;
-		QwtCompass *compass;
-		QwtDial *altd;
-		QwtDial *horizon;
 		Sensors* sensors;
+        VelWidget *vel;
+        DataWidget *dataw;
 };
 
 #endif // MAINWINDOW_H

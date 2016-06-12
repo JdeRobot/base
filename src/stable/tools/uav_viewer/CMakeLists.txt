@@ -20,15 +20,12 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
 	ENDMACRO (QT4_WRAP_UI_CUSTOM)
 
 	SET(qt_SOURCES ./sensors/threadsensors.cpp ./gui/threadgui.cpp ./gui/mainwindow.cpp 
-		./gui/attitudeindicator.cpp ./gui/speedometer.cpp)
+                ./gui/attitudeindicator.cpp ./gui/speedometer.cpp gui/velwidget.cpp gui/datawidget.cpp)
 
 	SET(qt_HEADERS	./sensors/threadsensors.h ./gui/threadgui.h ./gui/mainwindow.h 
-		./gui/attitudeindicator.h ./gui/speedometer.h)
-
-	SET(qt_FORMS ./gui/mainwindow.ui)
+                ./gui/attitudeindicator.h ./gui/speedometer.h gui/velwidget.h gui/datawidget.h)
 
 	QT4_WRAP_CPP(qt_HEADERS_MOC ${qt_HEADERS})
-	QT4_WRAP_UI_CUSTOM(qt_FORMS_HEADERS ${qt_FORMS})
 	INCLUDE(${QT_USE_FILE})
 	ADD_DEFINITIONS(${QT_DEFINITIONS})
 
@@ -50,7 +47,6 @@ if (${QT_COMPILE} AND ${QWT_COMPILE})
 	add_executable(uav_viewer 
 		${SOURCE_FILES}
 		${qt_SOURCES} 
-		${qt_FORMS} 
         ${qt_HEADERS_MOC}
 		${INTERFACES_CPP_DIR})
 
