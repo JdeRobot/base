@@ -74,81 +74,31 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1240, 620);
-        MainWindow->setMinimumSize(QSize(1240, 620));
-        MainWindow->setMaximumSize(QSize(1240, 620));
+        MainWindow->resize(900, 620);
+        MainWindow->setMinimumSize(QSize(650, 620));
+        MainWindow->setMaximumSize(QSize(650, 620));
+
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(10, 0, 1221, 611));
+        tabWidget->setGeometry(QRect(10, 0, 630, 611));
+
         view_tab = new QWidget();
         view_tab->setObjectName(QString::fromUtf8("view_tab"));
-        vel_groupbox = new QGroupBox(view_tab);
-        vel_groupbox->setObjectName(QString::fromUtf8("vel_groupbox"));
-        vel_groupbox->setGeometry(QRect(720, 330, 521, 221));
-        velXLabel = new QLabel(vel_groupbox);
-        velXLabel->setObjectName(QString::fromUtf8("velXLabel"));
-        velXLabel->setGeometry(QRect(60, 190, 51, 21));
-        velYLabel = new QLabel(vel_groupbox);
-        velYLabel->setObjectName(QString::fromUtf8("velYLabel"));
-        velYLabel->setGeometry(QRect(220, 190, 51, 21));
-        velZLabel = new QLabel(vel_groupbox);
-        velZLabel->setObjectName(QString::fromUtf8("velZLabel"));
-        velZLabel->setGeometry(QRect(370, 190, 51, 21));
-        data_groupbox = new QGroupBox(view_tab);
-        data_groupbox->setObjectName(QString::fromUtf8("data_groupbox"));
-        data_groupbox->setGeometry(QRect(710, 10, 521, 311));
-        battery = new QwtThermo(data_groupbox);
+
+        battery = new QwtThermo(view_tab);
         battery->setObjectName(QString::fromUtf8("battery"));
-        battery->setGeometry(QRect(430, 30, 56, 241));
+        battery->setGeometry(QRect(530, 30, 56, 241));
         battery->setMaxValue(100);
-        batteryLabel = new QLabel(data_groupbox);
+        batteryLabel = new QLabel(view_tab);
         batteryLabel->setObjectName(QString::fromUtf8("batteryLabel"));
-        batteryLabel->setGeometry(QRect(440, 290, 51, 21));
-        yawLabel = new QLabel(data_groupbox);
-        yawLabel->setObjectName(QString::fromUtf8("yawLabel"));
-        yawLabel->setGeometry(QRect(260, 130, 41, 21));
-        altdLabel = new QLabel(data_groupbox);
-        altdLabel->setObjectName(QString::fromUtf8("altdLabel"));
-        altdLabel->setGeometry(QRect(260, 290, 41, 21));
-        pitchLabel = new QLabel(data_groupbox);
-        pitchLabel->setObjectName(QString::fromUtf8("pitchLabel"));
-        pitchLabel->setGeometry(QRect(70, 250, 41, 21));
-        rollLabel = new QLabel(data_groupbox);
-        rollLabel->setObjectName(QString::fromUtf8("rollLabel"));
-        rollLabel->setGeometry(QRect(70, 270, 41, 21));
-        pitchValue = new QLabel(data_groupbox);
-        pitchValue->setObjectName(QString::fromUtf8("pitchValue"));
-        pitchValue->setGeometry(QRect(110, 250, 65, 21));
-        pitchValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        rollValue = new QLabel(data_groupbox);
-        rollValue->setObjectName(QString::fromUtf8("rollValue"));
-        rollValue->setGeometry(QRect(110, 270, 65, 21));
-        rollValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        altdValue = new QLabel(data_groupbox);
-        altdValue->setObjectName(QString::fromUtf8("altdValue"));
-        altdValue->setGeometry(QRect(300, 290, 65, 21));
-        altdValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        yawValue = new QLabel(data_groupbox);
-        yawValue->setObjectName(QString::fromUtf8("yawValue"));
-        yawValue->setGeometry(QRect(300, 130, 65, 21));
-        yawValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        yawG = new QLabel(data_groupbox);
-        yawG->setObjectName(QString::fromUtf8("yawG"));
-        yawG->setGeometry(QRect(370, 130, 16, 21));
-        pitchG = new QLabel(data_groupbox);
-        pitchG->setObjectName(QString::fromUtf8("pitchG"));
-        pitchG->setGeometry(QRect(180, 250, 16, 21));
-        rollG = new QLabel(data_groupbox);
-        rollG->setObjectName(QString::fromUtf8("rollG"));
-        rollG->setGeometry(QRect(180, 270, 16, 21));
-        altdM = new QLabel(data_groupbox);
-        altdM->setObjectName(QString::fromUtf8("altdM"));
-        altdM->setGeometry(QRect(370, 290, 16, 21));
+        batteryLabel->setGeometry(QRect(540, 290, 51, 21));
+
         imageLabel = new QLabel(view_tab);
         imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
-        imageLabel->setGeometry(QRect(120, 100, 320, 240));
+        imageLabel->setGeometry(QRect(20, 0, 320, 240));
         imageLabel->setMinimumSize(QSize(320, 240));
         imageLabel->setMaximumSize(QSize(320, 240));
         controlBox = new QGroupBox(view_tab);
@@ -230,9 +180,11 @@ public:
         imageLLabel->setObjectName(QString::fromUtf8("imageLLabel"));
         imageLLabel->setGeometry(QRect(20, 40, 640, 320));
         tabWidget->addTab(view_tab, QString());
+
         gps_tab = new QWidget();
         gps_tab->setObjectName(QString::fromUtf8("gps_tab"));
         tabWidget->addTab(gps_tab, QString());
+
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -246,24 +198,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "uav_viewer", 0, QApplication::UnicodeUTF8));
-        vel_groupbox->setTitle(QApplication::translate("MainWindow", "Velocities", 0, QApplication::UnicodeUTF8));
-        velXLabel->setText(QApplication::translate("MainWindow", "Lineal X", 0, QApplication::UnicodeUTF8));
-        velYLabel->setText(QApplication::translate("MainWindow", "Lineal Y", 0, QApplication::UnicodeUTF8));
-        velZLabel->setText(QApplication::translate("MainWindow", "Lineal Z", 0, QApplication::UnicodeUTF8));
-        data_groupbox->setTitle(QApplication::translate("MainWindow", "Data", 0, QApplication::UnicodeUTF8));
         batteryLabel->setText(QApplication::translate("MainWindow", "Battery", 0, QApplication::UnicodeUTF8));
-        yawLabel->setText(QApplication::translate("MainWindow", "Yaw:", 0, QApplication::UnicodeUTF8));
-        altdLabel->setText(QApplication::translate("MainWindow", "Altd.:", 0, QApplication::UnicodeUTF8));
-        pitchLabel->setText(QApplication::translate("MainWindow", "Pitch:", 0, QApplication::UnicodeUTF8));
-        rollLabel->setText(QApplication::translate("MainWindow", "Roll:", 0, QApplication::UnicodeUTF8));
-        pitchValue->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
-        rollValue->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
-        altdValue->setText(QApplication::translate("MainWindow", "10", 0, QApplication::UnicodeUTF8));
-        yawValue->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
-        yawG->setText(QApplication::translate("MainWindow", "\302\272", 0, QApplication::UnicodeUTF8));
-        pitchG->setText(QApplication::translate("MainWindow", "\302\272", 0, QApplication::UnicodeUTF8));
-        rollG->setText(QApplication::translate("MainWindow", "\302\272", 0, QApplication::UnicodeUTF8));
-        altdM->setText(QApplication::translate("MainWindow", "m", 0, QApplication::UnicodeUTF8));
         imageLabel->setText(QString());
         controlBox->setTitle(QApplication::translate("MainWindow", "Control", 0, QApplication::UnicodeUTF8));
         takeoff_button->setText(QApplication::translate("MainWindow", "take off", 0, QApplication::UnicodeUTF8));
