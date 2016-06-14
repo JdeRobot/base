@@ -9,9 +9,18 @@ set (SRC
 include_directories(${INTERFACES_CPP_DIR}
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/hokuyo)
+	${CMAKE_CURRENT_SOURCE_DIR}/hokuyo
+	${easyiceconfig_INCLUDE_DIRS}
+)
+
+link_directories(
+        ${easyiceconfig_LIBRARY_DIRS}
+)
+
 
 add_executable(${NAME} ${SRC})
 TARGET_LINK_LIBRARIES(${NAME}
     ${ZeroCIce_LIBRARIES}
-    JderobotInterfaces)
+    JderobotInterfaces
+    ${easyiceconfig_LIBRARIES}
+)
