@@ -174,8 +174,9 @@ int NaoOperator::getAllWidgets () {
     int returned = 0;
     // Load the GtkBuilder file and instantiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
+    const std::string gladepath = resourcelocator::findGladeFile("main_gui.glade");
     try {
-        refBuilder->add_from_file("main_gui.glade");
+        refBuilder->add_from_file(gladepath);
     } catch (const Glib::FileError& ex) {
         std::cerr << "FileError: " << ex.what() << std::endl;
         returned = -1;

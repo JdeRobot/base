@@ -12,6 +12,7 @@ include_directories (
     ${gtk3_INCLUDE_DIRS}
     ${goocanvasmm_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
 
 add_executable (naooperator ${SOURCE_FILES_NAOOPERATOR})
@@ -28,6 +29,7 @@ TARGET_LINK_LIBRARIES ( naooperator
     "rt"
     colorspacesmm
     ${CMAKE_THREAD_LIBS_INIT}
+    ${resourcelocator_LIBRARIES}
 )
 
 ENDIF()

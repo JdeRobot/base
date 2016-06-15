@@ -18,6 +18,7 @@ target_link_libraries (guigtk
     ${gtkmm_LIBRARIES}  
     ${gtkmm3_LIBRARIES}  	
     ${gthread_LIBRARIES}
+    ${resourcelocator_LIBRARIES}  
 )
 
 include_directories(
@@ -27,10 +28,12 @@ include_directories(
     ${gtkmm_INCLUDE_DIRS}
     ${libglademm_INCLUDE_DIRS}
     ${easyiceconfig_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
 
 link_directories(
 	${easyiceconfig_LIBRARY_DIRS}
+    ${resourcelocator_LIBRARY_DIRS}
 )
 
 #GENERAL COMPILATION (NO DEPENDENCIES)
@@ -51,7 +54,7 @@ target_link_libraries(basic_component
     	${OpenCV_LIBRARIES}       
     	${OpenCVGUI_LIBRARIES} 
 	${easyiceconfig_LIBRARIES} 
-    	${ZeroCIce_LIBRARIES}   
+    	${ZeroCIce_LIBRARIES}  
     	guigtk dl
     )
 

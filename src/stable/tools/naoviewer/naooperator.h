@@ -28,6 +28,7 @@
 #include <gtkmm/stock.h>
 #include <goocanvasmm-2.0/goocanvasmm.h>
 #include <opencv2/core/core.hpp>
+#include <resourcelocator/gladelocator.hpp> 
 
 #include "control.h"
 #include "common.h"

@@ -23,6 +23,7 @@
 #define TIMERDIALOG_H
 
 #include <unistd.h>
+#include <resourcelocator/gladelocator.hpp> 
 
 #include "../guisubautomata.h"
 

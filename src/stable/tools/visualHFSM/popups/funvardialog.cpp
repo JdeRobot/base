@@ -40,12 +40,9 @@ void FunVarDialog::init () {
     bool fine = true;
 	// Load the GtkBuilder file and instantiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
-    try {
-        if(access("/usr/local/share/jderobot/glade/visualHFSM/funvar.glade", F_OK) == 0){
-            refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/funvar.glade");
-        }else{
-            refBuilder->add_from_file("gui/funvar.glade");
-        }
+    const std::string gladepath = resourcelocator::findGladeFile("funvar.glade");
+    try{
+        refBuilder->add_from_file(gladepath);
     } catch (const Glib::FileError& ex) {
         std::cerr << BEGIN_RED << "FileError: " << ex.what() << END_COLOR << std::endl;
         fine = false;

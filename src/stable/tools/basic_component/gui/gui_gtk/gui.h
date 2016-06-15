@@ -37,6 +37,7 @@
 #include <sstream>
 #include "../../shared.h"
 #include "../igui.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 
 class Gui : public IGui {

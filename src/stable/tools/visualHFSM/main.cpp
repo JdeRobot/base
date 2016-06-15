@@ -21,6 +21,7 @@
 
 #include <unistd.h>
 #include "visualhfsm.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 int main (int argc, char **argv) {
     Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "jderobot.visualhfsm");
@@ -28,12 +29,9 @@ int main (int argc, char **argv) {
 
     //Load the Glade file and instiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
-    try {
-        if(access("/usr/local/share/jderobot/glade/visualHFSM/main_gui.glade", F_OK) == 0){
-            refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/main_gui.glade");
-        }else{
-            refBuilder->add_from_file("gui/main_gui.glade");
-        }
+    const std::string gladepath = resourcelocator::findGladeFile("main_gui.glade");
+    try{
+        refBuilder->add_from_file(gladepath);
     } catch ( const Glib::FileError& ex ) {
         std::cerr << BEGIN_RED << "FileError: " << ex.what() << END_COLOR << std::endl;
         return 1;

@@ -41,12 +41,9 @@ void LibrariesDialog::init () {
     bool fine = true;
 	// Load the GtkBuilder file and instantiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
-    try {
-        if(access("/usr/local/share/jderobot/glade/visualHFSM/additional_libraries.glade", F_OK) == 0){
-            refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/additional_libraries.glade");
-        }else{
-            refBuilder->add_from_file("gui/additional_libraries.glade");
-        }
+    const std::string gladepath = resourcelocator::findGladeFile("additional_libraries.glade");
+    try{
+        refBuilder->add_from_file(gladepath);
     } catch (const Glib::FileError& ex) {
         std::cerr << BEGIN_RED << "FileError: " << ex.what() << END_COLOR << std::endl;
         fine = false;

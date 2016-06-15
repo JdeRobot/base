@@ -32,6 +32,7 @@
 
 #include "../common.h"
 #include "../iceinterface.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 // Definition of this class
 class ConfigFileDialog {

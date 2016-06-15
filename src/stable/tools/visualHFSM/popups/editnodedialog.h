@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
+ #include <resourcelocator/gladelocator.hpp> 
 
 #include <gtkmm-3.0/gtkmm.h>
 
