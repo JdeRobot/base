@@ -345,7 +345,7 @@
           <xyz>1 0 0</xyz>
         </axis>
       </joint>
-      <plugin name="carMotors" filename="/usr/local/share/jderobot/gazebo/plugins/car/libcarMotors.so">
+      <plugin name="carMotors" filename="libcarMotors.so">
         <front_right_joint>front_right_wheel_hinge</front_right_joint>
       	<front_left_joint>front_left_wheel_hinge</front_left_joint>
 			  <front_right_steering_joint>front_right_steering_wheel</front_right_steering_joint>
