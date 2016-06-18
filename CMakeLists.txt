@@ -137,25 +137,25 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 
 # Install python files
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/*py)
 FOREACH(header ${HEADERS_FILES})
-	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
+	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
 ENDFOREACH(header)
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot/__init__.py DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
 
 # install all libraries 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
+	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/visionlib/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
+	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
 
@@ -163,14 +163,14 @@ FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
     string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
 		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
-    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2} COMPONENT core)
+    INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source2} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install libraries headers
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
 	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1} COMPONENT core)
+	INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source1} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install Executables
@@ -180,28 +180,28 @@ list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/tools/ 1
 
 FOREACH (currentBin ${LIST_COMPONENTS})
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
     if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
 ENDFOREACH(currentBin)
 
 FOREACH (currentBin ${LIST_DRIVERS})
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/drivers/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/drivers/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/drivers/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
     if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/drivers/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/drivers/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/drivers/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
 ENDFOREACH(currentBin)
 
 FOREACH (currentBin ${LIST_TOOLS})
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/tools/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/toolss/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/toolss/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
     if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/tools/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/tools/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/tools/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
 ENDFOREACH(currentBin)
 
@@ -209,14 +209,14 @@ ENDFOREACH(currentBin)
 
 # Install interfaces headers
 INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot/
-    DESTINATION /usr/local/include/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot
 	COMPONENT core
     FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
 
 # Install slice
 FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice/jderobot/*.ice)
-INSTALL (FILES ${SLICE_FILES} DESTINATION /usr/local/include/jderobot/slice COMPONENT core)
+INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT core)
 
 # Install CONF
 FILE(GLOB_RECURSE CONF_COMPONENT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.cfg)
@@ -224,7 +224,7 @@ FILE(GLOB_RECURSE CONF_DRIVER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/drive
 FILE(GLOB_RECURSE CONF_TOOL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/tools/*.cfg)
 
 SET(CONF_FILES ${CONF_COMPONENT_FILES} ${CONF_DRIVER_FILES} ${CONF_TOOL_FILES})
-INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf COMPONENT core)
+INSTALL (FILES ${CONF_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
 
 # Install Glade
 FILE(GLOB_RECURSE GLADE_COMPONENT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.glade)
@@ -232,7 +232,7 @@ FILE(GLOB_RECURSE GLADE_DRIVER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/driv
 FILE(GLOB_RECURSE GLADE_TOOL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/tools/*.glade)
 
 SET(GLADE_FILES ${GLADE_COMPONENT_FILES} ${GLADE_DRIVER_FILES} ${GLADE_TOOL_FILES})
-INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
+INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT core)
 
 # Install Deps cmake's tree
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
