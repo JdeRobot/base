@@ -1,11 +1,11 @@
-#ifndef ENCODERS_H
-#define ENCODERS_H
+#ifndef POSE3D_H
+#define POSE3D_H
 
 //boost
 #include <boost/signals2/mutex.hpp>
 
-//Encoders
-#include <jderobot/encoders.h>
+//Pose3D
+#include <jderobot/pose3d.h>
 
 //ICE
 #include <Ice/Ice.h>
@@ -13,14 +13,14 @@
 
 #include "../kobukimanager.h"
 
-class Encoders: virtual public jderobot::Encoders
+class Pose3D: virtual public jderobot::Pose3D
 {
 public:
-    Encoders(KobukiManager* kobuki);
+    Pose3D(KobukiManager* kobuki);
 
-    virtual jderobot::EncodersDataPtr getEncodersData(const Ice::Current&);
+    virtual jderobot::Pose3DDataPtr getPose3DData(const Ice::Current&);
 
-    virtual void setEncodersData(const jderobot::EncodersDataPtr&  encodersData,
+    virtual int setPose3DData(const jderobot::Pose3DDataPtr&  pose3dData,
                                  const Ice::Current&);
 
     private: boost::signals2::mutex mutex; ///< Mutex for thread-safe access to internal data.
@@ -31,4 +31,4 @@ public:
 
 };
 
-#endif // ENCODERS_H
+#endif // POSE3D_H

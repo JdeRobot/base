@@ -9,7 +9,7 @@ if (${kobuki_COMPILE})
 
     add_executable( kobuki_driver  main.cpp kobukimanager.cpp kobukimanager.h thread_control.cpp thread_control.h
                                    actuators/motors.cpp actuators/motors.h
-                                   sensors/encoders.h sensors/encoders.cpp
+                                   sensors/pose3d.h sensors/pose3d.cpp
     )
 			       
     link_directories(${kobuki_LIBRARIES})
