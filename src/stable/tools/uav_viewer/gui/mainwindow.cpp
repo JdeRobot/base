@@ -20,11 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->battery->setValue(60.0);
 
-    vel = new VelWidget();
-    vel->show();
+    vel = new VelWidget();;
 
     dataw = new DataWidget();
-    dataw->show();
 
 	linx=liny=linz=0.0;
     roll=pitch=yaw=0.0;
@@ -123,10 +121,19 @@ void MainWindow::updateGUI_recieved()
     }
 
     //actualizar velocidades
-    vel->update();
+    if(this->ui->velBox->isChecked()){
+        vel->show();
+        vel->update();
+    }else
+        vel->hide();
 
     //actualizar datos nav
-    dataw->update();
+    if(this->ui->dataBox->isChecked()){
+        dataw->show();
+        dataw->update();
+    }else
+        dataw->hide();
+
 
 	QSize size(image.cols,image.rows);
 	ui->imageLLabel->move(x,y);

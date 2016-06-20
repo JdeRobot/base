@@ -17,6 +17,7 @@
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QCheckBox>
 #include <QtGui/QMainWindow>
 #include <QtGui/QPushButton>
 #include <QtGui/QTabWidget>
@@ -68,6 +69,8 @@ public:
     QLabel *statusLabel;
     QLabel *statusValue;
     QLabel *imageLLabel;
+    QCheckBox *velBox;
+    QCheckBox *dataBox;
     QWidget *gps_tab;
 
     void setupUi(QMainWindow *MainWindow)
@@ -95,6 +98,11 @@ public:
         batteryLabel = new QLabel(view_tab);
         batteryLabel->setObjectName(QString::fromUtf8("batteryLabel"));
         batteryLabel->setGeometry(QRect(540, 290, 51, 21));
+
+        velBox = new QCheckBox(view_tab);
+        dataBox = new QCheckBox(view_tab);
+        velBox->setGeometry(550, 370, 20, 20);
+        dataBox->setGeometry(550, 400, 20, 20);
 
         imageLabel = new QLabel(view_tab);
         imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
