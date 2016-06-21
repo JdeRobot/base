@@ -18,6 +18,7 @@ include_directories(
 
 link_directories(
 	${easyiceconfig_LIBRARY_DIRS}
+	${resourcelocator_LIBRARY_DIRS}
 )
 
 add_executable (replayer2 ${SOURCE_FILES})

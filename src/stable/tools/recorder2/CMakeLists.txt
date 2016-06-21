@@ -15,6 +15,10 @@ include_directories(
     ${resourcelocator_INCLUDE_DIRS}
 )
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
+
 add_executable (recorder2
 recorder2.cpp
 poolWritePose3d.cpp

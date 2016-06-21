@@ -27,6 +27,10 @@ SET( SOURCE_FILES_VISUALHFSM
 	main.cpp
 )
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
+
 include_directories (
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
