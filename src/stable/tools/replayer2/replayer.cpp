@@ -691,7 +691,7 @@ namespace replayer {
 
 								//tiempo para comprobar si vamos muy desacompasados y para rewind - forward
 								IceUtil::Time pretime = IceUtil::Time::now();
-								long long int checkState=(1000000+pretime.toMicroSeconds())/1000;
+								long long int checkState=(pretime.toMicroSeconds())/1000;
 
 								while((((relative) - (checkState - this->myPose3d->initState ))<0)&&(myfile.good())){
 									//no hacemos nada, estamos fuera de tiempo tenemos que avanzar al siguiente frame
@@ -859,7 +859,7 @@ namespace replayer {
 
 								//tiempo para comprobar si vamos muy desacompasados y para rewind - forward
 								IceUtil::Time pretime = IceUtil::Time::now();
-								long long int checkState=(1000000+pretime.toMicroSeconds())/1000;
+								long long int checkState=(pretime.toMicroSeconds())/1000;
 
 								while((((relative) - (checkState - this->myPose3d->initState ))<0)&&(myfile.good())){
 									//no hacemos nada, estamos fuera de tiempo tenemos que avanzar al siguiente frame
