@@ -18,12 +18,9 @@ AutomataGui::~AutomataGui(){}
 int AutomataGui::init(){
 	//CREATE REFBUILDER
 	this->refBuilder = Gtk::Builder::create();
+	const std::string gladepath = resourcelocator::findGladeFile("automatagui.glade");
 	try{
-		if(access("/usr/local/share/jderobot/glade/visualHFSM/automatagui.glade", F_OK) == 0){
-			refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/automatagui.glade");
-		}else{
-			refBuilder->add_from_file("./automatagui.glade");
-		}
+		refBuilder->add_from_file(gladepath);
 	}catch (const Glib::FileError& ex){
 		std::cerr << "FileError: " << ex.what() << std::endl;
 	  	return -1;

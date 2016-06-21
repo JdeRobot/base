@@ -23,6 +23,7 @@
 #define RENAMEDIALOGTRANSITION_H
 
 #include <unistd.h>
+#include <resourcelocator/gladelocator.hpp> 
 
 #include "../guitransition.h"
 

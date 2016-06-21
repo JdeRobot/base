@@ -9,6 +9,7 @@
 #include <gtkmm-3.0/gtkmm.h>
 
 #include "guisubautomata.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 
 typedef enum ItemType {

@@ -34,8 +34,9 @@ extern "C" void destroy_gui( IGui* object )
 Gui::Gui() : gtkmain(0, 0) {
 
     //std::cout << "Loading glade\n";
+    const std::string gladepath = resourcelocator::findGladeFile("basic_component.glade");
 
-    refXml = Gnome::Glade::Xml::create("./basic_component.glade");
+    refXml = Gnome::Glade::Xml::create(gladepath);
     //Get widgets       
     refXml->get_widget("secondarywindow", secondarywindow);
     // Camera images

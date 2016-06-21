@@ -27,6 +27,7 @@
  #include <unistd.h>
 #include <gtkmm-3.0/gtkmm.h>
 #include <sigc++/sigc++.h>
+#include <resourcelocator/gladelocator.hpp> 
 
 #include "../common.h"
 

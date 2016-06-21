@@ -27,6 +27,10 @@ SET( SOURCE_FILES_VISUALHFSM
 	main.cpp
 )
 
+link_directories(
+	${resourcelocator_LIBRARY_DIRS}
+)
+
 include_directories (
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
@@ -35,6 +39,7 @@ include_directories (
     ${goocanvasmm_INCLUDE_DIRS}
     ${gtk3_INCLUDE_DIRS}
     ${libxmlpp_INCLUDE_DIRS}
+    ${resourcelocator_INCLUDE_DIRS}
 )
 
 add_executable (visualHFSM ${SOURCE_FILES_VISUALHFSM})
@@ -44,6 +49,7 @@ TARGET_LINK_LIBRARIES ( visualHFSM
     ${goocanvasmm_LIBRARIES}
     ${gtk3_LIBRARIES}
     ${libxmlpp_LIBRARIES}
+    ${resourcelocator_LIBRARIES} 
 )
 
 

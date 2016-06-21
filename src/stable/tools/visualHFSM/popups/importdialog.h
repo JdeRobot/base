@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "../guisubautomata.h"
+#include <resourcelocator/gladelocator.hpp> 
 
 // Definition of this class
 class ImportDialog {

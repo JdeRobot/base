@@ -40,12 +40,9 @@ void RenameDialog::init () {
     bool fine = true;
 	// Load the GtkBuilder file and instantiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
-    try {
-        if(access("/usr/local/share/jderobot/glade/visualHFSM/name.glade", F_OK) == 0){
-            refBuilder->add_from_file("/usr/local/share/jderobot/glade/visualHFSM/name.glade");
-        }else{
-            refBuilder->add_from_file("gui/name.glade");
-        }
+    const std::string gladepath = resourcelocator::findGladeFile("name.glade");
+    try{
+        refBuilder->add_from_file(gladepath);
     } catch (const Glib::FileError& ex) {
         std::cerr << BEGIN_RED << "FileError: " << ex.what() << END_COLOR << std::endl;
         fine = false;

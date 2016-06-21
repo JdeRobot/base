@@ -24,6 +24,7 @@
 
 #include <sigc++/sigc++.h>
 #include <unistd.h>
+#include <resourcelocator/gladelocator.hpp> 
 
 #include "../guinode.h"
 
