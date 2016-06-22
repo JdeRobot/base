@@ -7,7 +7,7 @@
 #include "kobukimanager.h"
 
 #include "actuators/motors.h"
-#include "sensors/encoders.h"
+#include "sensors/pose3d.h"
 
 #include <Ice/Ice.h>
 
@@ -22,12 +22,12 @@ public:
 public: void run();
 
 private: void initMotors();
-private: void initEncoders();
+private: void initPose3D();
 private: Ice::CommunicatorPtr ic;
 private: Ice::PropertiesPtr prop;
 private: KobukiManager* kobuki_manager;
 private: Motors* motors;
-private: Encoders* encoders;
+private: Pose3D* pose3d;
 
 };
 

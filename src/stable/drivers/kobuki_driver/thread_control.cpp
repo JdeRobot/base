@@ -7,20 +7,20 @@ Thread_control::Thread_control(Ice::CommunicatorPtr ic, KobukiManager* kobuki_ma
 
     this->kobuki_manager = kobuki_manager;
     initMotors();
-    initEncoders();
+    initPose3D();
 }
 
-void Thread_control::initEncoders()
+void Thread_control::initPose3D()
 {
-    std::string motorsControl_string = "Encoders";
-    encoders = new Encoders(kobuki_manager);
+    std::string motorsControl_string = "Pose3D";
+    pose3d = new Pose3D(kobuki_manager);
 
-    std::string Endpoints = prop->getProperty("kobuki.Encoders.Endpoints");
+    std::string Endpoints = prop->getProperty("kobuki.Pose3D.Endpoints");
 
     Ice::ObjectAdapterPtr adapter =
         ic->createObjectAdapterWithEndpoints(motorsControl_string, Endpoints);
 
-    adapter->add(encoders, ic->stringToIdentity(std::string(motorsControl_string)));
+    adapter->add(pose3d, ic->stringToIdentity(std::string(motorsControl_string)));
     adapter->activate();
 }
 
