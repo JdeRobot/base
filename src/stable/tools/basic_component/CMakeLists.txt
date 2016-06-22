@@ -61,3 +61,7 @@ target_link_libraries(basic_component
 if (${QT_COMPILE})
     target_link_libraries(basic_component guiqt dl)
 endif()
+
+INSTALL(TARGETS guigtk guiqt
+        DESTINATION bin
+        COMPONENT core)

@@ -73,7 +73,12 @@ void* loadGui(void* data) {
 	
     //if we are using Qt lib we have not to destroy the gui or it will fail when the gui window closes,
     //I guess Qt mainloop has its own free() (¿?)
-    destroy(gui);
+    if (boost::iequals(*userData , "gtk")) {
+        destroy(gui);
+    }
+
+    exit(0);
+
 }
 
 int main(int argc, char* argv[])
