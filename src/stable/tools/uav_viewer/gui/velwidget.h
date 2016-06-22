@@ -17,6 +17,7 @@ public:
     QwtDial *createDial(int pos);
     void drawVelocitiesValues(float vlx,float vly,float vlz);
     void setSensors(Sensors* sensors);
+    ~VelWidget();
 
 
 

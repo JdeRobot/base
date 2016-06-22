@@ -15,6 +15,8 @@ VelWidget::VelWidget(QWidget *parent) :
     setUI();
 }
 
+VelWidget::~VelWidget(){}
+
 void VelWidget::setSensors(Sensors* sensors){
     this->sensors=sensors;
 }

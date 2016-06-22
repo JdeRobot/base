@@ -71,6 +71,8 @@ public:
     QLabel *imageLLabel;
     QCheckBox *velBox;
     QCheckBox *dataBox;
+    QLabel *velLabel;
+    QLabel *dataLabel;
     QWidget *gps_tab;
 
     void setupUi(QMainWindow *MainWindow)
@@ -78,31 +80,39 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(900, 620);
-        MainWindow->setMinimumSize(QSize(650, 620));
-        MainWindow->setMaximumSize(QSize(650, 620));
+        MainWindow->setMinimumSize(QSize(700, 620));
+        MainWindow->setMaximumSize(QSize(700, 620));
 
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
 
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(10, 0, 630, 611));
+        tabWidget->setGeometry(QRect(10, 0, 680, 611));
 
         view_tab = new QWidget();
         view_tab->setObjectName(QString::fromUtf8("view_tab"));
 
         battery = new QwtThermo(view_tab);
         battery->setObjectName(QString::fromUtf8("battery"));
-        battery->setGeometry(QRect(530, 30, 56, 241));
+        battery->setGeometry(QRect(580, 50, 56, 241));
         battery->setMaxValue(100);
         batteryLabel = new QLabel(view_tab);
         batteryLabel->setObjectName(QString::fromUtf8("batteryLabel"));
-        batteryLabel->setGeometry(QRect(540, 290, 51, 21));
+        batteryLabel->setGeometry(QRect(580, 310, 51, 21));
 
         velBox = new QCheckBox(view_tab);
+        velBox->setObjectName(QString::fromUtf8("velBox"));
         dataBox = new QCheckBox(view_tab);
+        dataBox->setObjectName(QString::fromUtf8("dataBox"));
         velBox->setGeometry(550, 370, 20, 20);
         dataBox->setGeometry(550, 400, 20, 20);
+        velLabel = new QLabel(view_tab);
+        velLabel->setObjectName(QString::fromUtf8("velLabel"));
+        velLabel->setGeometry(QRect(570, 370, 65, 21));
+        dataLabel = new QLabel(view_tab);
+        dataLabel->setObjectName(QString::fromUtf8("dataLabel"));
+        dataLabel->setGeometry(QRect(570, 400, 51, 21));
 
         imageLabel = new QLabel(view_tab);
         imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
@@ -207,6 +217,8 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "uav_viewer", 0, QApplication::UnicodeUTF8));
         batteryLabel->setText(QApplication::translate("MainWindow", "Battery", 0, QApplication::UnicodeUTF8));
+        velLabel->setText(QApplication::translate("MainWindow", "Velocities", 0, QApplication::UnicodeUTF8));
+        dataLabel->setText(QApplication::translate("MainWindow", "Data", 0, QApplication::UnicodeUTF8));
         imageLabel->setText(QString());
         controlBox->setTitle(QApplication::translate("MainWindow", "Control", 0, QApplication::UnicodeUTF8));
         takeoff_button->setText(QApplication::translate("MainWindow", "take off", 0, QApplication::UnicodeUTF8));

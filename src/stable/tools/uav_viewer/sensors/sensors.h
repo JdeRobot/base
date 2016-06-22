@@ -64,6 +64,12 @@ class Sensors
 		bool flying;	
 		bool rst; 
 
+        bool cameraON;
+        bool navDataON;
+        bool cmdVelON;
+        bool pose3dON;
+        bool extraON;
+
 };
 
 #endif // SENSORS_H
