@@ -84,7 +84,10 @@ void MainWindow::initButtons(){
 MainWindow::~MainWindow()
 {
 	delete sensors;
+    delete vel;
+    delete dataw;
 	delete ui;
+
 }
 
 void MainWindow::updateThreadGUI()
