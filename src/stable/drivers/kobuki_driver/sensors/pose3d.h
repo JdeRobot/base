@@ -12,6 +12,7 @@
 #include <IceUtil/IceUtil.h>
 
 #include "../kobukimanager.h"
+#include "quaternion.h"
 
 class Pose3D: virtual public jderobot::Pose3D
 {
@@ -25,7 +26,6 @@ public:
 
     private: boost::signals2::mutex mutex; ///< Mutex for thread-safe access to internal data.
 
-    private: ;
 
     private: KobukiManager* kobuki;
 
