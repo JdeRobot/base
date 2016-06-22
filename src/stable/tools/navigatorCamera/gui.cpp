@@ -110,8 +110,8 @@ namespace navigatorCamera {
 		colormapRtt->alloc_color(color_black);
 		colormapRtt->alloc_color(color_red);
 
-		m_imageTrl = Gdk::Pixbuf::create_from_file("myimage.png");
-		m_imageRtt = Gdk::Pixbuf::create_from_file("myimage.png");
+		m_imageTrl = Gdk::Pixbuf::create_from_file(resourcelocator::findGladeFile("myimage.png"));
+		m_imageRtt = Gdk::Pixbuf::create_from_file(resourcelocator::findGladeFile("myimage.png"));
 		this->previous_event_x = 100;
 		this->previous_event_y = 100;
 		this->prev_x = 0.0;

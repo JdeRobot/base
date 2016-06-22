@@ -334,74 +334,12 @@
       <pose>-7.4 -5 0 0 -0 1.57</pose>
       <static>0</static>
     </model>
-    <model name="flyingKinect">
-      <static>true</static>
-      <link name="kinect">
-        <inertial>
-          <mass>0.30</mass>
-        </inertial>
-        <pose>-5.8 -0.2 1.9 0 0.2 -1.5</pose>
-        <visual name="visual">
-          <pose>-5.8 -0.2 1.9 0 0.2 -1.5</pose>
-          <geometry>
-            <mesh>
-              <uri>model://kinect/meshes/kinect.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <sensor name="kinect" type="depth">
-          <update_rate>20</update_rate>
-          <camera>
-            <horizontal_fov>1.047198</horizontal_fov>
-            <image>
-              <width>320</width>
-              <height>240</height>
-              <format>R8G8B8</format>
-            </image>
-            <clip>
-              <near>0.05</near>
-              <far>5</far>
-            </clip>
-          </camera>
-          <plugin name="depth_camera_plugin" filename="libkinect.so" />
-        </sensor>
-      </link>
-        <plugin filename="libpose3d.so" name="pose3d"/>
-    </model>
-    <model name="flyingKinect2">
-      <static>true</static>
-      <link name="kinect">
-        <inertial>
-          <mass>0.30</mass>
-        </inertial>
-        <pose>1 0 1.9 0 0.2 -3</pose>
-        <visual name="visual">
-          <pose>1 0 1.9 0 0.2 -3</pose>
-          <geometry>
-            <mesh>
-              <uri>model://kinect/meshes/kinect.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <sensor name="kinect2" type="depth">
-          <update_rate>20</update_rate>
-          <camera>
-            <horizontal_fov>1.047198</horizontal_fov>
-            <image>
-              <width>320</width>
-              <height>240</height>
-              <format>R8G8B8</format>
-            </image>
-            <clip>
-              <near>0.05</near>
-              <far>5</far>
-            </clip>
-          </camera>
-          <plugin name="depth_camera_plugin" filename="libkinect.so" />
-        </sensor>
-      </link>
-        <plugin filename="libpose3d.so" name="pose3d"/>
-    </model>
+
+ 	<include>
+      <uri>model://flyingKinect2</uri>
+      <pose>-5.8 -0.2 1.9 0 0.2 -1.5</pose>
+    </include>
+
     <actor name="actor">
          <skin>
             <filename>moonwalk.dae</filename>

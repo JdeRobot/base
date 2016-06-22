@@ -41,3 +41,5 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 	${ZLIB_LIBRARIES}
 	${resourcelocator_LIBRARIES}
 )
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/glade/ COMPONENT core)
