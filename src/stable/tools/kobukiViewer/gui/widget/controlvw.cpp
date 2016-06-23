@@ -37,8 +37,6 @@ void controlVW::setIC(Ice::CommunicatorPtr ic)
 
     this->v_max = svmax.toFloat();
     this->w_max = swmax.toFloat();
-
-    std::cout << "VMAX: " << this->v_max << " WMAX: " << this->w_max << std::endl;
 }
 
 void controlVW::Stop()
