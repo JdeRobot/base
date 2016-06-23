@@ -31,7 +31,7 @@ namespace hokuyo{
     	double max_ang;
     	int clustering;
     	int timeout;
-        const int faceup;
+        int faceup;
 	};
 }
 

@@ -32,11 +32,11 @@ std::cout<< "range_res: " << config.range_res << std::endl;
 	{
 	    data->numLaser = scan.ranges.size();
 	    data->distanceData.resize(sizeof(int)*data->numLaser);
-        if (faceup){
+        if (this->faceup!=0){
             for(int i = 0 ; i < data->numLaser; i++){
                 if (std::numeric_limits<float>::infinity() == scan.ranges[i]){
                     data->distanceData[i] = scan.config.max_range*1000;
-                }else if (scan.ranges[i] <0){
+                }else if (scan.ranges[i] < 0){
                     data->distanceData[i] = 0;
                 }else{
                     data->distanceData[i] = scan.ranges[i]*1000;
