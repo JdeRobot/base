@@ -329,7 +329,7 @@ int main(int argc, char** argv){
 	int muestrasLaser = 180;
 	int pngCompressRatio;
 	int jpgQuality;
-	std::string imageFormat;
+    std::string fileFormat;
 	std::vector<int> compression_params;
     
    
@@ -371,19 +371,19 @@ int main(int argc, char** argv){
 			{
 				system("mkdir ./data/images/");
 			}
-			imageFormat=prop->getProperty("Recorder.Format");
-			if (imageFormat.compare(std::string("png"))==0){
+            fileFormat=prop->getProperty("Recorder.FileFormat");
+            if (fileFormat.compare(std::string("png"))==0){
 				pngCompressRatio=prop->getPropertyAsIntWithDefault("Recorder.PngCompression",3);
 				compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
 				compression_params.push_back(pngCompressRatio);
 			}
-			else if (imageFormat.compare(std::string("jpg"))==0){
+            else if (fileFormat.compare(std::string("jpg"))==0){
 				jpgQuality=prop->getPropertyAsIntWithDefault("Recorder.JpgQuality",95);
 				compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
 				compression_params.push_back(jpgQuality);
 			}
 			else{
-				throw "Image format is not valid";
+                throw "File format is not valid";
 			}
 			nConsumidores=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
 			poolSize=prop->getPropertyAsIntWithDefault("Recorder.poolSize",10);
@@ -403,9 +403,11 @@ int main(int argc, char** argv){
 			}
 
 
-			std::stringstream sProxy;
+            std::stringstream sProxy;
+
 			// Get driver camera
 			sProxy << "Recorder.Camera" << i+1 << ".Proxy";
+
 			Ice::ObjectPrx camara = ic->propertyToProxy(sProxy.str());
 			if (0==camara)
 				throw "Could not create proxy to camera1 server";
@@ -416,8 +418,15 @@ int main(int argc, char** argv){
 			else
 				cprx.push_back(cprxAux);
 
+            std::stringstream sFormat;
+            std::string imageFormat;
+
+            sFormat << "Recorder.Camera" << i+1 << ".Format";
+
+            imageFormat = prop->getProperty(sFormat.str());
+
 			//pool
-			recorder::poolWriteImages *temp = new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,imageFormat,compression_params);
+            recorder::poolWriteImages *temp = new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,imageFormat ,fileFormat ,compression_params);
 			poolImages.push_back(temp);
 
 
