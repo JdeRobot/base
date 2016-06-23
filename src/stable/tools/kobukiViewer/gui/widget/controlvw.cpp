@@ -32,8 +32,13 @@ void controlVW::setIC(Ice::CommunicatorPtr ic)
 	this->ic = ic;
  	Ice::PropertiesPtr prop = ic->getProperties();
 
-	this->v_max = std::atof( prop->getPropertyWithDefault("kobukiViewer.Vmax", "5").c_str() );
-	this->w_max = std::atof( prop->getPropertyWithDefault("kobukiViewer.Wmax", "0.5").c_str() );
+    QString svmax = QString::fromUtf8(prop->getPropertyWithDefault("kobukiViewer.Vmax", "5").c_str());
+    QString swmax = QString::fromUtf8(prop->getPropertyWithDefault("kobukiViewer.Wmax", "0.5").c_str());
+
+    this->v_max = svmax.toFloat();
+    this->w_max = swmax.toFloat();
+
+    std::cout << "VMAX: " << this->v_max << " WMAX: " << this->w_max << std::endl;
 }
 
 void controlVW::Stop()
