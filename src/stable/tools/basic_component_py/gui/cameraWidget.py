@@ -33,6 +33,7 @@ class CameraWidget(QtGui. QWidget):
     def initUI(self):
 
         self.setWindowTitle("Camera")
+	self.setMinimumSize(100,100);
 
         self.imgLabel = QtGui.QLabel(self)
         self.imgLabel.show()
