@@ -12,9 +12,10 @@ namespace laser
 			double min = (double)prop->getPropertyAsInt("Laser.MinAng");
 			double max = (double)prop->getPropertyAsInt("Laser.MaxAng");
 			int clustering = prop->getPropertyAsInt("Laser.Clustering");
+            int faceup = prop->getPropertyAsInt("Laser.FaceUp");
 			double min_ang = min*M_PI/180;
 			double max_ang = max*M_PI/180;
-			this->manager = new hokuyo::HokuyoManager(deviceId, min_ang, max_ang, clustering, -1);
+            this->manager = new hokuyo::HokuyoManager(deviceId, min_ang, max_ang, clustering, -1, faceup);
 		}else{
 			throw std::invalid_argument( model + " laser is not allowed" );
 		}

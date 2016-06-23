@@ -18,7 +18,7 @@ namespace hokuyo{
 	class HokuyoManager : public LaserManager	
 	{
 	public:
-    	HokuyoManager(std::string deviceId, double min_ang, double max_ang, int clustering, int timeout);
+        HokuyoManager(std::string deviceId, double min_ang, double max_ang, int clustering, int timeout, int faceup);
     	~HokuyoManager();
     	jderobot::LaserData *getLaserData();
     	//void update();
@@ -31,6 +31,7 @@ namespace hokuyo{
     	double max_ang;
     	int clustering;
     	int timeout;
+        const int faceup;
 	};
 }
 
