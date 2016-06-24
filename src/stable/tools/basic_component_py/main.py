@@ -27,14 +27,16 @@ from sensors.threadSensor import ThreadSensor
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt4 import QtGui
+import easyiceconfig as EasyIce
 
 import signal
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    camera = Camera()
-    motors = Motors()
+    ic = EasyIce.initialize(sys.argv)
+    camera = Camera(ic)
+    motors = Motors(ic)
 
     app = QtGui.QApplication(sys.argv)
     frame = MainWindow()
