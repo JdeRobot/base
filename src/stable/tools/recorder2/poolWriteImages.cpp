@@ -8,7 +8,7 @@
 #include "poolWriteImages.h"
 
 namespace recorder{
-poolWriteImages::poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize, int cameraID,  std::string imageFormat, std::vector<int> compression_params) {
+poolWriteImages::poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize, int cameraID,  std::string imageFormat, std::string fileFormat, std::vector<int> compression_params) {
 	// TODO Auto-generated constructor stub
 	pthread_mutex_init(&(this->mutex), NULL);
 	this->poolSize=poolSize;
@@ -16,6 +16,7 @@ poolWriteImages::poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize
 	this->cameraID=cameraID;
 	this->active=true;
 	this->imageFormat=imageFormat;
+    this->fileFormat=fileFormat;
 	this->prx=prx;
 	this->freq=freq;
 	std::stringstream filePath;
@@ -53,7 +54,7 @@ void poolWriteImages::consumer_thread(){
 
 			std::stringstream buff;//create a stringstream
 
-			buff << "data/images/camera" << cameraID << "/" << relative << "." << imageFormat;
+            buff << "data/images/camera" << cameraID << "/" << relative << "." << fileFormat;
 			cv::imwrite(buff.str(), img2Save,this->compression_params);
 			this->outfile << relative<< std::endl;
 		}

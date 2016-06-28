@@ -40,7 +40,7 @@ namespace recorder{
 
 class poolWriteImages {
 public:
-	poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::vector<int> compression_params);
+    poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::string fileFormat, std::vector<int> compression_params);
 	virtual ~poolWriteImages();
 	bool getActive();
 	//void produceImage(cv::Mat image, long long int it);
@@ -57,6 +57,7 @@ private:
 	int cameraID;
 	bool active;
 	std::string imageFormat;
+    std::string fileFormat;
 	struct timeval lastTime;
 	int freq;
 	float cycle;
