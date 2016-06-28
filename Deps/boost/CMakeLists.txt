@@ -34,7 +34,3 @@ if(Boost_FOUND)
   endif(_DPKG_CMD AND _READLINK_CMD)
 
 endif(Boost_FOUND)
-
-# ubuntu
-
-list(APPEND DEPS libboost-system1.54.0 libboost-filesystem1.54.0)
