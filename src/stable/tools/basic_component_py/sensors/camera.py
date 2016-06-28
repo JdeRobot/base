@@ -17,26 +17,27 @@
 #       Alberto Martin Florido <almartinflorido@gmail.com>
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
-import sys
+
 import traceback
-import easyiceconfig as EasyIce
 import jderobot
 import numpy as np
 import threading
+import Ice
 
 
 class Camera:
 
-    def __init__(self):
+    def __init__(self, ic):
         self.lock = threading.Lock()
 
         try:
-            ic = EasyIce.initialize(sys.argv)
-            basecamera = ic.propertyToProxy("basic_component.Camera1.Proxy")
-            self.cameraProxy = jderobot.CameraPrx.checkedCast(basecamera)
+            basecamera = ic.propertyToProxy("basic_component.Camera.Proxy")
+            self.proxy = jderobot.CameraPrx.checkedCast(basecamera)
+            prop = ic.getProperties();
+            self.imgFormat = prop.getProperty("basic_component.Camera.Format");
 
-            if self.cameraProxy:
-                self.image = self.cameraProxy.getImageData("RGB8")
+            if self.proxy:
+                self.image = self.proxy.getImageData(self.imgFormat)
                 self.height = self.image.description.height
                 self.width = self.image.description.width
 
@@ -46,13 +47,15 @@ class Camera:
                 self.thresoldImage = np.zeros((self.height, self.width, 1), np.uint8)
                 self.thresoldImage.shape = self.height, self.width,
 
-            else:
-                print ('Interface camera not connected')
+            if not self.proxy:
+                print ('Interface Camera not configured')
+
+        except Ice.ConnectionRefusedException:
+            print('Camera: connection refused')
 
         except:
             traceback.print_exc()
-            exit()
-            #status = 1
+            exit(-1)
 
     def update(self):
         self.lock.acquire()
@@ -60,13 +63,13 @@ class Camera:
         self.lock.release()
 
     def updateCamera(self):
-        if self.cameraProxy:
-            self.image = self.cameraProxy.getImageData("RGB8")
+	if hasattr(self,"proxy") and self.proxy:
+            self.image = self.proxy.getImageData(self.imgFormat)
             self.height = self.image.description.height
             self.width = self.image.description.width
 
     def getImage(self):
-        if self.cameraProxy:
+	if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             img = np.zeros((self.height, self.width, 3), np.uint8)
             img = np.frombuffer(self.image.pixelData, dtype=np.uint8)

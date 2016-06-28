@@ -16,29 +16,31 @@
 #  Authors :
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
-import sys
+
+
 import traceback
-import easyiceconfig as EasyIce
 import jderobot
 import threading
+import Ice
 
 
 class Motors:
 
-    def __init__(self):
+    def __init__(self, ic):
         self.lock = threading.Lock()
         self.v = self.w = 0
         try:
-            ic = EasyIce.initialize(sys.argv)
             base = ic.propertyToProxy("basic_component.Motors.Proxy")
             self.proxy = jderobot.MotorsPrx.checkedCast(base)
 
             if not self.proxy:
-                print ('Interface Motors not connected')
+                print ('Interface Motors not configured')
 
-        except:
-            traceback.print_exc()
-            exit()
+        except Ice.ConnectionRefusedException:
+            print('Motors: connection refused')
+	except:
+	    traceback.print_exc()
+            exit(-1)
 
     def setV(self, v):
         self.v = v
@@ -47,18 +49,18 @@ class Motors:
         self.w = w
 
     def sendVelocities(self):
-        if self.proxy:
+	if hasattr(self,"proxy") and self.proxy:
             self.sendV(self.v)
             self.sendW(self.w)
 
     def sendV(self, v):
-        if self.proxy:
+	if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             self.proxy.setV(v)
             self.lock.release()
 
     def sendW(self, w):
-        if self.proxy:
+	if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             self.proxy.setW(w)
             self.lock.release()
