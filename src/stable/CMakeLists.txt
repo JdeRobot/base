@@ -1,5 +1,0 @@
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/interfaces)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/libs)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/components)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/tools)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/drivers)

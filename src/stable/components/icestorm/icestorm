@@ -1,4 +1,0 @@
-mkdir stormdb
-icebox --Ice.Config=icebox.cfg &
-icestormadmin --Ice.Config=icestorm.cfg -e "create cameraA"
-
