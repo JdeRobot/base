@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDERobot Developers Team
+ *  Copyright (C) 1997-2016 JDERobot Developers Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *
  *  Authors : Borja Menéndez Moreno <b.menendez.moreno@gmail.com>
  *            José María Cañas Plaza <jmplaza@gsyc.es>
+ *			  Samuel Rey <samuel.rey.escudero@gmail.com> 
  *
  */
 
