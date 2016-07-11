@@ -1,3 +1,50 @@
+jderobot (5.3.3) unstable; urgency=low
+
+  * release 5.3.3
+  * [PR #408] New description and summary for the JdeRobot debian package.
+  * [PR #412] Moving JdeRobot drivers from components to drivers directory.
+  * [PR #414] Added max v and w speed configuration feature and minor GUI improvements to kobukiViewer.
+  * [PR #422] New UavViewerJS GUI and better JS files organization.
+  * [PR #423] Added new world for drone indoor.
+  * [PR #429] Migration of refereeViewer to teaching robotics repository.
+  * [PR #433 #444 #446] Moving JdeRobot tools from components to tools directory.
+  * [PR #438] Now visualHFSM can be opened from any folder and now the state can have more than one transition and they behave properly.
+  * [PR #445] Quick-fixes CMAKE_CXX_FLAGS resetting. Removes direct c++0x asignment.
+  * [PR #447] Configurable speed for uav_viewer from configuration file.
+  * [PR #450] Solved namingService issue when deactivated from cfg file.
+  * [PR #451] Added Actors_GrannyAnnie2.world to gazeboserver worlds.
+  * [PR #453] Fixes CMake checks and output for OpenGL and GLUT.
+  * [PR #456] Taxi models plugins loading are fixed.
+  * [PR #460] Now is possible to choose the name of the proxy with visualHFSM.
+  * [PR #464] Includes new paths to the install generation step in CMake.
+  * [PR #469] Quick-fix for x32 openni related components.
+  * [PR #473] Fixed gui bug in recorder2 and replayer2.
+  * [PR #474] Solved bottle neck in uavviewerjs and kobukiviewerjs.
+  * [PR #483] New tool basic_component_py.
+  * [PR #484] New driver laser_server for hokuyo laser.
+  * [PR #487] New driver MAVLinkDriver for several drones.
+  * [PR #488] Add dpkg package name discovery for boost and pcl.
+  * [PR #490] Reduced uav_viewer GUI to be more usable.
+  * [PR #492] All tools with GTK GUI now use resourcelocator.
+  * [PR #494] Gazebo models with plugin absolute paths for yellow and white Taxi 
+  * [PR #495] Added toggleable data to uav_viewer.
+  * hotfix! added EasyIce to the laser_server CMakeLists.
+  * [PR #496] Pose3d kobuki driver. Removed encoders.
+  * [PR #499] Replayer Pose3D and Pose3DEncoders threads sync fixed.
+  * [PR #500] Created config file to connect ColorTunner to ardrone_server .
+  * [PR #501] Interfaces on demand and minor GUI improvements for uav_viewer.
+  * [PR #502] Solved several problems with basic_component.
+  * [PR #503] Solved some problems with Jderobot example 3.2.
+  * [PR #504] Fixes package discovery for boost.
+  * [PR #505] Fix imageFormat error between recorder2 and cameraServer.
+  * hotfix! Solved a problem reading v and w max from cfg file in kobukiViewer.
+  * [PR #510] basic_component_py now has optional interfaces.
+  * [PR #511] Added face up option to laser_server.
+  * [PR #512] Fixes the 2-pass cmake problem for package generation.
+  * [PR #514] Solved laser wrong readings from kobukiViewer.
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Thu, 30 Jun 2016 12:00:00 +0100
+
 jderobot (5.3.2) unstable; urgency=low
 
   * release 5.3.2
