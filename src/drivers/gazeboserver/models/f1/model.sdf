@@ -5,6 +5,17 @@
   <static>false</static>
     <link name="f1">
     	<pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <mass>10</mass>
+          <inertia>
+            <ixx>0.21666666666666667</ixx>
+            <iyy>0.8416666666666667</iyy>
+            <izz>8.0416666666666667</izz>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyz>0</iyz>
+          </inertia>
+        </inertial>
       <collision name="collision">
             <geometry>
               <mesh>
@@ -23,16 +34,16 @@
     <link name="front_right_wheel">
         <pose>-0.16 0 0.06 0 1.5707 0</pose>
          <inertial>
-        <mass>0.1</mass>
-        <inertia>
-          <ixx>0.5</ixx>
-          <ixy>0.0</ixy>
-          <iyy>0.5</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
-        </inertia>
-      </inertial>
+          <inertia>
+            <ixx>0.001000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>0.001000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>0.001000</izz>
+          </inertia>
+          <mass>0.010000</mass>
+        </inertial>
 
         <collision name="collision">
           <geometry>
@@ -47,16 +58,16 @@
       <link name="front_left_wheel">
         <pose>0.16 0 0.06 0 1.5707 0</pose>
         <inertial>
-        <mass>0.1</mass>
-        <inertia>
-          <ixx>0.5</ixx>
-          <ixy>0.0</ixy>
-          <iyy>0.5</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
-        </inertia>
-      </inertial>
+          <inertia>
+            <ixx>0.001000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>0.001000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>0.001000</izz>
+          </inertia>
+          <mass>0.010000</mass>
+        </inertial>
         <collision name="collision">
           <geometry>
             <cylinder>
@@ -70,7 +81,7 @@
       <link name="front_left_steering_wheel_block">
         <pose>0.16 0 0.06 0 1.5707 0</pose>
         <inertial>
-        <mass>0.01</mass>
+        <mass>0.001</mass>
         <inertia>
           <ixx>1.0</ixx>
           <ixy>0.0</ixy>
@@ -103,7 +114,7 @@
         <link name="front_right_steering_wheel_block">
         <pose>-0.16 0 0.06 0 1.5707 0</pose>
         <inertial>
-        <mass>0.01</mass>
+        <mass>0.001</mass>
         <inertia>
           <ixx>1.0</ixx>
           <ixy>0.0</ixy>
@@ -188,15 +199,15 @@
       <link name="rear_right_wheel">
         <pose>-0.16 0.58 0.06 0 1.5707 0</pose>
          <inertial>
-        <mass>0.1</mass>
-        <inertia>
-          <ixx>0.5</ixx>
-          <ixy>0.0</ixy>
-          <iyy>0.5</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
-        </inertia>
+          <inertia>
+            <ixx>0.001000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>0.001000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>0.001000</izz>
+          </inertia>
+          <mass>0.010000</mass>
         </inertial>
         <collision name="collision">
 
@@ -241,7 +252,7 @@
 <link name='camera_top_body_left'>
         <pose>0.050000 -0.09000 0.1442400 0.000000 -0.000000 0.000000</pose>
         <inertial>
-          <mass>0.500000</mass>
+          <mass>0.000010</mass>
           <inertia>
             <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>
@@ -309,7 +320,7 @@
 <link name='camera_top_body_right'>
         <pose>-0.050000 -0.09000 0.1442400 0.000000 -0.000000 0.0000000</pose>
         <inertial>
-          <mass>0.500000</mass>
+          <mass>0.000100</mass>
           <inertia>
             <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>
@@ -378,7 +389,7 @@
         <pose>0.000000 -0.190000 0.072000 0.000000 0.000000 -1.570000</pose>
         <gravity>0</gravity>
         <inertial>
-          <mass>0.100000</mass>
+          <mass>0.000010</mass>
           <inertia>
             <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>

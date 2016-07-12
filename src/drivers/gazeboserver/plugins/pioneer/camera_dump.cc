@@ -16,6 +16,7 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 
 #include <iostream>
+#include <string.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -36,7 +37,8 @@ namespace gazebo
     {
       // Don't forget to load the camera plugin
       CameraPlugin::Load(_parent,_sdf);
-      std::cout << "Load: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
+      //std::cout << "Load: " <<n << " " <<  this->parentSensor->GetCamera()->Name()<< std::endl;
+	std::cout << "Load: " <<n << " " <<  this->camera->Name()<< std::endl;
     } 
 
     // Update the controller
@@ -44,16 +46,22 @@ namespace gazebo
         unsigned int _width, unsigned int _height, unsigned int _depth, 
         const std::string &_format)
     {
-      //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
+      //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->Name()<< std::endl;
 		if(count==0){
-			std::vector<std::string> tokens;
-			nameCamera = this->parentSensor->GetCamera()->GetName();
-			nameGlobal = nameCamera;
-  			//boost::split(tokens, nameCamera, boost::is_any_of("::"));
-  			//boost::split(tokens, tokens[2], boost::is_any_of("("));
-			//nameGlobal = tokens[0];
+
+			char* str = (char*)this->parentSensor->Camera()->Name().c_str();
+			char* pch; 
+			char* name;
+
+			pch = strtok (str,"::");
+		  	while (pch != NULL)
+		  	{
+		    	    name = pch;
+		    	    pch = strtok (NULL, "::");
+		  	} 
+  			nameCamera = std::string(name);
 			// El nombre del fichero de configuracion tiene que coincidir con el de la cámara en el .world y el .cfg 
-			nameCamera = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
+			nameConfig = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
 			
 			if (count == 0){
 				pthread_t thr_gui;
@@ -76,9 +84,9 @@ namespace gazebo
     private: int count;
     private: int n;
     public: std::string nameCamera;
+    public: std::string nameConfig;
     public: cv::Mat image;
 	public: pthread_mutex_t mutex;
-	public: std::string nameGlobal;
   };
 
   // Register this plugin with the simulator
@@ -259,8 +267,8 @@ void *myMain(void* v)
 
 	gazebo::CameraDump* camera = (gazebo::CameraDump*)v;
 
-	char* name = (char*)camera->nameCamera.c_str();
-
+	char* name = (char*)camera->nameConfig.c_str();
+    
     Ice::CommunicatorPtr ic;
     int argc = 1;
 
@@ -271,15 +279,15 @@ void *myMain(void* v)
         
         ic = Ice::initialize(argc, argv);
         prop = ic->getProperties();
-        
+     
         std::string Endpoints = prop->getProperty("CameraGazebo.Endpoints");
-        std::cout << "CameraGazebo "<< camera->nameGlobal <<" Endpoints > "  << Endpoints << std::endl;
+        std::cout << "Prueba "<< camera->nameCamera <<" Endpoints > "  << Endpoints << std::endl;
         
         Ice::ObjectAdapterPtr adapter =
         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
 		
         Ice::ObjectPtr object = new CameraI(std::string("CameraGazebo"),  camera);
-        adapter->add(object, ic->stringToIdentity(camera->nameGlobal));
+        adapter->add(object, ic->stringToIdentity(camera->nameCamera));
         adapter->activate();
         ic->waitForShutdown();
     } catch (const Ice::Exception& e) {

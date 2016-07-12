@@ -36,7 +36,7 @@ namespace gazebo
 		{
 		  // Don't forget to load the camera plugin
 		  RayPlugin::Load(_parent,_sdf);
-		  this->parentSensor =  boost::dynamic_pointer_cast<sensors::RaySensor>(_parent);
+		  this->parentSensor =  std::dynamic_pointer_cast<sensors::RaySensor>(_parent);
 		  
 		} 
 
@@ -45,7 +45,7 @@ namespace gazebo
 		{
 			if(count == 0){
 				count++;
-				std::string name = this->parentSensor->GetParentName();
+				std::string name = this->parentSensor->ParentName();
 				std::cout <<" laser: " << name  << std::endl;
 				
 				std::vector<std::string> strs;
@@ -56,7 +56,7 @@ namespace gazebo
 				pthread_create(&thr_gui, NULL, &mainLaser, (void*)this);
 			}
 		
-			physics::MultiRayShapePtr laser = this->parentSensor->GetLaserShape();
+			physics::MultiRayShapePtr laser = this->parentSensor->LaserShape();
 
 			pthread_mutex_lock (&mutex); 
 			laserValues.resize(laser->GetSampleCount ());

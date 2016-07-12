@@ -204,6 +204,7 @@ namespace gazebo {
         char* name = (char*) base->nameMotors.c_str();
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+std::cout << argv[0] << " loaded" << std::endl;
 
         try {
 

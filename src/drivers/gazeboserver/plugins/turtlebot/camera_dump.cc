@@ -10,7 +10,7 @@
 // ICE utils includes
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
-#include <easyiceconfig/EasyIce.h> 
+#include <easyiceconfig/EasyIce.h>
 
 #include <jderobot/camera.h>
 
@@ -37,7 +37,7 @@ namespace gazebo
     {
       // Don't forget to load the camera plugin
       CameraPlugin::Load(_parent,_sdf);
-      std::cout << "Load: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
+      std::cout << "Load: " <<n << " " <<  this->parentSensor->Camera()->Name()<< std::endl;
     } 
 
     // Update the controller
@@ -47,14 +47,20 @@ namespace gazebo
     {
       //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
 		if(count==0){
-			std::vector<std::string> tokens;
-			nameCamera = this->parentSensor->GetCamera()->GetName();
-			nameGlobal = nameCamera;
-  			//boost::split(tokens, nameCamera, boost::is_any_of("::"));
-  			//boost::split(tokens, tokens[2], boost::is_any_of("("));
-			//nameGlobal = tokens[0];
-			// El nombre del fichero de configuracion tiene que coincidir con el de la cámara en el .world y el .cfg 
-			nameCamera = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
+
+			char* str = (char*)this->parentSensor->Camera()->Name().c_str();
+			char* pch; 
+			char* name;
+
+			pch = strtok (str,"::");
+		  	while (pch != NULL)
+		  	{
+		    	    name = pch;
+		    	    pch = strtok (NULL, "::");
+		  	} 
+  			nameCamera = std::string(name);
+
+			nameConfig = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
 			
 			if (count == 0){
 				pthread_t thr_gui;
@@ -77,6 +83,7 @@ namespace gazebo
     private: int count;
     private: int n;
     public: std::string nameCamera;
+    public: std::string nameConfig;
     public: cv::Mat image;
 	public: pthread_mutex_t mutex;
 	public: std::string nameGlobal;
@@ -260,7 +267,7 @@ void *myMain(void* v)
 
 	gazebo::CameraDump* camera = (gazebo::CameraDump*)v;
 
-	char* name = (char*)camera->nameCamera.c_str();
+	char* name = (char*)camera->nameConfig.c_str();
 
     Ice::CommunicatorPtr ic;
     int argc = 1;
@@ -274,13 +281,13 @@ void *myMain(void* v)
         prop = ic->getProperties();
         
         std::string Endpoints = prop->getProperty("CameraGazebo.Endpoints");
-        std::cout << "CameraGazebo "<< camera->nameGlobal <<" Endpoints > "  << Endpoints << std::endl;
+        std::cout << "CameraGazebo "<< camera->nameCamera <<" Endpoints > "  << Endpoints << std::endl;
         
         Ice::ObjectAdapterPtr adapter =
         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
 		
         Ice::ObjectPtr object = new CameraI(std::string("CameraGazebo"),  camera);
-        adapter->add(object, ic->stringToIdentity(camera->nameGlobal));
+        adapter->add(object, ic->stringToIdentity(camera->nameCamera));
         adapter->activate();
         ic->waitForShutdown();
     } catch (const Ice::Exception& e) {
