@@ -19,4 +19,6 @@ sudo cp *.py /usr/local/share/jderobot/python/visualHFSM_py
 sudo mkdir /usr/local/share/jderobot/python/visualHFSM_py/gui
 sudo cp gui/*.py /usr/local/share/jderobot/python/visualHFSM_py/gui
 
+sudo cp visualHFSM /usr/local/bin
+
 echo "Dependencies installed"
