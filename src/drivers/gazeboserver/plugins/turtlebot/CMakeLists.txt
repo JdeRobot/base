@@ -1,10 +1,16 @@
 include_directories(
 	${GAZEBO_INCLUDE_DIRS}
-    ${INTERFACES_CPP_DIR}
-    ${LIBS_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
+        ${INTERFACES_CPP_DIR}
+        ${LIBS_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
 	${easyiceconfig_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# Headers trick for IDEs
+file(GLOB_RECURSE turtlebot_headers "include/**")
+add_library(turtlebot_headers ${turtlebot_headers})
+set_target_properties(turtlebot_headers PROPERTIES LINKER_LANGUAGE CXX)
 
 link_directories(
 	${GAZEBO_LIBRARY_DIRS}
@@ -12,75 +18,49 @@ link_directories(
 )
 
 #set( CMAKE_CXX_FLAGS "-Wall" )
-    
-add_library(motorsTurtlebotJde SHARED motors.cc)
-target_link_libraries(motorsTurtlebotJde 
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-	JderobotInterfaces) 
-    
-add_library(encodersTurtlebotJde SHARED encoders.cc)
-target_link_libraries(encodersTurtlebotJde 
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-	JderobotInterfaces)    
 
-add_library(laserTurtlebotJde SHARED laser.cc)
-target_link_libraries(laserTurtlebotJde 
-	RayPlugin 
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-    	JderobotInterfaces) 
+set(SOURCES src/turtlebotplugin.cc
+            src/turtlebotice.cc
 
-add_library(pose3dTurtlebotJde SHARED pose3d.cc)
-target_link_libraries(pose3dTurtlebotJde
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-    	JderobotInterfaces) 
+            src/turtlebotcontrol.cc
+            src/turtlebotsensors.cc
 
-add_library(kinectPluginTurtlebotJde SHARED kinectPlugin.cc)
-target_link_libraries(kinectPluginTurtlebotJde
-    JderobotInterfaces
-    jderobotutil
-    ${GAZEBO_libraries}
-    ${PCL_LIBRARIES}
-    ${OpenCV_LIBRARIES}
-    ${ZeroCIce_LIBRARIES}
-	${easyiceconfig_LIBRARIES}
-    colorspacesmm
+            src/interfaces/motors.cpp
+            src/interfaces/encoders.cpp
+            src/interfaces/laser.cpp
+            src/interfaces/pose3d.cpp
+            src/interfaces/kinectPlugin.cpp
+            src/interfaces/camera_dump.cpp
+            src/interfaces/pose3dencoders.cpp
+            src/interfaces/laser.cpp
 )
 
-add_library(camera_dumpTurtlebotJde SHARED camera_dump.cc)
-target_link_libraries(camera_dumpTurtlebotJde ${GAZEBO_libraries} 
-	CameraPlugin 	
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-	JderobotInterfaces)
+add_library(turtlebotplugin SHARED ${SOURCES})
+# Gazebo
+target_link_libraries(turtlebotplugin ${GAZEBO_libraries})
+set_target_properties(turtlebotplugin PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FLAGS}")
 
-add_library(pose3dencodersTurtlebotJde SHARED pose3dencoders.cc)
-target_link_libraries(pose3dencodersTurtlebotJde 
-	${GAZEBO_libraries} 	 	
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-	${easyiceconfig_LIBRARIES}
-	colorspacesmm
-	JderobotInterfaces)
+# Ice
+target_link_libraries(turtlebotplugin
+        Ice
+        IceUtil
+        JderobotInterfaces
+        ${ZeroCIce_LIBRARIES}
+        ${easyiceconfig_LIBRARIES}
+)
 
+# Application
+target_link_libraries(turtlebotplugin
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${OpenCV_LIBRARIES}
+        CameraPlugin
+        colorspacesmm
+)
 
-INSTALL (TARGETS motorsTurtlebotJde encodersTurtlebotJde laserTurtlebotJde pose3dTurtlebotJde camera_dumpTurtlebotJde pose3dencodersTurtlebotJde
-	DESTINATION share/jderobot/gazebo/plugins/turtlebot/ 
-	COMPONENT core)
-
+set_target_properties(turtlebotplugin PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
+    
+INSTALL (TARGETS turtlebotplugin DESTINATION share/jderobot/gazebo/plugins/turtlebot/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/*.cfg)
 INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/turtlebot/ COMPONENT core)
 
