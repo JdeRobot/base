@@ -20,19 +20,20 @@ link_directories(
 #set( CMAKE_CXX_FLAGS "-Wall" )
 
 set(SOURCES src/turtlebotplugin.cc
-            src/turtlebotice.cc
+        src/turtlebotice.cc
 
-            src/turtlebotcontrol.cc
-            src/turtlebotsensors.cc
+        src/turtlebotcontrol.cc
+        src/turtlebotsensors.cc
 
-            src/interfaces/motors.cpp
-            src/interfaces/encoders.cpp
-            src/interfaces/laser.cpp
-            src/interfaces/pose3d.cpp
-            src/interfaces/kinectPlugin.cpp
-            src/interfaces/camera_dump.cpp
-            src/interfaces/pose3dencoders.cpp
-            src/interfaces/laser.cpp
+        src/cameraproxy.cc
+
+        src/interfaces/motorsi.cpp
+        src/interfaces/laseri.cpp
+        src/interfaces/pose3di.cpp
+        src/interfaces/kinectPlugini.cpp
+        src/interfaces/camerai.cpp
+        src/interfaces/pushcamerai.cpp
+        src/interfaces/cameraibase.cpp
 )
 
 add_library(turtlebotplugin SHARED ${SOURCES})

@@ -18,23 +18,23 @@
  */
 
 
-#include "quadrotor/quadrotorsensors.hh"
+#include "turtlebot/turtlebotsensors.hh"
 
 
-using namespace quadrotor;
+using namespace turtlebot;
 using namespace gazebo::physics;
 using namespace gazebo::sensors;
 
-QuadRotorSensors::QuadRotorSensors(){
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadRotorSensors::QuadRotorSensors()" << std::endl;)
+TurtlebotSensors::TurtlebotSensors(){
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotSensors::TurtlebotSensors()" << std::endl;)
 }
 
-QuadRotorSensors::~QuadRotorSensors(){
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadRotorSensors::~QuadRotorSensors()" << std::endl;)
+TurtlebotSensors::~TurtlebotSensors(){
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotSensors::~TurtlebotSensors()" << std::endl;)
 }
 
 void
-QuadRotorSensors::Load(ModelPtr model){
+TurtlebotSensors::Load(ModelPtr model){
     this->model = model;
     this->base_link_id = model->GetChildLink("base_link")->GetId();
 
@@ -43,66 +43,50 @@ QuadRotorSensors::Load(ModelPtr model){
     for (SensorPtr s: sm->GetSensors()){
         if (s->GetParentId() != base_link_id) continue;
         std::string name = s->GetName();
-        if (name.find("imu_sensor") != std::string::npos)
-            imu = boost::static_pointer_cast<ImuSensor>(s);
-        if (name.find("sonar") != std::string::npos)
-            sonar = boost::static_pointer_cast<
-#ifdef BROKEN_SonarSensor
-                    RaySensor
-#else
-                    SonarSensor
-#endif
->(s);
-        if (name.find("frontal") != std::string::npos)
-            cam[CAM_FRONTAL] = boost::static_pointer_cast<CameraSensor>(s);
-        if (name.find("ventral") != std::string::npos)
-            cam[CAM_VENTRAL] = boost::static_pointer_cast<CameraSensor>(s);
+        if (name.find("laser") != std::string::npos)
+            laser = boost::static_pointer_cast<RaySensor>(s);
+        if (name.find("left") != std::string::npos)
+            cam[CAM_LEFT] = boost::static_pointer_cast<CameraSensor>(s);
+        if (name.find("right") != std::string::npos)
+            cam[CAM_RIGHT] = boost::static_pointer_cast<CameraSensor>(s);
     }
 
-    // weak-fix for sonar value at boostrap (1/2)
-    altitude = model->GetWorldPose().pos.z;
+    //Pose3d
 }
 
 
 void
-QuadRotorSensors::Init(){
+TurtlebotSensors::Init(){
     for (int id=0; id<NUM_CAMS; id++){
         if (cam[id]){
             sub_cam[id] = cam[id]->ConnectUpdated(
-                boost::bind(&QuadRotorSensors::_on_cam, this, id));
+                boost::bind(&TurtlebotSensors::_on_cam, this, id));
         }else
             std::cerr << _log_prefix << "\t cam["<<id<<"] was not connected (NULL pointer)" << std::endl;
     }
 
-    if (sonar){
-        sub_sonar = sonar->ConnectUpdated(
-            boost::bind(&QuadRotorSensors::_on_sonar, this));
+    if (laser){
+        sub_laser = laser->ConnectUpdated(
+            boost::bind(&TurtlebotSensors::_on_laser, this));
     }else
-        std::cerr << _log_prefix << "\t sonar was not connected (NULL pointer)" << std::endl;
+        std::cerr << _log_prefix << "\t laser was not connected (NULL pointer)" << std::endl;
 
-    if (imu){
-        sub_imu = imu->ConnectUpdated(
-            boost::bind(&QuadRotorSensors::_on_imu, this));
-    }else
-        std::cerr << _log_prefix << "\t imu_sensor was not connected (NULL pointer)" << std::endl;
-
-    // weak-fix for sonar value at boostrap (2/2)
-    sonar->Update(true);
+    //pose3d
+    boost::bind(&TurtlebotSensors::_on_pose, this);
 }
 
 void
-QuadRotorSensors::debugInfo(){
+TurtlebotSensors::debugInfo(){
     std::cout << _log_prefix << "Sensors of " << model->GetName() << std::endl;
     boost::format fmt(_log_prefix+"\t%1% (id: %2%)\n");
 
-    std::cout << fmt % cam[CAM_VENTRAL]->GetName() % cam[CAM_VENTRAL]->GetId();
-    std::cout << fmt % cam[CAM_FRONTAL]->GetName() % cam[CAM_FRONTAL]->GetId();
-    std::cout << fmt % sonar->GetName() % sonar->GetId();
-    std::cout << fmt % imu->GetName() % imu->GetId();
+    std::cout << fmt % cam[CAM_LEFT]->GetName() % cam[CAM_LEFT]->GetId();
+    std::cout << fmt % cam[CAM_RIGHT]->GetName() % cam[CAM_RIGHT]->GetId();
+    std::cout << fmt % laser->GetName() % laser->GetId();
 }
 
 void
-QuadRotorSensors::_on_cam(int id){
+TurtlebotSensors::_on_cam(int id){
     //// Assumption: Camera (raw) data is constant, so after Camera boostrap
     /// Camera.data will be a constant pointer.
     /// Therefore, we can use the cv::Mat constructor to simply wrap this
@@ -129,24 +113,29 @@ QuadRotorSensors::_on_cam(int id){
 
 
 void
-QuadRotorSensors::_on_sonar(){
-#ifdef BROKEN_SonarSensor
-    assert(sonar->GetRangeCount() > 0);
-    std::vector<double> ranges(sonar->GetRangeCount());
-    sonar->GetRanges(ranges);
+TurtlebotSensors::_on_laser(){
+    /*assert(laser->GetRangeCount() > 0);
+    std::vector<double> ranges(laser->GetRangeCount());
+    laser->GetRanges(ranges);
     std::sort(ranges.begin(), ranges.end());
     //altitude = ranges[0];
     int c = std::ceil(ranges.size()*0.20); // smooth value by take 20% of minor values
-    ranges.resize(c);
-    altitude = std::accumulate(ranges.begin(), ranges.end(), 0.0, std::plus<double>())/(double)c;
-#else
-    altitude = sonar->GetRange();
-#endif
+    ranges.resize(c);*/
+
+    //laser values
+    MultiRayShapePtr laserV = this->laser->GetLaserShape();
+
+
+    laserValues.resize(laserV->GetSampleCount ());
+    for (int i = 0; i< laserV->GetSampleCount (); i++){
+        laserValues[i] = laserV->GetRange(i);
+    }
+
 }
 
 void
-QuadRotorSensors::_on_imu(){
+TurtlebotSensors::_on_pose(){
+
     pose = model->GetWorldPose();
-    pose.rot = imu->GetOrientation();
-//    std::cout<<pose<<std::endl;
+
 }

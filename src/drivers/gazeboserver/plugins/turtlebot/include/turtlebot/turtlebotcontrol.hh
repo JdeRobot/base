@@ -17,74 +17,68 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#ifndef QUADROTORCONTROL_H
-#define QUADROTORCONTROL_H
+#ifndef TURTLEBOTCONTROL_H
+#define TURTLEBOTCONTROL_H
 
 
 #include <gazebo/common/common.hh>
 #include <gazebo/physics/physics.hh>
+#include "transport/transport.hh"
 
-#include <quadrotor/control/twist.hh>
-#include <quadrotor/control/pidcontroller.hh>
+#include <turtlebot/turtlebotsensors.hh>
 
-#include <quadrotor/quadrotorsensors.hh>
+namespace turtlebot{
 
-
-namespace quadrotor{
-
-enum QuadrotorState{Unknown, Flying, Landed, TakingOff, Landing};
-extern const std::string QuadrotorStateDescription[];
-
-class QuadrotorControl {
+class TurtlebotControl {
 public:
-    QuadrotorControl();
-    virtual ~QuadrotorControl();
-    void setSensors(QuadRotorSensors *sensors);
+    TurtlebotControl();
+    virtual ~TurtlebotControl();
+    void setSensors(TurtlebotSensors *sensors);
 
 /// Control commands
 public:
-    void takeoff();
-    void land();
-    void setTargetVelocity(gazebo::math::Twist twist);
-    void teleport(gazebo::math::Pose pose);
+    //void takeoff();
+    //void land();
+    //void setTargetVelocity(gazebo::math::Twist twist);
+    //void teleport(gazebo::math::Pose pose);
 
     std::string _log_prefix;
+    struct motor_t {
+        float v;
+        float w;
+        float l;
+    };
+    motor_t robotMotors;
 
 /// Control
 protected:
-    void _update_state(const gazebo::common::UpdateInfo & _info);
-    void _control_loop_novel(const gazebo::common::UpdateInfo & _info);
-    void _control_loop_hector(const gazebo::common::UpdateInfo & _info);
-
-    double mass;
-    QuadrotorState my_state;
-    Controllers controllers;
-    gazebo::common::Time last_simTime;
-    gazebo::math::Twist velocity_command;
-
-    std::pair<double,double> fly_state_thresholds;
-    double takeoff_speed;
-    double land_speed;
-
-    QuadRotorSensors *sensors;
-
+   TurtlebotSensors *sensors;
 
 /// Gazebo
 public:
-    void Load(gazebo::physics::LinkPtr _base_link, sdf::ElementPtr _sdf);
-    void Init(QuadRotorSensors* sensors);
+    void Load(gazebo::physics::ModelPtr model, sdf::ElementPtr _sdf);
+    void Init(TurtlebotSensors* sensors);
     void OnUpdate(const gazebo::common::UpdateInfo & _info);
-
+    void teleport(gazebo::math::Pose pose);
 
 private:
     gazebo::event::ConnectionPtr updateConnection;
-    gazebo::physics::LinkPtr base_link;
+    gazebo::physics::ModelPtr model;
     gazebo::physics::InertialPtr inertial;
+    gazebo::physics::JointPtr leftJoint, rightJoint;
+
+    gazebo::transport::NodePtr node;
+    gazebo::transport::SubscriberPtr velSub;
+    double wheelSpeed[2];
+    double torque;
+    double wheelSeparation;
+    double wheelRadius;
+    gazebo::common::Time prevUpdateTime;
 
 };
 
 
-typedef boost::shared_ptr<QuadrotorControl> QuadrotorControlPtr;
+typedef boost::shared_ptr<TurtlebotControl> TurtlebotControlPtr;
 
 }//NS
 

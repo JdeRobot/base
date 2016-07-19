@@ -18,14 +18,13 @@
  */
 
 
-#include "turtlebot.hh"
+#include <turtlebot/turtlebotice.hh>
 
 using namespace turtlebot;
 using namespace turtlebot::interfaces;
 using namespace Ice;
 
-
-TurtlebotIce::TurtlebotIce(CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control, CameraProxy *camproxy):
+TurtlebotIce::TurtlebotIce(CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control, CameraProxy *camproxy):
     ic(ic),
     sensor(sensors),
     control(control),
@@ -87,34 +86,19 @@ void TurtlebotIce::bootstrap(){
 
     prop = ic->getProperties();
 
-    adapter = ic->createObjectAdapter("Quadrotor.Adapter");
+    adapter = ic->createObjectAdapter("Turtlebot.Adapter");
     std::cout<<_log_prefix << "Ice adapter listening at " << std::endl;
     std::cout<<_log_prefix << "\t" << adapter->getEndpoints()[0]->toString() << std::endl;
 
     std::string name;
-    name = prop->getProperty("Quadrotor.Pose3D.Name");
+
+    name = prop->getProperty("Turtlebot.Pose3D.Name");
     ObjectPtr posei = new Pose3DI(sensor, control);
     adapter->add(posei, ic->stringToIdentity(name));
 
-    ObjectPtr posei_alt = new Pose3DI_altitude(sensor, control);
-#if 0 /// Facet
-    adapter->addFacet(posei_alt, ic->stringToIdentity(name), "altitude");
-    // client side MUST do jderobot::Pose3D::checkedCast(baseprx, "altitude");
-#else
-    adapter->add(posei_alt, ic->stringToIdentity(name+"_altitude"));
-#endif
-
-    ObjectPtr navdatai = new NavdataI(sensor);
-    name = prop->getProperty("Quadrotor.Navdata.Name");
-    adapter->add(navdatai, ic->stringToIdentity(name));
-
-    ObjectPtr dronecontroli = new DroneControlI(control, camproxy);
-    name = prop->getProperty("Quadrotor.Extra.Name");
-    adapter->add(dronecontroli, ic->stringToIdentity(name));
-
-    ObjectPtr cmdveli = new CMDVelI(control);
-    name = prop->getProperty("Quadrotor.CMDVel.Name");
-    adapter->add(cmdveli, ic->stringToIdentity(name));
+    ObjectPtr laseri = new LaserI(sensor);
+    name = prop->getProperty("Turtlebot.Laser.Name");
+    adapter->add(laseri, ic->stringToIdentity(name));
 
     //ObjectPtr camerai = new CameraI(sensor);
     ObjectPtr camerai;
@@ -123,7 +107,7 @@ void TurtlebotIce::bootstrap(){
         camproxy->registerConsumer(ICameraConsumerPtr(_camerai));
         camerai = ObjectPtr(_camerai);
     }
-    name = prop->getProperty("Quadrotor.Camera.Name");
+    name = prop->getProperty("Turtlebot.Camera.Name");
     adapter->add(camerai, ic->stringToIdentity(name));
 
     adapter->activate();

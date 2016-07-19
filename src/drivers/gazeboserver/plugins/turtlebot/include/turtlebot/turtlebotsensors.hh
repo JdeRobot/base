@@ -33,6 +33,8 @@
 
 #include <opencv2/core/core.hpp>
 
+#include <turtlebot/debugtools.h>
+
 namespace turtlebot{
 
 class TurtlebotSensors
@@ -57,7 +59,8 @@ public:
 
 public:
     gazebo::sensors::CameraSensorPtr cam[NUM_CAMS];
-    gazebo::sensors::RaySensorPtr sonar;
+    gazebo::sensors::RaySensorPtr laser;
+
 
 private:
     gazebo::physics::ModelPtr model;
@@ -65,18 +68,19 @@ private:
 
 private:
     gazebo::event::ConnectionPtr sub_cam[NUM_CAMS];
-    gazebo::event::ConnectionPtr sub_sonar;
-    gazebo::event::ConnectionPtr sub_imu;
+    gazebo::event::ConnectionPtr sub_laser;
+    gazebo::event::ConnectionPtr sub_pose;
 
     void _on_cam(int id);
-    void _on_sonar();
-    void _on_imu();
+    void _on_laser();
+    void _on_pose();
 
 public:
     cv::Mat img[NUM_CAMS];
+    std::vector<float> laserValues;
     gazebo::math::Pose pose;
-    double altitude;
 
+    double position;
 };
 
 }//NS

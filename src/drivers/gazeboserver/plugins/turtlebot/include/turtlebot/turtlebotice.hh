@@ -17,8 +17,8 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#ifndef QUADROTORICE_H
-#define QUADROTORICE_H
+#ifndef TURTLEBOTICE_H
+#define TURTLEBOTICE_H
 
 
 #include <Ice/Ice.h>
@@ -29,23 +29,21 @@
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
 
-#include <jderobot/pose3d.h>
+#include <turtlebot/interfaces/kinectPlugini.h>
+#include <turtlebot/interfaces/motorsi.h>
+#include <turtlebot/interfaces/pose3di.h>
+#include <turtlebot/interfaces/pushcamerai.h>
+#include <turtlebot/interfaces/laseri.h>
 
-#include <turtlebot/encoders.hh>
-#include <turtlebot/kinectPlugin.hh>
-#include <turtlebot/motors.hh>
-#include <turtlebot/pose3d.hh>
-#include <turtlebot/pose3dencoders.hh>
+#include <turtlebot/debugtools.h>
 
-#include <quadrotor/debugtools.h>
+namespace turtlebot{
 
-namespace quadrotor{
-
-class QuadrotorIce
+class TurtlebotIce
 {
 public:
-    QuadrotorIce(Ice::CommunicatorPtr ic, const QuadRotorSensors *sensors, QuadrotorControl *control, CameraProxy *camproxy);
-    virtual ~QuadrotorIce();
+    TurtlebotIce(Ice::CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control, CameraProxy *camproxy);
+    virtual ~TurtlebotIce();
 
     void run();
     void start();
@@ -62,14 +60,14 @@ private:
     Ice::ObjectAdapterPtr adapter;
 
 private:
-    const QuadRotorSensors *sensor;
-    QuadrotorControl *control;
+    const TurtlebotSensors *sensor;
+    TurtlebotControl *control;
     CameraProxy *camproxy;
     boost::mutex lock;
 
 };
 
-typedef boost::shared_ptr<QuadrotorIce> QuadrotorIcePtr;
+typedef boost::shared_ptr<TurtlebotIce> TurtlebotIcePtr;
 
 }//NS
 

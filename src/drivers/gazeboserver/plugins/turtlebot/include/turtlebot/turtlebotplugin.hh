@@ -26,22 +26,23 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/math/Pose.hh>
 
-#include <turtlebot/pose3d.hh>
 #include <turtlebot/turtlebotice.hh>
-#include <quadrotor/cameraproxy.hh>
+#include <turtlebot/cameraproxy.hh>
 
-namespace quadrotor{
+#include <turtlebot/debugtools.h>
 
-class QuadrotorPlugin : public gazebo::ModelPlugin {
+namespace turtlebot{
+
+class TurtlebotPlugin : public gazebo::ModelPlugin {
 public:
-    QuadrotorPlugin();
-    ~QuadrotorPlugin();
+    TurtlebotPlugin();
+    ~TurtlebotPlugin();
 
     std::string _log_prefix;
 
 private:
-    QuadRotorSensors sensors;
-    QuadrotorControl control;
+    TurtlebotSensors sensors;
+    TurtlebotControl control;
     CameraProxy cameraproxy;
 
 
@@ -64,10 +65,10 @@ protected:
     void InitializeIce(sdf::ElementPtr _sdf);
 
 private:
-    QuadrotorIcePtr icePlugin;
+    TurtlebotIcePtr icePlugin;
 
 };
 
 }//NS
 
-#endif // QUADROTORPLUGIN_H
+#endif // TurtlebotPlugin_H

@@ -19,68 +19,67 @@
 
 
 
-#include "quadrotor/quadrotorplugin.hh"
+#include "turtlebot/turtlebotplugin.hh"
 
-GZ_REGISTER_MODEL_PLUGIN(quadrotor::QuadrotorPlugin)
+GZ_REGISTER_MODEL_PLUGIN(turtlebot::TurtlebotPlugin)
 
-using namespace quadrotor;
+using namespace turtlebot;
 using namespace gazebo::physics;
 using namespace gazebo::math;
 using namespace gazebo::event;
 using namespace gazebo::common;
 
 
-QuadrotorPlugin::QuadrotorPlugin(){
+TurtlebotPlugin::TurtlebotPlugin(){
     std::stringstream ss;
     ss << "["<<(void*)this<<"] ";
     ss >> _log_prefix;
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::QuadrotorPlugin()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::TurtlebotPlugin()" << std::endl;)
     sensors._log_prefix = _log_prefix;
     control._log_prefix = _log_prefix;
 }
 
-QuadrotorPlugin::~QuadrotorPlugin(){
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::~QuadrotorPlugin()" << std::endl;)
+TurtlebotPlugin::~TurtlebotPlugin(){
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::~TurtlebotPlugin()" << std::endl;)
     //icePlugin->stop();
 }
 
 
 void
-QuadrotorPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
+TurtlebotPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     _log_prefix = "["+_model->GetName()+"] ";
     sensors._log_prefix = _log_prefix;
     control._log_prefix = _log_prefix;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::Load()" << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::Load()" << std::endl;)
     model = _model;
     sensors.Load(model);
-    control.Load(model->GetLink(), _sdf);
+    control.Load(model, _sdf);
 
     // Listen to the update event. This event is broadcast every
     // simulation iteration.
     updateConnection = Events::ConnectWorldUpdateBegin(
-        boost::bind(&QuadrotorPlugin::OnUpdate, this, _1));
+        boost::bind(&TurtlebotPlugin::OnUpdate, this, _1));
 
     sigintConnection = Events::ConnectSigInt(
-        boost::bind(&QuadrotorPlugin::OnSigInt, this));
+        boost::bind(&TurtlebotPlugin::OnSigInt, this));
 
     this->InitializeIce(_sdf);
 }
 
 
 void
-QuadrotorPlugin::Init(){
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::Init()" << std::endl;)
+TurtlebotPlugin::Init(){
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::Init()" << std::endl;)
     sensors.debugInfo();
     sensors.Init();
 
-    sensors.cam[QuadRotorSensors::CAM_FRONTAL]->SetActive(true);
-    sensors.cam[QuadRotorSensors::CAM_VENTRAL]->SetActive(true);
-    sensors.sonar->SetActive(true);
-    sensors.imu->SetActive(true);
+    sensors.cam[TurtlebotSensors::CAM_LEFT]->SetActive(true);
+    sensors.cam[TurtlebotSensors::CAM_RIGHT]->SetActive(true);
+    sensors.laser->SetActive(true);
 
-    cameraproxy.registerCamera(sensors.cam[QuadRotorSensors::CAM_VENTRAL]);
-    cameraproxy.registerCamera(sensors.cam[QuadRotorSensors::CAM_FRONTAL]);
+    cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_LEFT]);
+    cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_RIGHT]);
     cameraproxy.setActive(0);
 
     control.Init(&sensors);
@@ -90,27 +89,27 @@ QuadrotorPlugin::Init(){
 
 
 void
-QuadrotorPlugin::OnUpdate(const UpdateInfo & ONDEBUG_VERBOSE(_info)){
-    ONDEBUG_VERBOSE(std::cout << _log_prefix << "QuadrotorPlugin::OnUpdate()\n\t" << _info.simTime << std::endl;)
+TurtlebotPlugin::OnUpdate(const UpdateInfo & ONDEBUG_VERBOSE(_info)){
+    ONDEBUG_VERBOSE(std::cout << _log_prefix << "TurtlebotPlugin::OnUpdate()\n\t" << _info.simTime << std::endl;)
 }
 
 void
-QuadrotorPlugin::OnSigInt(){
-    ONDEBUG_INFO(std::cout << _log_prefix << "QuadrotorPlugin::OnSigInt()" << std::endl;)
+TurtlebotPlugin::OnSigInt(){
+    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::OnSigInt()" << std::endl;)
     icePlugin->stop();
 }
 
 
 void
-QuadrotorPlugin::Reset(){
+TurtlebotPlugin::Reset(){
 
 }
 
 
 void
-QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
-    std::cout << _log_prefix << "QuadrotorPlugin::InitializeIce()" << std::endl;
-    std::string iceConfigFile = "quadrotorplugin.cfg";
+TurtlebotPlugin::InitializeIce(sdf::ElementPtr _sdf){
+    std::cout << _log_prefix << "TurtlebotPlugin::InitializeIce()" << std::endl;
+    std::string iceConfigFile = "TurtlebotPlugin.cfg";
     if(_sdf->HasElement("iceConfigFile"))
         iceConfigFile =  _sdf->GetElement("iceConfigFile")->GetValue()->GetAsString();
     std::cout << _log_prefix << "\tconfig: "<< iceConfigFile << std::endl;
@@ -142,9 +141,9 @@ QuadrotorPlugin::InitializeIce(sdf::ElementPtr _sdf){
         port = (*m1)[0];
     }
     if (!port.empty())
-        id.properties->setProperty("Quadrotor.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
+        id.properties->setProperty("Turtlebot.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
 
     std::cout << _log_prefix << "\tcreate Ice plugin..." << std::endl;
-    icePlugin = QuadrotorIcePtr(new QuadrotorIce(ic, &sensors, &control, &cameraproxy));
+    icePlugin = TurtlebotIcePtr(new TurtlebotIce(ic, &sensors, &control, &cameraproxy));
     icePlugin->_log_prefix = _log_prefix;
 }
