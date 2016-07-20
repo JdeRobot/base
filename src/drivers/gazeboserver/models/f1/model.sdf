@@ -5,15 +5,16 @@
   <static>false</static>
     <link name="f1">
     	<pose>0 0 0 0 0 0</pose>
-        <inertial>
+          <inertial>
+	  <pose>-0.003402 0.372718 0.070094 0 0 0 </pose>
           <mass>10</mass>
           <inertia>
-            <ixx>0.21666666666666667</ixx>
-            <iyy>0.8416666666666667</iyy>
-            <izz>8.0416666666666667</izz>
-            <ixy>0</ixy>
+          <ixx>2.32e-4</ixx>
+            <iyy>0.000124</iyy>
+            <izz>0.000340</izz>
+            <ixy>-0.000002</ixy>
             <ixz>0</ixz>
-            <iyz>0</iyz>
+            <iyz>0.000104</iyz>
           </inertia>
         </inertial>
       <collision name="collision">
@@ -80,15 +81,15 @@
 
       <link name="front_left_steering_wheel_block">
         <pose>0.16 0 0.06 0 1.5707 0</pose>
-        <inertial>
+       <inertial>
         <mass>0.001</mass>
         <inertia>
-          <ixx>1.0</ixx>
-          <ixy>0.0</ixy>
-          <iyy>1.0</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
+           <ixx>0.00001000</ixx>
+            <ixy>0.00000000</ixy>
+            <ixz>0.0000</ixz>
+            <iyy>0.00001000</iyy>
+            <iyz>0.00000000</iyz>
+            <izz>0.000001000</izz>
         </inertia>
       </inertial>
 
@@ -116,12 +117,12 @@
         <inertial>
         <mass>0.001</mass>
         <inertia>
-          <ixx>1.0</ixx>
-          <ixy>0.0</ixy>
-          <iyy>1.0</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
+           <ixx>0.00001000</ixx>
+            <ixy>0.00000000</ixy>
+            <ixz>0.0000</ixz>
+            <iyy>0.00001000</iyy>
+            <iyz>0.00000000</iyz>
+            <izz>0.000001000</izz>
         </inertia>
       </inertial>
 
@@ -145,16 +146,16 @@
       </link>
       <link name="rear_left_wheel">
         <pose>0.16 0.58 0.06 0 1.5707 0</pose>
-         <inertial>
-        <mass>0.1</mass>
-        <inertia>
-          <ixx>0.5</ixx>
-          <ixy>0.0</ixy>
-          <iyy>0.5</iyy>
-          <ixz>0.0</ixz>
-          <iyz>0.0</iyz>
-          <izz>1.0</izz>
-        </inertia>
+        <inertial>
+          <inertia>
+            <ixx>0.001000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>0.001000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>0.001000</izz>
+          </inertia>
+          <mass>0.010000</mass>
         </inertial>
         <collision name="collision">
 
@@ -254,12 +255,12 @@
         <inertial>
           <mass>0.000010</mass>
           <inertia>
-            <ixx>1.000000</ixx>
+            <ixx>0.001000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>1.000000</iyy>
+            <iyy>0.001000</iyy>
             <iyz>0.000000</iyz>
-            <izz>1.000000</izz>
+            <izz>0.001000</izz>
           </inertia>
         </inertial>
         <sensor name='cam_f1_left' type='camera'>
@@ -322,12 +323,12 @@
         <inertial>
           <mass>0.000100</mass>
           <inertia>
-            <ixx>1.000000</ixx>
+            <ixx>0.001000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>1.000000</iyy>
+            <iyy>0.001000</iyy>
             <iyz>0.000000</iyz>
-            <izz>1.000000</izz>
+            <izz>0.001000</izz>
           </inertia>
         </inertial>
         <sensor name='cam_f1_right' type='camera'>
@@ -391,12 +392,12 @@
         <inertial>
           <mass>0.000010</mass>
           <inertia>
-            <ixx>1.000000</ixx>
+            <ixx>0.001000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>1.000000</iyy>
+            <iyy>0.001000</iyy>
             <iyz>0.000000</iyz>
-            <izz>1.000000</izz>
+            <izz>0.001000</izz>
           </inertia>
         </inertial>
         <visual name='visual'>
