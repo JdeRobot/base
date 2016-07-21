@@ -27,6 +27,8 @@
 
 #include <jderobot/camera.h>
 
+#include <turtlebot/debugtools.h>
+
 
 // Fix name
 namespace jderobot{ typedef ImageFormat ImageFormats; }

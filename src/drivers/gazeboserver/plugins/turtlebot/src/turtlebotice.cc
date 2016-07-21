@@ -100,14 +100,14 @@ void TurtlebotIce::bootstrap(){
     name = prop->getProperty("Turtlebot.Laser.Name");
     adapter->add(laseri, ic->stringToIdentity(name));
 
-    //ObjectPtr camerai = new CameraI(sensor);
-    ObjectPtr camerai;
+    ObjectPtr camerai = new CameraI(sensor);
+    /*ObjectPtr camerai;
     {
         PushCameraI *_camerai = new PushCameraI();
         camproxy->registerConsumer(ICameraConsumerPtr(_camerai));
         camerai = ObjectPtr(_camerai);
-    }
-    name = prop->getProperty("Turtlebot.Camera.Name");
+    }*/
+    name = prop->getProperty("Turtlebot.CameraL.Name");
     adapter->add(camerai, ic->stringToIdentity(name));
 
     adapter->activate();

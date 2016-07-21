@@ -17,13 +17,13 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#include <quadrotor/interfaces/camerai.h>
+#include <turtlebot/interfaces/camerai.h>
 
-using namespace quadrotor::interfaces;
+using namespace turtlebot::interfaces;
 using namespace jderobot;
 
 
-CameraI::CameraI (const QuadRotorSensors *sensor):
+CameraI::CameraI (const TurtlebotSensors *sensor):
     sensor(sensor)
 {
     cameraSensorConnection = sensor->cam[cam_id]->ConnectUpdated(

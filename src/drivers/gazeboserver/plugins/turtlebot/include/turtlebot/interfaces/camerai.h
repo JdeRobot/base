@@ -35,7 +35,7 @@ public:
     CameraI (const turtlebot::TurtlebotSensors *sensor);
     virtual ~CameraI ();
 
-    const int cam_id = TurtlebotSensors::CAM_VENTRAL;
+    const int cam_id = TurtlebotSensors::CAM_LEFT;
 
 private:
     cv::Mat imgCached;

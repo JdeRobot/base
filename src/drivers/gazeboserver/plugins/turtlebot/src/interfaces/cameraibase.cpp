@@ -17,9 +17,9 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
-#include <quadrotor/interfaces/cameraibase.h>
+#include <turtlebot/interfaces/cameraibase.h>
 
-using namespace quadrotor::interfaces;
+using namespace turtlebot::interfaces;
 using namespace jderobot;
 
 

@@ -32,8 +32,12 @@
 #include <turtlebot/interfaces/kinectPlugini.h>
 #include <turtlebot/interfaces/motorsi.h>
 #include <turtlebot/interfaces/pose3di.h>
-#include <turtlebot/interfaces/pushcamerai.h>
+#include <turtlebot/interfaces/camerai.h>
 #include <turtlebot/interfaces/laseri.h>
+
+#include <turtlebot/turtlebotsensors.hh>
+#include <turtlebot/turtlebotcontrol.hh>
+#include <turtlebot/cameraproxy.hh>
 
 #include <turtlebot/debugtools.h>
 

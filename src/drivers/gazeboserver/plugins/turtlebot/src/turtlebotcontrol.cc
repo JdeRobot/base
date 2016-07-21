@@ -40,6 +40,8 @@ TurtlebotControl::~TurtlebotControl(){}
 
 void
 TurtlebotControl::Load(ModelPtr model, sdf::ElementPtr _sdf){
+    ONDEBUG_INFO(std::cout << _log_prefix << "B1" << std::endl;)
+
     // Get a pointer to the model
     this->model = model;
 

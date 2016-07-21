@@ -57,7 +57,8 @@ CameraProxy::setActive(int id){
         active_camera = id;
         active_sub = cameras[active_camera]->ConnectUpdated(
             boost::bind(&CameraProxy::_on_cam_bootstrap, this));
-        cameras[active_camera]->SetActive(true);
+        cameras[0]->SetActive(true);
+        cameras[1]->SetActive(true);
     }
 
     lock.unlock();

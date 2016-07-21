@@ -51,8 +51,8 @@ TurtlebotPlugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     sensors._log_prefix = _log_prefix;
     control._log_prefix = _log_prefix;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "TurtlebotPlugin::Load()" << std::endl;)
     model = _model;
+
     sensors.Load(model);
     control.Load(model, _sdf);
 

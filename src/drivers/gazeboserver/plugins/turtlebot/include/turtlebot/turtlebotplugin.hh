@@ -26,6 +26,8 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/math/Pose.hh>
 
+#include <turtlebot/turtlebotsensors.hh>
+#include <turtlebot/turtlebotcontrol.hh>
 #include <turtlebot/turtlebotice.hh>
 #include <turtlebot/cameraproxy.hh>
 
