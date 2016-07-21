@@ -17,29 +17,29 @@
  *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>	
  */
 
-#ifndef EM_SENSOR_H_
-#define EM_SENSOR_H_
- 
+#ifndef SRC_DRIVERS_EMSENSORDRIVER_EMSENSORI_H_
+#define SRC_DRIVERS_EMSENSORDRIVER_EMSENSORI_H_
+
 #include <boost/thread/mutex.hpp>
 #include <jderobot/emSensor.h>
 
 namespace EMSensor {
 
 class EMSensorI :  virtual public jderobot::EMSensor {
-public:
-	EMSensorI();
+ public:
+    EMSensorI();
 
-	void setData(float t, float d, jderobot::State status);
-	virtual jderobot::EMSensorDataPtr getEMSensorData(const ::Ice::Current&);
+    void setData(float t, float d, jderobot::State status);
+    virtual jderobot::EMSensorDataPtr getEMSensorData(const ::Ice::Current&);
 
-protected:
-	mutable boost::mutex synch; ///< Mutex for thread-safe access to internal data.
+ protected:
+    mutable boost::mutex synch;  ///< Mutex for thread-safe access to internal data.
 
-	float time_stamp;
-	float distance;
-	jderobot::State status;
+    float time_stamp;
+    float distance;
+    jderobot::State status;
 };
 
 } /* namespace EMSensor */
 
-#endif /* EM_SENSOR_H_ */
+#endif  // SRC_DRIVERS_EMSENSORDRIVER_EMSENSORI_H_

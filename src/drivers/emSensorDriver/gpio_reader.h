@@ -16,9 +16,9 @@
  *  Authors : 
  *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>	
  */
- 
-#ifndef GPIO_READER_H_
-#define GPIO_READER_H_
+
+#ifndef SRC_DRIVERS_EMSENSORDRIVER_GPIO_READER_H_
+#define SRC_DRIVERS_EMSENSORDRIVER_GPIO_READER_H_
 
 #include <boost/thread/thread.hpp>
 #include "sharer.h"
@@ -31,36 +31,34 @@ namespace EMSensor {
  * a General Purpose Input/Output port. 
  */
 class GPIO_reader{
-
-public:
-
+ public:
 	/** Default constructor.
 	 *
 	 */
-	GPIO_reader(Sharer* sharer);
+    explicit GPIO_reader(Sharer* sharer);
 
         /** Default destructor.
 	 *
 	 * @note this destructor waits for the related thread to finalize.
 	 */
-	virtual ~GPIO_reader();
+    virtual ~GPIO_reader();
 
 	/** Starts the reader thread.
 	 *
 	 * This method ends the initialization of the analyzer thread and calls the
 	 * main loop for actual run.
 	 */
-	void start();
+    void start();
 
 	/** Waits until the reader thread finishes.
 	 *
 	 */
-	void join();
+    void join();
 
-        /** Signal a stop command to the associated thread, ending its work safely.
-         *
-         */
-        void stop();
+    /** Signal a stop command to the associated thread, ending its work safely.
+     *
+     */
+    void stop();
 
 	/** Initializes GPIO for reading at required pin.
 	 *
@@ -72,10 +70,10 @@ public:
 	 * @param input_pin Desired pin for reading according to WiringPi.
 	 *
 	 */
-	static void init_GPIO(int input_pin);
+    static void init_GPIO(int input_pin);
 
 
-protected:
+ protected:
     /** Main acquisition loop.
      *
      * This method implements the actual acquisition loop, executing it while the
@@ -90,8 +88,6 @@ protected:
     bool _stop;              ///< Thread stop flag.
 };
 
-}
+}  // namespace EMSensor
 
-
-
-#endif /* GPIO_READER_H_ */
+#endif  // SRC_DRIVERS_EMSENSORDRIVER_GPIO_READER_H_

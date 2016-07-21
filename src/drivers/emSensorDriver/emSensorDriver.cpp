@@ -16,8 +16,9 @@
  *  Authors : 
  *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>	
  */
-#include <iostream>
 #include <signal.h>
+#include <string>
+#include <iostream>
 #include <boost/lexical_cast.hpp>
 
 // ICE utils includes
@@ -40,13 +41,11 @@ bool finish;                ///< Shutdown driver flag.
  *  to the driver infrastructure.
  *  @param s signal code.
  */
-void exitApplication(int s){
-
+void exitApplication(int s) {
     std::cout << "Shutdown signal sent" << std::endl;
-	finish=true;
-	ic->shutdown();
+    finish = true;
+    ic->shutdown();
     std::cout << "Shutdown signal confirmed" << std::endl;
-
 }
 
 /** Driver entry point.
@@ -55,17 +54,17 @@ void exitApplication(int s){
  * @param argv pointer to the arguments passed to the driver.
  * @return exit code.
  */
-int main(int argc, char** argv){
+int main(int argc, char** argv) {
     using namespace EMSensor;
     Sharer* sharer;
     GPIO_reader* gpio_reader;
     PWM_analyzer* pwm_analyzer;
 
     int GPIO_port = 7;
-    unsigned int maxRestCount = 2000; 
+    unsigned int maxRestCount = 2000;
 
     // Setup signal handler
-    finish=false;
+    finish = false;
     struct sigaction sigIntHandler;
 
     sigIntHandler.sa_handler = exitApplication;
@@ -76,48 +75,49 @@ int main(int argc, char** argv){
 
     std::string componentPrefix("emSensorDriver");
 
-    try{
-        //-----------------ICE-----------------//
+    try {
+        // -----------------ICE----------------- //
         ic = Ice::initialize(argc, argv);
 
         Ice::PropertiesPtr prop = ic->getProperties();
         try {
             GPIO_port = boost::lexical_cast<int>(
                 prop->getPropertyWithDefault(componentPrefix+".IO.port", "7"));
-        
         } catch (boost::bad_lexical_cast&) {
             std::cerr << "Wrong value for "
                     << componentPrefix+".IO.port"
-                    << "using default (" 
+                    << "using default ("
                     << GPIO_port << ")"
                     << std::endl;
         }
-        
+
         try {
             maxRestCount = boost::lexical_cast<unsigned int>(
-                prop->getPropertyWithDefault(componentPrefix+".Signal.maxRestCount", "2000"));
-        
+                prop->getPropertyWithDefault(
+                    componentPrefix+".Signal.maxRestCount", "2000"));
         } catch (boost::bad_lexical_cast&) {
             std::cerr << "Wrong value for "
                     << componentPrefix+".Signal.maxRestCount"
-                    << "using default (" 
+                    << "using default ("
                     << maxRestCount << ")"
                     << std::endl;
         }
-        std::string Endpoints = prop->getPropertyWithDefault(componentPrefix+".emSensor.Endpoints",
-            "default -h localhost -p 9090" );
-        
+
+        std::string Endpoints = prop->getPropertyWithDefault(
+            componentPrefix + ".emSensor.Endpoints",
+            "default -h localhost -p 9090");
+
         std::cout << "Config parsed" << std::endl;
-        
+
         sharer = new Sharer();
 
-        Ice::ObjectAdapterPtr adapter = ic->createObjectAdapterWithEndpoints(componentPrefix,
-        		Endpoints);
+        Ice::ObjectAdapterPtr adapter = ic->createObjectAdapterWithEndpoints(
+            componentPrefix, Endpoints);
         adapter->add(sharer->interface, ic->stringToIdentity("emSensor"));
-        
+
         adapter->activate();
         std::cout << "Adapter ready: " << Endpoints << std::endl;
-        //--------------END ICE---------------//
+        // --------------END ICE--------------- //
 
         GPIO_reader::init_GPIO(GPIO_port);
 
@@ -128,39 +128,36 @@ int main(int argc, char** argv){
         gpio_reader->start();
 
         ic->waitForShutdown();
-	}
-	catch (const Ice::Exception& ex) {
-			std::cerr << ex << std::endl;
-			return 1;
-	}
-	catch (const char* msg) {
-			std::cerr <<"Error :" << msg << std::endl;
-			return 1;
-	}
-	
-	if(pwm_analyzer)
-    	pwm_analyzer->stop();
-	if(gpio_reader)    	
-    	gpio_reader->stop();
-	if(pwm_analyzer)
-    	pwm_analyzer->join();
-	if(gpio_reader)
-    	gpio_reader->join();
+    }
+    catch (const Ice::Exception& ex) {
+            std::cerr << ex << std::endl;
+            return 1;
+    }
+    catch (const char* msg) {
+            std::cerr <<"Error :" << msg << std::endl;
+            return 1;
+    }
+
+    if (pwm_analyzer)
+        pwm_analyzer->stop();
+    if (gpio_reader)
+        gpio_reader->stop();
+    if (pwm_analyzer)
+        pwm_analyzer->join();
+    if (gpio_reader)
+        gpio_reader->join();
 
 
 
-	if(ic){
-		try{
-			ic->destroy();
-		}catch(const Ice::Exception& e){
-			std::cerr << e << std::endl;
-			return 1;
-		}
-	}
-	
+    if (ic) {
+        try {
+            ic->destroy();
+        } catch(const Ice::Exception& e) {
+            std::cerr << e << std::endl;
+            return 1;
+        }
+    }
 
-
- 
-  return 0 ;
+    return 0;
 }
 

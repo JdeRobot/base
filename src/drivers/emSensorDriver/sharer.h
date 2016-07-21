@@ -17,8 +17,8 @@
  *       Luis Roberto Morales Iglesias <lr.morales.iglesias@gmail.com>	
  */
 
-#ifndef SHARER_H_
-#define SHARER_H_
+#ifndef SRC_DRIVERS_EMSENSORDRIVER_SHARER_H_
+#define SRC_DRIVERS_EMSENSORDRIVER_SHARER_H_
 
 #include <boost/circular_buffer.hpp>
 #include <boost/container/list.hpp>
@@ -34,26 +34,25 @@ namespace EMSensor {
  *  
  */
 class Sharer{
+ public:
+    /** Timestamped adquired data values.
+     */
+    struct DataValue{
+        int d;              ///< Datum value.
+        unsigned long t;    ///< Timestamp value.
+    };
 
-public:
-        /** Timestamped adquired data values.
-         */
-	struct DataValue{
-		int d;	                ///< Datum value.
-		unsigned long t;	///< Timestamp value.
-	};
+    typedef jderobot::State StateI;     ///< EM sensor possible states.
 
-	typedef jderobot::State StateI; ///< EM sensor possible states.
+    /// Default constructor.
+    Sharer();
 
-	/// Default constructor.
-	Sharer();
+    /** Writes a new value into the adquisition buffer thread-safely.
+     *
+     * @param val Adquired value to be written into the adquisition buffer.
+     */
+    void writeBufferData(DataValue val);
 
-        /** Writes a new value into the adquisition buffer thread-safely.
-         *
-         * @param val Adquired value to be written into the adquisition buffer.
-         */
-	void writeBufferData(DataValue val);
-	
 	/** Reads all data stored into the adquisition buffer thread-safely.
 	 *
 	 *  This method extract current data stored into the buffer, leaving
@@ -61,25 +60,22 @@ public:
 	 *
 	 *  @return Pointer to a list of the recovered values, to be destroyed
 	 *          by the caller.
-	 *
 	 */
-	boost::container::list<DataValue>* readAllBufferData();
+    boost::container::list<DataValue>* readAllBufferData();
 
 
-	/// Default destructor.
-	virtual ~Sharer();
+    /// Default destructor.
+    virtual ~Sharer();
 
-        /// ICE interface pointer.
-	EMSensorI* interface;
+    /// ICE interface pointer.
+    EMSensorI* interface;
 
-private:
+ private:
+    mutable boost::mutex synch;  ///< Mutex for thread-safe access to internal data.
 
-    mutable boost::mutex synch; ///< Mutex for thread-safe access to internal data.
-
-    boost::circular_buffer<DataValue> data_buffer; ///< Data adquisition buffer.
+    boost::circular_buffer<DataValue> data_buffer;  ///< Data adquisition buffer.
 };
-}
 
+}  // namespace EMSensor
 
-
-#endif /* SHARER_H_ */
+#endif  // SRC_DRIVERS_EMSENSORDRIVER_SHARER_H_
