@@ -7,3 +7,9 @@ add_library (jderobotutil STATIC jderobotutil.h observer.cpp observer.h paramdic
 add_library (jderobotutilshare SHARED jderobotutil.h observer.cpp observer.h paramdict.cpp paramdict.h time.cpp time.h uncopyable.h CameraTask.h CameraTask.cpp CameraHandler.cpp CameraHandler.h)
 
 set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)
+
+### Install
+install(TARGETS jderobotutil
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)
