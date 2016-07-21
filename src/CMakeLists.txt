@@ -1,5 +1,4 @@
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/stable)
-
-IF(JDEROBOT_TESTING)
-	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/testing)
-ENDIF()
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/interfaces)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/libs)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/tools)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/drivers)
