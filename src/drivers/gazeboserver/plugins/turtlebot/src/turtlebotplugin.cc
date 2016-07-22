@@ -81,6 +81,7 @@ TurtlebotPlugin::Init(){
     cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_LEFT]);
     cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_RIGHT]);
     cameraproxy.setActive(0);
+    cameraproxy.setActive(1);
 
     control.Init(&sensors);
 

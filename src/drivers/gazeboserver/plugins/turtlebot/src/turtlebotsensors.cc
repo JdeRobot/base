@@ -45,9 +45,9 @@ TurtlebotSensors::Load(ModelPtr model){
         std::string name = s->GetName();
         if (name.find("laser") != std::string::npos)
             laser = boost::static_pointer_cast<RaySensor>(s);
-        if (name.find("left") != std::string::npos)
+        if (name.find("cam_turtlebot_left") != std::string::npos)
             cam[CAM_LEFT] = boost::static_pointer_cast<CameraSensor>(s);
-        if (name.find("right") != std::string::npos)
+        if (name.find("cam_turtlebot_right") != std::string::npos)
             cam[CAM_RIGHT] = boost::static_pointer_cast<CameraSensor>(s);
     }
 
@@ -97,28 +97,19 @@ TurtlebotSensors::_on_cam(int id){
     /// Warning 2: char* is NULL until CameraSensor.OnUpdate(), so it is not
     /// possible to bootstrap at Load neither Init step.
 
-    std::cout << "ON CAM" << std::endl;
     if (img[id].empty()){
-        std::cout << "ON CAM1" << std::endl;
 
         const unsigned char *data = cam[id]->GetImageData();
-        std::cout << data << std::endl;
         if (data == 0)
             return;
-        std::cout << "ON CAM2" << std::endl;
 
         std::cout <<  _log_prefix << "\tbootstrap cam["<<id<<"]" << std::endl;
         uint32_t h = cam[id]->GetImageHeight();
         uint32_t w = cam[id]->GetImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
-        std::cout << "ON CAM3" << std::endl;
-
 
         cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
-        std::cout << "ON CAM4" << std::endl;
-
-    }
-    std::cout << "END ON CAM" << std::endl;
+     }
 }
 
 
@@ -132,7 +123,6 @@ TurtlebotSensors::_on_laser(){
     int c = std::ceil(ranges.size()*0.20); // smooth value by take 20% of minor values
     ranges.resize(c);*/
 
-    std::cout << "ON LASER" << std::endl;
     //laser values
     MultiRayShapePtr laserV = this->laser->GetLaserShape();
 
@@ -141,14 +131,9 @@ TurtlebotSensors::_on_laser(){
     for (int i = 0; i< laserV->GetSampleCount (); i++){
         laserValues[i] = laserV->GetRange(i);
     }
-    std::cout << "END ON LASER" << std::endl;
-
 }
 
 void
 TurtlebotSensors::_on_pose(){
-std::cout << "ON POSE" << std::endl;
     pose = model->GetWorldPose();
-    std::cout << "END ON POSE" << std::endl;
-
 }

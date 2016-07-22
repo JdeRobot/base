@@ -46,11 +46,13 @@ void
 CameraProxy::setActive(int id){
     lock.lock();
 
+    /*
     /// deactivate previous
     if (active_camera != -1){
         cameras[active_camera]->SetActive(false);
         cameras[active_camera]->DisconnectUpdated(active_sub);
     }
+    */
 
     /// active new
     if (id != -1){
@@ -89,7 +91,6 @@ CameraProxy::_on_cam_bootstrap(){
 
     active_sub = cameras[active_camera]->ConnectUpdated(
         boost::bind(&CameraProxy::_on_cam_update, this));
-
     lock.unlock();
 }
 

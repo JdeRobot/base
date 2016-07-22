@@ -92,6 +92,10 @@ void TurtlebotIce::bootstrap(){
 
     std::string name;
 
+    name = prop->getProperty("Turtlebot.Motors.Name");
+    ObjectPtr motorsi = new MotorsI(control);
+    adapter->add(motorsi, ic->stringToIdentity(name));
+
     name = prop->getProperty("Turtlebot.Pose3D.Name");
     ObjectPtr posei = new Pose3DI(sensor, control);
     adapter->add(posei, ic->stringToIdentity(name));
@@ -100,15 +104,24 @@ void TurtlebotIce::bootstrap(){
     name = prop->getProperty("Turtlebot.Laser.Name");
     adapter->add(laseri, ic->stringToIdentity(name));
 
-    ObjectPtr camerai = new CameraI(sensor);
-    /*ObjectPtr camerai;
+    //ObjectPtr camerai = new CameraI(sensor);
+    ObjectPtr cameraiL;
     {
-        PushCameraI *_camerai = new PushCameraI();
-        camproxy->registerConsumer(ICameraConsumerPtr(_camerai));
-        camerai = ObjectPtr(_camerai);
-    }*/
+        PushCameraI *_cameraiL = new PushCameraI();
+        camproxy->registerConsumer(ICameraConsumerPtr(_cameraiL));
+        cameraiL = ObjectPtr(_cameraiL);
+    }
     name = prop->getProperty("Turtlebot.CameraL.Name");
-    adapter->add(camerai, ic->stringToIdentity(name));
+    adapter->add(cameraiL, ic->stringToIdentity(name));
+
+    ObjectPtr cameraiR;
+    {
+        PushCameraI *_cameraiR = new PushCameraI();
+        camproxy->registerConsumer(ICameraConsumerPtr(_cameraiR));
+        cameraiR = ObjectPtr(_cameraiR);
+    }
+    name = prop->getProperty("Turtlebot.CameraR.Name");
+    adapter->add(cameraiR, ic->stringToIdentity(name));
 
     adapter->activate();
 
