@@ -31,6 +31,7 @@
 #include "poolWriteLasers.h"
 #include "poolWritePointCloud.h"
 #include "poolWriteEncoders.h"
+#include "easyiceconfig/EasyIce.h" 
 
 bool recording=false;
 struct timeval inicio;
@@ -352,7 +353,7 @@ int main(int argc, char** argv){
    
 		Ice::PropertiesPtr prop;
 
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 
 		prop = ic->getProperties();
 

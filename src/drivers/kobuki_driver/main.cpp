@@ -2,6 +2,8 @@
  Includes
  ****************************************************************************/
 #include "thread_control.h"
+#include "easyiceconfig/EasyIce.h" 
+
 
 /*****************************************************************************
  Signal Handler
@@ -26,7 +28,7 @@ int main(int argc, char** argv)
 
     try {
         //-----------------ICE----------------//
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
 
         Thread_control* thread = new Thread_control(ic, kobuki_manager);
         thread->run();

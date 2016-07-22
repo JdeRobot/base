@@ -2,6 +2,7 @@
 #include <IceUtil/IceUtil.h>
 #include "myInterface.h"
 #include <signal.h>
+#include "easyiceconfig/EasyIce.h" 
 
 
 
@@ -95,7 +96,7 @@ int main(int argc, char** argv){
 	
 
 	try{
-			ic = Ice::initialize(argc,argv);
+			ic = EasyIce::initialize(argc,argv);
 			prop = ic->getProperties();
 	}
 	catch (const Ice::Exception& ex) {

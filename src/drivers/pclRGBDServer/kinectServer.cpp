@@ -4,6 +4,8 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
+#include "easyiceconfig/EasyIce.h" 
+
 #include <jderobot/pointcloud.h>
 #include <jderobot/camera.h>
 
@@ -210,7 +212,7 @@ int main(int argc, char** argv)
     Ice::PropertiesPtr prop;
     try {
         //-----------------ICE----------------//
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
 
         Ice::PropertiesPtr prop = ic->getProperties();
 			

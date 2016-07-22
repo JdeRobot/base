@@ -121,6 +121,7 @@ void Generate::generateHeaders () {
 void Generate::generateGenericHeaders () {
 	this->fs << "#include <Ice/Ice.h>" << std::endl;
 	this->fs << "#include <IceUtil/IceUtil.h>" << std::endl;
+	this->fs << "#include <easyiceconfig/EasyIce.h>" << std::endl;
 	this->fs << "#include <jderobot/visualHFSM/automatagui.h>" << std::endl;
 	this->fs << std::endl;
 	for ( std::list<std::string>::iterator listLibsIterator = this->listLibraries.begin();
@@ -548,7 +549,7 @@ void Generate::generateMain () {
 	this->fs << "\tIce::CommunicatorPtr ic;" << std::endl;
 	this->fs << std::endl;
 	this->fs << "\ttry {" << std::endl;
-	this->fs << "\t\tic = Ice::initialize(argc, argv);" << std::endl;
+	this->fs << "\t\tic = EasyIce::initialize(argc, argv);" << std::endl;
 	this->fs << "\t\treadArgs(&argc, argv);\n" << std::endl;
 	this->fs << std::endl;
 
@@ -665,13 +666,14 @@ void Generate::generateCmake () {
 	this->fs << "include_directories (" << std::endl;
 	this->fs << "\t/usr/local/include/jderobot" << std::endl;
 	this->fs << "\t${INTERFACES_CPP_DIR}" << std::endl;
+	this->fs << "\t${easyiceconfig_INCLUDE_DIRS}" << std::endl;
 	this->fs << "\t${LIBS_DIR}" << std::endl;
 	this->fs << "\t${CMAKE_CURRENT_SOURCE_DIR}" << std::endl;
 	this->fs << "\t${GTKMM_INCLUDE_DIRS}" << std::endl;
 	this->fs << "\t${goocanvasmm_INCLUDE_DIRS}" << std::endl;
 	this->fs << ")" << std::endl;
 	this->fs << std::endl;
-	this->fs << "link_directories(${GTKMM_LIBRARY_DIRS})" << std::endl;
+	this->fs << "link_directories(${GTKMM_LIBRARY_DIRS} ${easyiceconfig_LIBRARY_DIRS})" << std::endl;
 	this->fs << std::endl;
 	this->fs << "add_executable ("<< this->execpath << " ${SOURCE_FILES_AUTOMATA})" << std::endl;
 	this->fs << std::endl;
@@ -679,6 +681,7 @@ void Generate::generateCmake () {
 	this->fs << std::endl;
 	this->fs << "TARGET_LINK_LIBRARIES (" << this->execpath << std::endl;
 	this->fs << "\t${GTKMM_LIBRARIES}" << std::endl;
+	this->fs << "\t${easyiceconfig_LIBRARIES}" << std::endl;
 	this->fs << "\t${goocanvasmm_LIBRARIES}" <<std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
@@ -707,6 +710,7 @@ void Generate::generateGenericHeaders_py(){
 "#!/usr/bin/python\n\
 # -*- coding: utf-8 -*-\n\n\
 import Ice\n\
+import easyiceconfig as EasyIce\n\
 import sys, signal\n\
 sys.path.append('/usr/local/share/jderobot/python/visualHFSM_py')\n\
 import traceback, threading, time\n\
@@ -1197,7 +1201,7 @@ void Generate::generateSubautomatas_py(){
 void Generate::generateConnectToProxys_py(){
 	this->fs << 
 "	def connectToProxys(self):\n\
-		self.ic = Ice.initialize(sys.argv)\n\n";
+		self.ic = EasyIce.initialize(sys.argv)\n\n";
 
 	boost::format fmt_iConnect( /* %1%: getName() %2%: getInterface() */
 "		# Contact to %1%\n\

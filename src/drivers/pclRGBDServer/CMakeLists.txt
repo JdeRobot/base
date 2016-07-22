@@ -7,10 +7,14 @@ if(pcl_openni)
         ${INTERFACES_CPP_DIR}
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
+    	${easyiceconfig_INCLUDE_DIRS}
         /usr/include/vtk-5.8
     )
 
-    link_directories(${pcl_LIBRARIES})
+    link_directories(
+	${pcl_LIBRARIES}
+	${easyiceconfig_LIBRARY_DIRS}
+    )
     include_directories(${pcl_INCLUDE_DIR})
 
     add_executable (pclRGBDServer  ${SOURCE_FILES})
@@ -25,6 +29,7 @@ if(pcl_openni)
       colorspacesmm
       ${openni_LIBRARIES}
       ${Boost_LIBRARIES}
+      ${easyiceconfig_LIBRARIES}
     )
 
 endif()
