@@ -2,10 +2,6 @@ if (PCL_LIBRARIES)
 
 project(gazebo_kinectplugin)
 
-## quadrotor2
-set(quadrotor2_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../quadrotor2/include)
-set(quadrotor2_LIBRARY_DIRS ${CMAKE_CURRENT_BINARY_DIR}/../quadrotor2)
-set(quadrotor2_LIBRARIES quadrotorplugin2)
 
 ## easyiceconfig customs
 set(easyiceconfig_STATIC_LIBRARIES easyiceconfig-embedded)
@@ -20,13 +16,11 @@ include_directories(
 	/usr/include/vtk-5.8
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${easyiceconfig_INCLUDE_DIRS}
-    ${quadrotor2_INCLUDE_DIRS}
 )
 
 link_directories( 
 	${GAZEBO_LIBRARY_DIRS}
 	${easyiceconfig_LIBRARY_DIRS}
-	${quadrotor2_LIBRARY_DIRS}
 )
 
 
@@ -38,8 +32,18 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES
 	src/kinect.cc
 
+    src/quadrotorsensors.cc
+    src/cameraproxy.cc
+
+    src/interfaces/camerai.cpp
+    src/interfaces/pushcamerai.cpp
+    src/interfaces/cameraibase.cpp
+
 	include/kinect/kinect.hh
 	include/kinect/pointcloudi.hpp
+
+
+
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -52,7 +56,6 @@ target_link_libraries(${PROJECT_NAME}
     ${OpenCV_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
     ${easyiceconfig_STATIC_LIBRARIES}
-    ${quadrotor2_LIBRARIES}
 )
 
 INSTALL (TARGETS ${PROJECT_NAME} DESTINATION share/jderobot/gazebo/plugins/flyingkinect/ COMPONENT core)
