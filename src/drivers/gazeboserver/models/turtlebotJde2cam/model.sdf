@@ -9,10 +9,6 @@
       <!--control configuration -->
       <velocityXYLimit>3</velocityXYLimit>
       <velocityZLimit>5</velocityZLimit>
-      <takeoffSpeed>3</takeoffSpeed>
-      <takeoffCompletedAt>1.5</takeoffCompletedAt>
-      <landSpeed>1</landSpeed>
-      <landCompletedAt>0.2</landCompletedAt>
       <!-- motion noise -->
       <offset>0</offset>
       <drift>0.1</drift>
@@ -26,8 +22,8 @@
       <yawProportionalGain>2.0</yawProportionalGain>
       <yawDifferentialGain>1.0</yawDifferentialGain>
       <yawLimit>1.5</yawLimit>
-	<left_joint>create::left_wheel_hinge</left_joint>
-        <right_joint>create::right_wheel_hinge</right_joint>
+	  <left_joint>create::left_wheel_hinge</left_joint>
+      <right_joint>create::right_wheel_hinge</right_joint>
       <velocityXYProportionalGain>5.0</velocityXYProportionalGain>
       <velocityXYDifferentialGain>1.0</velocityXYDifferentialGain>
       <velocityZProportionalGain>4.5</velocityZProportionalGain>
