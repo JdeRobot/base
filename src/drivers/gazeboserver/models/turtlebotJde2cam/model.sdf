@@ -47,6 +47,49 @@
         </inertia>
         <mass>2.234000</mass>
       </inertial>
+	<collision name="tag1_collision">
+          <pose>0 0 0.44 0 0 0</pose>
+          <geometry>
+            <box>
+                <size>0.4 0.2 0.01</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="tag1_visual">
+          <pose>0 0 0.44 0 0 0</pose>
+          <cast_shadows>true</cast_shadows>
+          <geometry>
+            <box>
+                <size>0.4 0.2 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0 1 0 1</diffuse>
+          </material>
+        </visual>
+
+        <collision name="tag2_collision">
+          <pose>0.14 0 0.45 0 0 0</pose>
+          <geometry>
+            <box>
+                <size>0.12 0.2 0.01</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="tag2_visual">
+          <pose>0.14 0 0.45 0 0 0</pose>
+          <cast_shadows>true</cast_shadows>
+          <geometry>
+            <box>
+                <size>0.12 0.2 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+
+
       <collision name="plate_0_collision">
         <pose>-0.043340 0 0.084757 0 0 0</pose>
         <geometry>
