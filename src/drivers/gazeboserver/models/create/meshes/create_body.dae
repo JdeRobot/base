@@ -32,22 +32,22 @@
 				<technique sid="blender">
 					<phong>
 						<emission>
-							<color>0.30000 0.30000 0.30000 1</color>
+							<color>0.00000 0.00000 0.00000 1</color>
 						</emission>
 						<ambient>
-							<color>1.00000 1.00000 1.00000 1</color>
+							<color>0 0 0 1</color>
 						</ambient>
 						<diffuse>
 							<texture texcoord="CHANNEL1" texture="create_tga-sampler"/>
 						</diffuse>
 						<specular>
-							<color>1.44803 1.44803 1.44803 1</color>
+							<color>0 0 0 1</color>
 						</specular>
 						<shininess>
 							<float>38.75</float>
 						</shininess>
 						<reflective>
-							<color>1.00000 1.00000 1.00000 1</color>
+							<color>0 0 0 1</color>
 						</reflective>
 						<reflectivity>
 							<float>0.3</float>
