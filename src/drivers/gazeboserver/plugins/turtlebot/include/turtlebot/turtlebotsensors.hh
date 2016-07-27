@@ -52,6 +52,7 @@ public:
 
     void Load(gazebo::physics::ModelPtr model);
     void Init();
+    void OnUpdate(const gazebo::common::UpdateInfo & _info);
 
     void debugInfo();
 
@@ -69,7 +70,7 @@ private:
 private:
     gazebo::event::ConnectionPtr sub_cam[NUM_CAMS];
     gazebo::event::ConnectionPtr sub_laser;
-    gazebo::event::ConnectionPtr sub_pose;
+    gazebo::event::ConnectionPtr updatePose;
 
     void _on_cam(int id);
     void _on_laser();

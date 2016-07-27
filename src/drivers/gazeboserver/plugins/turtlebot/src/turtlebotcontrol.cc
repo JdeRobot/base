@@ -40,8 +40,6 @@ TurtlebotControl::~TurtlebotControl(){}
 
 void
 TurtlebotControl::Load(ModelPtr model, sdf::ElementPtr _sdf){
-    ONDEBUG_INFO(std::cout << _log_prefix << "B1" << std::endl;)
-
     // Get a pointer to the model
     this->model = model;
 
@@ -78,13 +76,11 @@ TurtlebotControl::Init(TurtlebotSensors *sensors){
     this->sensors = sensors;
 
     this->wheelSeparation = this->leftJoint->GetAnchor(0).Distance(this->rightJoint->GetAnchor(0));
-    std::cout << "Wheel Separation:" << this->wheelSeparation << std::endl;
     EntityPtr parent = boost::dynamic_pointer_cast<Entity > (this->leftJoint->GetChild());
 
     Box bb = parent->GetBoundingBox();
 
     this->wheelRadius = bb.GetSize().GetMax() * 0.5;
-    std::cout << "Wheel Diameter:" << this->wheelRadius * 2 << std::endl;
 
     updateConnection = gazebo::event::Events::ConnectWorldUpdateBegin(
         boost::bind(&TurtlebotControl::OnUpdate, this, _1));

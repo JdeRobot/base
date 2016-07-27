@@ -49,9 +49,9 @@ TurtlebotSensors::Load(ModelPtr model){
             cam[CAM_LEFT] = boost::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
             cam[CAM_RIGHT] = boost::static_pointer_cast<CameraSensor>(s);
-    }
 
-    //Pose3d
+        pose = model->GetWorldPose();
+    }
 }
 
 
@@ -71,8 +71,11 @@ TurtlebotSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t laser was not connected (NULL pointer)" << std::endl;
 
-    //pose3d
-    boost::bind(&TurtlebotSensors::_on_pose, this);
+    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
+
+    //Pose3d
+    updatePose = gazebo::event::Events::ConnectWorldUpdateBegin(
+                boost::bind(&TurtlebotSensors::OnUpdate, this, _1));
 }
 
 void
@@ -134,6 +137,6 @@ TurtlebotSensors::_on_laser(){
 }
 
 void
-TurtlebotSensors::_on_pose(){
+TurtlebotSensors::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
     pose = model->GetWorldPose();
 }
