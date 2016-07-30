@@ -10,6 +10,6 @@ execute_process(
 if(_RESULT)
   message(FATAL_ERROR "Failed to determine python information")
 endif(_RESULT)
-unset(_RESULT) 
+unset(_RESULT)
 
 message(${PYTHON_MODULE_PATH})
