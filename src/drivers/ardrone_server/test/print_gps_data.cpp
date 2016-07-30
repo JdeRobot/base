@@ -21,13 +21,14 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include <Ice/Ice.h>
+#include "easyiceconfig/EasyIce.h"
 
 #include <navdatagps.h>
 
 void print_data(ardrone::NavdataGPSData data);
 
 int main(int argc, char* argv[]) {
-	Ice::CommunicatorPtr ic = Ice::initialize(argc, argv);
+	Ice::CommunicatorPtr ic = EasyIce::initialize(argc, argv);
 
 	//Ice::ObjectPrx prx = ic->propertyToProxy("ArDrone.NavdataGPS.Proxy");
 	Ice::ObjectPrx prx = ic->stringToProxy("ardrone_navdatagps:tcp -h 0.0.0.0 -p 9993");

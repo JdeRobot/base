@@ -25,6 +25,7 @@
 
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include "easyiceconfig/EasyIce.h" 
 #include <jderobot/kinectleds.h>
 #include <jderobot/camera.h>
 #include <jderobot/pose3dmotors.h>
@@ -1031,7 +1032,7 @@ int main(int argc, char** argv){
 
 
 	try{
-			ic = Ice::initialize(argc,argv);
+			ic = EasyIce::initialize(argc,argv);
 			prop = ic->getProperties();
 	}
 	catch (const Ice::Exception& ex) {
