@@ -11,7 +11,10 @@ add_library (colorspacesmm SHARED imagecv.cpp imagecv.h uncopyable.h)
 
 TARGET_LINK_LIBRARIES(colorspacesmm ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES})
 
-
-
-
 set_target_properties(colorspacesshare PROPERTIES OUTPUT_NAME colorspaces)
+
+### Install
+install(TARGETS colorspaces colorspacesmm
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)

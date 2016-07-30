@@ -15,4 +15,10 @@ if (with_pcl)
 
 
     set_target_properties(jderobotViewerShare PROPERTIES OUTPUT_NAME jderobotViewer)
+
+    ### Install
+    install(TARGETS jderobotViewer
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+        COMPONENT core
+)
 endif()

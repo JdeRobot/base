@@ -15,3 +15,9 @@ TARGET_LINK_LIBRARIES(jderobotHandlersshare ${Boost_LIBRARIES} ${Ice_LIBRARIES})
 
 
 set_target_properties(jderobotHandlersshare PROPERTIES OUTPUT_NAME jderobotHandlers)
+
+### Install
+install(TARGETS jderobotHandlers
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)
