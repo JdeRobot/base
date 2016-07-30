@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sys, traceback, Ice
+import easyiceconfig as EasyIce
 import jderobot 
 import threading  
 import copy
@@ -7,7 +8,7 @@ import copy
 class Sensor:
     def __init__(self):
         try:
-            ic = Ice.initialize(sys.argv)
+            ic = EasyIce.initialize(sys.argv)
             proxy = ic.getPropertyWithDefault("emSensorView.emSensor.Proxy","emSensor:default -h localhost -p 9090")
             try:
                     base = ic.stringToProxy(proxy)

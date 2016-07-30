@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2016 JDE Developers Team
+ *  Copyright (C) 2016 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 #include <IceUtil/IceUtil.h>
 
 #include <wiringPi.h>
+
+#include <easyiceconfig/EasyIce.h>
 
 #include "sharer.h"
 #include "gpio_reader.h"
@@ -77,7 +79,7 @@ int main(int argc, char** argv) {
 
     try {
         // -----------------ICE----------------- //
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
 
         Ice::PropertiesPtr prop = ic->getProperties();
         try {
@@ -105,7 +107,7 @@ int main(int argc, char** argv) {
 
         std::string Endpoints = prop->getPropertyWithDefault(
             componentPrefix + ".emSensor.Endpoints",
-            "default -h localhost -p 9090");
+            "default -h 0.0.0.0 -p 9090");
 
         std::cout << "Config parsed" << std::endl;
 

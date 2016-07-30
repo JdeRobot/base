@@ -10,7 +10,12 @@ if(wiringPi_LIBRARY)
             ${INTERFACES_CPP_DIR}
             ${LIBS_DIR}
             ${CMAKE_CURRENT_BINARY_DIR}
+            ${easyiceconfig_INCLUDE_DIRS}
             ${Boost_INCLUDE_DIR}
+        )
+
+        link_directories(
+            ${easyiceconfig_LIBRARY_DIRS}
         )
     
         add_executable (emSensorDriver
@@ -24,6 +29,7 @@ if(wiringPi_LIBRARY)
         target_link_libraries(emSensorDriver
                 ${CMAKE_THREAD_LIBS_INIT}
                 JderobotInterfaces
+                ${easyiceconfig_LIBRARIES}
                 ${ZeroCIce_LIBRARIES}
                 ${Boost_LIBRARIES}
                 ${wiringPi_LIBRARY}
