@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1997-2015 JDE Developers Team
+#  Copyright (C) 1997-2016 JDE Developers Team
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@ __author__ = 'varribas'
 
 
 # JdeRobot main Ice.Config path
-JDEROBOT_PATHS = "/usr/local/share/jderobot/conf"
+JDEROBOT_PATHS = "@CMAKE_INSTALL_PREFIX@/share/jderobot/conf"
 
 
 # JdeRobot Gazebo's plugins Ice.Config path
 import os
-JDEROBOT_GAZEBO_PLUGINS_BASE_PATH = '/usr/local/share/jderobot/gazebo/plugins'
+JDEROBOT_GAZEBO_PLUGINS_BASE_PATH = '@CMAKE_INSTALL_PREFIX@/share/jderobot/gazebo/plugins'
 
 gazebo_plugins = list()
 for dir in os.listdir(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH):
@@ -35,5 +35,5 @@ for dir in os.listdir(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH):
 JDEROBOT_GAZEBO_PLUGINS_PATHS = ':'.join(str(x) for x in gazebo_plugins)
 
 
-# "Hardcored" PATHS
-HARDCORED_PATHS = "%s:%s" %(JDEROBOT_PATHS, JDEROBOT_GAZEBO_PLUGINS_PATHS)
+# "Hardcoded" PATHS
+HARDCODED_PATHS = "%s:%s" %(JDEROBOT_PATHS, JDEROBOT_GAZEBO_PLUGINS_PATHS)

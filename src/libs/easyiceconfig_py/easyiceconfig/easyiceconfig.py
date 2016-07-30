@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1997-2015 JDE Developers Team
+#  Copyright (C) 1997-2016 JDE Developers Team
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import sys, os
 import re
 import Ice
 
-from hardcoredpaths import HARDCORED_PATHS
+from hardcodedpaths import HARDCODED_PATHS
 
 
 ENV_PATH_NAME = "ICE_CONFIG_PATH"
@@ -33,8 +33,8 @@ def findConfigFile(filename):
     env_paths = os.getenv(ENV_PATH_NAME)
     if env_paths:
         paths = paths+":"+env_paths
-    if HARDCORED_PATHS:
-        paths = paths+":"+HARDCORED_PATHS
+    if HARDCODED_PATHS:
+        paths = paths+":"+HARDCODED_PATHS
 
     for path in paths.split(":"):
         file_path = os.path.join(path, filename)
