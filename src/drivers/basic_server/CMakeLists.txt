@@ -12,11 +12,18 @@ include_directories(
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${easyiceconfig_INCLUDE_DIRS}
 )
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
+)
+
 
 add_executable (basic_server  ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(basic_server
         ${CMAKE_THREAD_LIBS_INIT}
-	${ZeroCIce_LIBRARIES}    	
+	${ZeroCIce_LIBRARIES}  
+    	${easyiceconfig_LIBRARIES}   	
 )

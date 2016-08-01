@@ -21,10 +21,12 @@ if(ARDRONE_ALL_DEPS)
 		${Boost_INCLUDE_DIR}
 		${EIGEN_INCLUDE_DIR}
 		${libxmlpp_INCLUDE_DIRS}
-		${ardronelib_INCLUDE_DIRS})
+		${ardronelib_INCLUDE_DIRS}
+    		${easyiceconfig_INCLUDE_DIRS})
 
 	link_directories(
-		${ardronelib_LIBRARY_DIRS})
+		${ardronelib_LIBRARY_DIRS}
+		${easyiceconfig_LIBRARY_DIRS})
 
 	include_directories(include)
 
@@ -54,6 +56,7 @@ if(ARDRONE_ALL_DEPS)
 	target_link_libraries(ardrone_server
 				${OpenCV_LIBRARIES}
 				${ZeroCIce_LIBRARIES}
+   				${easyiceconfig_LIBRARIES} 
 				colorspacesmm
 				JderobotInterfaces
 				${libxmlpp_LIBRARIES})
@@ -82,7 +85,8 @@ if(ARDRONE_ALL_DEPS)
 	target_link_libraries(ardrone_print_gps_data
 		${ZeroCIce_LIBRARIES}
 		ardrone_server_msgs
-		${CMAKE_THREAD_LIBS_INIT})
+		${CMAKE_THREAD_LIBS_INIT}
+    		${easyiceconfig_LIBRARIES})
 
 ELSE()
 	message(WARNING "ardrone_server marked to build, but required dependencies were not met.

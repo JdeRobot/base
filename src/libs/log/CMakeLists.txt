@@ -23,4 +23,10 @@ ADD_LIBRARY(logger SHARED ${SRC_FILES})
 target_link_libraries(logger ${Boost_LIBRARIES})
 
 SET_PROPERTY(TARGET logger PROPERTY SOVERSION 0.1.0)
+
+### Install
+install(TARGETS logger
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)
  

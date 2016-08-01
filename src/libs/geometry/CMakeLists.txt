@@ -19,3 +19,9 @@ SET_PROPERTY(TARGET geometry PROPERTY SOVERSION 1.0)
 
 #target_link_libraries(geometry_shared tinyxml GLU ) 
 #SET_TARGET_PROPERTIES(geometry_shared geometry_static PROPERTIES OUTPUT_NAME geometry)
+
+### Install
+install(TARGETS geometry
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)

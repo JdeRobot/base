@@ -11,5 +11,10 @@ TARGET_LINK_LIBRARIES(xmlParser ${Boost_LIBRARIES})
 add_library (xmlParsershare SHARED xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
 TARGET_LINK_LIBRARIES(xmlParsershare ${Boost_LIBRARIES} ${libxmlpp_LIBRARIES} )
 
-
 set_target_properties(xmlParsershare PROPERTIES OUTPUT_NAME xmlParser)
+
+### Install
+install(TARGETS xmlParser
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)

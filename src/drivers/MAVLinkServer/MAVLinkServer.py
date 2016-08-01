@@ -15,6 +15,7 @@ import select
 import shlex
 import math
 import Ice, jderobot
+import easyiceconfig as EasyIce
 
 from MAVProxy.modules.lib import textconsole
 from MAVProxy.modules.lib import rline
@@ -909,7 +910,7 @@ def openPose3DChannel(Pose3D):
     ic = None
     Pose2Tx = Pose3D #Pose3D.getPose3DData()
     try:
-        ic = Ice.initialize(sys.argv)
+        ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("Pose3DAdapter", "default -p 9998")
         object = Pose2Tx
         #print object.getPose3DData()
@@ -935,7 +936,7 @@ def openCMDVelChannel(CMDVel):
     ic = None
     CMDVel2Rx = CMDVel #CMDVel.getCMDVelData()
     try:
-        ic = Ice.initialize(sys.argv)
+        ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("CMDVelAdapter", "default -p 9999")
         object = CMDVel2Rx
         print CMDVel2Rx
@@ -971,7 +972,7 @@ def openNavdataChannel():
     Navdata2Tx = NavdataI()
 
     try:
-        ic = Ice.initialize(sys.argv)
+        ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("NavdataAdapter", "default -p 9001")
         object = Navdata2Tx
         adapter.add(object, ic.stringToIdentity("Navdata"))
@@ -1000,7 +1001,7 @@ def openExtraChannel():
     ic = None
     Extra2Tx = ExtraI()
     try:
-        ic = Ice.initialize(sys.argv)
+        ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("ExtraAdapter", "default -p 9002")
         object = Extra2Tx
         adapter.add(object, ic.stringToIdentity("Extra"))

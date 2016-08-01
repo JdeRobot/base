@@ -41,3 +41,13 @@ set(${binname}_LIBRARIES "${binname}" CACHE STRINGS "Find(${binname})")
 ## Tests
 add_executable(test_gladelocator src/test/test_gladelocator.cpp)
 target_link_libraries(test_gladelocator ${binname})
+
+### Install
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)
+install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+    COMPONENT core
+)

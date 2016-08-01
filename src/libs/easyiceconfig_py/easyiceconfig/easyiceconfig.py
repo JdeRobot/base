@@ -62,8 +62,9 @@ def initializeProperties(args, properties = Ice.createProperties()):
     if (iceconfigfiles):
         for iceconfig in iceconfigfiles.split(","):
             loadIceConfig(iceconfig, properties)
-
-    properties.parseCommandLineOptions("", args)
+        properties.parseCommandLineOptions("", args)
+    elif (len(args) > 1):
+        loadIceConfig(args[1], properties)
 
     return properties
 
