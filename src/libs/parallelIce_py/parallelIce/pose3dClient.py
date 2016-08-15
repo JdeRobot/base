@@ -54,7 +54,7 @@ class Pose3D:
             self.pose = pose
             self.lock.release()
 
-    def getPose(self):	   
+    def getPose3D(self):	   
         if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             pose = self.pose
@@ -86,5 +86,5 @@ class Pose3DClient:
     def stop(self):
         self.kill_event.set()
 
-    def getPose(self):
-        return self.pose3d.getPose()
+    def getPose3D(self):
+        return self.pose3d.getPose3D()

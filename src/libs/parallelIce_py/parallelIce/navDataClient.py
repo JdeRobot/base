@@ -54,7 +54,7 @@ class NavData:
             self.navData = navData
             self.lock.release()
 
-    def getNavData(self):	   
+    def getNavdata(self):	   
         if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             navData = self.navData

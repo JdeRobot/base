@@ -27,6 +27,7 @@ class CMDVel:
 
     def __init__(self, ic, prefix):
         self.lock = threading.Lock()
+        prop = ic.getProperties()
 
         self.cmd=jderobot.CMDVelData()
         self.cmd.linearX=self.cmd.linearY=self.cmd.linearZ=0
@@ -126,7 +127,7 @@ class CMDVel:
         self.lock.release()
 
     def sendVelocities(self):
-        if self.cmdVelProxy:
+        if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             tmp = self.cmd
             self.lock.release()
