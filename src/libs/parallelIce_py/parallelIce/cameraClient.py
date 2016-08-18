@@ -51,7 +51,7 @@ class Camera:
             exit(-1)
 
     def update(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             image = self.proxy.getImageData(self.imgFormat)
             height = image.description.height
             width = image.description.width
@@ -63,7 +63,7 @@ class Camera:
             self.lock.release()
 
     def getImage(self):	   
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             img = np.zeros((self.height, self.width, 3), np.uint8)
             img = np.frombuffer(self.image.pixelData, dtype=np.uint8)
@@ -73,6 +73,25 @@ class Camera:
             return img
 
         return None
+
+    def getHeight(self):
+        if self.hasproxy():
+            self.lock.acquire()
+            tmp = self.height
+            self.lock.release()
+            return tmp
+        return None
+
+    def getWidth(self):
+        if self.hasproxy():
+            self.lock.acquire()
+            tmp = self.width
+            self.lock.release()
+            return tmp
+        return None
+
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy
 
 
 
@@ -100,3 +119,12 @@ class CameraClient:
 
     def getImage(self):
         return self.camera.getImage()
+
+    def getHeight(self):
+        return self.camera.getHeight()
+
+    def getWidth(self):
+        return self.camera.getWidth()
+
+    def hasproxy (self):
+        return self.camera.hasproxy()

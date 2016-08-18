@@ -48,7 +48,7 @@ class Pose3D:
 
     def update(self):
         if hasattr(self,"proxy") and self.proxy:
-            pose = self.proxy.Pose3DData()
+            pose = self.proxy.getPose3DData()
 
             self.lock.acquire()
             self.pose = pose

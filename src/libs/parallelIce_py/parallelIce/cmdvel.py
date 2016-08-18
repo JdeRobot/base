@@ -167,8 +167,8 @@ class CMDVel:
         else:
             cmd.angularZ = az
 
-        cmd.angularX = roll
-        cmd.angularY = pitch
+        cmd.angularX = ax
+        cmd.angularY = ay
 
         if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire();
