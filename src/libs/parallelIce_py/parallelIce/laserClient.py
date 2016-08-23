@@ -47,15 +47,18 @@ class Laser:
             exit(-1)
 
     def update(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             laser = self.proxy.getLaserData()
 
             self.lock.acquire()
             self.laser = laser
             self.lock.release()
 
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy
+
     def getLaser(self):     
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             laser = self.laser
             self.lock.release()

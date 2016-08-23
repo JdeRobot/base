@@ -47,15 +47,18 @@ class NavData:
             exit(-1)
 
     def update(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             navData = self.proxy.getNavdata()
 
             self.lock.acquire()
             self.navData = navData
             self.lock.release()
 
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy
+
     def getNavdata(self):	   
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             navData = self.navData
             self.lock.release()

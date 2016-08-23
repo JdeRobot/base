@@ -127,7 +127,7 @@ class CMDVel:
         self.lock.release()
 
     def sendVelocities(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             tmp = self.cmd
             self.lock.release()
@@ -170,7 +170,10 @@ class CMDVel:
         cmd.angularX = ax
         cmd.angularY = ay
 
-        if hasattr(self,"proxy") and self.proxy:
-            self.lock.acquire();
+        if self.hasproxy():
+            self.lock.acquire()
             self.proxy.setCMDVelData(cmd)
-            self.lock.release();
+            self.lock.release()
+
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy

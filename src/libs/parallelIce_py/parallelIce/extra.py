@@ -44,31 +44,34 @@ class Extra:
 
 
     def takeoff(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.takeoff()
             self.lock.release()
         
     def land(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.land()
             self.lock.release()
         
     def toggleCam(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.toggleCam()
             self.lock.release()
               
     def reset(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.reset()
             self.lock.release()
         
     def record(self,record):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.recordOnUsb(record)
             self.lock.release()
+
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy

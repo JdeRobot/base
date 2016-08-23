@@ -79,7 +79,7 @@ class Motors:
         return self.maxV
 
     def sendVelocities(self):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             v = self.v
             w = self.w
@@ -88,16 +88,16 @@ class Motors:
             self.sendW(w)
 
     def sendV(self, v):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.setV(v)
             self.lock.release()
 
     def sendW(self, w):
-        if hasattr(self,"proxy") and self.proxy:
+        if self.hasproxy():
             self.lock.acquire()
             self.proxy.setW(w)
             self.lock.release()
 
-    def update(self):
-        self.sendVelocities()
+    def hasproxy (self):
+        return hasattr(self,"proxy") and self.proxy
