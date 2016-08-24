@@ -145,7 +145,7 @@ class Pose3D:
         else:
             rotateY = asin(rotateYa0)
 
-       return rotateY
+        return rotateY
 
     def quat2Roll (self, qw, qx, qy, qz):
         rotateXa0=2.0*(qy*qz + qw*qx)
