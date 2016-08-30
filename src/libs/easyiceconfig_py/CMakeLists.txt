@@ -13,7 +13,7 @@ file(GLOB ModuleFiles
 string(REGEX REPLACE "[^;]+\\.in;?" "" ModuleFiles "${ModuleFiles}")
 
 
-add_custom_target(easyiceconfig_py)
+add_custom_target(easyiceconfig_py ALL)
 foreach(ModuleFile ${ModuleFiles})
     add_custom_command(TARGET easyiceconfig_py 
         COMMAND ${CMAKE_COMMAND} -E copy
