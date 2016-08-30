@@ -140,7 +140,7 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/jderobot COMPONENT core)
 
 # Install python files
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/*py)
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/*py)
 FOREACH(header ${HEADERS_FILES})
 	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
 ENDFOREACH(header)
@@ -162,7 +162,7 @@ ENDFOREACH(lib)
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
     string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
+		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/libs" "" new_source2 ${new_source1})
     INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source2} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
