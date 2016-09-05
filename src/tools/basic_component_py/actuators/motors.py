@@ -17,87 +17,50 @@
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
 
+
 import traceback
 import jderobot
 import threading
 import Ice
-from parallelIce.threadSensor import ThreadSensor
 
 
 class Motors:
 
-    def __init__(self, ic, prefix):
+    def __init__(self, ic):
         self.lock = threading.Lock()
         self.v = self.w = 0
-        prop = ic.getProperties()
-        
-        maxWstr = prop.getProperty(prefix+".maxW")
-        if maxWstr:
-            self.maxW = float(maxWstr)
-        else:
-            self.maxW = 0.5
-            print (prefix+".maxW not provided, the default value is used: "+ repr(self.maxW))
-                
-
-        maxVstr = prop.getProperty(prefix+".maxV")
-        if maxWstr:
-            self.maxV = float(maxVstr)
-        else:
-            self.maxV = 5
-            print (prefix+".maxV not provided, the default value is used: "+ repr(self.maxV))
-
         try:
-            base = ic.propertyToProxy(prefix+".Proxy")
+            base = ic.propertyToProxy("basic_component.Motors.Proxy")
             self.proxy = jderobot.MotorsPrx.checkedCast(base)
 
-
             if not self.proxy:
-                print ('Interface ' + prefix + ' not configured')
+                print ('Interface Motors not configured')
 
         except Ice.ConnectionRefusedException:
-            print(prefix + ': connection refused')
-
-        except:
-            traceback.print_exc()
+            print('Motors: connection refused')
+	except:
+	    traceback.print_exc()
             exit(-1)
 
     def setV(self, v):
-        self.lock.acquire()
         self.v = v
-        self.lock.release()
-        
 
     def setW(self, w):
-        self.lock.acquire()
         self.w = w
-        self.lock.release()
-
-    def getMaxW(self):
-        return self.maxW
-
-    def getMaxV(self):
-        return self.maxV
 
     def sendVelocities(self):
-        if self.hasproxy():
-            self.lock.acquire()
-            v = self.v
-            w = self.w
-            self.lock.release()
-            self.sendV(v)
-            self.sendW(w)
+	if hasattr(self,"proxy") and self.proxy:
+            self.sendV(self.v)
+            self.sendW(self.w)
 
     def sendV(self, v):
-        if self.hasproxy():
+	if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             self.proxy.setV(v)
             self.lock.release()
 
     def sendW(self, w):
-        if self.hasproxy():
+	if hasattr(self,"proxy") and self.proxy:
             self.lock.acquire()
             self.proxy.setW(w)
             self.lock.release()
-
-    def hasproxy (self):
-        return hasattr(self,"proxy") and self.proxy
