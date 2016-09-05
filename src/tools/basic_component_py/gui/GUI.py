@@ -63,7 +63,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def setXYValues(self, newX, newY):
         self.XValue.setText(str(newX))
         self.YValue.setText(str(newY))
-        self.motors.setV(-newY)
-        self.motors.setW(-newX)
+        myW=-newX*self.motors.getMaxW()
+        myV=-newY*self.motors.getMaxV()
+        self.motors.setV(myV)
+        self.motors.setW(myW)
         self.motors.sendVelocities()
 
