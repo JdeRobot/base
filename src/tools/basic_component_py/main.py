@@ -21,8 +21,9 @@
 
 import sys
 
-from parallelIce.cameraClient import CameraClient
-from parallelIce.motors import Motors
+from sensors.camera import Camera
+from actuators.motors import Motors
+from sensors.threadSensor import ThreadSensor
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt4 import QtGui
@@ -34,14 +35,18 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
     ic = EasyIce.initialize(sys.argv)
-    camera = CameraClient(ic,"basic_component.Camera",True)
-    motors = Motors(ic,"basic_component.Motors")
+    camera = Camera(ic)
+    motors = Motors(ic)
 
     app = QtGui.QApplication(sys.argv)
     frame = MainWindow()
     frame.setMotors(motors)
     frame.setCamera(camera)
     frame.show()
+
+    t1 = ThreadSensor(camera)
+    t1.daemon = True
+    t1.start()
 
     t2 = ThreadGUI(frame)
     t2.daemon = True
