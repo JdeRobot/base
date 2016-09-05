@@ -19,7 +19,7 @@
 
 
 #include "easyiceconfig/loader.hpp"
-#include "easyiceconfig/hardcoredlocations.h"
+#include "easyiceconfig/hardcodedlocations.h"
 
 namespace easyiceconfig{
 namespace loader{
