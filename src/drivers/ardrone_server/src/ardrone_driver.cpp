@@ -26,6 +26,7 @@
 #include "ardrone_server/interfaces/ardroneextrai.h"
 #include "ardrone_server/interfaces/navdatagpsi.h"
 #include <signal.h>
+#include "easyiceconfig/EasyIce.h" 
 
 
 ARDroneDriver::ARDroneDriver()
@@ -195,7 +196,7 @@ void ARDroneDriver::configureDrone(char* configFile)
 
 void ARDroneDriver::initIce(int argc, char** argv)
 {
-	ic = Ice::initialize(argc, argv);
+	ic = EasyIce::initialize(argc, argv);
 }
 
 Ice::CommunicatorPtr ARDroneDriver::getCommunicator()

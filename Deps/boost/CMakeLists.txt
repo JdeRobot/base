@@ -1,5 +1,6 @@
 include(FindPkgConfig)
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS system filesystem REQUIRED
+             OPTIONAL_COMPONENTS thread)
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 # Find related packages for this system

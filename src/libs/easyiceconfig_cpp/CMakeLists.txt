@@ -11,12 +11,20 @@ list(APPEND Ice_LIBRARIES Ice IceUtil)
 
 
 ### Project config
-include_directories(include)
+include_directories(
+    include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+configure_file(
+    include/easyiceconfig/hardcodedlocations.h.in
+    include/easyiceconfig/hardcodedlocations.h
+    @ONLY
+)
 
 set(HEADERS
     include/easyiceconfig/EasyIce.h
-    include/easyiceconfig/hardcoredlocations.h
-
+    ${CMAKE_CURRENT_BINARY_DIR}/include/easyiceconfig/hardcodedlocations.h
     include/easyiceconfig/loader.hpp
     include/easyiceconfig/initializer.hpp
     include/easyiceconfig/injector.hpp

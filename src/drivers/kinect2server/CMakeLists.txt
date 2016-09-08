@@ -8,6 +8,7 @@ IF(LIBFREENECT_PATH)
 
     include_directories(
         ${INTERFACES_CPP_DIR}
+    	${easyiceconfig_INCLUDE_DIRS}
         ${LIBS_DIR}/ 
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/cameras
@@ -16,6 +17,10 @@ IF(LIBFREENECT_PATH)
         ${freenect2_INCLUDE_DIRS}
 /usr/local/include/libfreenect2/tinythread/
     )
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
+)
 
     TARGET_LINK_LIBRARIES(kinect2Server
         ${CMAKE_THREAD_LIBS_INIT}
@@ -30,6 +35,7 @@ IF(LIBFREENECT_PATH)
         colorspacesmm
         JderobotInterfaces
         ${Boost_LIBRARIES}
+    	${easyiceconfig_LIBRARIES}
         ${LIBXML2_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${freenect2_LIBRARIES}

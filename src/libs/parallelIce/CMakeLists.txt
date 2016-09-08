@@ -13,3 +13,9 @@ TARGET_LINK_LIBRARIES(parallelIceshare colorspacesmm logger ${Boost_LIBRARIES} $
 
 
 set_target_properties(parallelIceshare PROPERTIES OUTPUT_NAME parallelIce)
+
+### Install
+install(TARGETS parallelIce
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    COMPONENT core
+)

@@ -19,7 +19,7 @@
 
 
 #include "easyiceconfig/loader.hpp"
-#include "easyiceconfig/hardcoredlocations.h"
+#include "easyiceconfig/hardcodedlocations.h"
 
 namespace easyiceconfig{
 namespace loader{
@@ -65,8 +65,11 @@ initializeProperties(Ice::StringSeq args, Ice::PropertiesPtr properties){
     if (!iceconfigs.empty()){
         for (std::string iceconfig : std::split(iceconfigs, ","))
             loadIceConfig(iceconfig, properties);
+	properties->parseCommandLineOptions("", args);
+    }else if (args.size() > 1){
+        loadIceConfig(args[1], properties);
     }
-    properties->parseCommandLineOptions("", args);
+    
 
     return properties;
 }

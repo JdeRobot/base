@@ -22,6 +22,8 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
+#include "easyiceconfig/EasyIce.h" 
+
 #include "pthread.h"
 #include <signal.h>
 #include <log/Logger.h>
@@ -59,7 +61,7 @@ int main(int argc, char** argv){
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 	try{
-		ic = Ice::initialize(argc,argv);
+		ic = EasyIce::initialize(argc,argv);
 		prop = ic->getProperties();
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;

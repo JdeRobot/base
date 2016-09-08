@@ -13,10 +13,12 @@ include_directories(
     ${libglademm_INCLUDE_DIRS}
     ${gtkglextmm_INCLUDE_DIRS}
     ${resourcelocator_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
 )
 
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
+	${easyiceconfig_LIBRARY_DIRS}
 )
 
 add_executable (recorder2
@@ -36,6 +38,7 @@ TARGET_LINK_LIBRARIES(recorder2
     ${gsl_LIBRARIES}
     ${ZeroCIce_LIBRARIES}
     ${Boost_LIBRARIES}
+    ${easyiceconfig_LIBRARIES} 
     colorspacesmm
     JderobotInterfaces
     jderobotutil
