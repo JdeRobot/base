@@ -9,18 +9,18 @@
                     <mesh>
                         <uri>model://mapaSimple/meshes/mapa.dae</uri>
                         <scale>0.1 0.1 0.1</scale>
-                    </mesh>
-                </geometry>
-            </collision>
+                   </mesh>
+               </geometry>
+           </collision>
             <visual name="visual">
                 <pose>0 0 0 0 0 0</pose>
                 <geometry>
                     <mesh>
                         <uri>model://mapaSimple/meshes/mapa.dae</uri>
                         <scale>0.1 0.1 0.1</scale>	
-                    </mesh>
-                </geometry>
-            </visual>
-        </link>        
-    </model>
+                   </mesh>
+               </geometry>
+           </visual>
+       </link>       
+   </model>
 </sdf>

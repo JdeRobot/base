@@ -10,16 +10,16 @@
               <mesh>
             		<uri>model://cityLarge/meshes/model.dae</uri>
           		</mesh>
-            </geometry>
-       </collision>
+           </geometry>
+      </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://cityLarge/meshes/model.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-    </link>
-  </model>
+         </mesh>
+       </geometry>
+     </visual>
+   </link>
+ </model>
 </sdf>
 

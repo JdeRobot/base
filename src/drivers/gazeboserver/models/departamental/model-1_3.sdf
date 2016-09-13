@@ -10,9 +10,9 @@
 		          <uri>model://departamental/images/departamental2.png</uri>
               <size>50 50 2</size>
               <pos>0 0 0</pos>
-            </heightmap>
-          </geometry>
-        </collision>
+           </heightmap>
+         </geometry>
+       </collision>
         
         <visual name="visual">
              <cast_shadows>false</cast_shadows>
@@ -22,13 +22,13 @@
                 <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>50</size>
-              </texture>
+             </texture>
               
              <texture>
                 <diffuse>file://media/materials/textures/wood.jpg</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>20</size>
-              </texture>
+             </texture>
 		        
 		          <uri>model://departamental/images/departamental2.png</uri>
               	  <size>50 50 2</size>
@@ -37,17 +37,17 @@
                 <blend>
                 	<min_height>0</min_height>
                 	<fade_dist>0</fade_dist>
-                </blend>	          
-	        </heightmap>
-		     </geometry>
+               </blend>	          
+	       </heightmap>
+		    </geometry>
 		     <material>
 		      <script>
 		        <uri>file://media/materials/scripts/gazebo.material</uri>
 		        <name>Gazebo/Grey</name>
-		      </script>
-		    </material>
-        </visual>
+		     </script>
+		   </material>
+       </visual>
         
-      </link>
-    </model>
+     </link>
+   </model>
 </sdf>

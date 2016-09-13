@@ -7,17 +7,17 @@
           <mesh>
             <scale>10 10 10</scale>
             <uri>model://construction_cone/meshes/construction_cone.dae</uri>
-          </mesh>
-        </geometry>
-      </collision>
+         </mesh>
+       </geometry>
+     </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <scale>10 10 10</scale>
             <uri>model://construction_cone/meshes/construction_cone.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-    </link>
-  </model>
+         </mesh>
+       </geometry>
+     </visual>
+   </link>
+ </model>
 </sdf>

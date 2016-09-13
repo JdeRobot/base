@@ -6,23 +6,23 @@
       <gravity>false</gravity>
       <inertial>
         <mass>0.1</mass>
-      </inertial>
+     </inertial>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://hokuyo/meshes/hokuyo.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
 
       <collision name="collision-base">
         <pose>0 0 -0.0145 0 0 0</pose>
         <geometry>
           <box>
             <size>0.05 0.05 0.041</size>
-          </box>
-        </geometry>
-      </collision>
+         </box>
+       </geometry>
+     </collision>
 
       <collision name="collision-top">
         <pose>0 0 0.0205 0 0 0</pose>
@@ -30,9 +30,9 @@
           <cylinder>
             <radius>0.021</radius>
             <length>0.029</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
 
 
       <sensor name="laser" type="ray">
@@ -44,20 +44,20 @@
               <resolution>1</resolution>
               <min_angle>-2.26889</min_angle>
               <max_angle>2.268899</max_angle>
-            </horizontal>
-          </scan>
+           </horizontal>
+         </scan>
           <range>
             <min>0.08</min>
             <max>10</max>
             <resolution>0.01</resolution>
-          </range>
-        </ray>
+         </range>
+       </ray>
 
         <plugin name="laser" filename="libRayPlugin.so" />
         <always_on>1</always_on>
         <update_rate>30</update_rate>
         <visualize>true</visualize>
-      </sensor>
-    </link>
-  </model>
+     </sensor>
+   </link>
+ </model>
 </sdf>

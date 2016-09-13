@@ -8,17 +8,17 @@
           <plane>
             <normal>0 0 1</normal>
             <size>100 100</size>
-          </plane>
-        </geometry>
+         </plane>
+       </geometry>
         <surface>
           <friction>
             <ode>
               <mu>100</mu>
               <mu2>50</mu2>
-            </ode>
-          </friction>
-        </surface>
-      </collision>
-    </link>
-  </model>
+           </ode>
+         </friction>
+       </surface>
+     </collision>
+   </link>
+ </model>
 </gazebo>
