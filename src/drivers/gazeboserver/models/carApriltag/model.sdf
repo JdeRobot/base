@@ -10,16 +10,16 @@
               <mesh>
             		<uri>model://carApriltag/meshes/model.dae</uri>
           		</mesh>
-           </geometry>
-      </collision>
+          </geometry>
+     </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://carApriltag/meshes/model.dae</uri>
-         </mesh>
-       </geometry>
-     </visual>
-   </link>
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
     <link name="front_right_wheel">
         <pose>1.1 -1.70000 0.448000 0 1.5707 0</pose>
          <inertial>
@@ -31,28 +31,28 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-     </inertial>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-     </link>
+    </link>
       <link name="front_left_wheel">
         <pose>-1.100000 -1.70000 0.448000 0 1.5707 0</pose>
         <inertial>
@@ -64,27 +64,27 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-     </inertial>
+      </inertia>
+    </inertial>
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-     </link>
+    </link>
       
       <link name="front_left_steering_wheel_block">
         <pose>-1.100000 -1.70000 0.448000 0 1.5707 0</pose>
@@ -97,28 +97,28 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-     </inertial>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-           </cylinder>
-         </geometry>
-       </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-		</link>      
+		</link>     
         
         <link name="front_right_steering_wheel_block">
         <pose>1.100000 -1.70000 0.448000 0 1.5707 0</pose>
@@ -131,28 +131,28 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-     </inertial>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-           </cylinder>
-         </geometry>
-       </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-     </link>
+    </link>
       
       <link name="rear_left_wheel">
         <pose>1.1 1.242288 0.448000 0 1.5707 0</pose>
@@ -165,16 +165,16 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-       </inertial>
+      </inertia>
+      </inertial>
         <collision name="collision">
 
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
+          </cylinder>
+        </geometry>
 
           <max_contacts>1</max_contacts>
         <surface>
@@ -185,27 +185,27 @@
               <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <contact>
             <ode>
               <min_depth>0.005</min_depth>
               <kp>1e8</kp>
-           </ode>
-         </contact>
-       </surface>
-       </collision>
+          </ode>
+        </contact>
+      </surface>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-     </link>
+    </link>
       
       <link name="rear_right_wheel">
         <pose>-1.1 1.242288 0.448000 0 1.5707 0</pose>
@@ -218,16 +218,16 @@
           <ixz>0.0</ixz>
           <iyz>0.0</iyz>
           <izz>1.0</izz>
-       </inertia>
-       </inertial>
+      </inertia>
+      </inertial>
         <collision name="collision">
 
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
+          </cylinder>
+        </geometry>
 
           <max_contacts>1</max_contacts>
         <surface>
@@ -238,27 +238,27 @@
               <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <contact>
             <ode>
               <min_depth>0.005</min_depth>
               <kp>1e8</kp>
-           </ode>
-         </contact>
-       </surface>
-       </collision>
+          </ode>
+        </contact>
+      </surface>
+      </collision>
 <!--
         <visual name="visual">
           <geometry>
             <cylinder>
               <radius>.45</radius>
               <length>.3</length>
-           </cylinder>
-         </geometry>
-       </visual>
+          </cylinder>
+        </geometry>
+      </visual>
 -->
-     </link>
+    </link>
       
        <joint type="revolute" name="front_left_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -266,16 +266,16 @@
         <parent>front_left_steering_wheel_block</parent>
         <axis>
           <xyz>1 0 0</xyz>
-       </axis>
-     </joint>
+      </axis>
+    </joint>
       <joint type="revolute" name="front_right_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
         <child>front_right_wheel</child>
         <parent>front_right_steering_wheel_block</parent>
         <axis>
           <xyz>1 0 0</xyz>
-       </axis>
-     </joint>
+      </axis>
+    </joint>
       
       <joint type="revolute" name="front_left_steering_wheel">
         <pose>0 0 0 0 0 0</pose>
@@ -289,18 +289,18 @@
         	 <limit>
         	 		<lower>-0.52359</lower>
               <upper>0.52359</upper>
-         </limit><!---->
-       </axis>
+        </limit><!---->
+      </axis>
         <physics>
         <ode>
           <cfm_damping>1</cfm_damping>
           <limit>
             <cfm>0.000000</cfm>
             <erp>0.900000</erp>
-         </limit>
-       </ode>
-     </physics>
-     </joint>
+        </limit>
+      </ode>
+    </physics>
+    </joint>
       <joint type="revolute" name="front_right_steering_wheel">
         <pose>0 0 0 0 0 0</pose>
         <child>front_right_steering_wheel_block</child>
@@ -313,18 +313,18 @@
      		 <limit>
               <lower>-0.52359</lower>
               <upper>0.52359</upper>
-         </limit><!---->
-       </axis>
+        </limit><!---->
+      </axis>
         <physics>
         <ode>
           <cfm_damping>1</cfm_damping>
           <limit>
             <cfm>0.000000</cfm>
             <erp>0.900000</erp>
-         </limit>
-       </ode>
-     </physics>
-     </joint><!---->
+        </limit>
+      </ode>
+    </physics>
+    </joint><!---->
       
       <joint type="revolute" name="rear_right_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -332,8 +332,8 @@
         <parent>car</parent>
         <axis>
           <xyz>1 0 0</xyz>
-       </axis>
-     </joint>
+      </axis>
+    </joint>
       
       <joint type="revolute" name="rear_left_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -341,15 +341,15 @@
         <parent>car</parent>
         <axis>
           <xyz>1 0 0</xyz>
-       </axis>
-     </joint>
+      </axis>
+    </joint>
       <plugin name="carMotors" filename="libcarMotors.so">
       	<front_right_joint>front_right_wheel_hinge</front_right_joint>
       	<front_left_joint>front_left_wheel_hinge</front_left_joint>
 			<front_right_steering_joint>front_right_steering_wheel</front_right_steering_joint>
 			<front_left_steering_joint>front_left_steering_wheel</front_left_steering_joint>
 			<!--<torque>5</torque>-->
-     </plugin>
- </model>
+    </plugin>
+</model>
 </sdf>
 

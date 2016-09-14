@@ -8,7 +8,7 @@
             <mesh>
             	<uri>model://duck/meshes/duck2.dae</uri>
         	</mesh>
-         </geometry>
+        </geometry>
 		</collision>
 
         <visual name="duck_visual">
@@ -16,8 +16,8 @@
             <mesh>
             	<uri>model://duck/meshes/duck.dae</uri>
         	</mesh>
-         </geometry>
-       </visual>
-     </link>
+        </geometry>
+      </visual>
+    </link>
   	</model>
 </sdf>

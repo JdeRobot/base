@@ -5,22 +5,22 @@
     <link name="link">
       <inertial>
         <mass>0.1</mass>
-     </inertial>
+    </inertial>
 
       <collision name="collision">
         <geometry>
           <box>
             <size>0.073000 0.276000 0.072000</size>
-         </box>
-       </geometry>
-     </collision>
+        </box>
+      </geometry>
+    </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://kinect/meshes/kinect.dae</uri>
-         </mesh>
-       </geometry>
-     </visual>
+        </mesh>
+      </geometry>
+    </visual>
 
       <sensor name="camera" type="depth">
         <update_rate>20</update_rate>
@@ -30,13 +30,13 @@
             <width>640</width>
             <height>480</height>
             <format>R8G8B8</format>
-         </image>
+        </image>
           <clip>
             <near>0.05</near>
             <far>3</far>
-         </clip>
-       </camera>
-     </sensor>
-   </link>
- </model>
+        </clip>
+      </camera>
+    </sensor>
+  </link>
+</model>
 </gazebo>

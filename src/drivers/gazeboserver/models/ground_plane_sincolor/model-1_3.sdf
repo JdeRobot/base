@@ -8,17 +8,17 @@
           <plane>
             <normal>0 0 1</normal>
             <size>100 100</size>
-         </plane>
-       </geometry>
+        </plane>
+      </geometry>
         <surface>
           <friction>
             <ode>
               <mu>100</mu>
               <mu2>50</mu2>
-           </ode>
-         </friction>
-       </surface>
-     </collision>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
       <!--
       <visual name="visual">
         <cast_shadows>false</cast_shadows>
@@ -26,16 +26,16 @@
           <plane>
             <normal>0 0 1</normal>
             <size>100 100</size>
-         </plane>
-       </geometry>
+        </plane>
+      </geometry>
         <material>
           <script>
             <uri>file://media/materials/scripts/gazebo.material</uri>
             <name>Gazebo/Grey</name>
-         </script>
-       </material>
-     </visual>
+        </script>
+      </material>
+    </visual>
       -->
-   </link>
- </model>
+  </link>
+</model>
 </sdf>

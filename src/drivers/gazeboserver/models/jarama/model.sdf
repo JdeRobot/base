@@ -5,7 +5,7 @@
       	<static>true</static>
 
       
-      <link name="link2">   
+      <link name="link2">  
 
       	<collision name="coliision">
 		     <geometry>
@@ -15,46 +15,46 @@
 		          <size>50 50 10</size>
 		          <pos>0 0 0</pos>
 	        	</heightmap>
-		    </geometry>
+		   </geometry>
       	</collision>
 
         <visual name="visual">
 		     <geometry>
-	        	<heightmap>  
+	        	<heightmap> 
 	        	
 		          <texture>
 		            <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
 		            <normal>file://media/materials/textures/flat_normal.png</normal>
 		            <size>50</size>
-		         </texture>
+		        </texture>
 		          
 		          <texture>
 		            <diffuse>file://media/materials/textures/flat_normal.png</diffuse>
 		            <normal>file://media/materials/textures/flat_normal.png</normal>
 		            <size>50</size>
-		         </texture>
+		        </texture>
 		          
 		         <texture>
 		            <diffuse>file://media/materials/textures/wood.jpg</diffuse>
 		            <normal>file://media/materials/textures/flat_normal.png</normal>
 		            <size>20</size>
-		         </texture>
+		        </texture>
               
 		            <blend>
 		            	<min_height>0</min_height>
 		            	<fade_dist>0</fade_dist>
-		           </blend>
+		          </blend>
 			    	
 		            <blend>
 		            	<min_height>0.01</min_height>
 		            	<fade_dist>0</fade_dist>
-		           </blend>
+		          </blend>
 		          <uri>model://jarama/images/jaramaCircuitoRetocado.png</uri>
 		          <size>50 50 1</size>
 		          <pos>0 0 0</pos>
 	        	</heightmap>
-		    </geometry>
-       </visual>
-     </link>     
-   </model>
+		   </geometry>
+      </visual>
+    </link>    
+  </model>
 </sdf>

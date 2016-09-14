@@ -6,16 +6,16 @@
       <link name="flyingKinect">
          <inertial>
             <mass>0.30</mass>
-        </inertial>
+       </inertial>
          <pose>0 0 0 0 0 0</pose>
          <visual name="visual">
             <pose>0 0 0 0 0 0</pose>
             <geometry>
                <mesh>
                   <uri>model://flyingKinect2/meshes/kinect.dae</uri>
-              </mesh>
-           </geometry>
-        </visual>
+             </mesh>
+          </geometry>
+       </visual>
          <sensor name="flyingKinect" type="depth">
             <update_rate>5</update_rate>
             <camera>
@@ -24,13 +24,13 @@
                   <width>640</width>
                   <height>480</height>
                   <format>R8G8B8</format>
-              </image>
+             </image>
                <clip>
                   <near>0.05</near>
                   <far>5</far>
-              </clip>
-           </camera>
-        </sensor>
-     </link>
-  </model>
+             </clip>
+          </camera>
+       </sensor>
+    </link>
+ </model>
 </sdf>

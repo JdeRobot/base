@@ -33,7 +33,7 @@
       <!-- Ice configuration -->
       <iceConfigFile>quadrotorplugin2_green.cfg</iceConfigFile>
       <!--iceAdapterPort>9000</iceAdapterPort-->
-   </plugin>
+  </plugin>
     <link name='base_link'>
       <gravity>1</gravity>
       <self_collide>0</self_collide>
@@ -44,16 +44,16 @@
         <inertia>
           <ixx>0.013721</ixx><ixy>0</ixy><ixz>-0.000023</ixz>
           <iyy>0.014476</iyy><iyz>0</iyz><izz>0.024755</izz>
-       </inertia>
-     </inertial>
+      </inertia>
+    </inertial>
       <collision name='base_link_geom'>
         <laser_retro>0</laser_retro>
         <pose>0 0 0 0 -0 0.00000</pose>
         <geometry>
           <mesh>
             <uri>model://GreenArDrone2/meshes/quadrotor/green_quadrotorbm.stl</uri>
-         </mesh>
-       </geometry>
+        </mesh>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -62,12 +62,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -76,10 +76,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001000</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -87,17 +87,17 @@
         <geometry>
           <mesh>
             <uri>model://GreenArDrone2/meshes/quadrotor/green_quadrotor.dae</uri>
-         </mesh>
-       </geometry>
-     </visual>
+        </mesh>
+      </geometry>
+    </visual>
       <collision name='base_link_geom_ardrone_base_bottomcam'>
         <laser_retro>0</laser_retro>
         <pose>0.150000 0 0 -0 -0 -1.570800</pose>
         <geometry>
           <box>
             <size>0.001000 0.001000 0.001000</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -106,12 +106,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -120,10 +120,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001000</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_ardrone_base_bottomcam_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -132,17 +132,17 @@
         <geometry>
           <box>
             <size>0.001000 0.001000 0.001000</size>
-         </box>
-       </geometry>
-     </visual>
+        </box>
+      </geometry>
+    </visual>
       <collision name='base_link_geom_ardrone_base_frontcam'>
         <laser_retro>0</laser_retro>
         <pose>0.210000 0 0.010000 -1.570800 -0 -1.570800</pose>
         <geometry>
           <box>
             <size>0.001000 0.001000 0.001000</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -151,12 +151,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -165,10 +165,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001000</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_ardrone_base_frontcam_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -177,17 +177,17 @@
         <geometry>
           <box>
             <size>0.001000 0.001000 0.001000</size>
-         </box>
-       </geometry>
-     </visual>
+        </box>
+      </geometry>
+    </visual>
       <collision name='base_link_geom_bottom_link'>
         <laser_retro>0</laser_retro>
         <pose>0.150000 0 0 3.141593 -1.570793 3.141593</pose>
         <geometry>
           <box>
             <size>0.01 0.01 0.01</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -196,12 +196,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -210,10 +210,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_bottom_link_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -222,20 +222,20 @@
         <geometry>
           <box>
             <size>0.01 0.01 0.01</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <material>
           <script>PR2/Blue</script>
-       </material>
-     </visual>
+      </material>
+    </visual>
       <collision name='base_link_geom_front_link'>
         <laser_retro>0</laser_retro>
         <pose>0.21 0 0.01 0 -0 0</pose>
         <geometry>
           <box>
             <size>0.01 0.01 0.01</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -244,12 +244,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -258,10 +258,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_front_link_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -270,20 +270,20 @@
         <geometry>
           <box>
             <size>0.01 0.01 0.01</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <material>
           <script>PR2/Blue</script>
-       </material>
-     </visual>
+      </material>
+    </visual>
       <collision name='base_link_geom_sonar_link'>
         <laser_retro>0</laser_retro>
         <pose>-0.15 0 0 3.141593 1.570793 3.141593</pose>
         <geometry>
           <box>
             <size>0.01 0.01 0.01</size>
-         </box>
-       </geometry>
+        </box>
+      </geometry>
         <surface>
           <friction>
             <ode>
@@ -292,12 +292,12 @@
               <fdir1>0 0 0</fdir1>
               <slip1>0</slip1>
               <slip2>0</slip2>
-           </ode>
-         </friction>
+          </ode>
+        </friction>
           <bounce>
             <restitution_coefficient>0</restitution_coefficient>
             <threshold>100000</threshold>
-         </bounce>
+        </bounce>
           <contact>
             <ode>
               <soft_cfm>0</soft_cfm>
@@ -306,10 +306,10 @@
               <kd>1</kd>
               <max_vel>100</max_vel>
               <min_depth>0.001000</min_depth>
-           </ode>
-         </contact>
-       </surface>
-     </collision>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
       <visual name='base_link_geom_sonar_link_visual'>
         <cast_shadows>1</cast_shadows>
         <laser_retro>0</laser_retro>
@@ -318,9 +318,9 @@
         <geometry>
           <mesh>
             <uri>model://GreenArDrone2/meshes/sonar_sensor/max_sonar_ez4.dae</uri>
-         </mesh>
-       </geometry>
-     </visual>
+        </mesh>
+      </geometry>
+    </visual>
       <sensor name='cam_sensor_ventral' type='camera'>
         <always_on>0</always_on>
         <update_rate>60</update_rate>
@@ -332,13 +332,13 @@
 		<width>320</width>
             <height>240</height>
             <format>R8G8B8</format>
-         </image>
+        </image>
           <clip>
             <near>0.010000</near>
             <far>100</far>
-         </clip>
-       </camera>
-     </sensor>
+        </clip>
+      </camera>
+    </sensor>
       <sensor name='cam_sensor_frontal' type='camera'>
         <always_on>0</always_on>
         <update_rate>60</update_rate>
@@ -350,12 +350,12 @@
             <width>320</width>
             <height>240</height>
             <format>R8G8B8</format>
-         </image>
+        </image>
           <clip>
             <near>0.010000</near>
             <far>100</far>
-         </clip>
-       </camera>
+        </clip>
+      </camera>
 	</sensor>
 	<sensor name='sonar' type='ray'>
 	  <always_on>0</always_on>
@@ -376,17 +376,17 @@
 		  <min_angle>-0.349066</min_angle>
 		  <max_angle>0.349066</max_angle>
 		</vertical>
-	   </scan>
+	  </scan>
 	    <range>
 		<min>0.010000</min>
 		<max>3</max>
 		<resolution>0.010000</resolution>
-	   </range>
-	 </ray>
+	  </range>
+	</ray>
 	</sensor>
       <sensor name="imu_sensor" type="imu">
         <update_rate>20</update_rate>
 	</sensor>
-   </link>
- </model>
+  </link>
+</model>
 </sdf>
