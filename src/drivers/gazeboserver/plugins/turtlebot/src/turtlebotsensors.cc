@@ -42,13 +42,13 @@ TurtlebotSensors::Load(ModelPtr model){
 
     for (SensorPtr s: sm->GetSensors()){
 //        if (s->GetParentId() != base_link_id) continue;
-        std::string name = s->GetName();
+        std::string name = s->Name();
         if (name.find("laser") != std::string::npos)
-            laser = boost::static_pointer_cast<RaySensor>(s);
+            laser = std::static_pointer_cast<RaySensor>(s);
         if (name.find("cam_turtlebot_left") != std::string::npos)
-            cam[CAM_LEFT] = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
-            cam[CAM_RIGHT] = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
 
         pose = model->GetWorldPose();
     }
@@ -83,9 +83,9 @@ TurtlebotSensors::debugInfo(){
     std::cout << _log_prefix << "Sensors of " << model->GetName() << std::endl;
     boost::format fmt(_log_prefix+"\t%1% (id: %2%)\n");
 
-    std::cout << fmt % cam[CAM_LEFT]->GetName() % cam[CAM_LEFT]->GetId();
-    std::cout << fmt % cam[CAM_RIGHT]->GetName() % cam[CAM_RIGHT]->GetId();
-    std::cout << fmt % laser->GetName() % laser->GetId();
+    std::cout << fmt % cam[CAM_LEFT]->Name() % cam[CAM_LEFT]->Id();
+    std::cout << fmt % cam[CAM_RIGHT]->Name() % cam[CAM_RIGHT]->Id();
+    std::cout << fmt % laser->Name() % laser->Id();
 }
 
 void
@@ -102,13 +102,13 @@ TurtlebotSensors::_on_cam(int id){
 
     if (img[id].empty()){
 
-        const unsigned char *data = cam[id]->GetImageData();
+        const unsigned char *data = cam[id]->ImageData();
         if (data == 0)
             return;
 
         std::cout <<  _log_prefix << "\tbootstrap cam["<<id<<"]" << std::endl;
-        uint32_t h = cam[id]->GetImageHeight();
-        uint32_t w = cam[id]->GetImageWidth();
+        uint32_t h = cam[id]->ImageHeight();
+        uint32_t w = cam[id]->ImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
         cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
@@ -127,7 +127,7 @@ TurtlebotSensors::_on_laser(){
     ranges.resize(c);*/
 
     //laser values
-    MultiRayShapePtr laserV = this->laser->GetLaserShape();
+    MultiRayShapePtr laserV = this->laser->LaserShape();
 
 
     laserValues.resize(laserV->GetSampleCount ());
