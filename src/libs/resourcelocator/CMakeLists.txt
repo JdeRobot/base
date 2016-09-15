@@ -15,13 +15,20 @@ list(APPEND LIBRARIES)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+configure_file(
+    include/resourcelocator/gladelocator.hpp.in
+    include/resourcelocator/gladelocator.hpp
+    @ONLY
 )
 
 ## Sources
 set(SOURCES
 	include/resourcelocator/stdutils.hpp
 	include/resourcelocator/resourcelocator.hpp
-	include/resourcelocator/gladelocator.hpp
+	${CMAKE_CURRENT_BINARY_DIR}/include/resourcelocator/gladelocator.hpp
 
 	src/resourcelocator.cpp
 )
@@ -34,7 +41,7 @@ target_link_libraries(${binname} ${LIBRARIES})
 ## Options
 set_target_properties(${binname} PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
 
-set(${binname}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "Find(${binname})")
+set(${binname}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}/include" CACHE PATH "Find(${binname})")
 set(${binname}_LIBRARY_DIRS "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Find(${binname})")
 set(${binname}_LIBRARIES "${binname}" CACHE STRINGS "Find(${binname})")
 
