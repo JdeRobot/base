@@ -18,21 +18,26 @@
 #
 __author__ = 'varribas'
 
-
-# JdeRobot main Ice.Config path
-JDEROBOT_PATHS = "@CMAKE_INSTALL_PREFIX@/share/jderobot/conf"
-
-
-# JdeRobot Gazebo's plugins Ice.Config path
 import os
-JDEROBOT_GAZEBO_PLUGINS_BASE_PATH = '@CMAKE_INSTALL_PREFIX@/share/jderobot/gazebo/plugins'
+import platform
 
-gazebo_plugins = list()
-for dir in os.listdir(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH):
-    plugin_dir = os.path.join(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH, dir)
-    gazebo_plugins.append(plugin_dir)
+if ('Windows')==platform.system():
+    JDEROBOT_PATHS = ""
+    JDEROBOT_GAZEBO_PLUGINS_PATHS = ""
+else:
+    # JdeRobot main Ice.Config path
+    JDEROBOT_PATHS = "@CMAKE_INSTALL_PREFIX@/share/jderobot/conf"
 
-JDEROBOT_GAZEBO_PLUGINS_PATHS = ':'.join(str(x) for x in gazebo_plugins)
+
+    # JdeRobot Gazebo's plugins Ice.Config path
+    JDEROBOT_GAZEBO_PLUGINS_BASE_PATH = '@CMAKE_INSTALL_PREFIX@/share/jderobot/gazebo/plugins'
+
+    gazebo_plugins = list()
+    for dir in os.listdir(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH):
+        plugin_dir = os.path.join(JDEROBOT_GAZEBO_PLUGINS_BASE_PATH, dir)
+        gazebo_plugins.append(plugin_dir)
+
+    JDEROBOT_GAZEBO_PLUGINS_PATHS = ':'.join(str(x) for x in gazebo_plugins)
 
 
 # "Hardcoded" PATHS
