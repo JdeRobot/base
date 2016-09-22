@@ -20,7 +20,7 @@ class Pose3DI(jderobot.Pose3D):
     def setPose3DData(self,_x,_y,_z,_h,_q0,_q1,_q2,_q3):
 
         lock.acquire()
-        #print 'adquired S'
+        #print ('adquired S')
 
         self.x = _x
         self.y = _y
@@ -31,7 +31,7 @@ class Pose3DI(jderobot.Pose3D):
         self.q2 = _q2
         self.q3 = _q3
 
-        #print 'released S'
+        #print ('released S')
         lock.release()
 
         return 0
@@ -43,7 +43,7 @@ class Pose3DI(jderobot.Pose3D):
         time.sleep(0.05) #50 ms rate to tx Pose3D
 
         lock.acquire()
-        #print 'adquired G'
+        #print ('adquired G')
 
         data = jderobot.Pose3DData()
         data.x = self.x
@@ -55,7 +55,7 @@ class Pose3DI(jderobot.Pose3D):
         data.q2 = self.q2
         data.q3 = self.q3
 
-        #print 'released G'
+        #print ('released G')
         lock.release()
 
         return data

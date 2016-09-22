@@ -47,7 +47,7 @@ def findConfigFile(filename):
 def loadIceConfig(filename, properties = Ice.createProperties()):
     filepath = findConfigFile(filename)
     if (filepath):
-        print 'loading Ice.Config file %s' %(filepath)
+        print ('loading Ice.Config file %s' %(filepath))
         properties.load(filepath)
     else:
         msg = "Ice.Config file '%s' could not being found" % (filename)
