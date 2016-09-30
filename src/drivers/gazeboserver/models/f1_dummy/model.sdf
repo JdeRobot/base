@@ -10,17 +10,17 @@
               <mesh>
             		<uri>model://f1_dummy/meshes/F1Y.dae</uri>
           		</mesh>
-            </geometry>
-       </collision>
+          </geometry>
+     </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://f1_dummy/meshes/F1Y.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-    </link>
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
     
-  </model>
+</model>
 </sdf>
 

@@ -5,166 +5,154 @@
   <static>false</static>
     <link name="f1">
     	<pose>0 0 0 0 0 0</pose>
-          <inertial>
-	  <pose>-0.003402 0.372718 0.070094 0 0 0 </pose>
-          <mass>10</mass>
-          <inertia>
-          <ixx>2.32e-4</ixx>
-            <iyy>0.000124</iyy>
-            <izz>0.000340</izz>
-            <ixy>-0.000002</ixy>
-            <ixz>0</ixz>
-            <iyz>0.000104</iyz>
-          </inertia>
-        </inertial>
       <collision name="collision">
             <geometry>
               <mesh>
             		<uri>model://f1/meshes/F1.dae</uri>
           		</mesh>
-            </geometry>
-       </collision>
+          </geometry>
+     </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://f1/meshes/F1.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-    </link>
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
     <link name="front_right_wheel">
         <pose>-0.16 0 0.06 0 1.5707 0</pose>
          <inertial>
-          <inertia>
-            <ixx>0.001000</ixx>
-            <ixy>0.000000</ixy>
-            <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
-            <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-          <mass>0.010000</mass>
-        </inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.5</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.5</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
-        </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 
-      </link>
+    </link>
       <link name="front_left_wheel">
         <pose>0.16 0 0.06 0 1.5707 0</pose>
         <inertial>
-          <inertia>
-            <ixx>0.001000</ixx>
-            <ixy>0.000000</ixy>
-            <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
-            <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-          <mass>0.010000</mass>
-        </inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.5</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.5</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+    </inertial>
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
-        </collision>
-      </link>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
 
       <link name="front_left_steering_wheel_block">
         <pose>0.16 0 0.06 0 1.5707 0</pose>
-       <inertial>
-        <mass>0.001</mass>
+        <inertial>
+        <mass>0.01</mass>
         <inertia>
-           <ixx>0.00001000</ixx>
-            <ixy>0.00000000</ixy>
-            <ixz>0.0000</ixz>
-            <iyy>0.00001000</iyy>
-            <iyz>0.00000000</iyz>
-            <izz>0.000001000</izz>
-        </inertia>
-      </inertial>
+          <ixx>1.0</ixx>
+          <ixy>0.0</ixy>
+          <iyy>1.0</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-            </cylinder>
-          </geometry>
-        </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 
 <!--        <visual name="visual">
           <geometry>
             <mesh>
             		<uri>model://f1/meshes/left_wheel.dae</uri>
           		</mesh>
-          </geometry>
-        </visual>-->
+        </geometry>
+      </visual>-->
 
-		</link>       
+		</link>     
         
         <link name="front_right_steering_wheel_block">
         <pose>-0.16 0 0.06 0 1.5707 0</pose>
         <inertial>
-        <mass>0.001</mass>
+        <mass>0.01</mass>
         <inertia>
-           <ixx>0.00001000</ixx>
-            <ixy>0.00000000</ixy>
-            <ixz>0.0000</ixz>
-            <iyy>0.00001000</iyy>
-            <iyz>0.00000000</iyz>
-            <izz>0.000001000</izz>
-        </inertia>
-      </inertial>
+          <ixx>1.0</ixx>
+          <ixy>0.0</ixy>
+          <iyy>1.0</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+    </inertial>
 
         <collision name="collision">
           <geometry>
             <cylinder>
               <radius>0.05</radius>
               <length>0.1</length>
-            </cylinder>
-          </geometry>
-        </collision>
+          </cylinder>
+        </geometry>
+      </collision>
 
        <!-- <visual name="visual">
           <geometry>
             <mesh>
             		<uri>model://f1/meshes/right_wheel.dae</uri>
           		</mesh>
-          </geometry>
-        </visual>-->
+        </geometry>
+      </visual>-->
 
-      </link>
+    </link>
       <link name="rear_left_wheel">
         <pose>0.16 0.58 0.06 0 1.5707 0</pose>
-        <inertial>
-          <inertia>
-            <ixx>0.001000</ixx>
-            <ixy>0.000000</ixy>
-            <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
-            <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-          <mass>0.010000</mass>
-        </inertial>
+         <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.5</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.5</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+      </inertial>
         <collision name="collision">
 
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
+          </cylinder>
+        </geometry>
 
           <max_contacts>1</max_contacts>
         <surface>
@@ -175,49 +163,49 @@
               <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
-            </ode>
-          </friction>
+          </ode>
+        </friction>
           <contact>
             <ode>
               <min_depth>0.005</min_depth>
               <kp>1e8</kp>
-            </ode>
-          </contact>
-        </surface>
-        </collision>
+          </ode>
+        </contact>
+      </surface>
+      </collision>
 
         <!--<visual name="visual">
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
-        </visual>-->
+          </cylinder>
+        </geometry>
+      </visual>-->
 
-      </link>
+    </link>
      
       <link name="rear_right_wheel">
         <pose>-0.16 0.58 0.06 0 1.5707 0</pose>
          <inertial>
-          <inertia>
-            <ixx>0.001000</ixx>
-            <ixy>0.000000</ixy>
-            <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
-            <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-          <mass>0.010000</mass>
-        </inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.5</ixx>
+          <ixy>0.0</ixy>
+          <iyy>0.5</iyy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+          <izz>1.0</izz>
+      </inertia>
+      </inertial>
         <collision name="collision">
 
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
+          </cylinder>
+        </geometry>
 
           <max_contacts>1</max_contacts>
         <surface>
@@ -228,43 +216,43 @@
               <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
-            </ode>
-          </friction>
+          </ode>
+        </friction>
           <contact>
             <ode>
               <min_depth>0.005</min_depth>
               <kp>1e8</kp>
-            </ode>
-          </contact>
-        </surface>
-        </collision>
+          </ode>
+        </contact>
+      </surface>
+      </collision>
 
         <!--<visual name="visual">
           <geometry>
             <cylinder>
               <radius>.06</radius>
               <length>.07</length>
-            </cylinder>
-          </geometry>
-        </visual>-->
+          </cylinder>
+        </geometry>
+      </visual>-->
 
-      </link>
+    </link>
 
 <link name='camera_top_body_left'>
         <pose>0.050000 -0.09000 0.1442400 0.000000 -0.000000 0.000000</pose>
         <inertial>
-          <mass>0.000010</mass>
+          <mass>0.500000</mass>
           <inertia>
-            <ixx>0.001000</ixx>
+            <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
+            <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-        </inertial>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
         <sensor name='cam_f1_left' type='camera'>
-          <pose>0.000000 0.000000 0.000000  0.00000 0.00000 -1.57000 </pose>
+          <pose>0.000000 0.000000 0.000000  0.00000 0.00000 -1.57000</pose>
           <update_rate>20.000000</update_rate>
           <camera name='__default__'>
             <horizontal_fov>1.570000</horizontal_fov>
@@ -272,27 +260,27 @@
               <width>640</width>
               <height>480</height>
               <format>R8G8B8</format>
-            </image>
+          </image>
             <clip>
               <near>0.100000</near>
               <far>15.000000</far>
-            </clip>
-          </camera>
+          </clip>
+        </camera>
           <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
-        </sensor>
+      </sensor>
         <visual name='visual'>
           <geometry>
 <sphere>
                           <radius>.01</radius>
 </sphere>
-          </geometry>
-        </visual>
+        </geometry>
+      </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+          </box>
+        </geometry>
           <surface>
             <friction>
               <ode>
@@ -300,37 +288,37 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+            </ode>
+          </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+          </contact>
+        </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+      </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+      </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-      </link>
+    </link>
 
 <link name='camera_top_body_right'>
         <pose>-0.050000 -0.09000 0.1442400 0.000000 -0.000000 0.0000000</pose>
         <inertial>
-          <mass>0.000100</mass>
+          <mass>0.500000</mass>
           <inertia>
-            <ixx>0.001000</ixx>
+            <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
+            <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-        </inertial>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
         <sensor name='cam_f1_right' type='camera'>
           <pose>0.000000 0.000000 0.000000 0.000000 0.00000 -1.570000</pose>
           <update_rate>20.000000</update_rate>
@@ -340,27 +328,27 @@
               <width>640</width>
               <height>480</height>
               <format>R8G8B8</format>
-            </image>
+          </image>
             <clip>
               <near>0.100000</near>
               <far>15.000000</far>
-            </clip>
-          </camera>
+          </clip>
+        </camera>
           <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
-        </sensor>
+      </sensor>
         <visual name='visual'>
          <geometry>
 <sphere>
                           <radius>.01</radius>
 </sphere>
-          </geometry>
-        </visual>
+        </geometry>
+      </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+          </box>
+        </geometry>
           <surface>
             <friction>
               <ode>
@@ -368,82 +356,82 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+            </ode>
+          </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+          </contact>
+        </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+      </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+      </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-      </link>
+    </link>
 
 <link name='laser'>
         <pose>0.000000 -0.190000 0.072000 0.000000 0.000000 -1.570000</pose>
         <gravity>0</gravity>
         <inertial>
-          <mass>0.000010</mass>
+          <mass>0.100000</mass>
           <inertia>
-            <ixx>0.001000</ixx>
+            <ixx>1.000000</ixx>
             <ixy>0.000000</ixy>
             <ixz>0.000000</ixz>
-            <iyy>0.001000</iyy>
+            <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
-            <izz>0.001000</izz>
-          </inertia>
-        </inertial>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://f1/meshes/hokuyo.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
+          </mesh>
+        </geometry>
+      </visual>
         <collision name='collision-base'>
           <pose>0.000000 0.000000 -0.014500 0.000000 0.000000 0.000000</pose>
           <geometry>
             <box>
               <size>0.050000 0.050000 0.041000</size>
-            </box>
-          </geometry>
+          </box>
+        </geometry>
           <max_contacts>10</max_contacts>
           <surface>
             <bounce/>
             <friction>
               <ode/>
-            </friction>
+          </friction>
             <contact>
               <ode/>
-            </contact>
-          </surface>
-        </collision>
+          </contact>
+        </surface>
+      </collision>
         <collision name='collision-top'>
           <pose>0.000000 0.000000 0.020500 0.000000 0.000000 0.000000</pose>
           <geometry>
             <cylinder>
               <radius>0.021000</radius>
               <length>0.029000</length>
-            </cylinder>
-          </geometry>
+          </cylinder>
+        </geometry>
           <max_contacts>10</max_contacts>
           <surface>
             <bounce/>
             <friction>
               <ode/>
-            </friction>
+          </friction>
             <contact>
               <ode/>
-            </contact>
-          </surface>
-        </collision>
+          </contact>
+        </surface>
+      </collision>
         <sensor name='laser' type='ray'>
           <ray>
             <scan>
@@ -452,26 +440,26 @@
                 <resolution>1.000000</resolution>
                 <min_angle>-1.570000</min_angle>
                 <max_angle>1.570000</max_angle>
-              </horizontal>
-            </scan>
+            </horizontal>
+          </scan>
             <range>
               <min>0.080000</min>
               <max>10.000000</max>
               <resolution>0.010000</resolution>
-            </range>
-          </ray>
+          </range>
+        </ray>
           <update_rate>20.000000</update_rate>
           <plugin name='laser' filename='liblaserF1.so'/>
           <always_on>1</always_on>
           <visualize>1</visualize>
-        </sensor>
+      </sensor>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+      </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
-      </link>
+    </link>
       
        <joint type="revolute" name="front_left_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -479,16 +467,16 @@
         <parent>front_left_steering_wheel_block</parent>
         <axis>
           <xyz>1 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
       <joint type="revolute" name="front_right_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
         <child>front_right_wheel</child>
         <parent>front_right_steering_wheel_block</parent>
         <axis>
           <xyz>1 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
 
  	  <joint type="revolute" name="camera_left">
         <pose>0 0 0 0 0 0</pose>
@@ -496,8 +484,8 @@
         <parent>f1</parent>
         <axis>
           <xyz>0 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
 
 	  <joint type="revolute" name="camera_right">
         <pose>0 0 0 0 0 0</pose>
@@ -505,8 +493,8 @@
         <parent>f1</parent>
         <axis>
           <xyz>0 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
 
 	  <joint type="revolute" name="laser_joint">
         <pose>0 0 0 0 0 0</pose>
@@ -514,8 +502,8 @@
         <parent>f1</parent>
         <axis>
           <xyz>0 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
       
       <joint type="revolute" name="front_left_steering_wheel">
         <pose>0 0 0 0 0 0</pose>
@@ -529,18 +517,18 @@
         	 <limit>
         	 		<lower>-0.52359</lower>
               <upper>0.52359</upper>
-          </limit>
-        </axis>
+        </limit>
+      </axis>
         <physics>
         <ode>
           <cfm_damping>1</cfm_damping>
           <limit>
             <cfm>0.000000</cfm>
             <erp>0.900000</erp>
-          </limit>
-        </ode>
-      </physics>
-      </joint>
+        </limit>
+      </ode>
+    </physics>
+    </joint>
       <joint type="revolute" name="front_right_steering_wheel">
         <pose>0 0 0 0 0 0</pose>
         <child>front_right_steering_wheel_block</child>
@@ -553,18 +541,18 @@
      		 <limit>
               <lower>-0.52359</lower>
               <upper>0.52359</upper>
-          </limit>
-        </axis>
+        </limit>
+      </axis>
         <physics>
         <ode>
           <cfm_damping>1</cfm_damping>
           <limit>
             <cfm>0.000000</cfm>
             <erp>0.900000</erp>
-          </limit>
-        </ode>
-      </physics>
-      </joint>
+        </limit>
+      </ode>
+    </physics>
+    </joint>
       
       <joint type="revolute" name="rear_right_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -572,8 +560,8 @@
         <parent>f1</parent>
         <axis>
           <xyz>1 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
       
       <joint type="revolute" name="rear_left_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
@@ -581,16 +569,15 @@
         <parent>f1</parent>
         <axis>
           <xyz>1 0 0</xyz>
-        </axis>
-      </joint>
+      </axis>
+    </joint>
      <plugin name="f1Motors" filename="libmotorsF1.so">
       	<front_right_joint>front_right_wheel_hinge</front_right_joint>
       	<front_left_joint>front_left_wheel_hinge</front_left_joint>
 			<front_right_steering_joint>front_right_steering_wheel</front_right_steering_joint>
 			<front_left_steering_joint>front_left_steering_wheel</front_left_steering_joint>
 			<torque>5</torque>
-      </plugin>
-      <plugin name="pose3d" filename="libpose3dF1.so"/> 
-  </model>
+    </plugin>
+      <plugin name="pose3d" filename="libpose3dF1.so"/>
+</model>
 </sdf>
-
