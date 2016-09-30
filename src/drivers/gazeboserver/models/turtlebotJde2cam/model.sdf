@@ -44,50 +44,50 @@
           <iyy>0.058786</iyy>
           <iyz>0.000014</iyz>
           <izz>1.532440</izz>
-        </inertia>
+       </inertia>
         <mass>2.234000</mass>
-      </inertial>
+     </inertial>
 	<collision name="tag1_collision">
           <pose>0 0 0.44 0 0 0</pose>
           <geometry>
             <box>
                 <size>0.4 0.2 0.01</size>
-            </box>
-          </geometry>
-        </collision>
+           </box>
+         </geometry>
+       </collision>
         <visual name="tag1_visual">
           <pose>0 0 0.44 0 0 0</pose>
           <cast_shadows>true</cast_shadows>
           <geometry>
             <box>
                 <size>0.4 0.2 0.01</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <material>
             <diffuse>0 1 0 1</diffuse>
-          </material>
-        </visual>
+         </material>
+       </visual>
 
         <collision name="tag2_collision">
           <pose>0.14 0 0.45 0 0 0</pose>
           <geometry>
             <box>
                 <size>0.12 0.2 0.01</size>
-            </box>
-          </geometry>
-        </collision>
+           </box>
+         </geometry>
+       </collision>
         <visual name="tag2_visual">
           <pose>0.14 0 0.45 0 0 0</pose>
           <cast_shadows>true</cast_shadows>
           <geometry>
             <box>
                 <size>0.12 0.2 0.01</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <material>
             <diffuse>0 0 1 1</diffuse>
-          </material>
-        </visual>
+         </material>
+       </visual>
 
 
       <collision name="plate_0_collision">
@@ -95,372 +95,372 @@
         <geometry>
           <box>
             <size>0.233502 0.314845 0.006401</size>
-          </box>
-        </geometry>
-      </collision>
+         </box>
+       </geometry>
+     </collision>
       <visual name="plate_0_visual">
         <pose>-0.043340 0 0.084757 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/plate_0_logo.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="plate_1_collision">
         <pose>-0.002660 0 0.141907 0 0 0</pose>
         <geometry>
           <box>
             <size>0.314856 0.314856 0.006401</size>
-          </box>
-        </geometry>
-      </collision>
+         </box>
+       </geometry>
+     </collision>
       <visual name="plate_1_visual">
         <pose>-0.002660 0 0.141907 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/plate_1_logo.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="plate_2_collision">
         <pose>-0.002660 0 0.199108 0 0 0</pose>
         <geometry>
           <box>
             <size>0.314856 0.314856 0.006401</size>
-          </box>
-        </geometry>
-      </collision>
+         </box>
+       </geometry>
+     </collision>
       <visual name="plate_2_visual">
         <pose>-0.002660 0 0.199108 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/plate_1_logo.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="plate_3_collision">
         <pose>-0.015820 0 0.405457 0 0 0</pose>
         <geometry>
           <box>
             <size>0.288000 0.315000 0.006401</size>
-          </box>
-        </geometry>
-      </collision>
+         </box>
+       </geometry>
+     </collision>
       <visual name="plate_3_visual">
         <pose>-0.015820 0 0.405457 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/plate_2_logo.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="spacer_0_collision">
         <pose>-0.002540 0.111468 0.079992 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.012700</radius>
             <length>0.003175</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="spacer_0_visual">
         <pose>-0.002540 0.111468 0.079992 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02403-125_Spacer.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="spacer_1_collision">
         <pose>-0.002540 -0.111468 0.079992 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.012700</radius>
             <length>0.003175</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="spacer_1_visual">
         <pose>-0.002540 -0.111468 0.079992 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02403-125_Spacer.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="spacer_2_collision">
         <pose>-0.072390 -0.111468 0.079992 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.012700</radius>
             <length>0.003175</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="spacer_2_visual">
         <pose>-0.072390 -0.111468 0.079992 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02403-125_Spacer.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="spacer_3_collision">
         <pose>-0.072390 0.111468 0.079992 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.012700</radius>
             <length>0.003175</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="spacer_3_visual">
         <pose>-0.072390 0.111468 0.079992 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02403-125_Spacer.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_0_collision">
         <pose>0.067640 0.131420 0.087980 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_0_visual">
         <pose>0.067640 0.131420 0.087980 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_1_collision">
         <pose>0.067640 -0.131420 0.087980 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_1_visual">
         <pose>0.067640 -0.131420 0.087980 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_2_collision">
         <pose>-0.052832 -0.131420 0.087980 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_2_visual">
         <pose>-0.052832 -0.131420 0.087980 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_3_collision">
         <pose>-0.052832 0.131420 0.087980 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_3_visual">
         <pose>-0.052832 0.131420 0.087980 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_4_collision">
         <pose>0.067640 0.131420 0.145130 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_4_visual">
         <pose>0.067640 0.131420 0.145130 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_5_collision">
         <pose>0.067640 -0.131420 0.145130 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_5_visual">
         <pose>0.067640 -0.131420 0.145130 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_6_collision">
         <pose>-0.052832 -0.131420 0.145130 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_6_visual">
         <pose>-0.052832 -0.131420 0.145130 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_2in_7_collision">
         <pose>-0.052832 0.131420 0.145130 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.038100</radius>
             <length>0.063500</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_2in_7_visual">
         <pose>-0.052832 0.131420 0.145130 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_8in_0_collision">
         <pose>0.067640 0.131420 0.202280 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.011113</radius>
             <length>0.203200</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_8in_0_visual">
         <pose>0.067640 0.131420 0.202280 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_8in_1_collision">
         <pose>0.067640 -0.131420 0.202280 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.011113</radius>
             <length>0.203200</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_8in_1_visual">
         <pose>0.067640 -0.131420 0.202280 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_8in_2_collision">
         <pose>-0.052832 -0.131420 0.202280 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.011113</radius>
             <length>0.203200</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_8in_2_visual">
         <pose>-0.052832 -0.131420 0.202280 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_8in_3_collision">
         <pose>-0.052832 0.131420 0.202280 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.011113</radius>
             <length>0.203200</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_8in_3_visual">
         <pose>-0.052832 0.131420 0.202280 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_kinect_0_collision">
         <pose>-0.105098 0.098000 0.202308 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.001111</radius>
             <length>0.008585</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_kinect_0_visual">
         <pose>-0.105098 0.098000 0.202308 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04556-RA_Kinect_Standoff_Assy.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
+         </mesh>
+       </geometry>
+     </visual>
       <collision name="standoff_kinect_1_collision">
         <pose>-0.105098 -0.098000 0.202308 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.001111</radius>
             <length>0.008585</length>
-          </cylinder>
-        </geometry>
-      </collision>
+         </cylinder>
+       </geometry>
+     </collision>
       <visual name="standoff_kinect_1_visual">
         <pose>-0.105098 -0.098000 0.202308 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebotJde2cam/meshes/68-04556-RA_Kinect_Standoff_Assy.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-    </link>
+         </mesh>
+       </geometry>
+     </visual>
+   </link>
     <link name='laser'>
         <pose>0.155000 0.000000 0.112000 0.000000 0.000000 0.000000</pose>
         <gravity>0</gravity>
@@ -473,52 +473,52 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://hokuyo/meshes/hokuyo.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision-base'>
           <pose>0.000000 0.000000 -0.014500 0.000000 0.000000 0.000000</pose>
           <geometry>
             <box>
               <size>0.050000 0.050000 0.041000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <max_contacts>10</max_contacts>
           <surface>
             <bounce/>
             <friction>
               <ode/>
-            </friction>
+           </friction>
             <contact>
               <ode/>
-            </contact>
-          </surface>
-        </collision>
+           </contact>
+         </surface>
+       </collision>
         <collision name='collision-top'>
           <pose>0.000000 0.000000 0.020500 0.000000 0.000000 0.000000</pose>
           <geometry>
             <cylinder>
               <radius>0.021000</radius>
               <length>0.029000</length>
-            </cylinder>
-          </geometry>
+           </cylinder>
+         </geometry>
           <max_contacts>10</max_contacts>
           <surface>
             <bounce/>
             <friction>
               <ode/>
-            </friction>
+           </friction>
             <contact>
               <ode/>
-            </contact>
-          </surface>
-        </collision>
+           </contact>
+         </surface>
+       </collision>
         <sensor name='laser' type='ray'>
           <ray>
             <scan>
@@ -527,25 +527,25 @@
                 <resolution>1.000000</resolution>
                 <min_angle>-1.570000</min_angle>
                 <max_angle>1.570000</max_angle>
-              </horizontal>
-            </scan>
+             </horizontal>
+           </scan>
             <range>
               <min>0.080000</min>
               <max>10.000000</max>
               <resolution>0.010000</resolution>
-            </range>
-          </ray>
+           </range>
+         </ray>
           <update_rate>20.000000</update_rate>
           <always_on>1</always_on>
           <visualize>1</visualize>
-        </sensor>
+       </sensor>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
-    </link>
+   </link>
     <link name='camera_bottom_body_left'>
         <pose>-0.030000 0.076000 0.232400 -1.570000 0.000000 0.000000</pose>
         <inertial>
@@ -557,22 +557,22 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_bottom.dae</uri>
               <scale>4.000000 3.000000 3.000000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -580,23 +580,23 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <link name='camera_column_body_left'>
         <pose>-0.020000 0.076000 0.247400 -1.570000 0.000000 0.000000</pose>
         <inertial>
@@ -608,22 +608,22 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_mid.dae</uri>
               <scale>0.600000 1.000000 1.000000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -631,23 +631,23 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <link name='camera_top_body_left'>
         <pose>-0.050000 0.076000 0.242400 -1.570000 -0.000000 3.140000</pose>
         <inertial>
@@ -659,8 +659,8 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <sensor name='cam_turtlebot_left' type='camera'>
           <pose>0.000000 0.000000 0.000000 -1.570000 -0.000000 3.140000</pose>
           <update_rate>20.000000</update_rate>
@@ -670,27 +670,27 @@
               <width>640</width>
               <height>480</height>
               <format>R8G8B8</format>
-            </image>
+           </image>
             <clip>
               <near>0.300000</near>
               <far>15.000000</far>
-            </clip>
-          </camera>
-        </sensor>
+           </clip>
+         </camera>
+       </sensor>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_top.dae</uri>
               <scale>2.000000 2.000000 1.300000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -698,23 +698,23 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <link name='camera_bottom_body_right'>
         <pose>-0.030000 -0.076000 0.232400 -1.570000 0.000000 0.000000</pose>
         <inertial>
@@ -726,22 +726,22 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_bottom.dae</uri>
               <scale>4.000000 3.000000 3.000000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -749,23 +749,23 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <link name='camera_column_body_right'>
         <pose>-0.020000 -0.076000 0.247400 -1.570000 0.000000 0.000000</pose>
         <inertial>
@@ -777,22 +777,22 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_mid.dae</uri>
               <scale>0.600000 1.000000 1.000000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -800,23 +800,23 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <link name='camera_top_body_right'>
         <pose>-0.050000 -0.076000 0.242400 -1.570000 -0.000000 3.140000</pose>
         <inertial>
@@ -828,8 +828,8 @@
             <iyy>1.000000</iyy>
             <iyz>0.000000</iyz>
             <izz>1.000000</izz>
-          </inertia>
-        </inertial>
+         </inertia>
+       </inertial>
         <sensor name='cam_turtlebot_right' type='camera'>
           <pose>0.000000 0.000000 0.000000 -1.570000 -0.000000 3.140000</pose>
           <update_rate>20.000000</update_rate>
@@ -839,27 +839,27 @@
               <width>640</width>
               <height>480</height>
               <format>R8G8B8</format>
-            </image>
+           </image>
             <clip>
               <near>0.300000</near>
               <far>15.000000</far>
-            </clip>
-          </camera>
-        </sensor>
+           </clip>
+         </camera>
+       </sensor>
         <visual name='visual'>
           <geometry>
             <mesh>
               <uri>model://turtlebotJde2cam/meshes/sonyvid30/sonyvid30_top.dae</uri>
               <scale>2.000000 2.000000 1.300000</scale>
-            </mesh>
-          </geometry>
-        </visual>
+           </mesh>
+         </geometry>
+       </visual>
         <collision name='collision'>
           <geometry>
             <box>
               <size>0.100000 0.100000 0.100000</size>
-            </box>
-          </geometry>
+           </box>
+         </geometry>
           <surface>
             <friction>
               <ode>
@@ -867,30 +867,30 @@
                 <mu2>100000.000000</mu2>
                 <slip1>0.000000</slip1>
                 <slip2>0.000000</slip2>
-              </ode>
-            </friction>
+             </ode>
+           </friction>
             <bounce/>
             <contact>
               <ode/>
-            </contact>
-          </surface>
+           </contact>
+         </surface>
           <max_contacts>10</max_contacts>
-        </collision>
+       </collision>
         <velocity_decay>
           <linear>0.000000</linear>
           <angular>0.000000</angular>
-        </velocity_decay>
+       </velocity_decay>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
         <gravity>1</gravity>
-    </link>
+   </link>
     <include>
       <uri>model://create</uri>
-    </include>
+   </include>
     <include>
       <uri>model://kinect</uri>
       <pose>-0.087098 0 0.303857 0 0 0</pose>
-    </include>
+   </include>
     <joint name="create_rack" type="revolute">
       <parent>create::base</parent>
       <child>rack</child>
@@ -899,10 +899,10 @@
         <limit>
           <lower>0</lower>
           <upper>0</upper>
-        </limit>
+       </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
-      </axis>
-    </joint>
+     </axis>
+   </joint>
     <joint name="kinect_rack" type="revolute">
       <parent>kinect::link</parent>
       <child>rack</child>
@@ -911,10 +911,10 @@
         <limit>
           <lower>0</lower>
           <upper>0</upper>
-        </limit>
+       </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
-      </axis>
-    </joint>
+     </axis>
+   </joint>
     <joint name='joint_laser' type='revolute'>
         <parent>rack</parent>
         <child>laser</child>
@@ -923,9 +923,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='pan_joint_left' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_bottom_body_left</child>
@@ -935,9 +935,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='tilt_joint_left' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_column_body_left</child>
@@ -947,9 +947,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='camera_left' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_bottom_body_left</child>
@@ -959,9 +959,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='pan_joint_right' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_bottom_body_right</child>
@@ -971,9 +971,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='tilt_joint_right' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_column_body_right</child>
@@ -983,9 +983,9 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
+         </limit>
+       </axis>
+   </joint>
     <joint name='camera_right' type='revolute'>
         <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
         <child>camera_bottom_body_right</child>
@@ -995,8 +995,8 @@
           <limit>
             <lower>0.000000</lower>
             <upper>0.000000</upper>
-          </limit>
-        </axis>
-    </joint>
-  </model>
+         </limit>
+       </axis>
+   </joint>
+ </model>
 </sdf>

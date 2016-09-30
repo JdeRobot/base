@@ -7,29 +7,29 @@
         <geometry>
           <mesh>
             <uri>model://house_3/meshes/house_3.dae</uri>
-          </mesh>
-        </geometry>
-      </collision>
+        </mesh>
+      </geometry>
+    </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://house_3/meshes/house_3.dae</uri>
-          </mesh>
-        </geometry>
+        </mesh>
+      </geometry>
         <material>
           <script>
             <uri>model://house_3/materials/scripts</uri>
             <uri>model://house_3/materials/textures</uri>
             <uri>model://house_1/materials/textures</uri>
             <name>House_3/Diffuse</name>
-          </script>
+        </script>
 
           <shader type="normal_map_object_space">
             <normal_map>model://house_1/materials/textures/House_1_Normal.png</normal_map>
-          </shader>
+        </shader>
 
-        </material>
-      </visual>
-    </link>
-  </model>
+      </material>
+    </visual>
+  </link>
+</model>
 </sdf>
