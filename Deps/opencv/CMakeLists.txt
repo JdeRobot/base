@@ -94,7 +94,7 @@ IF (NOT DEFINED OpenCV_VERSION)
 				link_directories(${OpenCV_LIBRARIES})	
 			    include_directories(${OpenCV_INCLUDE_DIR})
 
-				SET(DEPS "${DEPS}libopencv-calib3d2.4, libopencv-contrib2.4, libopencv-core2.4, libopencv-features2d2.4, libopencv-flann2.4, libopencv-gpu2.4, libopencv-highgui2.4, libopencv-imgproc2.4, libopencv-legacy2.4, libopencv-ml2.4, libopencv-objdetect2.4, libopencv-video2.4, libcv2.4, libcvaux2.4, libhighgui2.4,")
+				SET(DEPS "${DEPS}libopencv-calib3d3.1, libopencv-contrib3.1, libopencv-core3.1, libopencv-features2d3.1, libopencv-flann3.1, libopencv-gpu3.1, libopencv-highgui3.1, libopencv-imgproc3.1, libopencv-legacy3.1, libopencv-ml3.1, libopencv-objdetect3.1, libopencv-video3.1, libcv3.1, libcvaux3.1, libhighgui3.1,")
 		    ENDIF( OpenCV_LIBRARIES )
 
 

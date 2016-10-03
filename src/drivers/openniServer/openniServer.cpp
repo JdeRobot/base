@@ -40,6 +40,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "myprogeo.h"
 #include <OpenNI.h>
+#include <opencv2/imgproc.h>
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/video/background_segm.hpp>
 #include <signal.h>
@@ -1106,7 +1107,7 @@ private:
 		int segmentation;
 		int fps;
 		int minToTrain;
-		cv::BackgroundSubtractorMOG2 bg;
+		//cv::BackgroundSubtractorMOG2 bg;
 		cv::Mat fore;
 		cv::Mat trainImage;
 		bool _done;
