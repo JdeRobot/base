@@ -40,7 +40,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "myprogeo.h"
 #include <OpenNI.h>
-#include <opencv2/imgproc.h>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/video/background_segm.hpp>
 #include <signal.h>
