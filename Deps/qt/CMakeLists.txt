@@ -1,20 +1,38 @@
-cmake_minimum_required(VERSION 2.8)
-include(FindPkgConfig)
+cmake_minimum_required(VERSION 2.8.11)
 
-FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtOpenGL QUIET)
-include(${QT_USE_FILE})
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+# due to https://www.kdab.com/using-cmake-with-qt-5/
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Svg REQUIRED)
 
-SET(QT_LIBRARIES_JDE ${QT_LIBRARIES})
 
-if (QT_LIBRARIES_JDE)
-    SET(QT_COMPILE TRUE)
-		MESSAGE("*** QT LIBRARIES Found LIBRARIES FOUND")
 
-	list(APPEND DEPS libqtcore4 libqt4-opengl)
-	list(APPEND DEPS_DEV libqt4-opengl-dev)
+include_directories(${Qt5Widgets_INCLUDE_DIRS}
+        ${Qt5Core_INCLUDE_DIRS}
+        ${Qt5Gui_INCLUDE_DIRS}
+        ${Qt5Svg_INCLUDE_DIRS}
+)
+add_definitions(${Qt5Widgets_DEFINITIONS}
+                ${Qt5Core_DEFINITIONS}
+                ${Qt5Gui_DEFINITIONS}
+                ${Qt5Svg_DEFINITIONS}
+)
+
+SET(QT5_LIBRARIES_JDE ${Qt5Widgets_LIBRARIES}
+                        ${Qt5Core_LIBRARIES}
+                        ${Qt5Gui_LIBRARIES}
+                        ${Qt5Svg_LIBRARIES}
+)
+
+if (QT5_LIBRARIES_JDE)
+    SET(QT5_COMPILE TRUE)
+                MESSAGE("*** QT LIBRARIES Found ${QT5_LIBRARIES_JDE}")
+
+        list(APPEND DEPS libqt4core5a libqt5opengl5 libqt5declarative5 libqt5gui5 libqt5svg5 libqt5widgets5)
+        list(APPEND DEPS_DEV libqt5opengl5-dev libqt5svg5-dev qt5base-dev)
 else()
-    SET(QT_COMPILE FALSE)
+    SET(QT5_COMPILE FALSE)
 		MESSAGE("*** QT LIBRARIES NOT FOUND")
 endif()
 

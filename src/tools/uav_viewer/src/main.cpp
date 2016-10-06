@@ -1,5 +1,5 @@
 //Qt
-#include <QtGui>
+#include <QtWidgets>
 //ICE
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
@@ -13,9 +13,6 @@
 
 int main(int argc, char* argv[])
 {
-
-	
-		
     QApplication a(argc, argv);
     Ice::CommunicatorPtr ic;
     try{

@@ -1,16 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <qwt_compass.h>
-#include <qwt_analog_clock.h>
-#include <QPalette>
+#include <QtWidgets>
 #include <QKeyEvent>
-#include "attitudeindicator.h"
-#include "speedometer.h"
 #include "../sensors/sensors.h"
 #include "velwidget.h"
 #include "datawidget.h"
+#include <iostream>
+#include <QTimer>
+#include "ui_mainwindow.h"
+#include <QDebug>
 
 
 namespace Ui {

@@ -1,16 +1,13 @@
 #ifndef DATAWIDGET_H
 #define DATAWIDGET_H
 
-#include <QtGui>
-#include <qwt_compass.h>
-#include <qwt_analog_clock.h>
-#include "speedometer.h"
+#include <QtWidgets>
 #include "../sensors/sensors.h"
-#include "attitudeindicator.h"
-#include <QPalette>
-#include <qwt_compass_rose.h>
-#include <qwt_dial_needle.h>
 #include <iostream>
+#include <qfi_ADI.h>
+#include <qfi_ALT.h>
+#include <qfi_TC.h>
+#include <qfi_HSI.h>
 
 
 class DataWidget: public QWidget
@@ -19,11 +16,9 @@ public:
     DataWidget(QWidget *parent = 0);
     void update();
     void setUI();
-    QwtCompass *createCompass(int pos);
-    QwtDial *createDial(int pos);
     void setSensors(Sensors* sensors);
 
-    void drawYawValues(float degress);
+    void drawYawValues(float degrees);
     void drawAltd(float meters);
     void drawPitchRollValues(float pitch,float roll);
 
@@ -39,40 +34,42 @@ protected:
     QMutex mutex;
 
 private:
-    QHBoxLayout *mainLayout;
+
+    QGridLayout *mainLayout;
     QVBoxLayout *horizonLayout;
     QGridLayout *horizonData;
     QVBoxLayout *compassLayout;
     QGridLayout *compassData;
     QVBoxLayout *altLayout;
     QGridLayout *altData;
+    QVBoxLayout *turnLayout;
+    QGridLayout *turnData;
 
+    // name of label
     QLabel *yawLabel;
     QLabel *altdLabel;
     QLabel *pitchLabel;
     QLabel *rollLabel;
+
+    //value of label
     QLabel *pitchValue;
     QLabel *rollValue;
     QLabel *altdValue;
     QLabel *yawValue;
+
+    //unit of value: m, degrees
     QLabel *yawG;
     QLabel *pitchG;
     QLabel *rollG;
     QLabel *altdM;
 
+    //graphic instruments
+    qfi_ADI *horizon;
+    qfi_HSI *compass;
+    qfi_TC *turn;
+    qfi_ALT *altd;
 
-    QwtCompass *compass;
-    QwtDial *altd;
-    QwtDial *horizon;
-
-
-    QwtDial *velLinZ;
-    QwtDial *velLinY;
-    QwtDial *velLinX;
-    SpeedoMeter *d_speedo;
     Sensors *sensors;
-
-    AttitudeIndicator *d_ai;
 
     float pitch, roll, yaw;
 

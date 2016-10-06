@@ -1,13 +1,10 @@
 #ifndef THREADGUI_H
 #define THREADGUI_H
 
-#include <QtGui>
-
+#include <QtWidgets>
 #include <iostream>
 #include <sys/time.h>
-
 #include "mainwindow.h"
-
 #include "../sensors/sensors.h"
 
 #define cycle_gui 40 //miliseconds

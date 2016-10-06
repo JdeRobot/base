@@ -1,5 +1,4 @@
 #include "threadgui.h"
-#include <QtGui/QDesktopWidget>
 
 threadGUI::threadGUI(Sensors* sensors, Ice::CommunicatorPtr ic)
 {
@@ -17,7 +16,7 @@ threadGUI::threadGUI(Sensors* sensors, Ice::CommunicatorPtr ic)
 
     gui->setGeometry((screenWidth/2)-(width/2),(screenHeight/2)-(height/2),width,height);
     gui->setSensors(sensors);
-	gui->setSpeeds(ic);
+    gui->setSpeeds(ic);
     gui->show();
 
 }
