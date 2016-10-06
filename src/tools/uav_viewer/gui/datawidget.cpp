@@ -89,7 +89,7 @@ void DataWidget::setUI()
 
     yawLabel = new QLabel();
     yawLabel->setObjectName(QString::fromUtf8("yawLabel"));
-    yawLabel->setGeometry(QRect(260, 130, 41, 21));
+    //yawLabel->setGeometry(QRect(260, 130, 41, 21));
 
     altdLabel = new QLabel();
     altdLabel->setObjectName(QString::fromUtf8("altdLabel"));
@@ -97,7 +97,7 @@ void DataWidget::setUI()
 
     pitchLabel = new QLabel();
     pitchLabel->setObjectName(QString::fromUtf8("pitchLabel"));
-    pitchLabel->setGeometry(QRect(70, 250, 41, 21));
+    //pitchLabel->setGeometry(QRect(70, 250, 41, 21));
 
     rollLabel = new QLabel();
     rollLabel->setObjectName(QString::fromUtf8("rollLabel"));
@@ -105,7 +105,7 @@ void DataWidget::setUI()
 
     pitchValue = new QLabel();
     pitchValue->setObjectName(QString::fromUtf8("pitchValue"));
-    pitchValue->setGeometry(QRect(110, 250, 65, 21));
+    //pitchValue->setGeometry(QRect(110, 250, 65, 21));
     pitchValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
     rollValue = new QLabel();
@@ -120,16 +120,16 @@ void DataWidget::setUI()
 
     yawValue = new QLabel();
     yawValue->setObjectName(QString::fromUtf8("yawValue"));
-    yawValue->setGeometry(QRect(300, 130, 65, 21));
+    //yawValue->setGeometry(QRect(300, 130, 65, 21));
     yawValue->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
     yawG = new QLabel();
     yawG->setObjectName(QString::fromUtf8("yawG"));
-    yawG->setGeometry(QRect(370, 130, 16, 21));
+    //yawG->setGeometry(QRect(370, 130, 16, 21));
 
     pitchG = new QLabel();
     pitchG->setObjectName(QString::fromUtf8("pitchG"));
-    pitchG->setGeometry(QRect(180, 250, 16, 21));
+    //pitchG->setGeometry(QRect(180, 250, 16, 21));
 
     rollG = new QLabel();
     rollG->setObjectName(QString::fromUtf8("rollG"));
@@ -152,19 +152,32 @@ void DataWidget::setUI()
     rollG->setText(QApplication::translate("DataWidget", "\302\272", 0));
     altdM->setText(QApplication::translate("DataWidget", "m", 0));
 
-    horizonData->addWidget(pitchLabel,0,0,Qt::AlignCenter);
-    horizonData->addWidget(pitchValue,0,1,Qt::AlignCenter);
-    horizonData->addWidget(pitchG,0,2,Qt::AlignCenter);
+    //to get the labels together
+    QSpacerItem* hSpacer = new QSpacerItem(100, 30, QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    compassData->addWidget(yawLabel,0,0,Qt::AlignCenter);
-    compassData->addWidget(yawValue,0,1,Qt::AlignCenter);
+    horizonData->addItem(hSpacer,0,0,1,1, Qt::AlignLeft);
+    horizonData->addWidget(pitchLabel,0,1,Qt::AlignCenter);
+    horizonData->addWidget(pitchValue,0,2,Qt::AlignCenter);
+    horizonData->addWidget(pitchG,0,3,Qt::AlignCenter);
+    horizonData->addItem(hSpacer,0,4,1,1, Qt::AlignRight);
 
-    altData->addWidget(altdLabel,0,0,Qt::AlignCenter);
-    altData->addWidget(altdValue,0,1,Qt::AlignCenter);
+    compassData->addItem(hSpacer,0,0,1,1, Qt::AlignLeft);
+    compassData->addWidget(yawLabel,0,1,Qt::AlignCenter);
+    compassData->addWidget(yawValue,0,2,Qt::AlignCenter);
+    compassData->addWidget(yawG,0,3,Qt::AlignCenter);
+    compassData->addItem(hSpacer,0,4,1,1, Qt::AlignRight);
 
-    turnData->addWidget(rollLabel,0,0,Qt::AlignCenter);
-    turnData->addWidget(rollValue,0,1,Qt::AlignCenter);
-    turnData->addWidget(rollG,0,2,Qt::AlignCenter);
+    altData->addItem(hSpacer,0,0,1,1, Qt::AlignLeft);
+    altData->addWidget(altdLabel,0,1,Qt::AlignCenter);
+    altData->addWidget(altdValue,0,2,Qt::AlignCenter);
+    altData->addWidget(altdM,0,3,Qt::AlignCenter);
+    altData->addItem(hSpacer,0,4,1,1, Qt::AlignLeft);
+
+    turnData->addItem(hSpacer,0,0,1,1, Qt::AlignLeft);
+    turnData->addWidget(rollLabel,0,1,Qt::AlignCenter);
+    turnData->addWidget(rollValue,0,2,Qt::AlignCenter);
+    turnData->addWidget(rollG,0,3,Qt::AlignCenter);
+    turnData->addItem(hSpacer,0,4,1,1, Qt::AlignLeft);
 
     horizon=new qfi_ADI();
     horizon->setGeometry(QRect(750,80,200,200));

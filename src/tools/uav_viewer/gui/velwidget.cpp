@@ -6,7 +6,7 @@ VelWidget::VelWidget(QWidget *parent) :
 
     //setAutoFillBackground(true);
 
-    setFixedSize(1000, 250);
+    setFixedSize(700, 300);
 
     vx = vy = vz = 0.0;
 
