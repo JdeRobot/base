@@ -42,13 +42,13 @@ TurtlebotSensors::Load(ModelPtr model){
 
     for (SensorPtr s: sm->GetSensors()){
 //        if (s->GetParentId() != base_link_id) continue;
-        std::string name = s->Name();
+        std::string name = s->GetName();
         if (name.find("laser") != std::string::npos)
-            laser = std::static_pointer_cast<RaySensor>(s);
+            laser = boost::static_pointer_cast<RaySensor>(s);
         if (name.find("cam_turtlebot_left") != std::string::npos)
-            cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_LEFT] = boost::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
-            cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_RIGHT] = boost::static_pointer_cast<CameraSensor>(s);
 
         pose = model->GetWorldPose();
     }
@@ -130,9 +130,9 @@ TurtlebotSensors::_on_laser(){
     MultiRayShapePtr laserV = this->laser->LaserShape();
 
 
-    laserValues.resize(laserV->GetSampleCount ());
-    for (int i = 0; i< laserV->GetSampleCount (); i++){
-        laserValues[i] = laserV->GetRange(i);
+    laserValues.resize(laserV->SampleCount ());
+    for (int i = 0; i< laserV->SampleCount (); i++){
+        laserValues[i] = laserV->Range(i);
     }
 }
 

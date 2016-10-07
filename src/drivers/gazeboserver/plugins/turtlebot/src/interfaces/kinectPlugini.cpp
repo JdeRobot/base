@@ -45,8 +45,8 @@ void DepthCameraPlugin::Load(sensors::SensorPtr _sensor,
                               sdf::ElementPtr /*_sdf*/)
 {
   this->parentSensor =
-    std::dynamic_pointer_cast<sensors::DepthCameraSensor>(_sensor);
-  this->depthCamera = this->parentSensor->DepthCamera();
+    boost::dynamic_pointer_cast<sensors::DepthCameraSensor>(_sensor);
+  this->depthCamera = this->parentSensor->GetDepthCamera();
 
   if (!this->parentSensor)
   {
@@ -54,10 +54,10 @@ void DepthCameraPlugin::Load(sensors::SensorPtr _sensor,
     return;
   }
 
-  this->width = this->depthCamera->ImageWidth();
-  this->height = this->depthCamera->ImageHeight();
-  this->depth = this->depthCamera->ImageDepth();
-  this->format = this->depthCamera->ImageFormat();
+  this->width = this->depthCamera->GetImageWidth();
+  this->height = this->depthCamera->GetImageHeight();
+  this->depth = this->depthCamera->GetImageDepth();
+  this->format = this->depthCamera->GetImageFormat();
 
   this->newDepthFrameConnection = this->depthCamera->ConnectNewDepthFrame(
       boost::bind(&DepthCameraPlugin::OnNewDepthFrame,
@@ -106,7 +106,7 @@ void DepthCameraPlugin::OnNewDepthFrame(const float *_image,
 
 	if(count == 0){
 		count++;
-		std::string name = this->parentSensor->Name();
+		std::string name = this->parentSensor->GetName();
 		nameKinect = std::string("--Ice.Config=" + name + ".cfg");
 		pthread_t thr_gui;
 		pthread_create(&thr_gui, NULL, &mainKinect, (void*)this);
