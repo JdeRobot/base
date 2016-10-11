@@ -15,7 +15,7 @@ target_link_libraries(ns
 	${ZeroCIce_LIBRARIES}
 )
 
-SET_PROPERTY(TARGET ns PROPERTY SOVERSION 0.1.0)
+#SET_PROPERTY(TARGET ns PROPERTY SOVERSION 0.1.0)
  
 ### Install
 install(TARGETS ns

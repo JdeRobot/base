@@ -9,7 +9,7 @@ add_library (jderobotutilshare SHARED jderobotutil.h observer.cpp observer.h par
 set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)
 
 ### Install
-install(TARGETS jderobotutil
+install(TARGETS jderobotutil jderobotutilshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )

@@ -13,7 +13,7 @@ find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 target_link_libraries(geometry tinyxml GLU ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES} ${Boost_LIBRARIES})
 
-SET_PROPERTY(TARGET geometry PROPERTY SOVERSION 1.0)
+#SET_PROPERTY(TARGET geometry PROPERTY SOVERSION 1.0)
  
 #ADD_LIBRARY(geometry_static STATIC ${SRC_FILES})
 
