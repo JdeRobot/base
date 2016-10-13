@@ -7,6 +7,7 @@ var mime = {
    'css'  : 'text/css',
    'js'   : 'application/javascript',
    'png'  : 'image/png',
+   'svg'  : 'image/svg+xml',
    'dae'  : 'model/vnd.collada+xml'
 };
 

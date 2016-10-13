@@ -350,7 +350,7 @@ function KobukiViewer (config){
       pose3d.onmessage = function(event) {
          pose3d.onmessageDefault(event);
          if (model.active) {
-            model.robot.position.set(pose3d.data.x/1000,pose3d.data.z/1000,-pose3d.data.y/1000);
+            model.robot.position.set(pose3d.data.x,pose3d.data.z,-pose3d.data.y);
             model.robot.rotation.y=(pose3d.data.yaw);
             model.robot.updateMatrix();
          }
