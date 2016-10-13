@@ -23,7 +23,7 @@ void VelWidget::setSensors(Sensors* sensors){
 void VelWidget::update()
 {
     jderobot::NavdataDataPtr navdata = this->sensors->getNavdata();
-//    drawVelocitiesValues(navdata->vx,navdata->vy,navdata->vz);
+    drawVelocitiesValues(navdata->vx,navdata->vy,navdata->vz);
 }
 
 void VelWidget::setUI()
@@ -74,10 +74,12 @@ void VelWidget::setUI()
 
 }
 
-//void VelWidget::drawVelocitiesValues(float vlx,float vly,float vlz)
-//{
+void VelWidget::drawVelocitiesValues(float vlx,float vly,float vlz)
+{
 //    //mm/sec to m/s
-//    float result=0.0;
+//    float resultX = 0.0;
+//    float resultY = 0.0;
+//    float resultZ = 0.0;
 //   /* if(vlx<0.0){
 //        velXLabel->setStyleSheet("QLabel {background-color: red}");
 //    }else{
@@ -85,8 +87,8 @@ void VelWidget::setUI()
 //    }*/
 //    vlx=std::abs(vlx);
 //    vlx=vlx/1000.0;
-//    result=(0.6*vx)+((1-0.6)*vlx);
-//    velLinX->setValue(result);
+//    resultX=(0.6*vx)+((1-0.6)*vlx);
+//    velLinX->setSpeed(resultX);
 //    vx=vlx;
 
 //    /*if(vly<0.0){
@@ -96,8 +98,8 @@ void VelWidget::setUI()
 //    }*/
 //    vly=std::abs(vly);
 //    vly=vly/1000.0;
-//    result=(0.6*vy)+((1-0.6)*vly);
-//    velLinY->setValue(result);
+//    resultY=(0.6*vy)+((1-0.6)*vly);
+//    velLinY->setSpeed(resultY);
 //    vy=vly;
 
 //    /*if(vlz<0.0){
@@ -107,7 +109,15 @@ void VelWidget::setUI()
 //    }*/
 //    vlz=std::abs(vlz);
 //    vlz=vlz/1000.0;
-//    result=(0.6*vz)+((1-0.6)*vlz);
-//    velLinZ->setValue(result);
+//    resultZ=(0.6*vz)+((1-0.6)*vlz);
+//    velLinZ->setSpeed(resultZ);
 //    vz=vlz;
-//}
+
+    velLinY->setSpeed(vlx);
+    velLinY->setSpeed(vly);
+    velLinY->setSpeed(vlz);
+
+    velLinX->update();
+    velLinY->update();
+    velLinZ->update();
+}
