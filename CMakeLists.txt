@@ -116,8 +116,8 @@ ENDFOREACH(LibFile)
 
 include(Deps/LoadJderobotDependencies.cmake)
 
-list(APPEND DEPS libvtk5.8)
-list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
+list(APPEND DEPS libgsl2 gsl-bin)
+list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libeigen3-dev libgsl-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
 list(APPEND DEPS_DEV "${DEPS}")
 
 # list(APPEND uses ; separator. We need ,
