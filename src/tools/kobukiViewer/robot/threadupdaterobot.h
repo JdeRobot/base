@@ -1,7 +1,7 @@
 #ifndef THREADUPDATEROBOT_H
 #define THREADUPDATEROBOT_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include <iostream>
 #include <sys/time.h>

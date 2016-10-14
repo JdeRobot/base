@@ -1,7 +1,7 @@
 #ifndef CONTROLVW_H
 #define CONTROLVW_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include <iostream>
 #include <string>

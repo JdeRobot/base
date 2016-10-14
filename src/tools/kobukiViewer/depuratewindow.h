@@ -1,7 +1,7 @@
 #ifndef DEPURATEWINDOW_H
 #define DEPURATEWINDOW_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 //Opencv
 #include <opencv2/core/core.hpp>

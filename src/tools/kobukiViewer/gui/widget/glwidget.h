@@ -41,8 +41,8 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <QGLWidget>
-#include <QtGui>
+#include <QtOpenGL>
+#include <QtWidgets>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
