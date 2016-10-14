@@ -767,7 +767,7 @@ class SmartCamera_SonyQX():
                 # display image
                 cv2.imshow ('image_display', self.get_latest_image())
             else:
-                print "no image"
+                print ("no image")
     
             # check for ESC key being pressed
             k = cv2.waitKey(5) & 0xFF

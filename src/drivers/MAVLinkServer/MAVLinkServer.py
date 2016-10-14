@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''
 mavproxy - a MAVLink proxy program
 
@@ -849,8 +849,8 @@ def main_loop():
         PH_quat = quaternion.Quaternion([Rollvalue, Pitchvalue, Yawvalue])
         PH_xyz = spherical2cartesian(Latvalue, Lonvalue, Altvalue)
 
-        #print PH_quat
-        #print PH_xyz
+        #print (PH_quat)
+        #print (PH_xyz)
 
         PHx = PH_xyz[0]
         PHy = PH_xyz[1]
@@ -863,7 +863,7 @@ def main_loop():
 
         PH_Pose3D.setPose3DData(PHx,PHy,PHz,PHh,PHq0,PHq1,PHq2,PHq3)
 
-        #print PH_Pose3D.x
+        #print (PH_Pose3D.x)
 
         #pixhawkpos = Pose3DI(PHx,PHy,PHz,PHh,PHq0,PHq1,PHq2,PHq3)
         #pixhawkpos.setPose3DData(PHx,PHy,PHz,PHh,PHq0,PHq1,PHq2,PHq3)
@@ -913,7 +913,7 @@ def openPose3DChannel(Pose3D):
         ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("Pose3DAdapter", "default -p 9998")
         object = Pose2Tx
-        #print object.getPose3DData()
+        #print (object.getPose3DData())
         adapter.add(object, ic.stringToIdentity("Pose3D"))
         adapter.activate()
         ic.waitForShutdown()
@@ -939,7 +939,7 @@ def openCMDVelChannel(CMDVel):
         ic = EasyIce.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("CMDVelAdapter", "default -p 9999")
         object = CMDVel2Rx
-        print CMDVel2Rx
+        print (CMDVel2Rx)
         adapter.add(object, ic.stringToIdentity("CMDVel"))
         adapter.activate()
         ic.waitForShutdown()
@@ -1037,7 +1037,7 @@ def sendCMDVel2Vehicle(CMDVel):
 
         # print velocitystring
 
-        print 'CMDVel'
+        print ('CMDVel')
         process_stdin(velocitystring)  # SET_POSITION_TARGET_LOCAL_NED
 
 def spherical2cartesian(lat, lon, alt):
@@ -1153,8 +1153,8 @@ if __name__ == '__main__':
     if opts.version:
         import pkg_resources
         version = pkg_resources.require("mavproxy")[0].version
-        print "MAVProxy is a modular ground station using the mavlink protocol"
-        print "MAVProxy Version: " + version
+        print ("MAVProxy is a modular ground station using the mavlink protocol")
+        print ("MAVProxy Version: " + version)
         sys.exit(1)
     
     # global mavproxy state
@@ -1187,9 +1187,9 @@ if __name__ == '__main__':
     mpstate.rl = rline.rline("MAV> ", mpstate)
 
     def quit_handler(signum = None, frame = None):
-        #print 'Signal handler called with signal', signum
+        #print ('Signal handler called with signal', signum)
         if mpstate.status.exit:
-            print 'Clean shutdown impossible, forcing an exit'
+            print ('Clean shutdown impossible, forcing an exit')
             sys.exit(0)
         else:
             mpstate.status.exit = True
@@ -1345,7 +1345,7 @@ if __name__ == '__main__':
 
 
     # while True:
-    #     print PH_Pose3D.getPose3DData()
+    #     print (PH_Pose3D.getPose3DData())
 
     # while True:
     #     process_stdin('velocity 1 1 1')  #SET_POSITION_TARGET_LOCAL_NED

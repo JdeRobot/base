@@ -15,11 +15,11 @@ class CMDVelI(jderobot.CMDVel):
         self.angularY = ay
         self.angularZ = az
 
-        print "cmdvel start"
+        print ("cmdvel start")
 
     def __del__(self):
 
-        print "cmdvel end"
+        print ("cmdvel end")
 
 
     def setCMDVelData(self, data, current=None):

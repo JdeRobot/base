@@ -9,14 +9,14 @@ try:
     ic = Ice.initialize(sys.argv)
     base = ic.stringToProxy("PHPose3D:default -p 9998")
     datos = jderobot.Pose3DPrx.checkedCast(base)
-    print datos
+    print (datos)
     if not datos:
         raise RuntimeError("Invalid proxy")
 
     while True:
         time.sleep(1)
         data = datos.getPose3DData()
-        print data
+        print (data)
 except:
     traceback.print_exc()
     status = 1

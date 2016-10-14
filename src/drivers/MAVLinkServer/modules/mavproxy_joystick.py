@@ -146,7 +146,7 @@ class JSModule(mp_module.MPModule):
                 for jtype in joymap:
                     if fnmatch.fnmatch(name, jtype):
                         print("Matched type '%s'" % jtype)
-                        print '%u axes available' % j.get_numaxes()
+                        print ('%u axes available' % j.get_numaxes())
                         self.js = j
                         self.num_axes = j.get_numaxes()
                         self.map = joymap[jtype]

@@ -1,4 +1,4 @@
-find_package(PythonInterp 2 REQUIRED)
+find_package(PythonInterp 3 REQUIRED)
 
 execute_process(
   COMMAND ${PYTHON_EXECUTABLE} -c "import os;print(os.path.dirname(os.__file__))"

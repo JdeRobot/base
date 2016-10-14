@@ -50,9 +50,9 @@ class dataflash_logger(mp_module.MPModule):
     def cmd_dataflash_logger(self, args):
         '''control behaviour of the module'''
         if len(args) == 0:
-            print self.usage()
+            print (self.usage())
         elif args[0] == "status":
-            print self.status()
+            print (self.status())
         elif args[0] == "stop":
             self.sender = None
             self.stopped = True
@@ -61,7 +61,7 @@ class dataflash_logger(mp_module.MPModule):
         elif args[0] == "set":
             self.log_settings.command(args[1:])
         else:
-            print self.usage()
+            print (self.usage())
 
     def _dataflash_dir(self, mpstate):
         '''returns directory path to store DF logs in.  May be relative'''
@@ -135,7 +135,7 @@ class dataflash_logger(mp_module.MPModule):
         '''print out statistics every 10 seconds from idle loop'''
         now = time.time()
         if (now - self.last_idle_status_printed_time) >= 10:
-            print self.status()
+            print (self.status())
             self.last_idle_status_printed_time = now
             self.prev_download = self.download
 
@@ -309,7 +309,7 @@ class dataflash_logger(mp_module.MPModule):
                                    block not in self.acking_blocks:
                                     self.missing_blocks[block] = 1
                                     if self.log_settings.verbose:
-                                        print "DFLogger: setting %d for nacking" % (block,)
+                                        print ("DFLogger: setting %d for nacking" % (block,))
                                     self.blocks_to_ack_and_nack.append([self.master,block,0,now,None])
                         #print "\nmissed blocks: ",self.missing_blocks
                     if self.last_seqno < m.seqno:
