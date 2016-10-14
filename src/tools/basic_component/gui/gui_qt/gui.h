@@ -1,7 +1,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "../../shared.h"
 #include "../igui.h"
