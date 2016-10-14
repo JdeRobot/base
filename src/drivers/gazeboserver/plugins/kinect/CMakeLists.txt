@@ -7,10 +7,12 @@ include_directories(
 	${GEARBOX_INCLUDE_DIRS}
 	/usr/include/vtk-5.8
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${easyiceconfig_INCLUDE_DIRS}
 	) 
 
 link_directories( 
 	${GAZEBO_LIBRARY_DIRS} 
+	${easyiceconfig_LIBRARY_DIRS}
 	)
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -lpcl_filters" ) # Opciones para el compilador

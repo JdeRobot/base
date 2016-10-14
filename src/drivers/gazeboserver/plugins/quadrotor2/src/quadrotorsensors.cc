@@ -41,12 +41,12 @@ QuadRotorSensors::Load(ModelPtr model){
     SensorManager *sm = SensorManager::Instance();
 
     for (SensorPtr s: sm->GetSensors()){
-        if (s->GetParentId() != base_link_id) continue;
-        std::string name = s->GetName();
+        if (s->ParentId() != base_link_id) continue;
+        std::string name = s->Name();
         if (name.find("imu_sensor") != std::string::npos)
-            imu = boost::static_pointer_cast<ImuSensor>(s);
+            imu = std::static_pointer_cast<ImuSensor>(s);
         if (name.find("sonar") != std::string::npos)
-            sonar = boost::static_pointer_cast<
+            sonar = std::static_pointer_cast<
 #ifdef BROKEN_SonarSensor
                     RaySensor
 #else
@@ -54,9 +54,9 @@ QuadRotorSensors::Load(ModelPtr model){
 #endif
 >(s);
         if (name.find("frontal") != std::string::npos)
-            cam[CAM_FRONTAL] = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_FRONTAL] = std::static_pointer_cast<CameraSensor>(s);
         if (name.find("ventral") != std::string::npos)
-            cam[CAM_VENTRAL] = boost::static_pointer_cast<CameraSensor>(s);
+            cam[CAM_VENTRAL] = std::static_pointer_cast<CameraSensor>(s);
     }
 
     // weak-fix for sonar value at boostrap (1/2)
@@ -95,10 +95,10 @@ QuadRotorSensors::debugInfo(){
     std::cout << _log_prefix << "Sensors of " << model->GetName() << std::endl;
     boost::format fmt(_log_prefix+"\t%1% (id: %2%)\n");
 
-    std::cout << fmt % cam[CAM_VENTRAL]->GetName() % cam[CAM_VENTRAL]->GetId();
-    std::cout << fmt % cam[CAM_FRONTAL]->GetName() % cam[CAM_FRONTAL]->GetId();
-    std::cout << fmt % sonar->GetName() % sonar->GetId();
-    std::cout << fmt % imu->GetName() % imu->GetId();
+    std::cout << fmt % cam[CAM_VENTRAL]->Name() % cam[CAM_VENTRAL]->Id();
+    std::cout << fmt % cam[CAM_FRONTAL]->Name() % cam[CAM_FRONTAL]->Id();
+    std::cout << fmt % sonar->Name() % sonar->Id();
+    std::cout << fmt % imu->Name() % imu->Id();
 }
 
 void
@@ -114,13 +114,13 @@ QuadRotorSensors::_on_cam(int id){
     /// possible to bootstrap at Load neither Init step.
 
     if (img[id].empty()){
-        const unsigned char *data = cam[id]->GetImageData();
+        const unsigned char *data = cam[id]->ImageData();
         if (data == 0)
             return;
 
         std::cout <<  _log_prefix << "\tbootstrap cam["<<id<<"]" << std::endl;
-        uint32_t h = cam[id]->GetImageHeight();
-        uint32_t w = cam[id]->GetImageWidth();
+        uint32_t h = cam[id]->ImageHeight();
+        uint32_t w = cam[id]->ImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
         cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
@@ -131,9 +131,9 @@ QuadRotorSensors::_on_cam(int id){
 void
 QuadRotorSensors::_on_sonar(){
 #ifdef BROKEN_SonarSensor
-    assert(sonar->GetRangeCount() > 0);
-    std::vector<double> ranges(sonar->GetRangeCount());
-    sonar->GetRanges(ranges);
+    assert(sonar->RangeCount() > 0);
+    std::vector<double> ranges(sonar->RangeCount());
+    sonar->Ranges(ranges);
     std::sort(ranges.begin(), ranges.end());
     //altitude = ranges[0];
     int c = std::ceil(ranges.size()*0.20); // smooth value by take 20% of minor values
@@ -147,6 +147,6 @@ QuadRotorSensors::_on_sonar(){
 void
 QuadRotorSensors::_on_imu(){
     pose = model->GetWorldPose();
-    pose.rot = imu->GetOrientation();
+    pose.rot = imu->Orientation();
 //    std::cout<<pose<<std::endl;
 }

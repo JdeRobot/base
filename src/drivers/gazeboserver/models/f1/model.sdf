@@ -581,4 +581,3 @@
       <plugin name="pose3d" filename="libpose3dF1.so"/>
 </model>
 </sdf>
-

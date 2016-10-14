@@ -108,8 +108,8 @@ CameraProxy::_on_cam_update(){
 
 cv::Mat
 CameraProxy::_createImageWrapper(const gazebo::sensors::CameraSensorPtr cam, const int /*id*/) const{
-    const unsigned char *data = cam->GetImageData();
-    uint32_t h = cam->GetImageHeight();
-    uint32_t w = cam->GetImageWidth();
+    const unsigned char *data = cam->ImageData();
+    uint32_t h = cam->ImageHeight();
+    uint32_t w = cam->ImageWidth();
     return cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 }

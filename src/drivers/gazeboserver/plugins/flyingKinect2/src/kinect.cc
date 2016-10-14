@@ -129,9 +129,9 @@ KinectPlugin::LoadSensors(gazebo::physics::ModelPtr _model){
 	this->base_link_id = _model->GetChild(0)->GetId();
 
 	for (gazebo::sensors::SensorPtr s: sm->GetSensors()){
-		if (s->GetParentId() == base_link_id){
-			camera_sensor = boost::static_pointer_cast<gazebo::sensors::DepthCameraSensor>(s);
-			camera_impl = camera_sensor->GetDepthCamera();
+		if (s->ParentId() == base_link_id){
+			camera_sensor = std::static_pointer_cast<gazebo::sensors::DepthCameraSensor>(s);
+			camera_impl = camera_sensor->DepthCamera();
 		}
 	}
 }
@@ -150,15 +150,15 @@ KinectPlugin::_on_cam_bootstrap(){
 	if (img_depth.empty()){
 		std::cout <<  _log_prefix << "\tbootstrap depth camera" << std::endl;
 
-		int _width = camera_impl->GetImageWidth();
-		int _height = camera_impl->GetImageHeight();
+		int _width = camera_impl->ImageWidth();
+		int _height = camera_impl->ImageHeight();
 
-		const float* depth_data = camera_impl->GetDepthData();
+		const float* depth_data = camera_impl->DepthData();
 		img_depth_raw = cv::Mat(_height, _width, CV_32FC1, (float_t*) depth_data);
 		img_depth.create(_height, _width, CV_8UC3);
 		depth2rgb(img_depth_raw, img_depth);
 
-		const unsigned char* rgb_data = camera_impl->GetImageData();
+		const unsigned char* rgb_data = camera_impl->ImageData();
 		img_rgb = cv::Mat(_height, _width, CV_8UC3, (uint8_t*) rgb_data);
 
 		cam_depthI.onCameraSensorBoostrap(img_depth, nullptr);
