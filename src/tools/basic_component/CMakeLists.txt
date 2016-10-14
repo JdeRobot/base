@@ -1,13 +1,13 @@
-if (${QT_COMPILE})
+if (${QT5_COMPILE})
 
     #Generating Qt shared library
     SET(qt_SOURCES gui/gui_qt/gui.cc)
     SET(qt_HEADERS gui/gui_qt/gui.h)
 
-    QT4_WRAP_CPP(qt_HEADERS_MOC ${qt_HEADERS})
+    set(CMAKE_AUTOMOC ON)
 
-    add_library(guiqt SHARED gui/gui_qt/gui.cc ${qt_HEADERS_MOC})
-    target_link_libraries (guiqt ${QT_LIBRARIES_JDE})
+    add_library(guiqt SHARED gui/gui_qt/gui.cc ${qt_HEADERS})
+    target_link_libraries (guiqt ${QT5_LIBRARIES_JDE})
     
 endif()		
 	       
