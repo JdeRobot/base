@@ -9,5 +9,7 @@ IF(NOT NODEJS_DIR)
 	SET(NODEJS_COMPILE FALSE)
 ELSE()
 	MESSAGE( STATUS " NodeJS found" )
+	list(APPEND DEPS nodejs)
+	list(APPEND DEPS_DEV nodejs)
 ENDIF()
 
