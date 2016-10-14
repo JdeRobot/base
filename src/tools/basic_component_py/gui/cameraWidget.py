@@ -17,10 +17,10 @@
 #       Alberto Martin Florido <almartinflorido@gmail.com>
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 
 
-class CameraWidget(QtGui. QWidget):
+class CameraWidget(QtWidgets.QWidget):
 
     imageUpdate = QtCore.pyqtSignal()
 
@@ -33,19 +33,19 @@ class CameraWidget(QtGui. QWidget):
     def initUI(self):
 
         self.setWindowTitle("Camera")
-	self.setMinimumSize(100,100);
+        self.setMinimumSize(100,100)
 
-        self.imgLabel = QtGui.QLabel(self)
+        self.imgLabel = QtWidgets.QLabel(self)
         self.imgLabel.show()
 
     def updateImage(self):
 
         img = self.winParent.getCamera().getImage()
         if img is not None:
-            image = QtGui.QImage(img.data, img.shape[1], img.shape[0],
-                                 img.shape[1] * img.shape[2], QtGui.QImage.Format_RGB888)
+            image = QtWidgets.QImage(img.data, img.shape[1], img.shape[0],
+                                 img.shape[1] * img.shape[2], QtWidgets.QImage.Format_RGB888)
 
             size = QtCore.QSize(img.shape[1], img.shape[0])
             self.resize(size)
             self.imgLabel.resize(size)
-            self.imgLabel.setPixmap(QtGui.QPixmap.fromImage(image))
+            self.imgLabel.setPixmap(QtWidgets.QPixmap.fromImage(image))

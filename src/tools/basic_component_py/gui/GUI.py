@@ -19,16 +19,17 @@
 #
 
 
-from PyQt4 import QtGui, QtCore
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QMainWindow
 from gui.ui_gui import Ui_MainWindow
 from gui.teleopWidget import TeleopWidget
 from gui.cameraWidget import CameraWidget
 from gui.communicator import Communicator
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
 
-    updGUI = QtCore.pyqtSignal()
+    updGUI = pyqtSignal()
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)

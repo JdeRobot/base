@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
+    <width>400</width>
     <height>370</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>340</width>
+    <width>400</width>
     <height>370</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>340</width>
+    <width>400</width>
     <height>370</height>
    </size>
   </property>
@@ -26,6 +26,17 @@
    <string>Basic Component py</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+    <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>361</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="tlLayout"/>
+   </widget>
    <widget class="QLabel" name="XLabel">
     <property name="geometry">
      <rect>
@@ -52,7 +63,7 @@
      <string>Y:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="XValue">
+  <widget class="QLabel" name="XValue">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -67,7 +78,7 @@
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
-   </widget>
+  </widget>
    <widget class="QLabel" name="YValue">
     <property name="geometry">
      <rect>
@@ -86,8 +97,8 @@
    </widget>
   </widget>
  </widget>
- <resources>
+<resources>
   <include location="../resources/resources.qrc"/>
- </resources>
+</resources>
  <connections/>
 </ui>
