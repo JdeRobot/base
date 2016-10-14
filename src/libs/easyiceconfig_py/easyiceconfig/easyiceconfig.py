@@ -22,7 +22,7 @@ import sys, os
 import re
 import Ice
 
-from hardcodedpaths import HARDCODED_PATHS
+from easyiceconfig.hardcodedpaths import HARDCODED_PATHS
 
 
 ENV_PATH_NAME = "ICE_CONFIG_PATH"
