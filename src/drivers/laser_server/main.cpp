@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     Ice::CommunicatorPtr ic;
     try {
      //-----------------ICE----------------//
-        ic = Ice::initialize(argc, argv);
+        ic = EasyIce::initialize(argc, argv);
 
 		Ice::PropertiesPtr prop = ic->getProperties();
 
