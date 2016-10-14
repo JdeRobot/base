@@ -1,7 +1,7 @@
 #ifndef LASERWIDGET_H
 #define LASERWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class LaserWidget: public QWidget
 {

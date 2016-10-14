@@ -4,7 +4,7 @@
 #include "../robot/robot.h"
 #include "gui.h"
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include <iostream>
 #include <sys/time.h>
