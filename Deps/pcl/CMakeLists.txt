@@ -36,6 +36,6 @@ if (PCL_INCLUDE_DIRS)
 
     endif(_DPKG_CMD AND _READLINK_CMD)
 
-    list(APPEND DEPS_DEV libpcl-all)
+    list(APPEND DEPS_DEV libpcl-dev)
     FIND_PATH( pcl_openni NAMES pcl/io/openni_grabber.h HINTS ${PCL_INCLUDE_DIRS})
 endif()
