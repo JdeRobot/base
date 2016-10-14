@@ -1,12 +1,10 @@
 #ifndef VELWIDGET_H
 #define VELWIDGET_H
 
-#include <QtGui>
-#include <qwt_compass.h>
-#include <qwt_analog_clock.h>
-#include "speedometer.h"
+#include <QtWidgets>
 #include "../sensors/sensors.h"
-
+#include <iostream>
+#include <qfi_SI.h>
 
 class VelWidget: public QWidget
 {
@@ -14,7 +12,6 @@ public:
     VelWidget(QWidget *parent = 0);
     void update();
     void setUI();
-    QwtDial *createDial(int pos);
     void drawVelocitiesValues(float vlx,float vly,float vlz);
     void setSensors(Sensors* sensors);
     ~VelWidget();
@@ -31,10 +28,10 @@ private:
     QLabel *velYLabel;
     QLabel *velZLabel;
 
-    QwtDial *velLinZ;
-    QwtDial *velLinY;
-    QwtDial *velLinX;
-    SpeedoMeter *d_speedo;
+    qfi_SI *velLinZ;
+    qfi_SI *velLinY;
+    qfi_SI *velLinX;
+
     Sensors *sensors;
 
     float vx,vy,vz;

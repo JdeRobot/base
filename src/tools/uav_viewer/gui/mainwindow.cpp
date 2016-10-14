@@ -1,24 +1,12 @@
-#include <iostream>
-#include <QTimer>
-#include <qwt_compass_rose.h>
-#include <qwt_dial_needle.h>
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QDebug>
-
-#if QT_VERSION < 0x040000
-typedef QColorGroup Palette;
-#else
-typedef QPalette Palette;
-#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-	connect(this, SIGNAL(signal_updateGUI()), this, SLOT(updateGUI_recieved()));
+    connect(this, SIGNAL(signal_updateGUI()), this, SLOT(updateGUI_recieved()));
 	ui->setupUi(this);
-	ui->battery->setValue(60.0);
+//	ui->battery->setValue(60.0);
 
     vel = new VelWidget();;
 
@@ -147,7 +135,7 @@ void MainWindow::updateGUI_recieved()
 
     jderobot::NavdataDataPtr navdata=this->sensors->getNavdata();
     int batteryPer=navdata->batteryPercent;
-    ui->battery->setValue(batteryPer);
+    //ui->battery->setValue(batteryPer);
 	this->setDroneStatus(navdata->state);
 
 }

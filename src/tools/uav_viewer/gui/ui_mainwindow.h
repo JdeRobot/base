@@ -10,19 +10,8 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QCheckBox>
-#include <QtGui/QMainWindow>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
-#include <QtGui/QWidget>
-#include "qwt_thermo.h"
+#include <QtCore>
+#include <QtWidgets>
 
 QT_BEGIN_NAMESPACE
 
@@ -37,7 +26,7 @@ public:
     QLabel *velYLabel;
     QLabel *velZLabel;
     QGroupBox *data_groupbox;
-    QwtThermo *battery;
+    //QwtThermo *battery;
     QLabel *batteryLabel;
     QLabel *yawLabel;
     QLabel *altdLabel;
@@ -93,13 +82,13 @@ public:
         view_tab = new QWidget();
         view_tab->setObjectName(QString::fromUtf8("view_tab"));
 
-        battery = new QwtThermo(view_tab);
-        battery->setObjectName(QString::fromUtf8("battery"));
-        battery->setGeometry(QRect(580, 50, 56, 241));
-        battery->setMaxValue(100);
-        batteryLabel = new QLabel(view_tab);
-        batteryLabel->setObjectName(QString::fromUtf8("batteryLabel"));
-        batteryLabel->setGeometry(QRect(580, 310, 51, 21));
+//        battery = new QwtThermo(view_tab);
+//        battery->setObjectName(QString::fromUtf8("battery"));
+//        battery->setGeometry(QRect(580, 50, 56, 241));
+//        battery->setMaxValue(100);
+//        batteryLabel = new QLabel(view_tab);
+//        batteryLabel->setObjectName(QString::fromUtf8("batteryLabel"));
+//        batteryLabel->setGeometry(QRect(580, 310, 51, 21));
 
         velBox = new QCheckBox(view_tab);
         velBox->setObjectName(QString::fromUtf8("velBox"));
@@ -215,15 +204,15 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "uav_viewer", 0, QApplication::UnicodeUTF8));
-        batteryLabel->setText(QApplication::translate("MainWindow", "Battery", 0, QApplication::UnicodeUTF8));
-        velLabel->setText(QApplication::translate("MainWindow", "Velocities", 0, QApplication::UnicodeUTF8));
-        dataLabel->setText(QApplication::translate("MainWindow", "Data", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "uav_viewer", 0));
+        //batteryLabel->setText(QApplication::translate("MainWindow", "Battery", 0));
+        velLabel->setText(QApplication::translate("MainWindow", "Velocities", 0));
+        dataLabel->setText(QApplication::translate("MainWindow", "Data", 0));
         imageLabel->setText(QString());
-        controlBox->setTitle(QApplication::translate("MainWindow", "Control", 0, QApplication::UnicodeUTF8));
-        takeoff_button->setText(QApplication::translate("MainWindow", "take off", 0, QApplication::UnicodeUTF8));
-        land_button->setText(QApplication::translate("MainWindow", "land", 0, QApplication::UnicodeUTF8));
-        reset_button->setText(QApplication::translate("MainWindow", "reset", 0, QApplication::UnicodeUTF8));
+        controlBox->setTitle(QApplication::translate("MainWindow", "Control", 0));
+        takeoff_button->setText(QApplication::translate("MainWindow", "take off", 0));
+        land_button->setText(QApplication::translate("MainWindow", "land", 0));
+        reset_button->setText(QApplication::translate("MainWindow", "reset", 0));
         angZL->setText(QString());
         linZD->setText(QString());
         angZR->setText(QString());
@@ -234,11 +223,11 @@ public:
         linXB->setText(QString());
         toggleCam->setText(QString());
         imageVLabel->setText(QString());
-        statusLabel->setText(QApplication::translate("MainWindow", "Status:", 0, QApplication::UnicodeUTF8));
+        statusLabel->setText(QApplication::translate("MainWindow", "Status:", 0));
         statusValue->setText(QString());
         imageLLabel->setText(QString());
-        tabWidget->setTabText(tabWidget->indexOf(view_tab), QApplication::translate("MainWindow", "Viewer", 0, QApplication::UnicodeUTF8));
-        tabWidget->setTabText(tabWidget->indexOf(gps_tab), QApplication::translate("MainWindow", "GPS", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(view_tab), QApplication::translate("MainWindow", "Viewer", 0));
+        tabWidget->setTabText(tabWidget->indexOf(gps_tab), QApplication::translate("MainWindow", "GPS", 0));
     } // retranslateUi
 
 };

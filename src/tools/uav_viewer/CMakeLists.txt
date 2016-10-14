@@ -1,65 +1,64 @@
-if (${QT_COMPILE} AND ${QWT_COMPILE})
+IF(QT5_COMPILE)
 
-	set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
+    set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
-	MACRO (QT4_WRAP_UI_CUSTOM outfiles )
+    set(SOURCES sensors/threadsensors.cpp
+                gui/threadgui.cpp
+                gui/mainwindow.cpp
+                gui/velwidget.cpp
+                gui/datawidget.cpp
+                src/main.cpp
+                sensors/sensors.cpp
+                resources/images.cpp
+    )
+    set(HEADERS sensors/threadsensors.h
+                gui/threadgui.h
+                gui/mainwindow.h
+                gui/velwidget.h
+                gui/datawidget.h
+    )
 
-  	QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+    include_directories(${Qt5Widgets_INCLUDE_DIRS}
+                        ${Qt5Core_INCLUDE_DIRS}
+                        ${Qt5Gui_INCLUDE_DIRS}
+                        ${Qt5Svg_INCLUDE_DIRS}
+                        ${OpenCV_INCLUDE_DIR}
+                        ${Ice_INCLUDE_DIR}
+                        ${INTERFACES_CPP_DIR}
+                        ${easyiceconfig_INCLUDE_DIRS}
+    )
+    link_directories(${JDE_LIBS}
+                        ${easyiceconfig_LIBRARY_DIRS}
+    )
+    add_definitions(${Qt5Widgets_DEFINITIONS}
+                        ${Qt5Core_DEFINITIONS}
+                        ${Qt5Gui_DEFINITIONS}
+                        ${Qt5Svg_DEFINITIONS}
+    )
 
-	FOREACH (it ${ui_files})
-		GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
-		GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
-		SET(outfile ${GUI_OUTPUT_PATH}/ui_${outfile}.h)
-		ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-  		COMMAND ${QT_UIC_EXECUTABLE}
-  		ARGS ${ui_options} -o ${outfile} ${infile}
-  		MAIN_DEPENDENCY ${infile})
-		SET(${outfiles} ${${outfiles}} ${outfile})
-	ENDFOREACH (it)
 
-	ENDMACRO (QT4_WRAP_UI_CUSTOM)
+    add_executable(uav_viewer
+                    ${SOURCES}
+                    ${HEADERS}
+                    ${INTERFACES_CPP_DIR}
+    )
+    target_link_libraries(uav_viewer
+                            ${Qt5Widgets_LIBRARIES}
+                            ${Qt5Core_LIBRARIES}
+                            ${Qt5Gui_LIBRARIES}
+                            ${Qt5Svg_LIBRARIES}
+                            ${CMAKE_THREAD_LIBS_INIT}
+                            ${OpenCV_LIBRARIES}
+                            ${OpenCVGUI_LIBRARIES}
+                            ${Ice_LIBRARIES}
+                            ${easyiceconfig_LIBRARIES}
+                            ${ZeroCIce_LIBRARIES}
+                            JderobotInterfaces
+                            jderobotutil
+                            qfi
+    )
 
-	SET(qt_SOURCES ./sensors/threadsensors.cpp ./gui/threadgui.cpp ./gui/mainwindow.cpp 
-                ./gui/attitudeindicator.cpp ./gui/speedometer.cpp gui/velwidget.cpp gui/datawidget.cpp)
-
-	SET(qt_HEADERS	./sensors/threadsensors.h ./gui/threadgui.h ./gui/mainwindow.h 
-                ./gui/attitudeindicator.h ./gui/speedometer.h gui/velwidget.h gui/datawidget.h)
-
-	QT4_WRAP_CPP(qt_HEADERS_MOC ${qt_HEADERS})
-	INCLUDE(${QT_USE_FILE})
-	ADD_DEFINITIONS(${QT_DEFINITIONS})
-
-	SET(SOURCE_FILES ./src/main.cpp ./sensors/sensors.cpp ./resources/images.cpp)
-
-	include_directories(
-		${OpenCV_INCLUDE_DIR}
-        ${Ice_INCLUDE_DIR}
-		${QWT_INCLUDE_DIR}
-		${INTERFACES_CPP_DIR}
-    	${easyiceconfig_INCLUDE_DIRS}
-	)
-
-	link_directories(
-		${JDE_LIBS}
-		${easyiceconfig_LIBRARY_DIRS}
-	)
-
-	add_executable(uav_viewer 
-		${SOURCE_FILES}
-		${qt_SOURCES} 
-        ${qt_HEADERS_MOC}
-		${INTERFACES_CPP_DIR})
-
-	target_link_libraries(uav_viewer
-        ${CMAKE_THREAD_LIBS_INIT}
-		${QT_LIBRARIES}
-		${qwt_libraries}
-		${OpenCV_LIBRARIES}
-        ${OpenCVGUI_LIBRARIES}
-        ${Ice_LIBRARIES}
-		${easyiceconfig_LIBRARIES} 
-		${ZeroCIce_LIBRARIES}
-		JderobotInterfaces
-		jderobotutil)
-
-endif()
+ENDIF()

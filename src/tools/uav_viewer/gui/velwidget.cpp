@@ -1,5 +1,4 @@
 #include "velwidget.h"
-#include <iostream>
 
 VelWidget::VelWidget(QWidget *parent) :
     QWidget(parent)
@@ -7,7 +6,7 @@ VelWidget::VelWidget(QWidget *parent) :
 
     //setAutoFillBackground(true);
 
-    setFixedSize(530, 230);
+    setFixedSize(700, 300);
 
     vx = vy = vz = 0.0;
 
@@ -42,18 +41,25 @@ void VelWidget::setUI()
     velZLabel->setObjectName(QString::fromUtf8("velZLabel"));
     velZLabel->setGeometry(QRect(370, 190, 51, 21));
 
-    velXLabel->setText(QApplication::translate("VelWidget", "Lineal X", 0, QApplication::UnicodeUTF8));
-    velYLabel->setText(QApplication::translate("VelWidget", "Lineal Y", 0, QApplication::UnicodeUTF8));
-    velZLabel->setText(QApplication::translate("VelWidget", "Lineal Z", 0, QApplication::UnicodeUTF8));
+    velXLabel->setText(QString::fromUtf8("LinealX"));
+    velYLabel->setText(QString::fromUtf8("LinealY"));
+    velZLabel->setText(QString::fromUtf8("LinealZ"));
 
-    velLinZ = createDial(1);
-    velLinZ->setGeometry(QRect(1050,400,150,150));
+//    velXLabel->setText(QApplication::translate("VelWidget", "Lineal X", 0));
+//    velYLabel->setText(QApplication::translate("VelWidget", "Lineal Y", 0));
+//    velZLabel->setText(QApplication::translate("VelWidget", "Lineal Z", 0));
 
-    velLinY = createDial(1);
-    velLinY->setGeometry(QRect(900,400,150,150));
+    velLinZ = new qfi_SI();
+    velLinZ->setGeometry(QRect(1050,400,200,200));
 
-    velLinX = createDial(1);
-    velLinX->setGeometry(QRect(750,400,150,150));
+
+    velLinY = new qfi_SI();
+    velLinY->setGeometry(QRect(900,400,200,200));
+
+
+    velLinX = new qfi_SI();
+    velLinX->setGeometry(QRect(750,400,200,200));
+
 
     mainLayout->addWidget(velLinX,0,0,Qt::AlignCenter);
     mainLayout->addWidget(velXLabel,1,0,Qt::AlignCenter);
@@ -68,62 +74,50 @@ void VelWidget::setUI()
 
 }
 
-QwtDial *VelWidget::createDial(int pos)
-{
-    QwtDial *dial = NULL;
-
-    d_speedo = new SpeedoMeter(this);
-    d_speedo->setRange(0.0,8.0);
-    d_speedo->setLabel("m/s");
-    d_speedo->setOrigin(180);
-    d_speedo->setScaleArc(0.0,270.0);
-    d_speedo->setScale(-1, 2, 1.0);
-    dial = d_speedo;
-
-    if ( dial )
-    {
-        dial->setReadOnly(true);
-        dial->scaleDraw()->setPenWidth(3);
-        dial->setLineWidth(4);
-        dial->setFrameShadow(QwtDial::Sunken);
-    }
-    return dial;
-}
-
 void VelWidget::drawVelocitiesValues(float vlx,float vly,float vlz)
 {
-    //mm/sec to m/s
-    float result=0.0;
-   /* if(vlx<0.0){
-        velXLabel->setStyleSheet("QLabel {background-color: red}");
-    }else{
-        velXLabel->setStyleSheet("QLabel {background-color: green}");
-    }*/
-    vlx=std::abs(vlx);
-    vlx=vlx/1000.0;
-    result=(0.6*vx)+((1-0.6)*vlx);
-    velLinX->setValue(result);
-    vx=vlx;
+//    //mm/sec to m/s
+//    float resultX = 0.0;
+//    float resultY = 0.0;
+//    float resultZ = 0.0;
+//   /* if(vlx<0.0){
+//        velXLabel->setStyleSheet("QLabel {background-color: red}");
+//    }else{
+//        velXLabel->setStyleSheet("QLabel {background-color: green}");
+//    }*/
+//    vlx=std::abs(vlx);
+//    vlx=vlx/1000.0;
+//    resultX=(0.6*vx)+((1-0.6)*vlx);
+//    velLinX->setSpeed(resultX);
+//    vx=vlx;
 
-    /*if(vly<0.0){
-        velYLabel->setStyleSheet("QLabel {background-color: red}");
-    }else{
-        velYLabel->setStyleSheet("QLabel {background-color: green}");
-    }*/
-    vly=std::abs(vly);
-    vly=vly/1000.0;
-    result=(0.6*vy)+((1-0.6)*vly);
-    velLinY->setValue(result);
-    vy=vly;
+//    /*if(vly<0.0){
+//        velYLabel->setStyleSheet("QLabel {background-color: red}");
+//    }else{
+//        velYLabel->setStyleSheet("QLabel {background-color: green}");
+//    }*/
+//    vly=std::abs(vly);
+//    vly=vly/1000.0;
+//    resultY=(0.6*vy)+((1-0.6)*vly);
+//    velLinY->setSpeed(resultY);
+//    vy=vly;
 
-    /*if(vlz<0.0){
-        velZLabel->setStyleSheet("QLabel {background-color: red}");
-    }else{
-        velZLabel->setStyleSheet("QLabel {background-color: green}");
-    }*/
-    vlz=std::abs(vlz);
-    vlz=vlz/1000.0;
-    result=(0.6*vz)+((1-0.6)*vlz);
-    velLinZ->setValue(result);
-    vz=vlz;
+//    /*if(vlz<0.0){
+//        velZLabel->setStyleSheet("QLabel {background-color: red}");
+//    }else{
+//        velZLabel->setStyleSheet("QLabel {background-color: green}");
+//    }*/
+//    vlz=std::abs(vlz);
+//    vlz=vlz/1000.0;
+//    resultZ=(0.6*vz)+((1-0.6)*vlz);
+//    velLinZ->setSpeed(resultZ);
+//    vz=vlz;
+
+    velLinY->setSpeed(vlx);
+    velLinY->setSpeed(vly);
+    velLinY->setSpeed(vlz);
+
+    velLinX->update();
+    velLinY->update();
+    velLinZ->update();
 }
