@@ -14,3 +14,8 @@ src/interfaces/python/
 *.qrc.depends
 
 .dpkg_pkgs/
+
+
+# Python
+__pycache__/
+*.py[cod]
