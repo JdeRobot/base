@@ -59,7 +59,7 @@ namespace std {
 inline
 bool fileexists(std::string filepath){
 	ifstream ifile(filepath.c_str(), ios_base::in);
-	return ifile;
+	return ifile.is_open();
 }
 }//NS
 

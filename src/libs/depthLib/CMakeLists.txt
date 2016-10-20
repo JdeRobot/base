@@ -15,7 +15,7 @@ TARGET_LINK_LIBRARIES(depthLibshare ${Boost_LIBRARIES} ${ZeroCIce_LIBRARIES} ${O
 set_target_properties(depthLibshare PROPERTIES OUTPUT_NAME depthLib)
 
 ### Install
-install(TARGETS depthLib
+install(TARGETS depthLib depthLibshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )

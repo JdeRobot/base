@@ -7,7 +7,7 @@ add_library (fuzzyshare SHARED fuzzylib.c)
 set_target_properties(fuzzyshare PROPERTIES OUTPUT_NAME fuzzylib)
 
 ### Install
-install(TARGETS fuzzylib
+install(TARGETS fuzzylib fuzzyshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
