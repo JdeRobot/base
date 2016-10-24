@@ -1,3 +1,41 @@
+jderobot (5.4.1) unstable; urgency=low
+
+  * release 5.4.1  
+  * IMPORTANT NOTE. This changelog seems very short but it includes several version jumps of our third party software, so take a look specially to the issue #542, so it contains all the changes needed and references all the PR's made for the distribution upgrade. We no longer support Ubuntu 14.04 in benefit of Ubuntu 16.04, so we are now in the state of the art of all our third party and own code. Nevertheless, if someone wants to stay in ubuntu trusty, we have a branch called pre_xenial in our git repo.
+  * [PR #523] Enhancement. Ardrone2 and flyingKinect2 are now self-content. No crossed dependencies.
+  * [PR #525] Fix. JdeRobot libraries installation with a single-pass. cmake && make needed only once to install all the libraries.
+  * [PR #527] Enhancement. Added easyIce to all the JdeRobot components.
+  * [PR #528] Enhancement. Refactor of turtlebot plugin for gazebo. New and improved code organization and it now allows to connect all interfaces with a single port.
+  * [PR #531] Enhancement. The whole project now uses installation variable CMAKE_INSTALL_PREFIX instead of hardcoded paths (/usr/local).
+  * [PR #532] Enhancement. resourcelocator now uses installation variable CMAKE_INSTALL_PREFIX instead of hardcoded paths (/usr/local).
+  * [PR #534] Enhancement. build-independent directories no longer supported. Deleted.
+  * [PR #535] Enhancement. New emSensor driver and viewer. Sensor used in cars for parking.
+  * [PR #541] Enhancement. ParallelIce library it's now available to use for python components. New parallelIce_py library added.
+  * [PR #546] Enhancement. Added support for Gazebo Web.
+  * [PR #550] Enhancement. Added JdeRobot support for Windows using Docker. Only for teaching robotics.
+  * [PR #558] Enhancement. Added nodeJS to launch webtools. Also added nodeJS as dependency for JdeRobot.
+  * [PR #568] XENIAL UPGRADE. Added Gazebo7 to JdeRobot dependencies. Also changed all the code needed related with this new version. Deleted nao and flyingkinect plugins. No longer supported.
+  * [PR #570] XENIAL UPGRADE. Added Python3.5 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #571] XENIAL UPGRADE. Added Ice3.6 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #572] XENIAL UPGRADE. Added PCL1.8 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #573] XENIAL UPGRADE. Added OpenCV3 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #574] XENIAL UPGRADE. Added VTK7 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #575] Fix. Cmake didn't install dynamic libraries in the system after building the project.
+  * [PR #578] Enhancement. Added easyIce to laser_server
+  * [PR #579] XENIAL UPGRADE. Updated uav_viewer from Qt4 to Qt5. Also replaced qwt for qfi. Also changed all the code needed related with this new version.
+  * [PR #580] XENIAL UPGRADE. Updated kobukiViewer from Qt4 to Qt5. Also changed all the code needed related with this new version.
+  * [PR #581] XENIAL UPGRADE. Updated basic_component from Qt4 to Qt5. Also changed all the code needed related with this new version.
+  * [PR #584] XENIAL UPGRADE. Added PyQt5 (Qt5 for Python3) to JdeRobot dependencies instead of PyQt4. Also changed all the code needed related with this new version.
+  * [PR #587] XENIAL UPGRADE. Added qfi (Qt Flying Instruments) to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #590] Upgrade. kobuki_driver changes from Pose2D to LegacyPose2D, due to kobukilib upgrade (from v0.3 to v0.7)
+  * [PR #591] XENIAL UPGRADE. Upgrade dependencies of some third party software for xenial installation.
+  * [PR #596] Fix. Changed type from char to string in boost xml_writer_settings instruction.
+  * [PR #597] Fix. Installation of python files for  Python3.5
+  * [PR #598] UPGRADE XENIAL. Added pip3 configuration for ice3.6 after JdeRobot installation.  
+  
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 25 Oct 2016 00:15:00 +0100
+
+
 jderobot (5.4.0) unstable; urgency=low
 
   * release 5.4.0
