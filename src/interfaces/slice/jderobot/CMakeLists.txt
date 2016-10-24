@@ -33,7 +33,7 @@ FOREACH(currentSourceFile ${ICE_FILES})
 	)
 
   # Python
-	execute_process(COMMAND slice2py -I${CMAKE_CURRENT_LIST_DIR}/.. -I${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_LIST_DIR}/../../python/jderobot INPUT_FILE ${currentSourceFile})
+	execute_process(COMMAND slice2py -I${CMAKE_CURRENT_LIST_DIR}/.. -I${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_LIST_DIR}/../../python/ INPUT_FILE ${currentSourceFile})
 
   # Java
 	execute_process(COMMAND ${SLICE2JAVA_COMMAND} -I${CMAKE_CURRENT_LIST_DIR}/.. -I${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_LIST_DIR}/../../java/jderobot INPUT_FILE ${currentSourceFile})
