@@ -142,7 +142,7 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/libJderobotInterfaces.s
 # Install python files
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/*py)
 FOREACH(header ${HEADERS_FILES})
-	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
+	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/ COMPONENT core)
 ENDFOREACH(header)
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot/__init__.py DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
