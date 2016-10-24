@@ -3,12 +3,12 @@
 /*****************************************************************************
  Includes
  ****************************************************************************/
-#define EIGEN_DONT_ALIGN_STATICALLY True
+//#define EIGEN_DONT_ALIGN_STATICALLY False
 
 #include <csignal>
 #include <ecl/time.hpp>
 #include <ecl/sigslots.hpp>
-#include <ecl/geometry/pose2d.hpp>
+#include <ecl/geometry/legacy_pose2d.hpp>
 #include <ecl/linear_algebra.hpp>
 #include "kobuki_driver/kobuki.hpp"
 
@@ -36,11 +36,11 @@ public:
 
   void processMotion();
 
-  ecl::Pose2D<double> getPose();
+  ecl::LegacyPose2D<double> getPose();
 
 private:
     double dx, dth;
-    ecl::Pose2D<double> pose;
+    ecl::LegacyPose2D<double> pose;
     kobuki::Kobuki kobuki;
     ecl::Slot<> slot_stream_data;
     private: boost::signals2::mutex mutex; ///< Mutex for thread-safe access to internal data.

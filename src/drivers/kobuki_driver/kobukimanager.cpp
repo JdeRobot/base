@@ -36,6 +36,7 @@ double KobukiManager::getRobotX()
     double result;
     mutex.lock();
     result = pose.x();
+    std::cout << "set X: " << pose.x()  << std::endl;
     mutex.unlock();
     return result;
 }
@@ -45,6 +46,7 @@ double KobukiManager::getRobotY()
     double result;
     mutex.lock();
     result = pose.y();
+    std::cout << "set Y: " << pose.y()  << std::endl;
     mutex.unlock();
     return result;
 }
@@ -77,12 +79,14 @@ void KobukiManager::processMotion()
 void KobukiManager::update()
 {
     mutex.lock();
-    ecl::Pose2D<double> pose_update;
+    ecl::LegacyPose2D<double> pose_update;
     ecl::linear_algebra::Vector3d pose_update_rates;
     kobuki.updateOdometry(pose_update, pose_update_rates);
+
     pose *= pose_update;
     dx += pose_update.x();
     dth += pose_update.heading();
+    
     mutex.unlock();
     processMotion();
     kobuki::Battery batery = kobuki.batteryStatus();
@@ -103,9 +107,9 @@ void KobukiManager::update()
     std::cout << "Bateria: " << batery.percent() << " " << batery.capacity << std::endl;
 }
 
-ecl::Pose2D<double> KobukiManager::getPose()
+ecl::LegacyPose2D<double> KobukiManager::getPose()
 {
-    ecl::Pose2D<double> pose_result;
+    ecl::LegacyPose2D<double> pose_result;
     mutex.lock();
     pose_result = pose;
     mutex.unlock();
