@@ -10,8 +10,9 @@ LABEL Usage.enter="docker run --rm jderobot/jderobot:gzweb"
 RUN apt-get update && apt-get install -q -y \
     build-essential \
     cmake \
+    libgazebo7-dev \
     imagemagick \
-    libboost-all-dev \
+    libboost-dev \
     libgts-dev \
     libjansson-dev \
     libtinyxml-dev \
