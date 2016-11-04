@@ -19,12 +19,6 @@
         </mesh>
       </geometry>
     </visual> 
-      <sensor name="imu_sensor" type="imu">
-        <update_rate>20</update_rate>
-        <plugin name='imu_plugin' filename='libimuplugin.so'>
-          <cfgFile>imuplugin.cfg</cfgFile>
-          <poseTopic>~/pose_topic</poseTopic>
-      </plugin>
     </sensor>
   </link>
     <link name="front_right_wheel">
@@ -352,6 +346,6 @@
 			  <front_left_steering_joint>front_left_steering_wheel</front_left_steering_joint>
 			  <!--<torque>5</torque>-->
     </plugin>
-     <plugin name="pose3d" filename="libposeplugin.so"/>
+     <plugin name="pose3d" filename="libcarPose3D.so"/>
 </model>
 </sdf>
