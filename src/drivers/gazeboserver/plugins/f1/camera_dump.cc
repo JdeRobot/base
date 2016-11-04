@@ -48,19 +48,18 @@ namespace gazebo
       //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
 		if(count==0){
 
-			char* str = (char*)this->parentSensor->Camera()->Name().c_str();
-			char* pch; 
-			char* name;
+			std::string name = this->parentSensor->Camera()->Name();
 
-			pch = strtok (str,"::");
-		  	while (pch != NULL)
-		  	{
-		    	    name = pch;
-		    	    pch = strtok (NULL, "::");
-		  	} 
-  			nameCamera = std::string(name);
 
-			nameConfig = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
+			std::cout <<" camera: " << name  << std::endl;
+		
+			std::vector<std::string> strs;
+			boost::split(strs, name, boost::is_any_of("::"));
+		
+
+
+			nameConfig = std::string("--Ice.Config=" + strs[4] + ".cfg");
+			nameCamera = std::string(strs[4]);
 			
 			if (count == 0){
 				pthread_t thr_gui;
@@ -269,6 +268,7 @@ void *myMain(void* v)
 
 	char* name = (char*)camera->nameConfig.c_str();
 
+
     Ice::CommunicatorPtr ic;
     int argc = 1;
 
@@ -282,7 +282,7 @@ void *myMain(void* v)
         
         std::string Endpoints = prop->getProperty("CameraGazebo.Endpoints");
         std::cout << "CameraGazebo "<< camera->nameCamera <<" Endpoints > "  << Endpoints << std::endl;
-        
+
         Ice::ObjectAdapterPtr adapter =
         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
 		

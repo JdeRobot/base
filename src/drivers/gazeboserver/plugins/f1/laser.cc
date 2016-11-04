@@ -46,6 +46,7 @@ namespace gazebo
 		{
 			if(count == 0){
 				count++;
+
 				std::string name = this->parentSensor->ParentName();
 				std::cout <<" laser: " << name  << std::endl;
 				
@@ -54,7 +55,8 @@ namespace gazebo
 				
 				std::cout << "strs[0]: " << strs[0] << std::endl;
 
-    			nameLaser = std::string("--Ice.Config=" +  strs[0] + "_laser.cfg");
+				nameLaser = std::string("--Ice.Config=" + strs[0] + "_laser.cfg");
+
 				pthread_t thr_gui;
 				pthread_create(&thr_gui, NULL, &mainLaser, (void*)this);
 			}
