@@ -48,19 +48,18 @@ namespace gazebo
       //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
 		if(count==0){
 
-			char* str = (char*)this->parentSensor->Camera()->Name().c_str();
-			char* pch; 
-			char* name;
+			std::string name = this->parentSensor->Camera()->Name();
 
-			pch = strtok (str,"::");
-		  	while (pch != NULL)
-		  	{
-		    	    name = pch;
-		    	    pch = strtok (NULL, "::");
-		  	} 
-  			nameCamera = std::string(name);
 
-			nameConfig = std::string("--Ice.Config=" + nameCamera + ".cfg"); 
+			std::cout <<" camera: " << name  << std::endl;
+		
+			std::vector<std::string> strs;
+			boost::split(strs, name, boost::is_any_of("::"));
+		
+
+
+			nameConfig = std::string("--Ice.Config=" + strs[4] + ".cfg");
+			nameCamera = std::string(strs[4]);
 			
 			if (count == 0){
 				pthread_t thr_gui;
@@ -269,6 +268,8 @@ void *myMain(void* v)
 
 	char* name = (char*)camera->nameConfig.c_str();
 
+	std::cout << "@@@@@@@@@@@@@@@@ " << std::string(camera->nameCamera) << std::endl;
+
     Ice::CommunicatorPtr ic;
     int argc = 1;
 
@@ -277,18 +278,27 @@ void *myMain(void* v)
 
     try {
         
+        std::cout << "@@@@@@@@@@@@@@@@ 1" << std::endl;
         ic = EasyIce::initialize(argc, argv);
+        std::cout << "@@@@@@@@@@@@@@@@ 2" << std::endl;
         prop = ic->getProperties();
+        std::cout << "@@@@@@@@@@@@@@@@ 3" << std::endl;
         
         std::string Endpoints = prop->getProperty("CameraGazebo.Endpoints");
+        std::cout << "@@@@@@@@@@@@@@@@ 4" << std::endl;
         std::cout << "CameraGazebo "<< camera->nameCamera <<" Endpoints > "  << Endpoints << std::endl;
+        std::cout << "@@@@@@@@@@@@@@@@ 5" << std::endl;
         
         Ice::ObjectAdapterPtr adapter =
         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
+        std::cout << "@@@@@@@@@@@@@@@@ 6" << std::endl;
 		
         Ice::ObjectPtr object = new CameraI(std::string("CameraGazebo"),  camera);
+        std::cout << "@@@@@@@@@@@@@@@@ 7" << std::endl;
         adapter->add(object, ic->stringToIdentity(camera->nameCamera));
+        std::cout << "@@@@@@@@@@@@@@@@ 8" << std::endl;
         adapter->activate();
+        std::cout << "@@@@@@@@@@@@@@@@ 9" << std::endl;
         ic->waitForShutdown();
     } catch (const Ice::Exception& e) {
         std::cerr << e << std::endl;
