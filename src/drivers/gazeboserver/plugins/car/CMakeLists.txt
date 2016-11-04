@@ -22,6 +22,16 @@ target_link_libraries(carMotors
     JderobotInterfaces
 )
 
+add_library(carPose3D SHARED pose3d.cc)
+target_link_libraries(carPose3D
+	${GAZEBO_libraries} 
+	${ZeroCIce_LIBRARIES} 
+
+    ${easyiceconfig_LIBRARIES}
+    colorspacesmm
+    JderobotInterfaces
+)
+
 
 INSTALL (TARGETS carMotors DESTINATION share/jderobot/gazebo/plugins/car/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
