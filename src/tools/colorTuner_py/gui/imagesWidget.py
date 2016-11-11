@@ -49,17 +49,20 @@ class ImagesWidget(QWidget):
         self.imgLabelFiltered.show()
 
     def setOrigImage(self):
-        img = self.winParent.getCamera().getColorImage()
+        img = self.winParent.getCamera().getOrigImage()
 
         if img is not None:
             image = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888)
+            self.imgLabelOrig.resize(img.shape[1],img.shape[0])
             self.imgLabelOrig.setPixmap(QPixmap.fromImage(image))
 
     def setFilteredImage(self):
-        img = self.winParent.getCamera().getThresoldImage()
+        filt = self.winParent.getFilter()
+        img = self.winParent.getCamera().getFilteredImage(filt)
 
         if img is not None:
-            image = QImage(img.data, img.shape[1], img.shape[0], img.shape[1], QImage.Format_Indexed8)
+            image = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888)
+            self.imgLabelFiltered.resize(img.shape[1],img.shape[0])
             self.imgLabelFiltered.setPixmap(QPixmap.fromImage(image))
         
     def updateImage(self):

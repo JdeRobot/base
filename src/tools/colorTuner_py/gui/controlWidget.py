@@ -19,6 +19,8 @@
 
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy, QSlider
+from  sensors.cameraFilter import RGBLimits, YUVLimits, HSVLimits
+
 
 
 class ControlWidget(QWidget):
@@ -29,6 +31,9 @@ class ControlWidget(QWidget):
         super(ControlWidget, self).__init__()
         self.winParent=winParent
         self.initUI()
+        self.rgbLimits = RGBLimits()
+        self.yuvLimits = YUVLimits()
+        self.hsvLimits = HSVLimits()
         
     def initUI(self):
 
@@ -171,44 +176,59 @@ class ControlWidget(QWidget):
     '''Methods for showing images depending on the current checked radio button'''
     def origButtonState(self):
         if self.origButton.isChecked():
-            None #self.hsvButton.setChecked(False)
+            self.winParent.setFilter('Orig')
+            
 
     def rgbButtonState(self):
         if self.rgbButton.isChecked():
-            None#self.origButton.setChecked(False)
+            self.winParent.setFilter('RGB')
+            
 
     def hsvButtonState(self):
         if self.hsvButton.isChecked():
-            None#self.origButton.setChecked(False)
+            self.winParent.setFilter('HSV')
+            
 
     def yuvButtonState(self):
         if self.yuvButton.isChecked():  
-            None#self.origButton.setChecked(False)
+            self.winParent.setFilter('YUV')
 
     '''Methods to get the slider value and update value labels'''
     def changeHmin(self):
         value = self.hminSlider.value() / 100.0
         self.hminValue.setText(str(value))
+        self.hsvLimits.hmin = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
 
     def changeHmax(self):
         value = self.hmaxSlider.value() / 100.0
         self.hmaxValue.setText(str(value))
+        self.hsvLimits.hmax = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
 
     def changeSmin(self):
         value = self.sminSlider.value() / 100.0
         self.sminValue.setText(str(value))
+        self.hsvLimits.smin = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
 
     def changeSmax(self):
         value = self.smaxSlider.value() / 100.0
         self.smaxValue.setText(str(value))
+        self.hsvLimits.smax = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
 
     def changeVmin(self):
         value = self.vminSlider.value()
         self.vminValue.setText(str(value))
+        self.hsvLimits.vmin = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
 
     def changeVmax(self):
         value = self.vmaxSlider.value()
         self.vmaxValue.setText(str(value))
+        self.hsvLimits.vmax = value
+        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
   
 
     '''Close event, for finalize the program'''

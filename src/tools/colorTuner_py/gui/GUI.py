@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 from gui.communicator import Communicator
 from gui.imagesWidget import  ImagesWidget
 from gui.controlWidget import  ControlWidget
+from  sensors.cameraFilter import RGBLimits, YUVLimits, HSVLimits
 
 class MainWindow(QMainWindow):
     
@@ -55,6 +56,12 @@ class MainWindow(QMainWindow):
         #self.setLayout(self.vLayout)
         self.setCentralWidget(self.verticalLayoutWidget)
 
+        self.filt = 'Orig'
+
+        self.rgbLimits = RGBLimits()
+        self.yuvLimits = YUVLimits()
+        self.hsvLimits = HSVLimits()
+
 
       
     def getCamera(self):
@@ -62,11 +69,17 @@ class MainWindow(QMainWindow):
 
     def setCamera(self,camera):
         self.camera = camera
+
+    def getFilter(self):
+        return self.filt
+
+    def setFilter(self,filt):
+        self.filt = filt
     
     def updateGUI(self):
         self.iWidget.imageUpdate.emit()
         #self.cWidget.controlUpdate.emit()
 
     def closeEvent(self, event):
-        self.camera.client.stop()
+        self.camera.stop()
         event.accept()
