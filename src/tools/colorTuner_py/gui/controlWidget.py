@@ -35,14 +35,21 @@ class ControlWidget(QWidget):
         self.setMinimumSize(1340,200)
         self.setMaximumSize(1340,200)
 
+        '''Radio buttons for Original/RGB/HSV/YUV images'''
         self.origButton = QRadioButton("Original")
+        self.rgbButton = QRadioButton("RGB")
         self.hsvButton = QRadioButton("HSV")
+        self.yuvButton = QRadioButton("YUV")
 
-        self.origButton.toggled.connect(lambda:self.origState())       
-        self.hsvButton.toggled.connect(lambda:self.hsvState())
+        '''Signals for toggled radio buttons'''
+        self.origButton.toggled.connect(lambda:self.origButtonState())       
+        self.rgbButton.toggled.connect(lambda:self.rgbButtonState())
+        self.hsvButton.toggled.connect(lambda:self.hsvButtonState())
+        self.yuvButton.toggled.connect(lambda:self.yuvButtonState())
 
         self.origButton.setChecked(True)
 
+        '''Main layout of the widget will contain several vertical layouts'''
         self.hLayout = QHBoxLayout(self)
         self.hLayout.setObjectName("hLayout")
 
@@ -50,10 +57,11 @@ class ControlWidget(QWidget):
         self.radioLayout = QVBoxLayout()
         self.radioLayout.setObjectName("radioLayout")
         self.radioLayout.addWidget(self.origButton)
+        self.radioLayout.addWidget(self.rgbButton)
         self.radioLayout.addWidget(self.hsvButton)
+        self.radioLayout.addWidget(self.yuvButton)
         self.vSpacer = QSpacerItem(30, 500, QSizePolicy.Ignored, QSizePolicy.Ignored);
         self.radioLayout.addItem(self.vSpacer)
-
 
         ''' Vertical Layout for HMIN Slider''' 
         self.hminLayout = QVBoxLayout()
@@ -77,8 +85,8 @@ class ControlWidget(QWidget):
         self.hmaxValue.setAlignment(Qt.AlignCenter);
         self.hmaxSlider = QSlider(Qt.Vertical)
         self.hmaxSlider.setMinimum(0)
-        self.hmaxSlider.setMaximum(6)
-        self.hmaxSlider.setValue(6)
+        self.hmaxSlider.setMaximum(600)
+        self.hmaxSlider.setValue(600)
         self.hmaxLayout.addWidget(self.hmaxLabel)
         self.hmaxLayout.addWidget(self.hmaxValue)
         self.hmaxLayout.addWidget(self.hmaxSlider)
@@ -91,7 +99,7 @@ class ControlWidget(QWidget):
         self.sminValue.setAlignment(Qt.AlignCenter);
         self.sminSlider = QSlider(Qt.Vertical)
         self.sminSlider.setMinimum(0)
-        self.sminSlider.setMaximum(1)
+        self.sminSlider.setMaximum(100)
         self.sminSlider.setValue(0)
         self.sminLayout.addWidget(self.sminLabel)
         self.sminLayout.addWidget(self.sminValue)
@@ -105,8 +113,8 @@ class ControlWidget(QWidget):
         self.smaxValue.setAlignment(Qt.AlignCenter);
         self.smaxSlider = QSlider(Qt.Vertical)
         self.smaxSlider.setMinimum(0)
-        self.smaxSlider.setMaximum(1)
-        self.smaxSlider.setValue(1)
+        self.smaxSlider.setMaximum(100)
+        self.smaxSlider.setValue(100)
         self.smaxLayout.addWidget(self.smaxLabel)
         self.smaxLayout.addWidget(self.smaxValue)
         self.smaxLayout.addWidget(self.smaxSlider)
@@ -125,7 +133,7 @@ class ControlWidget(QWidget):
         self.vminLayout.addWidget(self.vminValue)
         self.vminLayout.addWidget(self.vminSlider)
 
-        ''' Vertical Layout for SMAX Slider'''
+        ''' Vertical Layout for VMAX Slider'''
         self.vmaxLayout = QVBoxLayout()
         self.vmaxLayout.setObjectName("vmaxLayout")
         self.vmaxLabel = QLabel("VMax")
@@ -139,6 +147,7 @@ class ControlWidget(QWidget):
         self.vmaxLayout.addWidget(self.vmaxValue)
         self.vmaxLayout.addWidget(self.vmaxSlider)
     
+        '''Adding all the vertical layouts to the main horizontal layout'''
         self.hLayout.addLayout(self.radioLayout)
         self.hLayout.addLayout(self.hminLayout)
         self.hLayout.addLayout(self.hmaxLayout)
@@ -148,23 +157,60 @@ class ControlWidget(QWidget):
         self.hLayout.addLayout(self.vmaxLayout)
         self.setLayout(self.hLayout)
 
+        '''Signals for sliders value changes'''
         self.hminSlider.valueChanged.connect(self.changeHmin)     
+        self.hmaxSlider.valueChanged.connect(self.changeHmax)
+        self.sminSlider.valueChanged.connect(self.changeSmin)     
+        self.smaxSlider.valueChanged.connect(self.changeSmax)
+        self.vminSlider.valueChanged.connect(self.changeVmin)     
+        self.vmaxSlider.valueChanged.connect(self.changeVmax) 
 
         
 
-    def origState(self):
+    #Show filtered image. Don't manually disable radio button, API does it for you!
+    '''Methods for showing images depending on the current checked radio button'''
+    def origButtonState(self):
         if self.origButton.isChecked():
-            self.hsvButton.setChecked(False)
+            None #self.hsvButton.setChecked(False)
 
+    def rgbButtonState(self):
+        if self.rgbButton.isChecked():
+            None#self.origButton.setChecked(False)
 
-    def hsvState(self):
+    def hsvButtonState(self):
         if self.hsvButton.isChecked():
-            self.origButton.setChecked(False)
+            None#self.origButton.setChecked(False)
 
+    def yuvButtonState(self):
+        if self.yuvButton.isChecked():  
+            None#self.origButton.setChecked(False)
+
+    '''Methods to get the slider value and update value labels'''
     def changeHmin(self):
         value = self.hminSlider.value() / 100.0
         self.hminValue.setText(str(value))
 
-           
+    def changeHmax(self):
+        value = self.hmaxSlider.value() / 100.0
+        self.hmaxValue.setText(str(value))
+
+    def changeSmin(self):
+        value = self.sminSlider.value() / 100.0
+        self.sminValue.setText(str(value))
+
+    def changeSmax(self):
+        value = self.smaxSlider.value() / 100.0
+        self.smaxValue.setText(str(value))
+
+    def changeVmin(self):
+        value = self.vminSlider.value()
+        self.vminValue.setText(str(value))
+
+    def changeVmax(self):
+        value = self.vmaxSlider.value()
+        self.vmaxValue.setText(str(value))
+  
+
+    '''Close event, for finalize the program'''
     def closeEvent(self, event):
         self.winParent.closeimagesWidget()
