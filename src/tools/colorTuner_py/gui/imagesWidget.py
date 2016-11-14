@@ -57,7 +57,7 @@ class ImagesWidget(QWidget):
             self.imgLabelOrig.setPixmap(QPixmap.fromImage(image))
 
     def setFilteredImage(self):
-        filt = self.winParent.getFilter()
+        filt = self.winParent.getFilterName()
         img = self.winParent.getCamera().getFilteredImage(filt)
 
         if img is not None:

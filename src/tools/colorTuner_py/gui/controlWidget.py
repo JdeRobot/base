@@ -19,7 +19,8 @@
 
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy, QSlider
-from  sensors.cameraFilter import RGBLimits, YUVLimits, HSVLimits
+from filters.hsvFilter import HSVMAX, HSVMIN
+from filters.rgbFilter import RGBMAX, RGBMIN
 
 
 
@@ -30,10 +31,14 @@ class ControlWidget(QWidget):
     def __init__(self,winParent):      
         super(ControlWidget, self).__init__()
         self.winParent=winParent
+
+        self.rgbdwn = RGBMIN
+        self.rgbup = RGBMAX
+        self.hsvdwn = HSVMIN
+        self.hsvup = HSVMAX
+        self.yuvdwn = HSVMIN
+        self.yuvup = HSVMAX
         self.initUI()
-        self.rgbLimits = RGBLimits()
-        self.yuvLimits = YUVLimits()
-        self.hsvLimits = HSVLimits()
         
     def initUI(self):
 
@@ -68,6 +73,9 @@ class ControlWidget(QWidget):
         self.vSpacer = QSpacerItem(30, 500, QSizePolicy.Ignored, QSizePolicy.Ignored);
         self.radioLayout.addItem(self.vSpacer)
 
+        
+        hmin,smin,vmin = HSVMIN
+        hmax,smax,vmax = HSVMAX
         ''' Vertical Layout for HMIN Slider''' 
         self.hminLayout = QVBoxLayout()
         self.hminLayout.setObjectName("hminLayout")
@@ -75,9 +83,9 @@ class ControlWidget(QWidget):
         self.hminValue = QLabel("0")
         self.hminValue.setAlignment(Qt.AlignCenter);
         self.hminSlider = QSlider(Qt.Vertical)
-        self.hminSlider.setMinimum(0)
-        self.hminSlider.setMaximum(600)
-        self.hminSlider.setValue(0)
+        self.hminSlider.setMinimum(hmin * 100)
+        self.hminSlider.setMaximum(hmax * 100)
+        self.hminSlider.setValue(hmin * 100)
         self.hminLayout.addWidget(self.hminLabel)
         self.hminLayout.addWidget(self.hminValue)
         self.hminLayout.addWidget(self.hminSlider)
@@ -89,9 +97,9 @@ class ControlWidget(QWidget):
         self.hmaxValue = QLabel("6")
         self.hmaxValue.setAlignment(Qt.AlignCenter);
         self.hmaxSlider = QSlider(Qt.Vertical)
-        self.hmaxSlider.setMinimum(0)
-        self.hmaxSlider.setMaximum(600)
-        self.hmaxSlider.setValue(600)
+        self.hmaxSlider.setMinimum(hmin * 100)
+        self.hmaxSlider.setMaximum(hmax * 100)
+        self.hmaxSlider.setValue(hmax * 100)
         self.hmaxLayout.addWidget(self.hmaxLabel)
         self.hmaxLayout.addWidget(self.hmaxValue)
         self.hmaxLayout.addWidget(self.hmaxSlider)
@@ -103,9 +111,9 @@ class ControlWidget(QWidget):
         self.sminValue = QLabel("0")
         self.sminValue.setAlignment(Qt.AlignCenter);
         self.sminSlider = QSlider(Qt.Vertical)
-        self.sminSlider.setMinimum(0)
-        self.sminSlider.setMaximum(100)
-        self.sminSlider.setValue(0)
+        self.sminSlider.setMinimum(smin * 100)
+        self.sminSlider.setMaximum(smax * 100)
+        self.sminSlider.setValue(smin * 100)
         self.sminLayout.addWidget(self.sminLabel)
         self.sminLayout.addWidget(self.sminValue)
         self.sminLayout.addWidget(self.sminSlider)
@@ -117,9 +125,9 @@ class ControlWidget(QWidget):
         self.smaxValue = QLabel("1")
         self.smaxValue.setAlignment(Qt.AlignCenter);
         self.smaxSlider = QSlider(Qt.Vertical)
-        self.smaxSlider.setMinimum(0)
-        self.smaxSlider.setMaximum(100)
-        self.smaxSlider.setValue(100)
+        self.smaxSlider.setMinimum(smin * 100)
+        self.smaxSlider.setMaximum(smax * 100)
+        self.smaxSlider.setValue(smax * 100)
         self.smaxLayout.addWidget(self.smaxLabel)
         self.smaxLayout.addWidget(self.smaxValue)
         self.smaxLayout.addWidget(self.smaxSlider)
@@ -131,9 +139,9 @@ class ControlWidget(QWidget):
         self.vminValue = QLabel("0")
         self.vminValue.setAlignment(Qt.AlignCenter);
         self.vminSlider = QSlider(Qt.Vertical)
-        self.vminSlider.setMinimum(0)
-        self.vminSlider.setMaximum(255)
-        self.vminSlider.setValue(0)
+        self.vminSlider.setMinimum(vmin * 100)
+        self.vminSlider.setMaximum(vmax * 100)
+        self.vminSlider.setValue(vmin)
         self.vminLayout.addWidget(self.vminLabel)
         self.vminLayout.addWidget(self.vminValue)
         self.vminLayout.addWidget(self.vminSlider)
@@ -145,9 +153,9 @@ class ControlWidget(QWidget):
         self.vmaxValue = QLabel("255")
         self.vmaxValue.setAlignment(Qt.AlignCenter);
         self.vmaxSlider = QSlider(Qt.Vertical)
-        self.vmaxSlider.setMinimum(0)
-        self.vmaxSlider.setMaximum(255)
-        self.vmaxSlider.setValue(255)
+        self.vmaxSlider.setMinimum(vmin * 100)
+        self.vmaxSlider.setMaximum(vmax * 100)
+        self.vmaxSlider.setValue(vmax)
         self.vmaxLayout.addWidget(self.vmaxLabel)
         self.vmaxLayout.addWidget(self.vmaxValue)
         self.vmaxLayout.addWidget(self.vmaxSlider)
@@ -176,59 +184,221 @@ class ControlWidget(QWidget):
     '''Methods for showing images depending on the current checked radio button'''
     def origButtonState(self):
         if self.origButton.isChecked():
-            self.winParent.setFilter('Orig')
+            self.winParent.setFilterName('Orig')
             
 
     def rgbButtonState(self):
-        if self.rgbButton.isChecked():
-            self.winParent.setFilter('RGB')
+        #if self.rgbButton.isChecked():
+            self.winParent.setFilterName('RGB')
+
+            rmin,gmin,bmin = RGBMIN
+            rmax,gmax,bmax = RGBMAX
+            rd, gd, bd = self.rgbdwn
+            ru, gu, bu = self.rgbup
+            self.hminLabel.setText('Rmin')
+            self.hminValue.setText(str(rd))
+            self.hminSlider.setMinimum(rmin)
+            self.hminSlider.setMaximum(rmax)
+            self.hminSlider.setValue(rd)
+
+            self.hmaxLabel.setText("RMax")
+            self.hmaxValue.setText(str(ru))
+            self.hmaxSlider.setMinimum(rmin)
+            self.hmaxSlider.setMaximum(rmax)
+            self.hmaxSlider.setValue(ru)
+
+            self.sminLabel.setText("GMin")
+            self.sminValue.setText(str(gd))
+            self.sminSlider.setMinimum(gmin)
+            self.sminSlider.setMaximum(gmax)
+            self.sminSlider.setValue(gd)
+
+            self.smaxLabel.setText("GMax")
+            self.smaxValue.setText(str(gu))
+            self.smaxSlider.setMinimum(gmin)
+            self.smaxSlider.setMaximum(gmax)
+            self.smaxSlider.setValue(gu)
+
+            self.vminLabel.setText("BMin")
+            self.vminValue.setText(str(bd))
+            self.vminSlider.setMinimum(bmin)
+            self.vminSlider.setMaximum(bmax)
+            self.vminSlider.setValue(bd)
+
+            self.vmaxLabel.setText("BMax")
+            self.vmaxValue.setText(str(bu))
+            self.vmaxSlider.setMinimum(bmin)
+            self.vmaxSlider.setMaximum(bmax)
+            self.vmaxSlider.setValue(bu)
+
             
 
     def hsvButtonState(self):
         if self.hsvButton.isChecked():
-            self.winParent.setFilter('HSV')
+            self.winParent.setFilterName('HSV')
+
+            hmin,smin,vmin = HSVMIN
+            hmax,smax,vmax = HSVMAX
+
+            hd, sd, vd = self.rgbdwn
+            hu, su, vu = self.rgbup
+            
+            self.hminLabel.setText("HMin")
+            self.hminValue.setText(str(hd))
+            self.hminSlider.setMinimum(hmin)
+            self.hminSlider.setMaximum(hmax)
+            self.hminSlider.setValue(hd)
+            #self.hminSlider.setMinimum(hmin * 100)
+            #self.hminSlider.setMaximum(hmax * 100)
+            #self.hminSlider.setValue(hd * 100)
+
+            self.hmaxLabel.setText("HMax")
+            self.hmaxValue.setText(str(hu))
+            #self.hmaxSlider.setMinimum(hmin * 100)
+            #self.hmaxSlider.setMaximum(hmax * 100)
+            #self.hmaxSlider.setValue(hu * 100)
+            self.hmaxSlider.setMinimum(hmin)
+            self.hmaxSlider.setMaximum(hmax)
+            self.hmaxSlider.setValue(hu)
+
+            self.sminLabel.setText("SMin")
+            self.sminValue.setText(str(sd))
+            self.sminSlider.setMinimum(smin)
+            self.sminSlider.setMaximum(smax)
+            self.sminSlider.setValue(sd)
+            #self.sminSlider.setMinimum(smin * 100)
+            #self.sminSlider.setMaximum(smax * 100)
+            #self.sminSlider.setValue(sd * 100)
+
+            self.smaxLabel.setText("SMax")
+            self.smaxValue.setText(str(su))
+            self.smaxSlider.setMinimum(smin)
+            self.smaxSlider.setMaximum(smax)
+            self.smaxSlider.setValue(su)
+            #self.smaxSlider.setMinimum(smin * 100)
+            #self.smaxSlider.setMaximum(smax * 100)
+            #self.smaxSlider.setValue(su * 100)
+
+            self.vminLabel.setText("VMin")
+            self.vminValue.setText(str(vd))
+            self.vminSlider.setMinimum(vmin)
+            self.vminSlider.setMaximum(vmax)
+            self.vminSlider.setValue(vd)
+
+            self.vmaxLabel.setText("VMax")
+            self.vmaxValue.setText(str(vu))
+            self.vmaxSlider.setMinimum(vmin)
+            self.vmaxSlider.setMaximum(vmax)
+            self.vmaxSlider.setValue(vu)
             
 
     def yuvButtonState(self):
         if self.yuvButton.isChecked():  
-            self.winParent.setFilter('YUV')
+            self.winParent.setFilterName('YUV')
 
     '''Methods to get the slider value and update value labels'''
     def changeHmin(self):
-        value = self.hminSlider.value() / 100.0
+        value = self.hminSlider.value()
+        if self.hsvButton.isChecked():
+            #value = value / 100.0
+            self.hsvdwn[0] = value
+        elif self.rgbButton.isChecked():
+            self.rgbdwn[0] = value
+        elif self.yuvButton.isChecked():
+            value = self.hminSlider.value()
+            self.yuvdwn[0] = value
         self.hminValue.setText(str(value))
-        self.hsvLimits.hmin = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMIN()
+       
 
     def changeHmax(self):
-        value = self.hmaxSlider.value() / 100.0
+        value = self.hmaxSlider.value()
+        if self.hsvButton.isChecked():
+            #value = value / 100.0
+            self.hsvup[0] = value
+        elif self.rgbButton.isChecked():
+            self.rgbup[0] = value
+        elif self.yuvButton.isChecked():
+            self.yuvup[0] = value
+
         self.hmaxValue.setText(str(value))
-        self.hsvLimits.hmax = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMAX()
 
     def changeSmin(self):
-        value = self.sminSlider.value() / 100.0
+        value = self.sminSlider.value()
+        if self.hsvButton.isChecked():
+            #value = value / 100.0
+            self.hsvdwn[1] = value
+        elif self.rgbButton.isChecked():
+            self.rgbdwn[1] = value
+        elif self.yuvButton.isChecked():
+            self.yuvdwn[1] = value
+
         self.sminValue.setText(str(value))
-        self.hsvLimits.smin = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMIN()
 
     def changeSmax(self):
-        value = self.smaxSlider.value() / 100.0
+        value = self.smaxSlider.value()
+        if self.hsvButton.isChecked():
+            #value = value / 100.0
+            self.hsvup[1] = value
+        elif self.rgbButton.isChecked():
+            self.rgbup[1] = value
+        elif self.yuvButton.isChecked():
+            self.yuvup[1] = value
+
         self.smaxValue.setText(str(value))
-        self.hsvLimits.smax = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMAX()
 
     def changeVmin(self):
         value = self.vminSlider.value()
+        if self.hsvButton.isChecked():
+            self.hsvdwn[2] = value
+        elif self.rgbButton.isChecked():
+            self.rgbdwn[2] = value
+        elif self.yuvButton.isChecked():
+            self.yuvdwn[2] = value
+
         self.vminValue.setText(str(value))
-        self.hsvLimits.vmin = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMIN()
 
     def changeVmax(self):
         value = self.vmaxSlider.value()
+        if self.hsvButton.isChecked():
+            self.hsvup[2] = value
+        elif self.rgbButton.isChecked():
+            self.rgbup[2] = value
+        elif self.yuvButton.isChecked():
+            self.yuvup[2] = value
+
         self.vmaxValue.setText(str(value))
-        self.hsvLimits.vmax = value
-        self.winParent.getCamera().setHSVLimits(self.hsvLimits)
+        self.setMAX()
+
+    def setMAX (self):
+
+        filt = self.winParent.getFilterName()
+        if self.hsvButton.isChecked():
+            h, s, v = self.hsvup
+            self.winParent.getCamera().getFilter(filt).setUpLimit(h,s,v)
+        elif self.rgbButton.isChecked():
+            h, s, v = self.rgbup
+            self.winParent.getCamera().getFilter(filt).setUpLimit(h,s,v)
+        elif self.yuvButton.isChecked():
+            h, s, v = self.yuvup
+            self.winParent.getCamera().getFilter(filt).setUpLimit(h,s,v)
+
+    def setMIN (self):
+        filt = self.winParent.getFilterName()
+        if self.hsvButton.isChecked():
+            h, s, v = self.hsvdwn
+            self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
+        elif self.rgbButton.isChecked():
+            h, s, v = self.rgbdwn
+            self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
+        elif self.yuvButton.isChecked():
+            h, s, v = self.yuvdwn
+            self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
+
   
 
     '''Close event, for finalize the program'''
