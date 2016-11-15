@@ -3,6 +3,8 @@ from threading import Lock
 import cv2
 import numpy as np
 
+
+'''Max Values supported by OpenCV'''
 RGBMAX = [255,255,255]
 RGBMIN = [0,0,0]
 
@@ -53,29 +55,17 @@ class RgbFilter:
 
     def apply (self, img):
 
-
-        '''rup,gup,bup = self.getUpLimit()
+        rup,gup,bup = self.getUpLimit()
         rdwn,gdwn,bdwn = self.getDownLimit()
 
-        rch, gch, bch = cv2.split(img)
+        
+        minValues = np.array([rdwn,gdwn,bdwn],dtype=np.uint8)
+        maxValues = np.array([rup,gup,bup], dtype=np.uint8)
 
-        height = len(rch)
-        width = len(rch[0])
+        mask = cv2.inRange(img, minValues, maxValues)
 
-        for i in range(height):
-            for j in range (width):
-                r = rch[i][j]
-                g = gch[i][j]
-                b = bch[i][j]
+        res = cv2.bitwise_and(img,img, mask= mask)
 
-                condr = (r<=rup) and (r>=rdwn)
-                condg = (g<=gup) and (g>=gdwn)
-                condb = (b<=bup) and (b>=bdwn)
 
-                if (not (condr and condb and condg)):
-                    rch[i][j] = 0
-                    gch[i][j] = 0
-                    bch[i][j] = 0
-
-        return cv2.merge([rch,gch,bch])'''
+        return res
         return img

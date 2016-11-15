@@ -21,12 +21,12 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QHBoxLayout, QVBoxLayout, QSpacerItem, QSizePolicy, QSlider
 from filters.hsvFilter import HSVMAX, HSVMIN
 from filters.rgbFilter import RGBMAX, RGBMIN
+from filters.yuvFilter import YUVMAX, YUVMIN
 
 
 
 class ControlWidget(QWidget):
     
-    #controlUpdate=pyqtSignal()
     
     def __init__(self,winParent):      
         super(ControlWidget, self).__init__()
@@ -36,8 +36,8 @@ class ControlWidget(QWidget):
         self.rgbup = RGBMAX
         self.hsvdwn = HSVMIN
         self.hsvup = HSVMAX
-        self.yuvdwn = HSVMIN
-        self.yuvup = HSVMAX
+        self.yuvdwn = YUVMIN
+        self.yuvup = YUVMAX
         self.initUI()
         
     def initUI(self):
@@ -83,9 +83,9 @@ class ControlWidget(QWidget):
         self.hminValue = QLabel("0")
         self.hminValue.setAlignment(Qt.AlignCenter);
         self.hminSlider = QSlider(Qt.Vertical)
-        self.hminSlider.setMinimum(hmin * 100)
-        self.hminSlider.setMaximum(hmax * 100)
-        self.hminSlider.setValue(hmin * 100)
+        self.hminSlider.setMinimum(hmin)
+        self.hminSlider.setMaximum(hmax)
+        self.hminSlider.setValue(hmin)
         self.hminLayout.addWidget(self.hminLabel)
         self.hminLayout.addWidget(self.hminValue)
         self.hminLayout.addWidget(self.hminSlider)
@@ -97,9 +97,9 @@ class ControlWidget(QWidget):
         self.hmaxValue = QLabel("6")
         self.hmaxValue.setAlignment(Qt.AlignCenter);
         self.hmaxSlider = QSlider(Qt.Vertical)
-        self.hmaxSlider.setMinimum(hmin * 100)
-        self.hmaxSlider.setMaximum(hmax * 100)
-        self.hmaxSlider.setValue(hmax * 100)
+        self.hmaxSlider.setMinimum(hmin)
+        self.hmaxSlider.setMaximum(hmax)
+        self.hmaxSlider.setValue(hmax)
         self.hmaxLayout.addWidget(self.hmaxLabel)
         self.hmaxLayout.addWidget(self.hmaxValue)
         self.hmaxLayout.addWidget(self.hmaxSlider)
@@ -111,9 +111,9 @@ class ControlWidget(QWidget):
         self.sminValue = QLabel("0")
         self.sminValue.setAlignment(Qt.AlignCenter);
         self.sminSlider = QSlider(Qt.Vertical)
-        self.sminSlider.setMinimum(smin * 100)
-        self.sminSlider.setMaximum(smax * 100)
-        self.sminSlider.setValue(smin * 100)
+        self.sminSlider.setMinimum(smin)
+        self.sminSlider.setMaximum(smax)
+        self.sminSlider.setValue(smin)
         self.sminLayout.addWidget(self.sminLabel)
         self.sminLayout.addWidget(self.sminValue)
         self.sminLayout.addWidget(self.sminSlider)
@@ -125,9 +125,9 @@ class ControlWidget(QWidget):
         self.smaxValue = QLabel("1")
         self.smaxValue.setAlignment(Qt.AlignCenter);
         self.smaxSlider = QSlider(Qt.Vertical)
-        self.smaxSlider.setMinimum(smin * 100)
-        self.smaxSlider.setMaximum(smax * 100)
-        self.smaxSlider.setValue(smax * 100)
+        self.smaxSlider.setMinimum(smin)
+        self.smaxSlider.setMaximum(smax)
+        self.smaxSlider.setValue(smax)
         self.smaxLayout.addWidget(self.smaxLabel)
         self.smaxLayout.addWidget(self.smaxValue)
         self.smaxLayout.addWidget(self.smaxSlider)
@@ -139,8 +139,8 @@ class ControlWidget(QWidget):
         self.vminValue = QLabel("0")
         self.vminValue.setAlignment(Qt.AlignCenter);
         self.vminSlider = QSlider(Qt.Vertical)
-        self.vminSlider.setMinimum(vmin * 100)
-        self.vminSlider.setMaximum(vmax * 100)
+        self.vminSlider.setMinimum(vmin)
+        self.vminSlider.setMaximum(vmax)
         self.vminSlider.setValue(vmin)
         self.vminLayout.addWidget(self.vminLabel)
         self.vminLayout.addWidget(self.vminValue)
@@ -153,8 +153,8 @@ class ControlWidget(QWidget):
         self.vmaxValue = QLabel("255")
         self.vmaxValue.setAlignment(Qt.AlignCenter);
         self.vmaxSlider = QSlider(Qt.Vertical)
-        self.vmaxSlider.setMinimum(vmin * 100)
-        self.vmaxSlider.setMaximum(vmax * 100)
+        self.vmaxSlider.setMinimum(vmin)
+        self.vmaxSlider.setMaximum(vmax)
         self.vmaxSlider.setValue(vmax)
         self.vmaxLayout.addWidget(self.vmaxLabel)
         self.vmaxLayout.addWidget(self.vmaxValue)
@@ -188,11 +188,12 @@ class ControlWidget(QWidget):
             
 
     def rgbButtonState(self):
-        #if self.rgbButton.isChecked():
+        if self.rgbButton.isChecked():
             self.winParent.setFilterName('RGB')
 
             rmin,gmin,bmin = RGBMIN
             rmax,gmax,bmax = RGBMAX
+            print(RGBMAX)
             rd, gd, bd = self.rgbdwn
             ru, gu, bu = self.rgbup
             self.hminLabel.setText('Rmin')
@@ -240,23 +241,17 @@ class ControlWidget(QWidget):
             hmin,smin,vmin = HSVMIN
             hmax,smax,vmax = HSVMAX
 
-            hd, sd, vd = self.rgbdwn
-            hu, su, vu = self.rgbup
+            hd, sd, vd = self.hsvdwn
+            hu, su, vu = self.hsvup
             
             self.hminLabel.setText("HMin")
             self.hminValue.setText(str(hd))
             self.hminSlider.setMinimum(hmin)
             self.hminSlider.setMaximum(hmax)
             self.hminSlider.setValue(hd)
-            #self.hminSlider.setMinimum(hmin * 100)
-            #self.hminSlider.setMaximum(hmax * 100)
-            #self.hminSlider.setValue(hd * 100)
 
             self.hmaxLabel.setText("HMax")
             self.hmaxValue.setText(str(hu))
-            #self.hmaxSlider.setMinimum(hmin * 100)
-            #self.hmaxSlider.setMaximum(hmax * 100)
-            #self.hmaxSlider.setValue(hu * 100)
             self.hmaxSlider.setMinimum(hmin)
             self.hmaxSlider.setMaximum(hmax)
             self.hmaxSlider.setValue(hu)
@@ -266,18 +261,12 @@ class ControlWidget(QWidget):
             self.sminSlider.setMinimum(smin)
             self.sminSlider.setMaximum(smax)
             self.sminSlider.setValue(sd)
-            #self.sminSlider.setMinimum(smin * 100)
-            #self.sminSlider.setMaximum(smax * 100)
-            #self.sminSlider.setValue(sd * 100)
 
             self.smaxLabel.setText("SMax")
             self.smaxValue.setText(str(su))
             self.smaxSlider.setMinimum(smin)
             self.smaxSlider.setMaximum(smax)
             self.smaxSlider.setValue(su)
-            #self.smaxSlider.setMinimum(smin * 100)
-            #self.smaxSlider.setMaximum(smax * 100)
-            #self.smaxSlider.setValue(su * 100)
 
             self.vminLabel.setText("VMin")
             self.vminValue.setText(str(vd))
@@ -296,11 +285,52 @@ class ControlWidget(QWidget):
         if self.yuvButton.isChecked():  
             self.winParent.setFilterName('YUV')
 
+            ymin,umin,vmin = YUVMIN
+            ymax,umax,vmax = YUVMAX
+
+            yd, ud, vd = self.yuvdwn
+            yu, uu, vu = self.yuvup
+            
+            self.hminLabel.setText("YMin")
+            self.hminValue.setText(str(yd))
+            self.hminSlider.setMinimum(ymin)
+            self.hminSlider.setMaximum(ymax)
+            self.hminSlider.setValue(yd)
+
+            self.hmaxLabel.setText("YMax")
+            self.hmaxValue.setText(str(yu))
+            self.hmaxSlider.setMinimum(ymin)
+            self.hmaxSlider.setMaximum(ymax)
+            self.hmaxSlider.setValue(yu)
+
+            self.sminLabel.setText("UMin")
+            self.sminValue.setText(str(ud))
+            self.sminSlider.setMinimum(umin)
+            self.sminSlider.setMaximum(umax)
+            self.sminSlider.setValue(ud)
+
+            self.smaxLabel.setText("UMax")
+            self.smaxValue.setText(str(uu))
+            self.smaxSlider.setMinimum(umin)
+            self.smaxSlider.setMaximum(umax)
+            self.smaxSlider.setValue(uu)
+
+            self.vminLabel.setText("VMin")
+            self.vminValue.setText(str(vd))
+            self.vminSlider.setMinimum(vmin)
+            self.vminSlider.setMaximum(vmax)
+            self.vminSlider.setValue(vd)
+
+            self.vmaxLabel.setText("VMax")
+            self.vmaxValue.setText(str(vu))
+            self.vmaxSlider.setMinimum(vmin)
+            self.vmaxSlider.setMaximum(vmax)
+            self.vmaxSlider.setValue(vu)
+
     '''Methods to get the slider value and update value labels'''
     def changeHmin(self):
         value = self.hminSlider.value()
         if self.hsvButton.isChecked():
-            #value = value / 100.0
             self.hsvdwn[0] = value
         elif self.rgbButton.isChecked():
             self.rgbdwn[0] = value
@@ -314,7 +344,6 @@ class ControlWidget(QWidget):
     def changeHmax(self):
         value = self.hmaxSlider.value()
         if self.hsvButton.isChecked():
-            #value = value / 100.0
             self.hsvup[0] = value
         elif self.rgbButton.isChecked():
             self.rgbup[0] = value
@@ -327,7 +356,6 @@ class ControlWidget(QWidget):
     def changeSmin(self):
         value = self.sminSlider.value()
         if self.hsvButton.isChecked():
-            #value = value / 100.0
             self.hsvdwn[1] = value
         elif self.rgbButton.isChecked():
             self.rgbdwn[1] = value
@@ -340,7 +368,6 @@ class ControlWidget(QWidget):
     def changeSmax(self):
         value = self.smaxSlider.value()
         if self.hsvButton.isChecked():
-            #value = value / 100.0
             self.hsvup[1] = value
         elif self.rgbButton.isChecked():
             self.rgbup[1] = value

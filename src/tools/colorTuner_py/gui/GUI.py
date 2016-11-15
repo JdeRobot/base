@@ -21,7 +21,7 @@
 
 from PyQt5.QtCore import pyqtSignal, Qt, QRect
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget
-from gui.communicator import Communicator
+#from gui.communicator import Communicator
 from gui.imagesWidget import  ImagesWidget
 from gui.controlWidget import  ControlWidget
 

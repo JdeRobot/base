@@ -3,13 +3,7 @@ from threading import Lock
 import cv2
 import numpy as np
 
-DEGTORAD = (3.14159264 / 180.0)
-
-RADTODEG = (180.0 /3.14159264)
-
-#HSVMAX = [6.28,1,255]
-#HSVMIN = [0.01,0.01,0]
-
+'''Max Values supported by OpenCV'''
 HSVMAX = [179,255,255]
 HSVMIN = [0,0,0]
 
@@ -63,13 +57,9 @@ class HsvFilter:
         hup,sup,vup = self.getUpLimit()
         hdwn,sdwn,vdwn = self.getDownLimit()
 
-        HMAX, SMAX, VMAX = self.getMAX()
-
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
         # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_colorspaces/py_colorspaces.html
-        #minValues = np.array([round(hdwn*179/HMAX),round(sdwn*255/SMAX),vdwn],dtype=np.uint8)
-        #maxValues = np.array([round(hup*179/HMAX),round(sup*255/SMAX),vup], dtype=np.uint8)
         minValues = np.array([hdwn,sdwn,vdwn],dtype=np.uint8)
         maxValues = np.array([hup,sup,vup], dtype=np.uint8)
 

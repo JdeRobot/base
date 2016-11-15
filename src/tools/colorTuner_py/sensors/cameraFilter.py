@@ -63,7 +63,6 @@ class CameraFilter:
             self.kill_event.clear()
             self.thread.start()
 
-            #self.images['Orig'].shape =  
 
     # if client is stopped you can not start again, Threading.Thread raised error
     def stop(self):
