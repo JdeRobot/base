@@ -1,3 +1,17 @@
+jderobot (5.4.2) unstable; urgency=low
+
+  * release 5.4.1
+  * [PR #600] Enhancement. Updated Dockerfiles to use Jderobot 5.4.1
+  * [PR #604] Fix. Taxis now uses pose3D plugins instead of imuplugins 
+  * [PR #612] Fix. Updated the kobukiViewer cfg file for the new version of turtlebot plugin
+  * [PR #613] Fix. Modified IP's added WebSockets of drivers
+  * [PR #616] Fix. Taxi pose3d scale is now configured into IS metrics
+  * [PR #617] Fix. Added postinst script to jderobot-deps-dev metapackage
+  * [PR #628] New tool. Added colorTuner_py tool
+  * [PR #630] Fix. Solved bug in KobukiViewerJS and UavVieweJS
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 16 Nov 2016 14:05:00 +0100
+
 jderobot (5.4.1) unstable; urgency=low
 
   * release 5.4.1  
