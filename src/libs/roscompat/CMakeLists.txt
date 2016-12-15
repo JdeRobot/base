@@ -51,10 +51,10 @@ if(roscpp_FOUND)
 		include/roscompat/Pose3d.h
 		include/roscompat/Motors.h
 		include/roscompat/roscompat.h
-		include/roscompat/listener.h
+		include/roscompat/listenerCamera.h
 
 		src/roscompat.cpp
-		src/listener.cpp
+		src/listenerCamera.cpp
 	)
 
 	add_library(${binname} SHARED ${SOURCES})
