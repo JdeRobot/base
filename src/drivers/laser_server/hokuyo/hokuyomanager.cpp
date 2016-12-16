@@ -32,6 +32,8 @@ std::cout<< "range_res: " << config.range_res << std::endl;
 	{
 	    data->numLaser = scan.ranges.size();
 	    data->distanceData.resize(sizeof(int)*data->numLaser);
+	    data->maxRange = scan.config.max_range*1000;
+	    data->minRange = 0;
         if (this->faceup!=0){
             for(int i = 0 ; i < data->numLaser; i++){
                 if (std::numeric_limits<float>::infinity() == scan.ranges[i]){
@@ -59,6 +61,9 @@ std::cout<< "range_res: " << config.range_res << std::endl;
 	*HokuyoManager::getLaserData()
 	{
 	    jderobot::LaserData *data = new jderobot::LaserData();
+            data->minAngle = this->min_ang;
+            data->maxAngle = this->max_ang;
+            
 	    hokuyo::LaserScan  scan;
 	    int res;
 	    mutex.lock();
