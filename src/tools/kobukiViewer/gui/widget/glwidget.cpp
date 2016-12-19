@@ -368,10 +368,10 @@ void GLWidget::drawLaser()
 
     v3f(0, 0,  2);
 
-    for (unsigned k = 0; k < laserData.size(); k++) {
+    for (unsigned k = 0; k < laserData.values.size(); k++) {
 
-        Xp_sensor = this->laserData[k]/100 * cos(((float) k - 90.) * 3.14/180);
-        Yp_sensor = this->laserData[k]/100 * sin(((float) k - 90.) * 3.14/180);
+        Xp_sensor = this->laserData.values[k]/100 * cos(((float) k - 90.) * 3.14/180);
+        Yp_sensor = this->laserData.values[k]/100 * sin(((float) k - 90.) * 3.14/180);
 
         v3f(Xp_sensor, Yp_sensor,  2.0f);
 
