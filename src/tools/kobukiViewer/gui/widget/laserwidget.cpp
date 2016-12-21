@@ -12,6 +12,7 @@ LaserWidget::LaserWidget()
     setPalette(Pal);
 
     setMaximumSize(500, 500);
+    setMinimumSize(500, 500);
 
 
     setWindowTitle("Laser");
@@ -60,27 +61,13 @@ void LaserWidget::paintEvent(QPaintEvent *)
     ang = this->laserData.minAngle;
     x0 = cx + (this->laserData.values[0] / d) * cos(ang);
     y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
-            std::cout << "--------------------------------------------"<< std::endl;
-        std::cout << "ang: " << ang*180/3.14 << std::endl;
-        std::cout << "d: " << d << std::endl;
-        std::cout << "x0: " << x0 << std::endl;
-        std::cout << "y0: " << y0 << std::endl;
-        std::cout << "--------------------------------------------"<< std::endl;
     for (int i = 1; i < this->laserData.values.size(); i++) {
 
 
 
         ang = this->laserData.minAngle + i*step;
-        x0 = cx + (this->laserData.values[i] / d) * cos(ang);
-        y0 = cy - ((this->laserData.values[i] / d) * sin(ang));
-        std::cout << "--------------------------------------------"<< std::endl;
-        std::cout << "ang: " << ang*180/3.14 << std::endl;
-        std::cout << "d: " << d << std::endl;
-        std::cout << "value: " << this->laserData.values[i] << std::endl;
-        std::cout << "value/d: " << this->laserData.values[i] / d<< std::endl;
-        std::cout << "x0: " << x0 << std::endl;
-        std::cout << "y0: " << y0 << std::endl;
-        std::cout << "--------------------------------------------"<< std::endl;
+        x1 = cx + (this->laserData.values[i] / d) * cos(ang);
+        y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
 
         painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
 

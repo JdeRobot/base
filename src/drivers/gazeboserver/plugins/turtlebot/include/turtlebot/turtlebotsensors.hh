@@ -41,8 +41,8 @@ class LaserD
 {
 public:
     std::vector<float> values;
-    double minAngle = 3.1416;
-    double maxAngle = 0;
+    double minAngle = 0;
+    double maxAngle = 3.1416;
     double minRange = 0;
     double maxRange = 10; //10 m
 };
