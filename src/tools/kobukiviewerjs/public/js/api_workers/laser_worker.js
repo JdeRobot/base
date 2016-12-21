@@ -54,10 +54,10 @@ function calc3dPoint (dist, ang, convertUpAxis, scale){
    }
 }
 
-function calcNorm2DPoint (dist, max, ang){
-   var d = 10000/max;
-   var x = max + ((dist /d) * (Math.cos(ang)));
-   var y = max - ((dist /d) * (Math.sin(ang)));
+function calcNorm2DPoint (dist, maxRange, ang, max2d, center){
+   var d = maxRange/max2d;
+   var x = center.x + ((dist /d) * (Math.cos(ang)));
+   var y = center.y - ((dist /d) * (Math.sin(ang)));
    var a = {x:x,y:y};
    return a;
 
@@ -66,19 +66,28 @@ function calcNorm2DPoint (dist, max, ang){
 
 function getLaser(convertUpAxis,canv2dWidth, scale3d){
    srv.getLaserData().then(function (data){
+
           
       var response={};
       var i,j;
-      response.distanceData = data.distanceData;
-      response.numLaser = data.numLaser;
+
       var numlaser = data.numLaser;
-      var dist =  response.distanceData;
+      var dist =  data.distanceData;
+      var minAngle = data.minAngle;
+      var maxAngle = data.maxAngle;
+      var minRange = data.minRange;
+      var maxRange = data.maxRange;
+
+      var step = (maxAngle - minAngle) / numlaser;
+
       var array2d = []; 
       var array3d = [];
       var max = canv2dWidth/2;
+
+      var center = {x:canv2dWidth/2 , y:canv2dWidth/2};
       for (i = 0; i< numlaser; i++ ){
-         var ang = i*Math.PI/numlaser;
-         var dd = calcNorm2DPoint (dist[i],max,ang);
+         var ang = minAngle + i * step;
+         var dd = calcNorm2DPoint (dist[i], maxRange, ang, max, center);
          array2d[2*i] = dd.x;
          array2d[2*i+1] = dd.y;
       }
@@ -108,8 +117,15 @@ function getLaser(convertUpAxis,canv2dWidth, scale3d){
          array3d[j+8] = d.z;
          j = j + 9;
       }
+      response.distanceData = dist;
+      response.numLaser = numlaser;
+      response.maxAngle = maxAngle;
+      response.minAngle = minAngle;
+      response.maxRange = maxRange;
+      response.minRange = minRange;
       response.canv2dData = array2d;
       response.array3dData = array3d;
+
       postMessage(response);
       if (stream){
          getLaser(convertUpAxis,canv2dWidth, scale3d);
