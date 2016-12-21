@@ -20,7 +20,7 @@ roscomp::translate_image_messages(const sensor_msgs::ImageConstPtr& msg, cv::Mat
 
 	try {
 
-		cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+		cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::RGB8);
 	} catch (cv_bridge::Exception& e) {
 
 		ROS_ERROR("cv_bridge exception: %s", e.what());
