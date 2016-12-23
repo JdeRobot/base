@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/root/gzweb/start_gzweb.sh
