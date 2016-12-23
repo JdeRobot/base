@@ -193,10 +193,7 @@ void Sensors::update()
 
 	if (laserON) {
 		ld = laserprx->getLaserData();
-		laserData.minRange = ld->minRange;
-    	laserData.maxRange = ld->maxRange;
-    	laserData.minAngle = ld->minAngle;
-    	laserData.maxAngle = ld->maxAngle;
+		
 		/*std::cout << "--------------------------------------------"<< std::endl;
 		std::cout << "minAngle: " << laserData.minAngle << std::endl;
 		std::cout << "maxAngle: " << laserData.maxAngle << std::endl;
@@ -205,9 +202,13 @@ void Sensors::update()
 		std::cout << "--------------------------------------------"<< std::endl;
 		*/
 		mutex.lock();
+		laserData.minRange = ld->minRange/1000.0;
+    	laserData.maxRange = ld->maxRange/1000.0;
+    	laserData.minAngle = ld->minAngle;
+    	laserData.maxAngle = ld->maxAngle;
 		laserData.values.resize(ld->numLaser);
         for(int i = 0; i< ld->numLaser; i++ ){
-            laserData.values[i] = ld->distanceData[i];
+            laserData.values[i] = ld->distanceData[i]/1000.0;
         }
 		mutex.unlock();
 	}
@@ -255,9 +256,9 @@ float Sensors::getRobotPoseTheta()
     return theta;
 }
 
-LaserD Sensors::getLaserData()
+JdeRobotTypes::LaserData Sensors::getLaserData()
 {
-    LaserD laserDataAux;
+    JdeRobotTypes::LaserData laserDataAux;
     mutex.lock();
 	if (laserON)
 	    laserDataAux = laserData;

@@ -18,7 +18,7 @@ LaserWidget::LaserWidget()
     setWindowTitle("Laser");
 }
 
-void LaserWidget::update(LaserD laserData)
+void LaserWidget::update(JdeRobotTypes::LaserData laserData)
 {
     mutex.lock();
 
@@ -46,11 +46,6 @@ void LaserWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setPen(pen);
 
-    pen = QPen(Qt::green, width);
-    painter.setPen(pen);
-
-    painter.drawPoint(QPointF(20,480));
-
     pen = QPen(Qt::blue, width);
     painter.setPen(pen);
 
@@ -58,16 +53,18 @@ void LaserWidget::paintEvent(QPaintEvent *)
 
     d = this->laserData.maxRange/(_width/2); //normalizing distances 
 
+
     ang = this->laserData.minAngle;
     x0 = cx + (this->laserData.values[0] / d) * cos(ang);
     y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
+
     for (int i = 1; i < this->laserData.values.size(); i++) {
 
-
-
+    
         ang = this->laserData.minAngle + i*step;
         x1 = cx + (this->laserData.values[i] / d) * cos(ang);
         y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
+
 
         painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
 

@@ -13,7 +13,7 @@ if (${QT5_COMPILE})
     )
 
 
-    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h gui/widget/glwidget.h robot/types.h)
+    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h gui/widget/glwidget.h)
     SET(RESOURCES resources.qrc)
 
 	SET(SOURCE main.cpp depuratewindow.cpp 
@@ -36,6 +36,7 @@ if (${QT5_COMPILE})
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${easyiceconfig_INCLUDE_DIRS}
+        ${jderobottypes_INCLUDE_DIRS}
     )
 
     link_directories(${JDE_LIBS}
