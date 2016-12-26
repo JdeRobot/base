@@ -20,6 +20,8 @@
 #ifndef JDEROBOTTYPES_LASERDATA_H
 #define JDEROBOTTYPES_LASERDATA_H
 
+#include <vector>
+
 namespace JdeRobotTypes {
 
 	class LaserData {
