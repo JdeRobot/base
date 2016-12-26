@@ -87,41 +87,8 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
-    Ice::ObjectPrx laserICE = ic->propertyToProxy("kobukiViewer.Laser.Proxy");
-    if (0 == laserICE) {
-		laserON = false;
-		std::cout << "Laser configuration not specified" <<std::endl;
-        //throw "Could not create proxy with Laser";
-	}else{
-    // Cast to LASER
-	try {
-		laserprx = jderobot::LaserPrx::checkedCast(laserICE);
-		if (0 == laserprx){
-		   throw std::string("Invalid proxy kobukiViewer.Laser.Proxy");
-		}
 
-		laserON = true;
-		std::cout << "Laser connected" << std::endl;
-	}catch (Ice::ConnectionRefusedException& e){
-		laserON=false;
-		std::cout << "Laser inactive" << std::endl;
-	}}
-
-    /*boolLaser = prop->getPropertyAsInt("kobukiViewer.Laser");
-
-    std::cout << "Laser " <<  boolLaser << std::endl;
-    if(boolLaser){
-        // Contact to LASER interface
-        Ice::ObjectPrx laserICE = ic->propertyToProxy("kobukiViewer.Laser.Proxy");
-        if (0 == laserICE)
-            throw "Could not create proxy with Laser";
-
-        // Cast to LASER
-        laserprx = jderobot::LaserPrx::checkedCast(laserICE);
-        if (0 == laserprx){
-           throw std::string("Invalid proxy kobukiViewer.Laser.Proxy");
-        }
-    }*/
+	this->laserClient = JdeRobotCom::getLaserClient(ic, "kobukiViewer.Laser");
 }
 
 cv::Mat Sensors::getCamera1()
@@ -191,28 +158,6 @@ void Sensors::update()
 	    mutex.unlock();
 	}
 
-	if (laserON) {
-		ld = laserprx->getLaserData();
-		
-		/*std::cout << "--------------------------------------------"<< std::endl;
-		std::cout << "minAngle: " << laserData.minAngle << std::endl;
-		std::cout << "maxAngle: " << laserData.maxAngle << std::endl;
-		std::cout << "minRange: " << laserData.minRange << std::endl;
-		std::cout << "maxRange: " << laserData.maxRange << std::endl;
-		std::cout << "--------------------------------------------"<< std::endl;
-		*/
-		mutex.lock();
-		laserData.minRange = ld->minRange/1000.0;
-    	laserData.maxRange = ld->maxRange/1000.0;
-    	laserData.minAngle = ld->minAngle;
-    	laserData.maxAngle = ld->maxAngle;
-		laserData.values.resize(ld->numLaser);
-        for(int i = 0; i< ld->numLaser; i++ ){
-            laserData.values[i] = ld->distanceData[i]/1000.0;
-        }
-		mutex.unlock();
-	}
-
     
 }
 
@@ -258,11 +203,13 @@ float Sensors::getRobotPoseTheta()
 
 JdeRobotTypes::LaserData Sensors::getLaserData()
 {
-    JdeRobotTypes::LaserData laserDataAux;
+	return this->laserClient->getLaserData();
+    /*JdeRobotTypes::LaserData laserDataAux;
     mutex.lock();
 	if (laserON)
 	    laserDataAux = laserData;
     mutex.unlock();
     return laserDataAux;
+    */
 }
 

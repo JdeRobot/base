@@ -6,7 +6,6 @@
 #include <math.h>
 #include <QtWidgets>
 #include <jderobot/types/laserData.h>
-//#include "../../robot/types.h"
 
 class LaserWidget: public QWidget
 {

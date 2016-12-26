@@ -10,13 +10,13 @@
 #include <jderobot/camera.h>
 #include <jderobot/laser.h>
 
-//#include "types.h"
 #include <jderobot/types/laserData.h>
 
 //Opencv
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <jderobot/com/laserClient.hpp>
 
 class Sensors
 {
@@ -59,9 +59,7 @@ private:
 
     //LASER DATA
     bool boolLaser;
-    jderobot::LaserPrx laserprx;
-    jderobot::LaserDataPtr ld;
-    JdeRobotTypes::LaserData laserData;
+    JdeRobotCom::LaserClient* laserClient;
 
     //CAMERADATA7
 
