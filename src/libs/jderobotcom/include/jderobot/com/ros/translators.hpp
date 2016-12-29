@@ -17,34 +17,25 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOM_LASERCLIENT_H
-#define JDEROBOTCOM_LASERCLIENT_H
+#ifndef JDEROBOTCOM_TRANSLATORSROS_H_
+#define JDEROBOTCOM_TRANSLATORSROS_H_
 
+#include <ros/ros.h>
 #include <jderobot/types/laserData.h>
-#include <Ice/Communicator.h>
-#include <Ice/Properties.h>
-#include <jderobot/com/interfaces/laserClient.hpp>
-#include <jderobot/com/ice/laserIceClient.hpp>
-#include <jderobot/com/ros/listenerLaser.hpp>
-
-
-
+#include <sensor_msgs/LaserScan.h>
 
 namespace JdeRobotCom {
 
 	/**
-	 * @brief make a LaserClient using propierties
+	 * @brief translate ROS LaserScan messages to JdeRobot LaserData
 	 *
 	 *
-	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Laser")
+	 * @param ROS laser Scan Message
 	 * 
 	 *
-	 * @return null if propierties are wrong
+	 * @return LaserData translated from ROS Message
 	 */
-	LaserClient* getLaserClient(Ice::CommunicatorPtr ic, std::string prefix);
+	JdeRobotTypes::LaserData translate_laser_messages(const sensor_msgs::LaserScanConstPtr& scan);
 
-
-} //NS
-
-#endif // JDEROBOTCOM_LASERCLIENT_H
+} /* NS */
+#endif //JDEROBOTCOM_TRANSLATORSROS_H_

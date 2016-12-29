@@ -17,34 +17,42 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOM_LASERCLIENT_H
-#define JDEROBOTCOM_LASERCLIENT_H
+#ifndef JDEROBOTCOM_LISTENERLASER_H_
+#define JDEROBOTCOM_LISTENERLASER_H_
 
+
+#include <ros/ros.h>
+#include <sensor_msgs/LaserScan.h>
 #include <jderobot/types/laserData.h>
-#include <Ice/Communicator.h>
-#include <Ice/Properties.h>
 #include <jderobot/com/interfaces/laserClient.hpp>
-#include <jderobot/com/ice/laserIceClient.hpp>
-#include <jderobot/com/ros/listenerLaser.hpp>
-
-
-
+#include <jderobot/com/ros/translators.hpp>
 
 namespace JdeRobotCom {
+	class ListenerLaser: public JdeRobotCom::LaserClient {
+		
+	public:
+		ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic);
+		~ListenerLaser();
 
-	/**
-	 * @brief make a LaserClient using propierties
-	 *
-	 *
-	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Laser")
-	 * 
-	 *
-	 * @return null if propierties are wrong
-	 */
-	LaserClient* getLaserClient(Ice::CommunicatorPtr ic, std::string prefix);
+		void listen();
+		void stop();
+		virtual JdeRobotTypes::LaserData  getLaserData();
+		virtual void pause();
+		virtual void resume();
+		void lasercallback (const sensor_msgs::LaserScanConstPtr& laser_msg);
 
+	private:
+		pthread_mutex_t mutex;
+		ros::Subscriber sub;
+		bool paused;
+		std::string topic;
+		std::string nodeName;
+
+		
+
+
+
+	};//class
 
 } //NS
-
-#endif // JDEROBOTCOM_LASERCLIENT_H
+#endif /* JDEROBOTCOM_LISTENERLASER_H_ */
