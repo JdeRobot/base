@@ -157,6 +157,9 @@ void Sensors::update()
 	    memcpy((unsigned char *) image2.data ,&(data2->pixelData[0]), image2.cols*image2.rows * 3);
 	    mutex.unlock();
 	}
+	if (this->laserClient->on){
+		this->laserClient->resume();
+	}
 
     
 }

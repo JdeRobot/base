@@ -1,4 +1,5 @@
-if (${QT5_COMPILE})
+if (${QT5_COMPILE} AND ${roscpp_FOUND})
+
 	
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
     set(CMAKE_AUTOMOC ON)
@@ -38,6 +39,7 @@ if (${QT5_COMPILE})
         ${easyiceconfig_INCLUDE_DIRS}
         ${jderobottypes_INCLUDE_DIRS}
         ${jderobotcom_INCLUDE_DIRS}
+        /opt/ros/kinetic/include
     )
 
     link_directories(${JDE_LIBS}
@@ -61,6 +63,7 @@ if (${QT5_COMPILE})
 		${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
         JderobotInterfaces
         jderobotutil
+        ${catkin_LIBRARIES}
     )
 ENDIF()
 
