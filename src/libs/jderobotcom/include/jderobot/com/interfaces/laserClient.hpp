@@ -34,8 +34,6 @@ namespace JdeRobotCom {
 	class LaserClient {
 	public:
 		virtual JdeRobotTypes::LaserData getLaserData() = 0;
-		virtual void pause() = 0;
-		virtual void resume() = 0;
 		bool on = false;
 	protected:
 		JdeRobotTypes::LaserData laserData;

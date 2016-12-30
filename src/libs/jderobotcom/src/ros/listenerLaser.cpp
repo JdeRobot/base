@@ -8,10 +8,10 @@ namespace JdeRobotCom {
 			this->on = false;
 			std::cerr <<"Invalid laser topic" <<std::endl;
 		}else{
-			this->paused = true;
 			this->on = true;
 			this->topic = topic;
 			this->nodeName = nodeName;
+			boost::thread t3(&ListenerLaser::listen, this);
 		}
 	}
 
@@ -29,7 +29,6 @@ namespace JdeRobotCom {
 			ros::NodeHandle nh;
 			this->sub = nh.subscribe(this->topic, 1001, &ListenerLaser::lasercallback, this);
 			std::cout << "listen from "+ this->topic << std::endl;
-			this->paused = false;
 			ros::spin();
 		}
 
@@ -38,23 +37,6 @@ namespace JdeRobotCom {
 	void 
 	ListenerLaser::stop(){
 		ros::shutdown();
-	}
-
-	void
-	ListenerLaser::pause(){
-		if(!this->paused){
-			this->sub.shutdown();
-			this->paused = true;
-		}
-
-	}
-
-	void
-	ListenerLaser::resume(){
-		if (this->paused){
-			this->listen();
-		}
-
 	}
 
 	void 

@@ -23,6 +23,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
+#include <boost/thread/thread.hpp>
 #include <jderobot/types/laserData.h>
 #include <jderobot/com/interfaces/laserClient.hpp>
 #include <jderobot/com/ros/translators.hpp>
@@ -34,19 +35,19 @@ namespace JdeRobotCom {
 		ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic);
 		~ListenerLaser();
 
-		void listen();
+		
 		void stop();
 		virtual JdeRobotTypes::LaserData  getLaserData();
-		virtual void pause();
-		virtual void resume();
-		void lasercallback (const sensor_msgs::LaserScanConstPtr& laser_msg);
+		
 
 	private:
 		pthread_mutex_t mutex;
 		ros::Subscriber sub;
-		bool paused;
 		std::string topic;
 		std::string nodeName;
+		
+		void listen();
+		void lasercallback (const sensor_msgs::LaserScanConstPtr& laser_msg);
 
 		
 

@@ -49,28 +49,31 @@ void LaserWidget::paintEvent(QPaintEvent *)
     pen = QPen(Qt::blue, width);
     painter.setPen(pen);
 
-    float step = (this->laserData.maxAngle - this->laserData.minAngle) /this->laserData.values.size();
+    if (this->laserData.values.size() > 0){
 
-    d = this->laserData.maxRange/(_width/2); //normalizing distances 
+        float step = (this->laserData.maxAngle - this->laserData.minAngle) /this->laserData.values.size();
 
-
-    ang = this->laserData.minAngle;
-    x0 = cx + (this->laserData.values[0] / d) * cos(ang);
-    y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
-
-    for (int i = 1; i < this->laserData.values.size(); i++) {
-
-    
-        ang = this->laserData.minAngle + i*step;
-        x1 = cx + (this->laserData.values[i] / d) * cos(ang);
-        y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
+        d = this->laserData.maxRange/(_width/2); //normalizing distances 
 
 
-        painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
+        ang = this->laserData.minAngle;
+        x0 = cx + (this->laserData.values[0] / d) * cos(ang);
+        y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
 
-        x0 = x1;
-        y0 = y1;
+        for (int i = 1; i < this->laserData.values.size(); i++) {
 
+        
+            ang = this->laserData.minAngle + i*step;
+            x1 = cx + (this->laserData.values[i] / d) * cos(ang);
+            y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
+
+
+            painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
+
+            x0 = x1;
+            y0 = y1;
+
+        }
     }
 }
 

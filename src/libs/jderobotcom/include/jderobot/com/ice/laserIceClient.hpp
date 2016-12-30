@@ -44,8 +44,8 @@ public:
 
 	virtual JdeRobotTypes::LaserData  getLaserData();
 	int getRefreshRate(){return refreshRate;};
-	virtual void pause();
-	virtual void resume();
+	void pause();
+	void resume();
 	bool getPause(){return pauseStatus;};
 
 
