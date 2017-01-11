@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 if(roscpp_FOUND)
-    project(jderobotcom)
+    project(jderobotcomm)
 
     list(APPEND Ice_LIBRARIES Ice IceUtil)
 
@@ -42,11 +42,11 @@ if(roscpp_FOUND)
 
 
     set(HEADERS
-        include/jderobot/com/laserClient.hpp
-        include/jderobot/com/interfaces/laserClient.hpp
-        include/jderobot/com/ice/laserIceClient.hpp
-        include/jderobot/com/ros/translators.hpp
-        include/jderobot/com/ros/listenerLaser.hpp
+        include/jderobot/comm/laserClient.hpp
+        include/jderobot/comm/interfaces/laserClient.hpp
+        include/jderobot/comm/ice/laserIceClient.hpp
+        include/jderobot/comm/ros/translators.hpp
+        include/jderobot/comm/ros/listenerLaser.hpp
     )
 
     set(SOURCES

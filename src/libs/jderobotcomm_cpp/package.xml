@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>jderobotcom</name>
+  <name>jderobotcomm</name>
   <version>0.0.1</version>
-  <description>The jderobotcom library</description>
+  <description>The jderobotcomm library</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

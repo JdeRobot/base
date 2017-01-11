@@ -19,8 +19,8 @@
 
  */
 
-#ifndef JDEROBOTCOM_LASERICECLIENT_H_
-#define JDEROBOTCOM_LASERICECLIENT_H_
+#ifndef JDEROBOTCOMM_LASERICECLIENT_H_
+#define JDEROBOTCOMM_LASERICECLIENT_H_
 
 #include <IceUtil/IceUtil.h>
 #include <iostream>
@@ -31,12 +31,12 @@
 #include <fstream>
 #include <log/Logger.h>
 #include <jderobot/types/laserData.h>
-#include <jderobot/com/interfaces/laserClient.hpp>
+#include <jderobot/comm/interfaces/laserClient.hpp>
 
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 
-class LaserIceClient: public IceUtil::Thread, public JdeRobotCom::LaserClient {
+class LaserIceClient: public IceUtil::Thread, public JdeRobotComm::LaserClient {
 public:
 	LaserIceClient(Ice::CommunicatorPtr ic, std::string prefix);
 	virtual ~LaserIceClient();
@@ -66,4 +66,4 @@ private:
 
 
 } /* namespace jderobot */
-#endif /* JDEROBOTCOM_LASERICECLIENT_H_ */
+#endif /* JDEROBOTCOMM_LASERICECLIENT_H_ */

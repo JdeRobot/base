@@ -1,6 +1,6 @@
-#include <jderobot/com/laserClient.hpp>
+#include <jderobot/comm/laserClient.hpp>
 
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 LaserClient* 
 getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
@@ -17,7 +17,7 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 			LaserIceClient* cl;
 			cl = new LaserIceClient(ic, prefix);
 			cl->start();
-		    client = (JdeRobotCom::LaserClient*) cl;
+		    client = (JdeRobotComm::LaserClient*) cl;
 		    break;
 		}
 		case 1:
@@ -30,13 +30,13 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 		 	ListenerLaser* lc;
 		 	lc = new ListenerLaser(0, nullptr, nodeName, topic);
 		 	//lc->listen();
-		 	client = (JdeRobotCom::LaserClient*) lc;
+		 	client = (JdeRobotComm::LaserClient*) lc;
 
 		 	break;
 		}
 		default:
 		{
-			std::cerr << "Wrong " + prefix+".Server propertie" << std::endl;
+			std::cerr << "Wrong " + prefix+".Server property" << std::endl;
 			break;
 		}
 

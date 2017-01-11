@@ -17,19 +17,19 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOM_LISTENERLASER_H_
-#define JDEROBOTCOM_LISTENERLASER_H_
+#ifndef JDEROBOTCOMM_LISTENERLASER_H_
+#define JDEROBOTCOMM_LISTENERLASER_H_
 
 
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include <boost/thread/thread.hpp>
 #include <jderobot/types/laserData.h>
-#include <jderobot/com/interfaces/laserClient.hpp>
-#include <jderobot/com/ros/translators.hpp>
+#include <jderobot/comm/interfaces/laserClient.hpp>
+#include <jderobot/comm/ros/translators.hpp>
 
-namespace JdeRobotCom {
-	class ListenerLaser: public JdeRobotCom::LaserClient {
+namespace JdeRobotComm {
+	class ListenerLaser: public JdeRobotComm::LaserClient {
 		
 	public:
 		ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic);
@@ -56,4 +56,4 @@ namespace JdeRobotCom {
 	};//class
 
 } //NS
-#endif /* JDEROBOTCOM_LISTENERLASER_H_ */
+#endif /* JDEROBOTCOMM_LISTENERLASER_H_ */

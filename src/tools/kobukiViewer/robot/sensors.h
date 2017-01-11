@@ -16,7 +16,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <jderobot/com/laserClient.hpp>
+#include <jderobot/comm/laserClient.hpp>
 
 class Sensors
 {
@@ -59,7 +59,7 @@ private:
 
     //LASER DATA
     bool boolLaser;
-    JdeRobotCom::LaserClient* laserClient;
+    JdeRobotComm::LaserClient* laserClient;
 
     //CAMERADATA7
 

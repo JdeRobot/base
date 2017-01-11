@@ -17,28 +17,25 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOM_LASERCLIENT_INTERFACE_H
-#define JDEROBOTCOM_LASERCLIENT_INTERFACE_H
+#ifndef JDEROBOTCOMM_TRANSLATORSROS_H_
+#define JDEROBOTCOMM_TRANSLATORSROS_H_
 
+#include <ros/ros.h>
 #include <jderobot/types/laserData.h>
+#include <sensor_msgs/LaserScan.h>
 
-
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 	/**
-	 * @brief LaserClient class.
-	 * This class is a Interface to seprate communications from tools. 
-	 * With this, the tools don't need know which communicator (ROS or ICE) are using because both use the same interface.
+	 * @brief translate ROS LaserScan messages to JdeRobot LaserData
 	 *
+	 *
+	 * @param ROS laser Scan Message
+	 * 
+	 *
+	 * @return LaserData translated from ROS Message
 	 */
-	class LaserClient {
-	public:
-		virtual JdeRobotTypes::LaserData getLaserData() = 0;
-		bool on = false;
-	protected:
-		JdeRobotTypes::LaserData laserData;
-	};
+	JdeRobotTypes::LaserData translate_laser_messages(const sensor_msgs::LaserScanConstPtr& scan);
 
-} //NS
-
-#endif // JDEROBOTCOM_LASERCLIENT_INTERFACE_H
+} /* NS */
+#endif //JDEROBOTCOMM_TRANSLATORSROS_H_

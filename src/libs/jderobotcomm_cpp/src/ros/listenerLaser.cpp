@@ -1,6 +1,6 @@
-#include <jderobot/com/ros/listenerLaser.hpp>
+#include <jderobot/comm/ros/listenerLaser.hpp>
 
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 	ListenerLaser::ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic){
 		pthread_mutex_init(&mutex, NULL);
@@ -42,7 +42,7 @@ namespace JdeRobotCom {
 	void 
 	ListenerLaser::lasercallback(const sensor_msgs::LaserScanConstPtr& laser_msg){
 		pthread_mutex_lock(&mutex);
-		this->laserData = JdeRobotCom::translate_laser_messages(laser_msg);
+		this->laserData = JdeRobotComm::translate_laser_messages(laser_msg);
 		pthread_mutex_unlock(&mutex);
 
 	}

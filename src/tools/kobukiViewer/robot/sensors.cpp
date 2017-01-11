@@ -88,7 +88,7 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
 
-	this->laserClient = JdeRobotCom::getLaserClient(ic, "kobukiViewer.Laser");
+	this->laserClient = JdeRobotComm::getLaserClient(ic, "kobukiViewer.Laser");
 }
 
 cv::Mat Sensors::getCamera1()

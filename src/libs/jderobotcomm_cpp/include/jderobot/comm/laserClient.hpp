@@ -17,20 +17,20 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOM_LASERCLIENT_H
-#define JDEROBOTCOM_LASERCLIENT_H
+#ifndef JDEROBOTCOMM_LASERCLIENT_H
+#define JDEROBOTCOMM_LASERCLIENT_H
 
 #include <jderobot/types/laserData.h>
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
-#include <jderobot/com/interfaces/laserClient.hpp>
-#include <jderobot/com/ice/laserIceClient.hpp>
-#include <jderobot/com/ros/listenerLaser.hpp>
+#include <jderobot/comm/interfaces/laserClient.hpp>
+#include <jderobot/comm/ice/laserIceClient.hpp>
+#include <jderobot/comm/ros/listenerLaser.hpp>
 
 
 
 
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 	/**
 	 * @brief make a LaserClient using propierties
@@ -47,4 +47,4 @@ namespace JdeRobotCom {
 
 } //NS
 
-#endif // JDEROBOTCOM_LASERCLIENT_H
+#endif // JDEROBOTCOMM_LASERCLIENT_H

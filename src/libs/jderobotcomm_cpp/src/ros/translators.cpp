@@ -1,5 +1,5 @@
-#include "jderobot/com/ros/translators.hpp"
-namespace JdeRobotCom {
+#include "jderobot/comm/ros/translators.hpp"
+namespace JdeRobotComm {
 
 	float PI = 3.1415;
 

@@ -1,5 +1,9 @@
 if (${QT5_COMPILE} AND ${roscpp_FOUND})
 
+    message(******************************)
+    message(jderobot_comm = ${jderobotcomm_INCLUDE_DIRS})
+    message(******************************)
+
 	
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
     set(CMAKE_AUTOMOC ON)
@@ -38,13 +42,13 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${easyiceconfig_INCLUDE_DIRS}
         ${jderobottypes_INCLUDE_DIRS}
-        ${jderobotcom_INCLUDE_DIRS}
+        ${jderobotcomm_INCLUDE_DIRS}
         /opt/ros/kinetic/include
     )
 
     link_directories(${JDE_LIBS}
         ${easyiceconfig_LIBRARY_DIRS}
-        ${jderobotcom_LIBRARY_DIRS}
+        ${jderobotcomm_LIBRARY_DIRS}
     )
 
     add_executable( kobukiViewer ${SOURCE} ${INTERFACES_CPP_DIR})
@@ -57,7 +61,7 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${CMAKE_THREAD_LIBS_INIT}
         ${OpenCV_LIBRARIES}
         ${easyiceconfig_LIBRARIES}
-        ${jderobotcom_LIBRARIES}
+        ${jderobotcomm_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
         ${Ice_LIBRARIES}
 		${OPENGL_LIBRARIES} ${GLUT_LIBRARY}

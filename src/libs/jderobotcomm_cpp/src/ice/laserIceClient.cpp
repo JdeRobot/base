@@ -18,9 +18,9 @@
 			Francisco Miguel Rivas Montero <franciscomiguel.rivas@urjc.es>
 
  */
-#include "jderobot/com/ice/laserIceClient.hpp"
+#include "jderobot/comm/ice/laserIceClient.hpp"
 
-namespace JdeRobotCom {
+namespace JdeRobotComm {
 
 LaserIceClient::LaserIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 
