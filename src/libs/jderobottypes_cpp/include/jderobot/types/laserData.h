@@ -31,7 +31,7 @@ namespace JdeRobotTypes {
 	    float maxAngle = 0; // Angle of last value (rads)
 	    float minRange = 0; // Max Range posible (meters)
 	    float maxRange = 0; //Min Range posible (meters)
-	    long int timeStamp = 0; //microseconds
+	    double timeStamp = 0; //seconds
 	};
 
 
