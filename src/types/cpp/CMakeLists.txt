@@ -9,6 +9,7 @@ include_directories(
 
 set(HEADERS
     include/jderobot/types/laserData.h
+    include/jderobot/types/image.h
 )
 
 #set(SOURCES
