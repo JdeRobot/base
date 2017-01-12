@@ -22,7 +22,9 @@ namespace JdeRobotComm {
 		*/
 		data.maxAngle = scan->angle_max  - PI/2;
 		data.minAngle = scan->angle_min - PI/2;
-		//falta timestamp
+		//nsec --> nanoseconds
+		data.timeStamp = scan->header.stamp.sec + (scan->header.stamp.nsec *1e-9);
+
 
 		return data;
 
