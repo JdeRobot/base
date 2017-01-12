@@ -1,9 +1,4 @@
 if (${QT5_COMPILE} AND ${roscpp_FOUND})
-
-    message(******************************)
-    message(jderobot_comm = ${jderobotcomm_INCLUDE_DIRS})
-    message(******************************)
-
 	
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
     set(CMAKE_AUTOMOC ON)
@@ -43,7 +38,7 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${easyiceconfig_INCLUDE_DIRS}
         ${jderobottypes_INCLUDE_DIRS}
         ${jderobotcomm_INCLUDE_DIRS}
-        /opt/ros/kinetic/include
+        ${roscpp_INCLUDE_DIRS}
     )
 
     link_directories(${JDE_LIBS}

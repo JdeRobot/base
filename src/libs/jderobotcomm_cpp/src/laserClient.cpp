@@ -10,8 +10,12 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 
 	int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
 	switch (server){
-
 		case 0:
+		{
+			std::cout << "Laser disabled" << std::endl;
+			break;
+		}
+		case 1:
 		{
 			std::cout << "Receiving LaserData from ICE interfaces" << std::endl;
 			LaserIceClient* cl;
@@ -20,7 +24,7 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 		    client = (JdeRobotComm::LaserClient*) cl;
 		    break;
 		}
-		case 1:
+		case 2:
 		{
 		 	std::cout << "Receiving LaserData from ROS messages" << std::endl;
 		 	std::string nodeName;

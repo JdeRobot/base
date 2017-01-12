@@ -5,7 +5,6 @@ if(roscpp_FOUND)
     list(APPEND Ice_LIBRARIES Ice IceUtil)
 
     SET (CATKIN_DEVEL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
-    SET (CMAKE_PREFIX_PATH /opt/ros/kinetic)
 
     find_package(catkin REQUIRED COMPONENTS
       roscpp
@@ -25,20 +24,9 @@ if(roscpp_FOUND)
         ${Ice_INCLUDE_DIR}
         ${LIBS_DIR}
         ${catkin_INCLUDE_DIRS}
-        /opt/ros/kinetic/include
+        ${roscpp_INCLUDE_DIRS}
         ${ice_interfaces_INCLUDE_DIRS}
     )
-
-    message(******************************)
-    message(jderobot_types = ${jderobottypes_INCLUDE_DIRS})
-    message(******************************)
-    message(******************************)
-    message(ice_interfaces_INCLUDE_DIRS = ${ice_interfaces_INCLUDE_DIRS})
-    message(******************************)
-    message(******************************)
-    message(catkin_LIBRARIES = ${catkin_LIBRARIES})
-    message(******************************)
-
 
 
     set(HEADERS
