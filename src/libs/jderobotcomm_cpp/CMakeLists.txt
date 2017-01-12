@@ -35,6 +35,9 @@ if(roscpp_FOUND)
         include/jderobot/comm/ice/laserIceClient.hpp
         include/jderobot/comm/ros/translators.hpp
         include/jderobot/comm/ros/listenerLaser.hpp
+        include/jderobot/comm/cameraClient.hpp
+        include/jderobot/comm/interfaces/cameraClient.hpp
+        include/jderobot/comm/ice/cameraIceClient.hpp
     )
 
     set(SOURCES
@@ -42,16 +45,18 @@ if(roscpp_FOUND)
         src/ice/laserIceClient.cpp
         src/ros/translators.cpp
         src/ros/listenerLaser.cpp
+        src/cameraClient.cpp
+        src/ice/cameraIceClient.cpp
     )
 
     ## Adding shared library for common usage
     add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-    target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} JderobotInterfaces ${catkin_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} colorspacesmm JderobotInterfaces ${catkin_LIBRARIES})
 
     ## Adding static library for single .so configurations
     # since target is a shared library, -fPIC must be provided
     add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
-    target_link_libraries(${PROJECT_NAME}-embedded ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} JderobotInterfaces)
+    target_link_libraries(${PROJECT_NAME}-embedded ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} colorspacesmm JderobotInterfaces)
     set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 

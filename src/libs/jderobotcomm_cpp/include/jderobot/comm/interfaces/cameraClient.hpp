@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2016 JDE JdeRobot Developers Team
+ *  Copyright (C) 1997-2016 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,29 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTTYPES_IMAGE_H
-#define JDEROBOTTYPES_IMAGE_H
+#ifndef JDEROBOTCOMM_CAMERACLIENT_INTERFACE_H
+#define JDEROBOTCOMM_CAMERACLIENT_INTERFACE_H
 
-#include <opencv2/core/core.hpp>
+#include <jderobot/types/image.h>
 
-namespace JdeRobotTypes {
 
-	class Image {
+namespace JdeRobotComm {
+
+	/**
+	 * @brief LaserClient class.
+	 * This class is a Interface to seprate communications from tools. 
+	 * With this, the tools don't need know which communicator (ROS or ICE) are using because both use the same interface.
+	 *
+	 */
+	class CameraClient {
 	public:
-	    int height = 0; /**< %Image height [pixels] */
-	    int width = 0; /**< %Image width [pixels] */
-	    double timeStamp = 0; /**< %Time stamp [s] */
-	    std::string format; /**< %Image format string (RGB8, BGR,...) */
-	    cv::Mat  data; /**< The image data itself */
+		virtual JdeRobotTypes::Image getImage() = 0;
+		virtual int getRefreshRate() = 0;
+		bool on = false;
+	protected:
+		JdeRobotTypes::Image image;
 	};
 
+} //NS
 
-} //NS JdeRobotTypes
-
-#endif // JDEROBOTTYPES_IMAGE_H
+#endif // JDEROBOTCOMM_CAMERACLIENT_INTERFACE_H

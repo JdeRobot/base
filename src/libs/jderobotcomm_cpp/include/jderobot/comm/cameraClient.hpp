@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2016 JDE JdeRobot Developers Team
+ *  Copyright (C) 1997-2016 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,33 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTTYPES_IMAGE_H
-#define JDEROBOTTYPES_IMAGE_H
+#ifndef JDEROBOTCOMM_CAMERACLIENT_H
+#define JDEROBOTCOMM_CAMERACLIENT_H
 
-#include <opencv2/core/core.hpp>
-
-namespace JdeRobotTypes {
-
-	class Image {
-	public:
-	    int height = 0; /**< %Image height [pixels] */
-	    int width = 0; /**< %Image width [pixels] */
-	    double timeStamp = 0; /**< %Time stamp [s] */
-	    std::string format; /**< %Image format string (RGB8, BGR,...) */
-	    cv::Mat  data; /**< The image data itself */
-	};
+#include <jderobot/types/image.h>
+#include <Ice/Communicator.h>
+#include <Ice/Properties.h>
+#include <jderobot/comm/interfaces/cameraClient.hpp>
+#include <jderobot/comm/ice/cameraIceClient.hpp>
 
 
-} //NS JdeRobotTypes
 
-#endif // JDEROBOTTYPES_IMAGE_H
+
+namespace JdeRobotComm {
+
+	/**
+	 * @brief make a CameraClient using propierties
+	 *
+	 *
+	 * @param communicator that contains properties
+	 * @param prefix of client Propierties (example: "kobukiViewer.Camera")
+	 * 
+	 *
+	 * @return null if propierties are wrong
+	 */
+	CameraClient* getCameraClient(Ice::CommunicatorPtr ic, std::string prefix);
+
+
+} //NS
+
+#endif // JDEROBOTCOMM_CAMERACLIENT_H
