@@ -37,6 +37,16 @@
 
 namespace turtlebot{
 
+class LaserD
+{
+public:
+    std::vector<float> values;
+    double minAngle = 0;
+    double maxAngle = 3.1416;
+    double minRange = 0;
+    double maxRange = 10; //10 m
+};
+
 class TurtlebotSensors
 {
 public:
@@ -78,7 +88,7 @@ private:
 
 public:
     cv::Mat img[NUM_CAMS];
-    std::vector<float> laserValues;
+    LaserD laserData;
     gazebo::math::Pose pose;
 
     double position;

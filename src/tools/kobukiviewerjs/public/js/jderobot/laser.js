@@ -22,15 +22,20 @@
 {
     var Ice = require("ice").Ice;
     var __M = Ice.__M;
-    var jderobot = require("jderobot/common").jderobot;
+    var jderobot = require("common").jderobot;
     var Slice = Ice.Slice;
 
     jderobot.LaserData = Slice.defineObject(
-        function(distanceData, numLaser)
+        function(distanceData, numLaser, minAngle, maxAngle, minRange, maxRange, timeStamp)
         {
             Ice.Object.call(this);
             this.distanceData = distanceData !== undefined ? distanceData : null;
             this.numLaser = numLaser !== undefined ? numLaser : 0;
+            this.minAngle = minAngle !== undefined ? minAngle : 0.0;
+            this.maxAngle = maxAngle !== undefined ? maxAngle : 0.0;
+            this.minRange = minRange !== undefined ? minRange : 0.0;
+            this.maxRange = maxRange !== undefined ? maxRange : 0.0;
+            this.timeStamp = timeStamp !== undefined ? timeStamp : new jderobot.Time();
         },
         Ice.Object, undefined, 1,
         [
@@ -42,11 +47,21 @@
         {
             jderobot.IntSeqHelper.write(__os, this.distanceData);
             __os.writeInt(this.numLaser);
+            __os.writeFloat(this.minAngle);
+            __os.writeFloat(this.maxAngle);
+            __os.writeFloat(this.minRange);
+            __os.writeFloat(this.maxRange);
+            jderobot.Time.write(__os, this.timeStamp);
         },
         function(__is)
         {
             this.distanceData = jderobot.IntSeqHelper.read(__is);
             this.numLaser = __is.readInt();
+            this.minAngle = __is.readFloat();
+            this.maxAngle = __is.readFloat();
+            this.minRange = __is.readFloat();
+            this.maxRange = __is.readFloat();
+            this.timeStamp = jderobot.Time.read(__is, this.timeStamp);
         },
         false);
 

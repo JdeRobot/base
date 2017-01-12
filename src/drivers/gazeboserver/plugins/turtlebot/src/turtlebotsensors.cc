@@ -118,22 +118,29 @@ TurtlebotSensors::_on_cam(int id){
 
 void
 TurtlebotSensors::_on_laser(){
-    /*assert(laser->GetRangeCount() > 0);
-    std::vector<double> ranges(laser->GetRangeCount());
-    laser->GetRanges(ranges);
-    std::sort(ranges.begin(), ranges.end());
-    //altitude = ranges[0];
-    int c = std::ceil(ranges.size()*0.20); // smooth value by take 20% of minor values
-    ranges.resize(c);*/
+    LaserD data;
+
 
     //laser values
     MultiRayShapePtr laserV = this->laser->LaserShape();
 
 
-    laserValues.resize(laserV->GetSampleCount ());
+
+
+    std::vector<float> laserValues(laserV->GetSampleCount ());
     for (int i = 0; i< laserV->GetSampleCount (); i++){
         laserValues[i] = laserV->GetRange(i);
     }
+
+    data.values = laserValues;
+    //This values don't work well
+    //data.minAngle = this->laser->AngleMin().Radian();
+    //data.maxAngle = this->laser->AngleMax().Radian();
+    //data.minRange = this->laser->RangeMin();
+    //data.maxAngle = this->laser->RangeMax();
+
+    laserData = data;
+
 }
 
 void

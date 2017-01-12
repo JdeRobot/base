@@ -36,11 +36,17 @@ void poolWriteLasers::consumer_thread(){
 //	while(this->active){
 		//std::cout << "consumidor entro" << std::endl;
 
+
+
 		pthread_mutex_lock(&(this->mutex));
 		if (this->lasers.size()>0){
 			//std::cout << " camara: " << cameraID <<  this->images.size()  << std::endl;
 
-			std::vector<int> data2Save(lasers[0]);
+			std::vector<int> data2Save(lasers[0].values);
+			int maxRange = lasers[0].maxRange;
+			int minRange = lasers[0].minRange;
+			float minAngle = lasers[0].minAngle;
+			float maxAngle = lasers[0].maxAngle;
 			this->lasers.erase(this->lasers.begin());
 			long long int relative;
 			relative=*(this->its.begin());
@@ -59,7 +65,7 @@ void poolWriteLasers::consumer_thread(){
 			outfileBinary.write((const char *)&data2Save.front(), data2Save.size()*sizeof(int));
 			outfileBinary.close();
 
-			this->outfile << relative << " " << data2Save.size() <<   std::endl;
+			this->outfile << relative << " " << data2Save.size() << " " << maxRange << " " << minRange << " " << maxAngle << " " << minAngle <<   std::endl;
 		}
 		else
 			pthread_mutex_unlock(&(this->mutex));
@@ -76,6 +82,14 @@ void poolWriteLasers::producer_thread(struct timeval inicio){
 		/*std::cout << "size: "<< dataPtr->distanceData.size() << std::endl;
 		std::cout << "numLaser:" << dataPtr->numLaser << std::endl;*/
 
+		LaserD data;
+
+		data.values = dataPtr->distanceData;
+		data.minAngle = dataPtr->minAngle;
+		data.maxAngle = dataPtr->maxAngle;
+		data.minRange = dataPtr->minRange;
+		data.maxRange = dataPtr->maxRange;
+
 		struct timeval now;
 		gettimeofday(&now,NULL);
 		long long int relative;
@@ -86,7 +100,7 @@ void poolWriteLasers::producer_thread(struct timeval inicio){
 			usleep(100);
 			pthread_mutex_lock(&(this->mutex));
 		}
-		this->lasers.push_back(dataPtr->distanceData);
+		this->lasers.push_back(data);
 		this->its.push_back(relative);
 		pthread_mutex_unlock(&(this->mutex));
 		gettimeofday(&now,NULL);

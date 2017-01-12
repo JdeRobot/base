@@ -485,6 +485,7 @@ namespace replayer {
 
 
 
+	
 
 	//BEGIN LaserI
 	class LaserI: virtual public jderobot::Laser{
@@ -553,6 +554,15 @@ namespace replayer {
 							sTemp >> relative;
 							int sizeVector;
 							sTemp >> sizeVector;
+							int maxRange;
+							sTemp >> maxRange;
+							int minRange;
+							sTemp >> minRange;
+							float maxAngle;
+							sTemp >> maxAngle;
+							float minAngle;
+							sTemp >> minAngle;
+
 
 							//tiempo para comprobar si vamos muy desacompasados y para rewind - forward
 							IceUtil::Time pretime = IceUtil::Time::now();
@@ -564,6 +574,11 @@ namespace replayer {
 								std::istringstream sTemp(line);
 								sTemp >> relative;
 								sTemp >> sizeVector;
+								
+								sTemp >> maxRange;
+								sTemp >> minRange;
+								sTemp >> maxAngle;
+								sTemp >> minAngle;
 
 							}
 							if (!myfile.good()){
@@ -589,6 +604,10 @@ namespace replayer {
 							}
 							this->myLaser->m.lock();
 							this->myLaser->KData->distanceData.resize(sizeVector);
+							this->myLaser->KData->minAngle = minAngle;
+							this->myLaser->KData->maxAngle = maxAngle;
+							this->myLaser->KData->minRange = minRange;
+							this->myLaser->KData->maxRange = maxRange;
 							infile.read((char *)&this->myLaser->KData->distanceData.front(), this->myLaser->KData->distanceData.size()*sizeof(int));
 							this->myLaser->m.unlock();
 						}

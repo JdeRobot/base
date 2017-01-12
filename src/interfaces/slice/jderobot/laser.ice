@@ -31,7 +31,12 @@ module jderobot{
   class LaserData
   {
     IntSeq distanceData;
-	int numLaser;
+    int numLaser;
+    float minAngle;
+    float maxAngle;
+    float minRange;
+    float maxRange;
+    Time timeStamp;
   };
 
 

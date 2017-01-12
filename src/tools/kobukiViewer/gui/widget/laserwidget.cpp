@@ -1,6 +1,5 @@
 #include "laserwidget.h"
-#include <iostream>
-#include <math.h>
+
 LaserWidget::LaserWidget()
 {
 
@@ -12,13 +11,14 @@ LaserWidget::LaserWidget()
     setAutoFillBackground(true);
     setPalette(Pal);
 
-    setMaximumSize(500, 250);
+    setMaximumSize(500, 500);
+    setMinimumSize(500, 500);
 
 
     setWindowTitle("Laser");
 }
 
-void LaserWidget::update(std::vector<float> laserData)
+void LaserWidget::update(LaserD laserData)
 {
     mutex.lock();
 
@@ -32,6 +32,11 @@ void LaserWidget::update(std::vector<float> laserData)
 void LaserWidget::paintEvent(QPaintEvent *)
 {
     int _width = width();
+    int _height = height();
+
+    //center of laser
+    int cx = _width/2;
+    int cy = _height/2; 
 
     float x0, y0, x1, y1, d, ang;
 
@@ -41,21 +46,28 @@ void LaserWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setPen(pen);
 
+    pen = QPen(Qt::green, width);
+    painter.setPen(pen);
+
+    painter.drawPoint(QPointF(20,480));
+
     pen = QPen(Qt::blue, width);
     painter.setPen(pen);
 
-    float PI = 3.1416;
+    float step = (this->laserData.maxAngle - this->laserData.minAngle) /this->laserData.values.size();
 
-    ang = 0;
-    x0 = _width/2 + (this->laserData[0] / d) * cos(ang);
-    y0 = _width/2 - ((this->laserData[0] / d) * sin(ang));
-    d = 10000/(_width/2);
-    for (int i = 1; i < this->laserData.size(); i++) {
+    d = this->laserData.maxRange/(_width/2); //normalizing distances 
+
+    ang = this->laserData.minAngle;
+    x0 = cx + (this->laserData.values[0] / d) * cos(ang);
+    y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
+    for (int i = 1; i < this->laserData.values.size(); i++) {
 
 
-        ang = i*PI/this->laserData.size();
-        x1 = _width/2 + (this->laserData[i] / d) * cos(ang);
-        y1 = _width/2 - ((this->laserData[i] / d) * sin(ang));
+
+        ang = this->laserData.minAngle + i*step;
+        x1 = cx + (this->laserData.values[i] / d) * cos(ang);
+        y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
 
         painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
 
