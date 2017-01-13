@@ -45,15 +45,15 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 		case 2:
 		{
 		 	std::cout << "Receiving Image from ROS messages" << std::endl;
-		 	/*std::string nodeName;
-		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","LaserNode");
+		 	std::string nodeName;
+		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","CameraNode");
 		 	std::string topic;
 		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
-		 	ListenerLaser* lc;
-		 	lc = new ListenerLaser(0, nullptr, nodeName, topic);
+		 	ListenerCamera* lc;
+		 	lc = new ListenerCamera(0, nullptr, nodeName, topic);
 		 	//lc->listen();
-		 	client = (JdeRobotComm::LaserClient*) lc;
-*/
+		 	client = (JdeRobotComm::CameraClient*) lc;
+
 		 	break;
 		}
 		default:

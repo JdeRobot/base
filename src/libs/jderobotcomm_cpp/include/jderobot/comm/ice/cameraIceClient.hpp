@@ -23,14 +23,10 @@
 #define JDEROBOTCOMM_CAMERAICECLIENT_H_
 
 #include <IceUtil/IceUtil.h>
-//#include <iostream>
 #include <Ice/Ice.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <jderobot/camera.h>
 #include <cv.h>
-//#include <sstream>
-//#include <fstream>
-//#include <climits>
 #include <log/Logger.h>
 #include <jderobot/types/image.h>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
@@ -66,7 +62,6 @@ private:
 	IceUtil::Mutex controlMutex;
 	std::string prefix;
 
-	int refreshRate;
 	bool pauseStatus;
 
 	IceUtil::Cond semWait;

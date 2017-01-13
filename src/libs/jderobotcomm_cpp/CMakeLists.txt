@@ -9,6 +9,8 @@ if(roscpp_FOUND)
     find_package(catkin REQUIRED COMPONENTS
       roscpp
       std_msgs
+      cv_bridge
+      image_transport
     )
 
     catkin_package(
@@ -38,6 +40,7 @@ if(roscpp_FOUND)
         include/jderobot/comm/cameraClient.hpp
         include/jderobot/comm/interfaces/cameraClient.hpp
         include/jderobot/comm/ice/cameraIceClient.hpp
+        include/jderobot/comm/ros/listenerCamera.hpp
     )
 
     set(SOURCES
@@ -47,6 +50,8 @@ if(roscpp_FOUND)
         src/ros/listenerLaser.cpp
         src/cameraClient.cpp
         src/ice/cameraIceClient.cpp
+        src/ros/listenerCamera.cpp
+
     )
 
     ## Adding shared library for common usage

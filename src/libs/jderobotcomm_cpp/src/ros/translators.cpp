@@ -31,6 +31,30 @@ namespace JdeRobotComm {
 	}
 
 
+	JdeRobotTypes::Image 
+	translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg){
+		JdeRobotTypes::Image img;
+		cv_bridge::CvImagePtr cv_ptr;
+
+		img.timeStamp = image_msg->header.stamp.sec + (image_msg->header.stamp.nsec *1e-9);
+		img.format = "RGB8"; // we convert img_msg to RGB8 format
+		img.width = image_msg->width;
+		img.height = image_msg->height;
+
+		try {
+
+			cv_ptr = cv_bridge::toCvCopy(image_msg, sensor_msgs::image_encodings::RGB8);
+		} catch (cv_bridge::Exception& e) {
+
+			ROS_ERROR("cv_bridge exception: %s", e.what());
+		}
+
+		img.data = cv_ptr->image;
+
+		return img;
+	}
+
+
 
 
 } /* NS */

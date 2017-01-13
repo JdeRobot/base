@@ -38,6 +38,7 @@ namespace JdeRobotComm {
 		bool on = false;
 	protected:
 		JdeRobotTypes::Image image;
+		int refreshRate;
 	};
 
 } //NS

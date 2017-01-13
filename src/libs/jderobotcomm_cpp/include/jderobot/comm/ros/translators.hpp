@@ -21,8 +21,16 @@
 #define JDEROBOTCOMM_TRANSLATORSROS_H_
 
 #include <ros/ros.h>
+
+
 #include <jderobot/types/laserData.h>
 #include <sensor_msgs/LaserScan.h>
+
+
+#include <jderobot/types/image.h>
+#include "image_transport/image_transport.h"
+#include "cv_bridge/cv_bridge.h"
+#include "sensor_msgs/image_encodings.h"
 
 namespace JdeRobotComm {
 
@@ -33,9 +41,20 @@ namespace JdeRobotComm {
 	 * @param ROS laser Scan Message
 	 * 
 	 *
-	 * @return LaserData translated from ROS Message
+	 * @return LaserData translated from ROS Message 
 	 */
 	JdeRobotTypes::LaserData translate_laser_messages(const sensor_msgs::LaserScanConstPtr& scan);
+
+	/**
+	 * @brief translate ROS Image messages to JdeRobot Iaage
+	 *
+	 *
+	 * @param ROS Image Message
+	 * 
+	 *
+	 * @return Image translated from ROS Message 
+	 */
+	JdeRobotTypes::Image translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg);
 
 } /* NS */
 #endif //JDEROBOTCOMM_TRANSLATORSROS_H_
