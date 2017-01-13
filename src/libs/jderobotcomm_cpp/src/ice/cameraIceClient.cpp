@@ -33,7 +33,6 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
 	this->mImageFormat.empty();
-	this->newData=false;
 
 	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",30);
 	this->cycle=(float)(1/(float)fps)*1000000;
@@ -98,13 +97,12 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
-	_done=false;
 	this->pauseStatus=false;
 }
 
 
 CameraIceClient::~CameraIceClient() {
-	_done=true;
+	this->on=false;
 }
 
 
@@ -145,9 +143,12 @@ CameraIceClient::run(){
 
 	int iterIndex = 0;
 	int totalRefreshRate = 0;
+	int refrRate = 0;
+
+	JdeRobotTypes::Image img;
 
 	last=IceUtil::Time::now();
-	while (!(_done)){
+	while (this->on){
 
 		iterIndex ++;
 		if (pauseStatus){
@@ -158,10 +159,18 @@ CameraIceClient::run(){
 		try{
 
 			dataPtr = this->prx->getImageData(this->mImageFormat);
+
 			fmt = colorspaces::Image::Format::searchFormat(dataPtr->description->format);
 			if (!fmt)
 				throw "Format not supported";
 
+			// Putting image data
+			img.format = dataPtr->description->format;
+			img.width = dataPtr->description->width;
+			img.height = dataPtr->description->height;
+			img.timeStamp = dataPtr->timeStamp.seconds + dataPtr->timeStamp.useconds * 1e-6;
+
+			//creating image cv::mat
 			if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name ||
 					dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
 			{
@@ -191,15 +200,8 @@ CameraIceClient::run(){
 				{
 					colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(origin_buf[0]));
 					colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
-					this->controlMutex.lock();
-					cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->image.data);
-					this->image.format = dataPtr->description->format;
-					this->image.width = dataPtr->description->width;
-					this->image.height = dataPtr->description->height;
-					this->image.timeStamp = dataPtr->timeStamp.seconds + dataPtr->timeStamp.useconds * 1e-6;
-					this->newData=true;
-					this->semBlock.broadcast();
-					this->controlMutex.unlock();
+					cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(img.data);
+					
 					img_rgb888.release();
 				}
 
@@ -213,16 +215,8 @@ CameraIceClient::run(){
 			{
 				colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(dataPtr->pixelData[0]));
 				colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
-				this->controlMutex.lock();
-				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->image.data);
-				this->image.format = dataPtr->description->format;
-				this->image.width = dataPtr->description->width;
-				this->image.height = dataPtr->description->height;
-				this->image.timeStamp = dataPtr->timeStamp.seconds + dataPtr->timeStamp.useconds * 1e-6;
-				this->newData=true;
-
-				this->semBlock.broadcast();
-				this->controlMutex.unlock();
+				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(img.data);
+				
 				img_rgb888.release();
 			}
 			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name) {
@@ -253,15 +247,7 @@ CameraIceClient::run(){
 					colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(origin_buf[0]));
 					colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
 
-					this->controlMutex.lock();
-					cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->image.data);
-					this->image.format = dataPtr->description->format;
-					this->image.width = dataPtr->description->width;
-					this->image.height = dataPtr->description->height;
-					this->image.timeStamp = dataPtr->timeStamp.seconds + dataPtr->timeStamp.useconds * 1e-6;
-					this->newData=true;
-					this->semBlock.broadcast();
-					this->controlMutex.unlock();
+					cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(img.data);
 
 					img_gray8.release();
 				}
@@ -273,21 +259,16 @@ CameraIceClient::run(){
 			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name){
 				colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(dataPtr->pixelData[0]));
 				colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
-				this->controlMutex.lock();
-				cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->image.data);
-				this->image.format = dataPtr->description->format;
-				this->image.width = dataPtr->description->width;
-				this->image.height = dataPtr->description->height;
-				this->image.timeStamp = dataPtr->timeStamp.seconds + dataPtr->timeStamp.useconds * 1e-6;
-				this->newData=true;
-
-				this->semBlock.broadcast();
-				this->controlMutex.unlock();
+				
+				cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(img.data);
+				
 				img_gray8.release();
 			}
 			else{
 				//TODO raise exception
 			}
+
+			//end image cv::mat
 
 
 
@@ -316,7 +297,7 @@ CameraIceClient::run(){
 
 		int rate =(int)(1000000/(IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds()));
 		totalRefreshRate =  totalRefreshRate + rate;
-		this->refreshRate= totalRefreshRate / iterIndex;
+		refrRate = totalRefreshRate / iterIndex;
 		last=IceUtil::Time::now();
 
 		if (iterIndex == INT_MAX) 
@@ -325,30 +306,38 @@ CameraIceClient::run(){
 			jderobot::Logger::getInstance()->info( "*** Counter reset");
 		}
 
+		this->controlMutex.lock();
+		this->image = img;
+		this->refreshRate = refrRate;
+		this->controlMutex.unlock();
+
 	}
-	this->data.release();
+
+	this->image.data.release();
 }
 
 void CameraIceClient::stop_thread()
 {
-	_done = true;
+	this->on=false;
 }
 
 JdeRobotTypes::Image CameraIceClient::getImage(){
 	JdeRobotTypes::Image img;
-	bool blocked = false;
-	{
-		IceUtil::Mutex::Lock sync(this->controlMutex);
-		if (blocked){
-			if (!this->newData){
-				this->semBlock.wait(sync);
-			}
-			this->newData=false;
-		}
-		img = this->image;
-	}
-	return img;
 
+	this->controlMutex.lock();
+	img = this->image;
+	this->controlMutex.unlock();
+
+	return img;
 }
+
+int CameraIceClient::getRefreshRate(){
+	int rr;
+	this->controlMutex.lock();
+	rr = this->refreshRate;
+	this->controlMutex.unlock();
+
+	return rr;
+};
 
 } /* namespace jderobot */

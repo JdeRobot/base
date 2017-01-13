@@ -23,14 +23,14 @@
 #define JDEROBOTCOMM_CAMERAICECLIENT_H_
 
 #include <IceUtil/IceUtil.h>
-#include <iostream>
+//#include <iostream>
 #include <Ice/Ice.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <jderobot/camera.h>
 #include <cv.h>
-#include <sstream>
-#include <fstream>
-#include <climits>
+//#include <sstream>
+//#include <fstream>
+//#include <climits>
 #include <log/Logger.h>
 #include <jderobot/types/image.h>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
@@ -46,7 +46,9 @@ public:
 
 	//callbacks
 	virtual JdeRobotTypes::Image getImage();
-	virtual int getRefreshRate(){return refreshRate;};
+	virtual int getRefreshRate();
+
+
 	void pause();
 	void resume();
 	void reset();
@@ -58,15 +60,12 @@ public:
 
 
 private:
-	bool newData;
-	cv::Mat data;
- 	IceUtil::Cond semBlock;
 	jderobot::CameraPrx prx;
 	long long int cycle;
 
 	IceUtil::Mutex controlMutex;
 	std::string prefix;
-	bool _done;
+
 	int refreshRate;
 	bool pauseStatus;
 
