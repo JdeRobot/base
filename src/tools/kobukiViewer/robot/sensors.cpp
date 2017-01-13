@@ -28,62 +28,12 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 	}
 
 
-    ////////////////////////////// CAMERA1 /////////////////////////////2
+    ////////////////////////////// CAMERA1 /////////////////////////////
 
-	jderobot::ImageDataPtr data;
+	this->camera1 = JdeRobotComm::getCameraClient(ic, "kobukiViewer.Camera1");
 
-    Ice::ObjectPrx baseCamera1 = ic->propertyToProxy("kobukiViewer.Camera1.Proxy");
-    if (0==baseCamera1) {
-		camera1ON = false;
-		image1.create(400, 400, CV_8UC3);
-		std::cout << "Camera1 configuration not specified" <<std::endl;
-      //throw "Could not create proxy";
-	}else{
-    /*cast to CameraPrx*/
-	try {
-		camera1 = jderobot::CameraPrx::checkedCast(baseCamera1);
-		if (0==camera1)
-		  throw "Invalid proxy";
-
-		camera1ON = true;
-		std::cout << "Camera1 connected" << std::endl;
-
-		data = camera1->getImageData(camera1->getImageFormat().at(0));
-		image1.create(data->description->height, data->description->width, CV_8UC3);
-	}catch (Ice::ConnectionRefusedException& e){
-		camera1ON=false;
-		std::cout << "Camera1 inactive" << std::endl;
-
-		//create an empty image if no camera connected (avoid seg. fault)
-		image1.create(400, 400, CV_8UC3);
-	}}
-
-    ////////////////////////////// CAMERA2 /////////////////////////////2
-	Ice::ObjectPrx baseCamera2 = ic->propertyToProxy("kobukiViewer.Camera2.Proxy");
-    if (0==baseCamera2) {
-		camera2ON = false;
-		image2.create(400, 400, CV_8UC3);
-		std::cout << "Camera2 configuration not specified" <<std::endl;
-      //throw "Could not create proxy";
-	}else{
-    /*cast to CameraPrx*/
-	try {
-		camera2 = jderobot::CameraPrx::checkedCast(baseCamera2);
-		if (0==camera2)
-		  throw "Invalid proxy";
-
-		camera2ON = true;
-		std::cout << "Camera2 connected" << std::endl;
-
-		data = camera2->getImageData(camera2->getImageFormat().at(0));
-		image2.create(data->description->height, data->description->width, CV_8UC3);
-	}catch (Ice::ConnectionRefusedException& e){
-		camera2ON=false;
-		std::cout << "Camera2 inactive" << std::endl;
-
-		//create an empty image if no camera connected (avoid seg. fault)
-		image2.create(400, 400, CV_8UC3);
-	}}
+    ////////////////////////////// CAMERA2 /////////////////////////////
+	this->camera2 = JdeRobotComm::getCameraClient(ic, "kobukiViewer.Camera2");
 
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
@@ -91,21 +41,27 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
 	this->laserClient = JdeRobotComm::getLaserClient(ic, "kobukiViewer.Laser");
 }
 
-cv::Mat Sensors::getCamera1()
+JdeRobotTypes::Image Sensors::getImage1()
 {
-    mutex.lock();
-    cv::Mat result = image1.clone();
-    mutex.unlock();
-    return result;
+	JdeRobotTypes::Image img;
+
+	if (this->camera1){
+    	img = this->camera1->getImage();
+    }
+
+    return img;
 
 }
 
-cv::Mat Sensors::getCamera2()
+JdeRobotTypes::Image Sensors::getImage2()
 {
-    mutex.lock();
-    cv::Mat result = image2.clone();
-    mutex.unlock();
-    return result;
+    JdeRobotTypes::Image img;
+
+	if (this->camera2){
+    	img = this->camera2->getImage();
+    }
+
+    return img;
 }
 
 void Sensors::update()
@@ -143,23 +99,6 @@ void Sensors::update()
 
 	    mutex.unlock();
 	}
-
-	if (camera1ON) {
-	    jderobot::ImageDataPtr data = camera1->getImageData(camera1->getImageFormat().at(0));
-		mutex.lock();
-	    memcpy((unsigned char *) image1.data ,&(data->pixelData[0]), image1.cols*image1.rows * 3);
-		mutex.unlock();
-	}
-
-	if (camera2ON) {
-	    jderobot::ImageDataPtr data2 = camera2->getImageData(camera2->getImageFormat().at(0));
-		mutex.lock();
-	    memcpy((unsigned char *) image2.data ,&(data2->pixelData[0]), image2.cols*image2.rows * 3);
-	    mutex.unlock();
-	}
-	//if (this->laserClient->on){
-	//	this->laserClient->resume();
-	//}
 
     
 }
@@ -206,13 +145,12 @@ float Sensors::getRobotPoseTheta()
 
 JdeRobotTypes::LaserData Sensors::getLaserData()
 {
-	return this->laserClient->getLaserData();
-    /*JdeRobotTypes::LaserData laserDataAux;
-    mutex.lock();
-	if (laserON)
-	    laserDataAux = laserData;
-    mutex.unlock();
-    return laserDataAux;
-    */
+	JdeRobotTypes::LaserData laser;
+
+	if (this->laserClient){
+    	laser = this->laserClient->getLaserData();
+    }
+
+    return laser;
 }
 

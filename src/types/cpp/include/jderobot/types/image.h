@@ -26,11 +26,12 @@ namespace JdeRobotTypes {
 
 	class Image {
 	public:
+
 	    int height = 0; /**< %Image height [pixels] */
 	    int width = 0; /**< %Image width [pixels] */
 	    double timeStamp = 0; /**< %Time stamp [s] */
-	    std::string format; /**< %Image format string (RGB8, BGR,...) */
-	    cv::Mat  data; /**< The image data itself */
+	    std::string format = ""; /**< %Image format string (RGB8, BGR,...) */
+	    cv::Mat data = cv::Mat::zeros(3,3, CV_8UC3); /**< The image data itself */
 	};
 
 

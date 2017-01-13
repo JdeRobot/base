@@ -7,16 +7,17 @@
 #include <IceUtil/IceUtil.h>
 
 #include <jderobot/pose3d.h>
-#include <jderobot/camera.h>
-#include <jderobot/laser.h>
 
 #include <jderobot/types/laserData.h>
+#include <jderobot/types/image.h>
 
 //Opencv
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
 #include <jderobot/comm/laserClient.hpp>
+#include <jderobot/comm/cameraClient.hpp>
 
 class Sensors
 {
@@ -30,8 +31,8 @@ public:
     float getRobotPoseTheta();
     JdeRobotTypes::LaserData getLaserData();
 
-    cv::Mat getCamera2();
-    cv::Mat getCamera1();
+    JdeRobotTypes::Image getImage1();
+    JdeRobotTypes::Image getImage2();
 
 
 private:
@@ -43,14 +44,9 @@ private:
     // ICE INTERFACES
     jderobot::Pose3DPrx p3dprx;
     jderobot::Pose3DDataPtr pose3ddata;
-    jderobot::CameraPrx camera2;
-    jderobot::CameraPrx camera1;
 
     //ICE interfaces available for connection on demand
-    bool laserON;
     bool pose3dON;
-    bool camera1ON;
-    bool camera2ON;
 
     //ROBOT POSE
     double robotx;
@@ -58,13 +54,10 @@ private:
     double robottheta;
 
     //LASER DATA
-    bool boolLaser;
     JdeRobotComm::LaserClient* laserClient;
 
-    //CAMERADATA7
-
-    cv::Mat image1;
-    cv::Mat image2;
+    JdeRobotComm::CameraClient* camera1;
+    JdeRobotComm::CameraClient* camera2;
 
 
 };

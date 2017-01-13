@@ -34,17 +34,23 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	this->refreshRate=0;
 	this->mImageFormat.empty();
 
-	int fps=prop->getPropertyAsIntWithDefault(prefix+"Fps",30);
+	
+
+	int fps=prop->getPropertyAsIntWithDefault(prefix+".Fps",30);
 	this->cycle=(float)(1/(float)fps)*1000000;
 	try{
-		baseCamera = ic->propertyToProxy(prefix+"Proxy");
+		baseCamera = ic->propertyToProxy(prefix+".Proxy");
 		if (0==baseCamera){
+			this->on = false;
 			throw prefix + "Could not create proxy with Camera";
 		}
 		else {
 			this->prx= jderobot::CameraPrx::checkedCast(baseCamera);
-			if (0==this->prx)
+			this->on = true;
+			if (0==this->prx){
+				this->on = false;
 				throw "Invalid " + prefix + ".Proxy";
+			}
 		}
 	}catch (const Ice::Exception& ex) {
 		std::cerr << ex << std::endl;
@@ -53,8 +59,9 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		std::cerr << msg << std::endl;
 		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
 	}
+
 	//check if default format is defined
-	std::string definedFormat=prop->getProperty(prefix+"ImageFormat");
+	std::string definedFormat=prop->getPropertyWithDefault(prefix+".Format", "RGB8");
 
 	// Discover what format are supported.
 	jderobot::ImageFormat formats = this->prx->getImageFormat();
