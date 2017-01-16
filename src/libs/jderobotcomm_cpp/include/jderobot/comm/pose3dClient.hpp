@@ -42,7 +42,7 @@ namespace JdeRobotComm {
 	 *
 	 * @return null if propierties are wrong
 	 */
-	Pose3dClient* getLaserClient(Ice::CommunicatorPtr ic, std::string prefix);
+	Pose3dClient* getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix);
 
 
 } //NS

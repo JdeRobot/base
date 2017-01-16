@@ -1,15 +1,12 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
-#include <QMutex>
-
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
-#include <jderobot/pose3d.h>
-
 #include <jderobot/types/laserData.h>
 #include <jderobot/types/image.h>
+#include <jderobot/types/pose3d.h>
 
 //Opencv
 #include <opencv2/core/core.hpp>
@@ -18,17 +15,14 @@
 
 #include <jderobot/comm/laserClient.hpp>
 #include <jderobot/comm/cameraClient.hpp>
+#include <jderobot/comm/pose3dClient.hpp>
 
 class Sensors
 {
 public:
     Sensors(Ice::CommunicatorPtr ic);
 
-    void update();
-
-    float getRobotPoseX();
-    float getRobotPoseY();
-    float getRobotPoseTheta();
+    JdeRobotTypes::Pose3d getPose();
     JdeRobotTypes::LaserData getLaserData();
 
     JdeRobotTypes::Image getImage1();
@@ -37,27 +31,17 @@ public:
 
 private:
 
-    QMutex mutex;
-
     Ice::CommunicatorPtr ic;
-
-    // ICE INTERFACES
-    jderobot::Pose3DPrx p3dprx;
-    jderobot::Pose3DDataPtr pose3ddata;
-
-    //ICE interfaces available for connection on demand
-    bool pose3dON;
-
-    //ROBOT POSE
-    double robotx;
-    double roboty;
-    double robottheta;
 
     //LASER DATA
     JdeRobotComm::LaserClient* laserClient;
 
     JdeRobotComm::CameraClient* camera1;
     JdeRobotComm::CameraClient* camera2;
+
+    JdeRobotComm::Pose3dClient* poseClient;
+
+
 
 
 };
