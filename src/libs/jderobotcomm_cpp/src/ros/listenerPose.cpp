@@ -1,8 +1,8 @@
-#include <jderobot/comm/ros/listenerLaser.hpp>
+#include <jderobot/comm/ros/listenerPose.hpp>
 
 namespace JdeRobotComm {
 
-	ListenerLaser::ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic){
+	ListenerPose::ListenerPose(int argc, char** argv, std::string nodeName, std::string topic){
 		pthread_mutex_init(&mutex, NULL);
 		if ("" == topic){
 			this->on = false;
@@ -11,53 +11,52 @@ namespace JdeRobotComm {
 			this->on = true;
 			this->topic = topic;
 			this->nodeName = nodeName;
+			//boost::thread t3(&ListenerPose::listen, this);
 
 			const std::string name = std::string(this->nodeName);
 			int a = 0;
 			ros::init(a, nullptr, name);
 			ros::NodeHandle nh;
-			this->sub = nh.subscribe(this->topic, 1001, &ListenerLaser::lasercallback, this);
+			this->sub = nh.subscribe(this->topic, 1001, &ListenerPose::posecallback, this);
 			std::cout << "listen from "+ this->topic << std::endl;
 
 			this->spinner = new ros::AsyncSpinner(1);
-
-
+			
 		}
 	}
 
 
 
-	ListenerLaser::~ListenerLaser(){
+	ListenerPose::~ListenerPose(){
 		this->stop();
 	}
 
 	void 
-	ListenerLaser::start(){
+	ListenerPose::start(){
 		this->spinner->start();
-
 	}
 
 	void 
-	ListenerLaser::stop(){
+	ListenerPose::stop(){
 		this->spinner->stop();
 		ros::shutdown();
 	}
 
 	void 
-	ListenerLaser::lasercallback(const sensor_msgs::LaserScanConstPtr& laser_msg){
+	ListenerPose::posecallback(const nav_msgs::OdometryConstPtr& odom_msg){
 		pthread_mutex_lock(&mutex);
-		this->laserData = JdeRobotComm::translate_laser_messages(laser_msg);
+		this->pose = JdeRobotComm::translate_odometry_messages(odom_msg);
 		pthread_mutex_unlock(&mutex);
 
 	}
 
-	JdeRobotTypes::LaserData  
-	ListenerLaser::getLaserData(){
-		JdeRobotTypes::LaserData ld;
+	JdeRobotTypes::Pose3d  
+	ListenerPose::getPose(){
+		JdeRobotTypes::Pose3d pose3d;
 		pthread_mutex_lock(&mutex);
-		ld = this->laserData;
+		pose3d = this->pose;
 		pthread_mutex_unlock(&mutex);
-		return ld;
+		return pose3d;
 	}
 
 

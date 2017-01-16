@@ -51,7 +51,7 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
 		 	ListenerCamera* lc;
 		 	lc = new ListenerCamera(0, nullptr, nodeName, topic);
-		 	//lc->listen();
+		 	lc->start();
 		 	client = (JdeRobotComm::CameraClient*) lc;
 
 		 	break;

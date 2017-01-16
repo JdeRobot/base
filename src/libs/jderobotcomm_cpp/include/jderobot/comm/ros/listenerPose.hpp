@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2016 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,27 +17,27 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOMM_LISTENERLASER_H_
-#define JDEROBOTCOMM_LISTENERLASER_H_
+#ifndef JDEROBOTCOMM_LISTENERPOSE3D_H_
+#define JDEROBOTCOMM_LISTENERPOSE3D_H_
 
 
 #include <ros/ros.h>
-#include <sensor_msgs/LaserScan.h>
+#include <nav_msgs/Odometry.h>
 #include <boost/thread/thread.hpp>
-#include <jderobot/types/laserData.h>
-#include <jderobot/comm/interfaces/laserClient.hpp>
+#include <jderobot/types/pose3d.h>
+#include <jderobot/comm/interfaces/pose3dClient.hpp>
 #include <jderobot/comm/ros/translators.hpp>
 
 namespace JdeRobotComm {
-	class ListenerLaser: public JdeRobotComm::LaserClient {
+	class ListenerPose: public JdeRobotComm::Pose3dClient {
 		
 	public:
-		ListenerLaser(int argc, char** argv, std::string nodeName, std::string topic);
-		~ListenerLaser();
+		ListenerPose(int argc, char** argv, std::string nodeName, std::string topic);
+		~ListenerPose();
 
 		void start();
 		void stop();
-		virtual JdeRobotTypes::LaserData  getLaserData();
+		virtual JdeRobotTypes::Pose3d  getPose();
 		
 
 	private:
@@ -48,7 +48,7 @@ namespace JdeRobotComm {
 
 		ros::AsyncSpinner* spinner;
 		
-		void lasercallback (const sensor_msgs::LaserScanConstPtr& laser_msg);
+		void posecallback (const nav_msgs::OdometryConstPtr& odom_msg);
 
 		
 
@@ -57,4 +57,4 @@ namespace JdeRobotComm {
 	};//class
 
 } //NS
-#endif /* JDEROBOTCOMM_LISTENERLASER_H_ */
+#endif /* JDEROBOTCOMM_LISTENERPOSE3D_H_ */

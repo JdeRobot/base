@@ -37,7 +37,7 @@ namespace JdeRobotComm {
 		ListenerCamera(int argc, char** argv, std::string nodeName, std::string topic);
 		~ListenerCamera();
 
-		
+		void start();
 		void stop();
 		virtual JdeRobotTypes::Image getImage();
 		virtual int getRefreshRate();
@@ -51,8 +51,10 @@ namespace JdeRobotComm {
 
 		int cont = 0; //used to count Frames per seconds
 		time_t timer; // used to save time for FPS
+
+		ros::AsyncSpinner* spinner;
 		
-		void listen();
+		
 		void imagecallback (const sensor_msgs::ImageConstPtr& image_msg);
 
 		

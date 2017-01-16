@@ -27,15 +27,14 @@ getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix){
 		case 2:
 		{
 		 	std::cout << "Receiving Pose3D from ROS messages" << std::endl;
-		 	/*std::string nodeName;
-		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","LaserNode");
+		 	std::string nodeName;
+		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","PoseNode");
 		 	std::string topic;
 		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
 		 	ListenerPose* lc;
 		 	lc = new ListenerPose(0, nullptr, nodeName, topic);
-		 	//lc->listen();
+		 	lc->start();
 		 	client = (JdeRobotComm::Pose3dClient*) lc;
-*/
 		 	break;
 		}
 		default:

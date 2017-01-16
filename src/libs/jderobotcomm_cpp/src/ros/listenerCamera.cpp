@@ -11,7 +11,17 @@ namespace JdeRobotComm {
 			this->on = true;
 			this->topic = topic;
 			this->nodeName = nodeName;
-			boost::thread t3(&ListenerCamera::listen, this);
+
+			const std::string name = std::string(this->nodeName);
+
+			time(&timer);
+			int a = 0;
+			ros::init(a, nullptr, name);
+			ros::NodeHandle nh;
+			this->sub = nh.subscribe(this->topic, 1001, &ListenerCamera::imagecallback, this);
+			std::cout << "listen from "+ this->topic << std::endl;
+
+			this->spinner = new ros::AsyncSpinner(1);
 		}
 	}
 
@@ -22,22 +32,13 @@ namespace JdeRobotComm {
 	}
 
 	void 
-	ListenerCamera::listen(){
-		const std::string name = std::string(this->nodeName);
-		if (this->on){
-			time(&timer);
-			int a = 0;
-			ros::init(a, nullptr, name);
-			ros::NodeHandle nh;
-			this->sub = nh.subscribe(this->topic, 1001, &ListenerCamera::imagecallback, this);
-			std::cout << "listen from "+ this->topic << std::endl;
-			ros::spin();
-		}
-
+	ListenerCamera::start(){
+		this->spinner->start();
 	}
 
 	void 
 	ListenerCamera::stop(){
+		this->spinner->stop();
 		ros::shutdown();
 	}
 

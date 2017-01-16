@@ -33,7 +33,7 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
 		 	ListenerLaser* lc;
 		 	lc = new ListenerLaser(0, nullptr, nodeName, topic);
-		 	//lc->listen();
+		 	lc->start();
 		 	client = (JdeRobotComm::LaserClient*) lc;
 
 		 	break;

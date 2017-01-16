@@ -11,6 +11,7 @@ if(roscpp_FOUND)
       std_msgs
       cv_bridge
       image_transport
+      nav_msgs
     )
 
     catkin_package(
@@ -44,6 +45,7 @@ if(roscpp_FOUND)
         include/jderobot/comm/pose3dClient.hpp
         include/jderobot/comm/interfaces/pose3dClient.hpp
         include/jderobot/comm/ice/pose3dIceClient.hpp
+        include/jderobot/comm/ros/listenerPose.hpp
     )
 
     set(SOURCES
@@ -56,7 +58,7 @@ if(roscpp_FOUND)
         src/ros/listenerCamera.cpp
         src/pose3dClient.cpp
         src/ice/pose3dIceClient.cpp
-
+        src/ros/listenerPose.cpp
     )
 
     ## Adding shared library for common usage

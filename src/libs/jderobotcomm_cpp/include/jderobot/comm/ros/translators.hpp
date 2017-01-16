@@ -26,6 +26,10 @@
 #include <jderobot/types/laserData.h>
 #include <sensor_msgs/LaserScan.h>
 
+#include <jderobot/types/pose3d.h>
+#include <vector>
+#include <nav_msgs/Odometry.h>
+
 
 #include <jderobot/types/image.h>
 #include "image_transport/image_transport.h"
@@ -55,6 +59,44 @@ namespace JdeRobotComm {
 	 * @return Image translated from ROS Message 
 	 */
 	JdeRobotTypes::Image translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg);
+
+	/**
+	 * @brief translate ROS Odometry messages to JdeRobot Pose3D
+	 *
+	 *
+	 * @param ROS Odometry Message
+	 * 
+	 *
+	 * @return Pose3D translated from ROS Message 
+	 */
+	JdeRobotTypes::Pose3d translate_odometry_messages(const nav_msgs::OdometryConstPtr& odom_msg);
+
+	/**
+	 * @brief Extracts Yaw angle from Quaternion
+	 *
+	 * @param Quaternion
+	 * 
+	 * @return Yaw Angle 
+	 */
+	float quat2Yaw(std::vector <float> q);
+
+	/**
+	 * @brief Extracts Pitch angle from Quaternion
+	 *
+	 * @param Quaternion
+	 * 
+	 * @return Pitch Angle 
+	 */
+	float quat2Pitch(std::vector <float> q);
+
+	/**
+	 * @brief Extracts Roll angle from Quaternion
+	 *
+	 * @param Quaternion
+	 * 
+	 * @return Roll Angle 
+	 */
+	float quat2Roll(std::vector <float> q);
 
 } /* NS */
 #endif //JDEROBOTCOMM_TRANSLATORSROS_H_
