@@ -83,7 +83,7 @@ void Pose3dIceClient::resume(){
 }
 
 void Pose3dIceClient::run(){
-	JdeRobotTypes::Pose3d = pose3d;
+	JdeRobotTypes::Pose3d pose3d;
 
 	IceUtil::Time last;
 
@@ -97,13 +97,13 @@ void Pose3dIceClient::run(){
 		try{
 			jderobot::Pose3DDataPtr pose3ddata = this->prx->getPose3DData();
 
-			pose3d.x = pose3ddata.x;
-			pose3d.y = pose3ddata.y;
-			pose3d.z = pose3ddata.z;
-			pose3d.q[0] = pose3ddata.q0;
-			pose3d.q[1] = pose3ddata.q1;
-			pose3d.q[2] = pose3ddata.q2;
-			pose3d.q[3] = pose3ddata.q3;
+			pose3d.x = pose3ddata->x;
+			pose3d.y = pose3ddata->y;
+			pose3d.z = pose3ddata->z;
+			pose3d.q[0] = pose3ddata->q0;
+			pose3d.q[1] = pose3ddata->q1;
+			pose3d.q[2] = pose3ddata->q2;
+			pose3d.q[3] = pose3ddata->q3;
 			pose3d.yaw = this->quat2Yaw(pose3d.q);
 			pose3d.pitch = this->quat2Pitch(pose3d.q);
 			pose3d.roll = this->quat2Roll(pose3d.q);
@@ -128,16 +128,16 @@ void Pose3dIceClient::run(){
 	}
 }
 
-JdeRobotTypes::LaserData  Pose3dIceClient::getLaserData(){
-	JdeRobotTypes::LaserData laser;
+JdeRobotTypes::Pose3d  Pose3dIceClient::getPose(){
+	JdeRobotTypes::Pose3d data;
 	this->controlMutex.lock();
-	laser = this->laserData;
+	data = this->pose;
 	this->controlMutex.unlock();
-	return laser;
+	return data;
 }
 
 
-float Pose3dIceClient::quat2Yaw(vector <float> q){
+float Pose3dIceClient::quat2Yaw(std::vector <float> q){
     float rotateZa0=2.0*(q[1]*q[2] + q[0]*q[3]);
     float rotateZa1=q[0]*q[0] + q[1]*q[1] - q[2]*q[2] - q[3]*q[3];
     float rotateZ=0.0;
@@ -147,7 +147,7 @@ float Pose3dIceClient::quat2Yaw(vector <float> q){
     return rotateZ;
 }
 
-float Pose3dIceClient::quatPitch(vector <float> q){
+float Pose3dIceClient::quat2Pitch(std::vector <float> q){
     float rotateYa0=-2.0*(q[1]*q[3] - q[0]*q[2]);
     float rotateY=0.0;
     if(rotateYa0 >= 1.0){
@@ -163,7 +163,7 @@ float Pose3dIceClient::quatPitch(vector <float> q){
     return rotateY;
 }
 
-float Pose3dIceClient::quat2Roll (vector <float> q){
+float Pose3dIceClient::quat2Roll (std::vector <float> q){
     float rotateXa0=2.0*(q[2]*q[3] + q[0]*q[1]);
     float rotateXa1=q[0]*q[0] - q[1]*q[1] - q[2]*q[2] + q[3]*q[3];
     float rotateX=0.0;

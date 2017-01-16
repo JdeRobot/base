@@ -26,6 +26,7 @@
 #include <jderobot/pose3d.h>
 #define _USE_MATH_DEFINES
 #include <math.h> 
+#include <vector>
 #include <jderobot/types/pose3d.h>
 #include <jderobot/comm/interfaces/pose3dClient.hpp>
 
@@ -38,7 +39,7 @@ public:
 	virtual ~Pose3dIceClient();
 	virtual void run();
 
-	virtual JdeRobotTypes::Pose3d  getPose3d();
+	virtual JdeRobotTypes::Pose3d  getPose();
 	void pause();
 	void resume();
 	bool getPause(){return pauseStatus;};
@@ -54,11 +55,11 @@ private:
 
 	IceUtil::Cond sem;
 
-	float quat2Yaw(vector <float> q);
+	float quat2Yaw(std::vector <float> q);
 
-	float quat2Pitch(vector <float> q);
+	float quat2Pitch(std::vector <float> q);
 
-	float quat2Roll(vector <float> q);
+	float quat2Roll(std::vector <float> q);
 
 };
 

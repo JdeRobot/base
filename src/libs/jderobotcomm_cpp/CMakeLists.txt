@@ -41,6 +41,9 @@ if(roscpp_FOUND)
         include/jderobot/comm/interfaces/cameraClient.hpp
         include/jderobot/comm/ice/cameraIceClient.hpp
         include/jderobot/comm/ros/listenerCamera.hpp
+        include/jderobot/comm/pose3dClient.hpp
+        include/jderobot/comm/interfaces/pose3dClient.hpp
+        include/jderobot/comm/ice/pose3dIceClient.hpp
     )
 
     set(SOURCES
@@ -51,6 +54,8 @@ if(roscpp_FOUND)
         src/cameraClient.cpp
         src/ice/cameraIceClient.cpp
         src/ros/listenerCamera.cpp
+        src/pose3dClient.cpp
+        src/ice/pose3dIceClient.cpp
 
     )
 

@@ -29,10 +29,11 @@ namespace JdeRobotTypes {
 		float x = 0; /**< %X coord [meters] */
 	    float y = 0; /**< %Y coord [meters] */
 	    float z = 0; /**< %Z coord [meters] */
+	    float h = 0; /**< %H param */
 	    float yaw = 0; /**< %Yaw angle[rads] */
 	    float pitch = 0; /**< %Pitch angle[rads] */
 	    float roll = 0; /**< %Roll angle[rads] */
-	    std::vector<float> q (4,0); /**< %Quaternion */
+	    std::vector<float> q = {0,0,0,0}; /**< %Quaternion */
 	    double timeStamp = 0; /**< %Time stamp [s] */
 	};
 
