@@ -371,8 +371,8 @@ foreach (l ${ALL_LIBS} )
 endforeach()
 
 
-configure_file(cmake/JdeRobotInstallConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake" @ONLY)
-install (SCRIPT "${CMAKE_SOURCE_DIR}/JdeRobotInstallConfig.cmake")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/JdeRobotInstallConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake" @ONLY)
+install (SCRIPT "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake")
 SET(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_PREFIX}/share/jderobot)
 install(FILES
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake"
