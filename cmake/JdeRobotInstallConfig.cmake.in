@@ -4,6 +4,7 @@ set(PROJECT_BINARY_DIR "@PROJECT_BINARY_DIR@")
 set(CPACK_DEBIAN_PACKAGE_VERSION "@CPACK_DEBIAN_PACKAGE_VERSION@")
 set(CMAKE_FIND_LIBRARY_PREFIXES "@CMAKE_FIND_LIBRARY_PREFIXES@")
 set(CMAKE_FIND_LIBRARY_SUFFIXES "@CMAKE_FIND_LIBRARY_SUFFIXES@")
+set(JDEROBOT_SOURCE_DIR "@CMAKE_CURRENT_SOURCE_DIR@")
 set(CONF_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include/jderobot")
 
 foreach (l ${JdeRobot_LIBS_NAMES} )
@@ -14,8 +15,8 @@ endforeach()
 
 SET(JdeRobot_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
 #cmake config
-configure_file(cmake/JdeRobotConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotConfig.cmake" @ONLY)
+configure_file(${JDEROBOT_SOURCE_DIR}/cmake/JdeRobotConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotConfig.cmake" @ONLY)
 # ... for the install tree
-configure_file(cmake/JdeRobotConfig.cmake.in "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake" @ONLY)
+configure_file(${JDEROBOT_SOURCE_DIR}/cmake/JdeRobotConfig.cmake.in "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake" @ONLY)
 # ... for both
-configure_file(cmake/JdeRobotConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotConfigVersion.cmake" @ONLY)
+configure_file(${JDEROBOT_SOURCE_DIR}/cmake/JdeRobotConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotConfigVersion.cmake" @ONLY)
