@@ -17,7 +17,7 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
     SET(RESOURCES resources.qrc)
 
 	SET(SOURCE main.cpp depuratewindow.cpp 
-				    robot/actuators.cpp robot/robot.cpp robot/sensors.cpp robot/threadupdaterobot.cpp 
+				    robot/actuators.cpp robot/robot.cpp robot/sensors.cpp  
 			        pioneer/pioneer.c pioneer/pioneeropengl.c
 			        gui/gui.cpp gui/stategui.cpp gui/threadupdategui.cpp
 			        gui/widget/cameraswidget.cpp gui/widget/controlvw.cpp gui/widget/glwidget.cpp gui/widget/laserwidget.cpp

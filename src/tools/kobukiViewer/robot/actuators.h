@@ -6,16 +6,14 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
-#include <jderobot/motors.h>
+#include <jderobot/types/cmdvel.h>
+#include <jderobot/comm/motorsClient.hpp>
 
 class Actuators
 {
 public:
     Actuators(Ice::CommunicatorPtr ic);
-    void update();
-    void setActuators();
-
-    // GETS
+    
     float getMotorV();
     float getMotorW();
     float getMotorL();
@@ -33,18 +31,7 @@ private:
     Ice::CommunicatorPtr ic;
 
     // ICE INTERFACES
-    jderobot::MotorsPrx mprx;
- 
-    //ICE interfaces available for connection on demand
-    bool motorsON ;
-
-    float motorVin;
-    float motorWin;
-    float motorLin;
-
-    float motorVout;
-    float motorWout;
-    float motorLout;
+    JdeRobotComm::MotorsClient* motorsClient;
 
 };
 #endif // ACTUATORS_H

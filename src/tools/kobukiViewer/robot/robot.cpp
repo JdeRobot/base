@@ -21,7 +21,7 @@ Actuators* Robot::getActuators()
 
 void Robot::update()
 {
-    this->actuators->update();
+    return;
 }
 
 
