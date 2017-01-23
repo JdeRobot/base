@@ -46,6 +46,9 @@ if(roscpp_FOUND)
         include/jderobot/comm/interfaces/pose3dClient.hpp
         include/jderobot/comm/ice/pose3dIceClient.hpp
         include/jderobot/comm/ros/listenerPose.hpp
+        include/jderobot/comm/motorsClient.hpp
+        include/jderobot/comm/interfaces/motorsClient.hpp
+        include/jderobot/comm/ice/motorsIceClient.hpp
     )
 
     set(SOURCES
@@ -59,6 +62,8 @@ if(roscpp_FOUND)
         src/pose3dClient.cpp
         src/ice/pose3dIceClient.cpp
         src/ros/listenerPose.cpp
+        src/motorsClient.cpp
+        src/ice/motorsIceClient.cpp
     )
 
     ## Adding shared library for common usage
