@@ -1,4 +1,4 @@
-find_package(VTK REQUIRED)
+find_package(VTK)
 
 if (VTK_FOUND)
 	message("***VTK FOUND ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
