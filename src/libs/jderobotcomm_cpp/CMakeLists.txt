@@ -12,6 +12,7 @@ if(roscpp_FOUND)
       cv_bridge
       image_transport
       nav_msgs
+      geometry_msgs
     )
 
     catkin_package(
@@ -49,6 +50,7 @@ if(roscpp_FOUND)
         include/jderobot/comm/motorsClient.hpp
         include/jderobot/comm/interfaces/motorsClient.hpp
         include/jderobot/comm/ice/motorsIceClient.hpp
+        include/jderobot/comm/ros/publisherMotors.hpp
     )
 
     set(SOURCES
@@ -64,6 +66,7 @@ if(roscpp_FOUND)
         src/ros/listenerPose.cpp
         src/motorsClient.cpp
         src/ice/motorsIceClient.cpp
+        src/ros/publisherMotors.cpp
     )
 
     ## Adding shared library for common usage

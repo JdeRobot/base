@@ -54,6 +54,21 @@ namespace JdeRobotComm {
 		return img;
 	}
 
+	geometry_msgs::Twist 
+	translate_twist_messages(JdeRobotTypes::CMDVel cmdvel ){
+		geometry_msgs::Twist vel;
+		vel.linear.x = cmdvel.vx;
+		vel.linear.y = cmdvel.vy;
+		vel.linear.z = cmdvel.vz;
+
+		vel.angular.x = cmdvel.ax;
+		vel.angular.y = cmdvel.ay;
+		vel.angular.z = cmdvel.az;
+
+		return vel;
+
+	}
+
 
 	JdeRobotTypes::Pose3d 
 	translate_odometry_messages(const nav_msgs::OdometryConstPtr& odom_msg)

@@ -26,6 +26,7 @@
 #include <jderobot/types/laserData.h>
 #include <sensor_msgs/LaserScan.h>
 
+
 #include <jderobot/types/pose3d.h>
 #include <vector>
 #include <nav_msgs/Odometry.h>
@@ -35,6 +36,11 @@
 #include "image_transport/image_transport.h"
 #include "cv_bridge/cv_bridge.h"
 #include "sensor_msgs/image_encodings.h"
+
+
+#include <jderobot/types/cmdvel.h>
+#include <geometry_msgs/Twist.h>
+
 
 namespace JdeRobotComm {
 
@@ -59,6 +65,17 @@ namespace JdeRobotComm {
 	 * @return Image translated from ROS Message 
 	 */
 	JdeRobotTypes::Image translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg);
+
+	/**
+	 * @brief translate Jderobot CMDVel to ROS Twist messages
+	 *
+	 *
+	 * @param Jderobot CMDVel type
+	 * 
+	 *
+	 * @return Twist message translated from JdeRobot CMDVel 
+	 */
+	geometry_msgs::Twist translate_twist_messages(JdeRobotTypes::CMDVel cmdvel );
 
 	/**
 	 * @brief translate ROS Odometry messages to JdeRobot Pose3D

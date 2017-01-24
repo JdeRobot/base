@@ -26,15 +26,14 @@ getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
 		case 2:
 		{
 		 	std::cout << "Sending Velocities by ROS messages" << std::endl;
-		 	/*std::string nodeName;
+		 	std::string nodeName;
 		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","MotorsNode");
 		 	std::string topic;
 		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
-		 	ListenerLaser* lc;
-		 	lc = new ListenerLaser(0, nullptr, nodeName, topic);
-		 	lc->start();
-		 	client = (JdeRobotComm::MotorsClient*) lc;
-*/
+		 	PublisherMotors* pm;
+		 	pm = new PublisherMotors(0, nullptr, nodeName, topic);
+		 	pm->start();
+		 	client = (JdeRobotComm::MotorsClient*) pm;
 		 	break;
 		}
 		default:
