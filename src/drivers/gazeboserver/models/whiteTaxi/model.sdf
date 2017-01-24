@@ -19,7 +19,6 @@
         </mesh>
       </geometry>
     </visual>
-    </sensor>
   </link>
     <link name="front_right_wheel">
         <pose>1.1 -1.70000 0.448000 0 1.5707 0</pose>

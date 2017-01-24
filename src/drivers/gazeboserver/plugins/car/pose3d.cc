@@ -89,8 +89,8 @@ namespace gazebo {
 
             //std::cout << "theta: " << pose->robotPose3D.theta << std::endl;
 
-            Pose3DData->x = pose->robotPose3D.x * 1000;
-            Pose3DData->y = pose->robotPose3D.y * 1000;
+            Pose3DData->x = pose->robotPose3D.x;
+            Pose3DData->y = pose->robotPose3D.y;
             Pose3DData->z = 0.0;
             Pose3DData->h = 1.0;
 

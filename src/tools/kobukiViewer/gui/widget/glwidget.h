@@ -79,7 +79,7 @@ public:
 
 private:
 
-    std::vector<float> laserData;
+    LaserD laserData;
 
     StateGUI *stategui;
     Robot* robot;

@@ -35,6 +35,17 @@
 
 namespace recorder{
 
+class LaserD
+{
+public:
+    std::vector<int> values;
+    float minAngle = 0;
+    float maxAngle = 0;
+    int minRange = 0;
+    int maxRange = 0;
+};
+
+
 
 class poolWriteLasers {
 public:
@@ -48,7 +59,7 @@ public:
 
 private:
 	pthread_mutex_t mutex;
-	std::vector<std::vector <int> > lasers;
+	std::vector<LaserD > lasers;
 	std::vector<long long int> its;
 	int poolSize;
 	int laserID;

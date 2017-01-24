@@ -13,7 +13,7 @@ if (${QT5_COMPILE})
     )
 
 
-    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h gui/widget/glwidget.h )
+    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h gui/widget/glwidget.h robot/types.h)
     SET(RESOURCES resources.qrc)
 
 	SET(SOURCE main.cpp depuratewindow.cpp 

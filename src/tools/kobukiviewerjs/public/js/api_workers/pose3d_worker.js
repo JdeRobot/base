@@ -4,6 +4,10 @@ var global=self;
 
 // importing required files
 importScripts('../Ice.min.js');
+importScripts('../jderobot/datetime.js');
+importScripts('../jderobot/exceptions.js');
+importScripts('../jderobot/containers.js');
+importScripts('../jderobot/common.js');
 importScripts('../jderobot/pose3d.js');
 
 

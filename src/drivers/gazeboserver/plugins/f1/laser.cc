@@ -19,6 +19,17 @@
 
 #include <jderobot/laser.h>
 
+
+class LaserD
+{
+public:
+    std::vector<float> values;
+    double minAngle = 0;
+    double maxAngle = 3.1416;
+    double minRange = 0;
+    double maxRange = 10; //10 m
+};
+
 void *mainLaser(void* v);
 
 namespace gazebo
@@ -44,6 +55,7 @@ namespace gazebo
 		// Update the controller
 		public: void OnNewLaserScans()
 		{
+
 			if(count == 0){
 				count++;
 
@@ -63,17 +75,24 @@ namespace gazebo
 		
 			physics::MultiRayShapePtr laser = this->parentSensor->LaserShape();
 
-			pthread_mutex_lock (&mutex); 
+			LaserD data;
+			std::vector<float> laserValues(laser->GetSampleCount ());
+
 			laserValues.resize(laser->GetSampleCount ());
 			for (int i = 0; i< laser->GetSampleCount (); i++){
 				laserValues[i] = laser->GetRange(i);
 			}
+
+			data.values = laserValues;
+
+			pthread_mutex_lock (&mutex); 
+			laserData = data;
 			pthread_mutex_unlock (&mutex); 
 		}
 		sensors::RaySensorPtr parentSensor;
 		int count;
 		std::string nameLaser;
-		std::vector<float> laserValues;
+		LaserD laserData;
 		pthread_mutex_t mutex;
   	};
 
@@ -93,12 +112,17 @@ class LaserI: virtual public jderobot::Laser {
 		virtual jderobot::LaserDataPtr getLaserData(const Ice::Current&) {
 		    jderobot::LaserDataPtr laserData (new jderobot::LaserData());
 			pthread_mutex_lock (&laser->mutex); 
-			laserData->numLaser = laser->laserValues.size();
+			laserData->numLaser = laser->laserData.values.size();
 			laserData->distanceData.resize(sizeof(int)*laserData->numLaser);
+
+			laserData->minAngle = laser->laserData.minAngle;
+    		laserData->maxAngle = laser->laserData.maxAngle;
+    		laserData->minRange = laser->laserData.minRange;
+    		laserData->maxRange = laser->laserData.maxRange*1000;
 			
 			//Update laser values
 			for(int i = 0 ; i < laserData->numLaser; i++){
-			   laserData->distanceData[i] = laser->laserValues[i]*1000;
+			   laserData->distanceData[i] = laser->laserData.values[i]*1000;
 			}
 			pthread_mutex_unlock (&laser->mutex); 
 			return laserData;

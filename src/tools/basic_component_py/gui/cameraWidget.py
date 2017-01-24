@@ -18,6 +18,7 @@
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QImage, QPixmap
 
 
 class CameraWidget(QtWidgets.QWidget):
@@ -42,10 +43,10 @@ class CameraWidget(QtWidgets.QWidget):
 
         img = self.winParent.getCamera().getImage()
         if img is not None:
-            image = QtWidgets.QImage(img.data, img.shape[1], img.shape[0],
-                                 img.shape[1] * img.shape[2], QtWidgets.QImage.Format_RGB888)
+            image = QImage(img.data, img.shape[1], img.shape[0],
+                                 img.shape[1] * img.shape[2], QImage.Format_RGB888)
 
             size = QtCore.QSize(img.shape[1], img.shape[0])
             self.resize(size)
             self.imgLabel.resize(size)
-            self.imgLabel.setPixmap(QtWidgets.QPixmap.fromImage(image))
+            self.imgLabel.setPixmap(QPixmap.fromImage(image))
