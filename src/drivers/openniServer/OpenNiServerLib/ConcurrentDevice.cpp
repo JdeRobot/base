@@ -170,7 +170,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
 
     if ((*ppSensorInfo)->getSupportedVideoModes().getSize()==1){
         jderobot::Logger::getInstance()->warning("Only one mode is avialable image will be post processed is the mode does not match with the device output");
-        this->videoModel= VideoModel(this->mode);
+        this->videoMode= VideoMode(this->mode);
     }
     else{
         nRetVal = stream.setVideoMode((*ppSensorInfo)->getSupportedVideoModes()[this->mode]);
@@ -296,17 +296,15 @@ cv::Mat ConcurrentDevice::getDepthImage() {
     }
     this->mutex.unlock();
     if (validFrame) {
-        std::vector<int> distances;
-        distances.resize(g_depthStream.getVideoMode().getResolutionX() * g_depthStream.getVideoMode().getResolutionY());
 
         cv::Mat depthImage = OpenCVConverter::convertDepthToCVMat((const openni::DepthPixel *) depthPixels,
                                                                   g_depthFrame.getStrideInBytes(),
                                                                   cv::Size(g_depthFrame.getWidth(),
-                                                                           g_depthFrame.getHeight()), distances);
+                                                                           g_depthFrame.getHeight()));
         free(depthPixels);
-        if (this->videoModel.active){
+        if (this->videoMode.active){
             cv::Mat resizedImage;
-            cv::resize(depthImage,resizedImage,cv::Size(this->videoModel.witdh,this->videoModel.heigth),0,0,cv::INTER_NEAREST);
+            cv::resize(depthImage,resizedImage,cv::Size(this->videoMode.witdh,this->videoMode.heigth),0,0,cv::INTER_NEAREST);
             return resizedImage;
         }
         else {
@@ -336,9 +334,9 @@ cv::Mat ConcurrentDevice::getRGBImage() {
                                                                 cv::Size(g_colorFrame.getWidth(),
                                                                          g_colorFrame.getHeight()));
         free(rgbPixels);
-        if (this->videoModel.active){
+        if (this->videoMode.active){
             cv::Mat resizedImage;
-            cv::resize(colorImage,resizedImage,cv::Size(this->videoModel.witdh,this->videoModel.heigth));
+            cv::resize(colorImage,resizedImage,cv::Size(this->videoMode.witdh,this->videoMode.heigth));
             return resizedImage;
         }
         else {
@@ -347,6 +345,33 @@ cv::Mat ConcurrentDevice::getRGBImage() {
     }
     else{
         return cv::Mat();
+    }
+}
+
+
+void ConcurrentDevice::getDistances(std::vector<int> &distances) {
+    openni::DepthPixel *depthPixels;
+    this->mutex.lock();
+    bool validFrame=false;
+    if (g_depthFrame.isValid())
+    {
+        validFrame=true;
+        depthPixels = new openni::DepthPixel[g_depthFrame.getHeight() * g_depthFrame.getWidth()];
+        memcpy(depthPixels, g_depthFrame.getData(),
+               g_depthFrame.getHeight() * g_depthFrame.getWidth() * sizeof(openni::DepthPixel));
+    }
+    this->mutex.unlock();
+    if (validFrame) {
+        distances.resize(g_depthStream.getVideoMode().getResolutionX() * g_depthStream.getVideoMode().getResolutionY());
+
+        OpenCVConverter::convertDepthToDistances((const openni::DepthPixel *) depthPixels,
+                                                                  g_depthFrame.getStrideInBytes(),
+                                                                  cv::Size(g_depthFrame.getWidth(),
+                                                                           g_depthFrame.getHeight()),distances);
+        free(depthPixels);
+    }
+    else{
+        distances.clear();
     }
 }
 
@@ -366,3 +391,12 @@ void ConcurrentDevice::changeRegistration(int value)
 void ConcurrentDevice::stop() {
     this->componentAlive=false;
 }
+
+DeviceConfig ConcurrentDevice::getConfig() {
+    return this->config;
+}
+
+VideoMode ConcurrentDevice::getVideoMode() {
+    return this->videoMode;
+}
+

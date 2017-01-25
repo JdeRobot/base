@@ -1,9 +1,9 @@
 //
-// Created by frivas on 24/01/17.
+// Created by frivas on 25/01/17.
 //
 
-#ifndef JDEROBOT_RGBCAMERA_DEVICE_H
-#define JDEROBOT_RGBCAMERA_DEVICE_H
+#ifndef JDEROBOT_DEPTHCAMERA_H
+#define JDEROBOT_DEPTHCAMERA_H
 
 #include <jderobotutil/CameraHandler.h>
 #include <jderobotutil/CameraTask.h>
@@ -12,12 +12,12 @@
 #include "ConcurrentDevice.h"
 
 namespace openniServer {
-    class RGBCamera:  public jderobot::CameraHandler {
+    class DepthCamera:  public jderobot::CameraHandler {
      public:
-        RGBCamera(std::string propertyPrefix, Ice::CommunicatorPtr ic, ConcurrentDevicePtr device);
-        ~RGBCamera();
+      DepthCamera(std::string propertyPrefix, Ice::CommunicatorPtr ic, ConcurrentDevicePtr device);
+        ~DepthCamera();
 
-        void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c);
+      void getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, const std::string& format, const Ice::Current& c);
 
 
 
@@ -44,4 +44,5 @@ namespace openniServer {
 }
 
 
-#endif //JDEROBOT_RGBCAMERA_DEVICE_H
+
+#endif //JDEROBOT_DEPTHCAMERA_H

@@ -3,12 +3,12 @@
 //
 
 #include <jderobot/logger/Logger.h>
-#include "RGBCamera.h"
+#include "DepthCamera.h"
 #include <opencv2/opencv.hpp>
 
 
 namespace openniServer{
-    RGBCamera::RGBCamera(std::string propertyPrefix, Ice::CommunicatorPtr ic,ConcurrentDevicePtr device) : CameraHandler(propertyPrefix, ic),device(device) {
+    DepthCamera::DepthCamera(std::string propertyPrefix, Ice::CommunicatorPtr ic,ConcurrentDevicePtr device) : CameraHandler(propertyPrefix, ic),device(device) {
 
         framerateN = prop->getPropertyAsIntWithDefault(prefix+"fps",25);
         std::string fmtStr = prop->getPropertyWithDefault(prefix+"Format","YUY2");//default format YUY2
@@ -25,24 +25,23 @@ namespace openniServer{
 
     }
 
-    void RGBCamera::getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr &cb, const std::string &format,
+    void DepthCamera::getImageData_async(const jderobot::AMD_ImageProvider_getImageDataPtr &cb, const std::string &format,
                                        const Ice::Current &c) {
         replyTask->pushJob(cb, format);
 
     }
 
-    RGBCamera::~RGBCamera() {
-        jderobot::Logger::getInstance()->info( "Stopping and joining thread for color camera" );
+    DepthCamera::~DepthCamera() {
+        jderobot::Logger::getInstance()->info( "Stopping and joining thread for Depth Camera" );
         replyTask->destroy();
-        this->control.join();
     }
 
-    RGBCamera::ReplyTask::ReplyTask(const jderobot::Camera *camera, int fps,ConcurrentDevicePtr device) : CameraTask(camera, fps),device(device) {
+    DepthCamera::ReplyTask::ReplyTask(const jderobot::Camera *camera, int fps,ConcurrentDevicePtr device) : CameraTask(camera, fps),device(device) {
 
     }
 
-    void RGBCamera::ReplyTask::createCustomImage(cv::Mat &image) {
-        image=this->device->getRGBImage();
+    void DepthCamera::ReplyTask::createCustomImage(cv::Mat &image) {
+        image=this->device->getDepthImage();
     }
 
 }

@@ -45,6 +45,8 @@
 #include <logger/Logger.h>
 #include <ns/ns.h>
 #include <OpenNiServerLib/RGBCamera.h>
+#include <OpenNiServerLib/DepthCamera.h>
+#include <OpenNiServerLib/PointCloudServer.h>
 
 
 #include "easyiceconfig/EasyIce.h"
@@ -56,8 +58,8 @@
 Ice::CommunicatorPtr ic;
 bool killed;
 openniServer::RGBCamera *camRGB;
-//openniServer::CameraDEPTH *camDEPTH;
-//openniServer::pointCloudI *pc1;
+openniServer::DepthCamera *camDEPTH;
+openniServer::PointCloudServer *pc1;
 jderobot::ns* namingService = NULL;
 ConcurrentDevicePtr device;
 
@@ -136,6 +138,7 @@ int main(int argc, char** argv){
 
 
     device= ConcurrentDevicePtr(new ConcurrentDevice(deviceFPS,cameraID,config,deviceMode));
+    device->start();
 
 
 	// Naming Service
@@ -174,33 +177,33 @@ int main(int argc, char** argv){
 
 
 	}
-//
-//	if (cameraD){
-//		std::string objPrefix(componentPrefix + ".CameraDEPTH.");
-//		std::string cameraName = prop->getProperty(objPrefix + "Name");
-//		if (cameraName.size() == 0){//no name specified, we create one using the index
-//			cameraName = "cameraD";
-//			prop->setProperty(objPrefix + "Name",cameraName);//set the value
-//		}
-//		jderobot::Logger::getInstance()->info( "Creating camera " +  cameraName );
-//		camDEPTH = new openniServer::CameraDEPTH(objPrefix,prop);
-//		adapter->add(camDEPTH, ic->stringToIdentity(cameraName));
-//		//test camera ok
-//		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: CameraDEPTH created successfully(" + Endpoints + "@" + cameraName );
-//
-//		if (namingService)
-//			namingService->bind(cameraName, Endpoints, camDEPTH->ice_staticId());
-//
-//	}
-//
-//	if (pointCloud){
-//		std::string objPrefix(componentPrefix + ".PointCloud.");
-//		std::string Name = prop->getProperty(objPrefix + "Name");
-//		jderobot::Logger::getInstance()->info( "Creating pointcloud1 " + Name );
-//		pc1 = new openniServer::pointCloudI(objPrefix,prop);
-//		adapter->add(pc1 , ic->stringToIdentity(Name));
-//		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name );
-//	}
+
+	if (cameraD){
+		std::string objPrefix(componentPrefix + ".CameraDEPTH.");
+		std::string cameraName = prop->getProperty(objPrefix + "Name");
+		if (cameraName.size() == 0){//no name specified, we create one using the index
+			cameraName = "cameraD";
+			prop->setProperty(objPrefix + "Name",cameraName);//set the value
+		}
+		jderobot::Logger::getInstance()->info( "Creating camera " +  cameraName );
+		camDEPTH = new openniServer::DepthCamera(objPrefix,ic,device);
+		adapter->add(camDEPTH, ic->stringToIdentity(cameraName));
+		//test camera ok
+		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: CameraDEPTH created successfully(" + Endpoints + "@" + cameraName );
+
+		if (namingService)
+			namingService->bind(cameraName, Endpoints, camDEPTH->ice_staticId());
+
+	}
+
+	if (pointCloud){
+		std::string objPrefix(componentPrefix + ".PointCloud.");
+		std::string Name = prop->getProperty(objPrefix + "Name");
+		jderobot::Logger::getInstance()->info( "Creating pointcloud1 " + Name );
+		pc1 = new openniServer::PointCloudServer(objPrefix,prop,device);
+		adapter->add(pc1 , ic->stringToIdentity(Name));
+		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name );
+	}
 	adapter->activate();
 	ic->waitForShutdown();
 	adapter->destroy();

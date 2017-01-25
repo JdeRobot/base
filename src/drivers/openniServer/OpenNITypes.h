@@ -36,16 +36,16 @@ typedef struct
 } DeviceParameter;
 
 
-struct VideoModel{
+struct VideoMode{
     int witdh;
     int heigth;
     bool active;
 
-    VideoModel(){
+    VideoMode(){
         this->active=false;
     }
 
-    VideoModel(int mode){
+    VideoMode(int mode){
         this->active=true;
         switch (mode){
             case 0:

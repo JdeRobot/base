@@ -21,8 +21,11 @@ public:
     ~ConcurrentDevice();
     cv::Mat getRGBImage();
     cv::Mat getDepthImage();
+    void getDistances(std::vector<int>& distances);
     virtual void run();
     void stop();
+    DeviceConfig getConfig();
+    VideoMode getVideoMode();
 
 private:
 
@@ -55,7 +58,7 @@ private:
     const openni::SensorInfo* g_irSensorInfo = NULL;
 
     IceUtil::Mutex mutex;
-    VideoModel videoModel;
+    VideoMode videoMode;
     float cycle;
     IceUtil::Time lastIT;
 

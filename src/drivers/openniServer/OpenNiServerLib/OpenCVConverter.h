@@ -12,8 +12,9 @@
 
 class OpenCVConverter {
 public:
-    static cv::Mat convertDepthToCVMat(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize, std::vector<int> &distances);
+    static cv::Mat convertDepthToCVMat(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize);
     static cv::Mat convertRGBToCVMat(const openni::RGB888Pixel* pImageRow, int strideInBytes, cv::Size imageSize);
+    static void convertDepthToDistances(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize, std::vector<int> &distances);
 };
 
 

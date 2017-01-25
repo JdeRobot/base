@@ -4,7 +4,7 @@
 
 #include "OpenCVConverter.h"
 
-cv::Mat OpenCVConverter::convertDepthToCVMat(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize, std::vector<int> &distances) {
+cv::Mat OpenCVConverter::convertDepthToCVMat(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize) {
     cv::Mat src(imageSize,CV_8UC3,cv::Scalar(0,0,0));
 
     int restOfRow = strideInBytes / sizeof(openni::DepthPixel) - imageSize.width;
@@ -13,7 +13,6 @@ cv::Mat OpenCVConverter::convertDepthToCVMat(const openni::DepthPixel *depthPixe
     {
         for (int x = 0; x < imageSize.width; ++x, ++depthPixels)
         {
-            distances[(y*imageSize.width + x)] = *depthPixels;
             if (*depthPixels != 0)
             {
                 src.data[(y*imageSize.width+ x)*3+0] = (float(*depthPixels)/(float)MAX_LENGHT)*255.;
@@ -49,5 +48,26 @@ cv::Mat OpenCVConverter::convertRGBToCVMat(const openni::RGB888Pixel *pImageRow,
     }
 
     return src;
+
+}
+
+void
+OpenCVConverter::convertDepthToDistances(const openni::DepthPixel *depthPixels, int strideInBytes, cv::Size imageSize,
+                                         std::vector<int> &distances) {
+    distances.clear();
+    distances.resize(imageSize.width*imageSize.height);
+
+
+    int restOfRow = strideInBytes / sizeof(openni::DepthPixel) - imageSize.width;
+
+    for (int y = 0; y < imageSize.height; ++y)
+    {
+        for (int x = 0; x < imageSize.width; ++x, ++depthPixels)
+        {
+            distances[(y*imageSize.width + x)] = *depthPixels;
+        }
+
+        depthPixels += restOfRow;
+    }
 
 }
