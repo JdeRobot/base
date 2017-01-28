@@ -42,7 +42,8 @@ SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/libs)
 # Folder ICE interface definitions
 SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice)
 # Main libraries
-SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib parallelIce )
+SET( LIBS_NEEDED  jderobotutil colorspaces colorspacesmm easyiceconfig parallelIce depthLib geometry logger ns progeo pioneer fuzzylib  )
+SET( LIBS_EXTRA     jderobotHandlers jderobotViewer   resourcelocator xmlParser cvblob cvfast imgAnalyze JderobotInterfaces)
 
 # Create directories if necessary
 file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
@@ -224,6 +225,11 @@ INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
 
 
+
+
+
+
+
 #file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
 #add_executable(dummy_main1 dummy_main1.c)
 #INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/dummy_main1 DESTINATION /tmp COMPONENT deps OPTIONAL PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
@@ -352,3 +358,25 @@ execute_process(
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)
+
+
+
+
+SET(JdeRobot_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/jderobot )
+SET(ALL_LIBS  ${LIBS_NEEDED} ${LIBS_EXTRA})
+foreach (l ${ALL_LIBS} )
+	if (TARGET ${l})
+		SET(JdeRobot_LIBS_NAMES ${JdeRobot_LIBS_NAMES} ${l})
+	endif()
+endforeach()
+
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/JdeRobotInstallConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake" @ONLY)
+install (SCRIPT "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake")
+SET(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+install(FILES
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake"
+  "${PROJECT_BINARY_DIR}/JdeRobotConfigVersion.cmake"
+  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
+
