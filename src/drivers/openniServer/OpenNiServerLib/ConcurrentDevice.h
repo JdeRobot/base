@@ -17,7 +17,7 @@
 
 class ConcurrentDevice:public IceUtil::Thread {
 public:
-    ConcurrentDevice(int fps,int cameraIdx, DeviceConfig config, int mode);
+    ConcurrentDevice(int fps,int cameraIdx, DeviceConfig config, const cv::Size& size);
     ~ConcurrentDevice();
     cv::Mat getRGBImage();
     cv::Mat getDepthImage();
@@ -33,7 +33,7 @@ private:
     int fps;
     int cameraIdx;
     DeviceConfig config;
-    int mode;
+    cv::Size workingSize;
     const char* deviceUri;
 
     DeviceParameter g_Registration;

@@ -127,6 +127,11 @@ int main(int argc, char** argv){
 	jderobot::Logger::getInstance()->info( "OpenniServer: Selected device: " + cameraID );
 	int nCameras=0;
 
+
+    int heigth = prop->getPropertyAsInt(componentPrefix + ".Height");
+    int width = prop->getPropertyAsInt(componentPrefix + ".Width");
+
+
     DeviceConfig config;
     if (cameraR){
         config.openColor=SENSOR_ON;
@@ -137,7 +142,7 @@ int main(int argc, char** argv){
     config.registrationMode=RegistrationMode(imageRegistration);
 
 
-    device= ConcurrentDevicePtr(new ConcurrentDevice(deviceFPS,cameraID,config,deviceMode));
+    device= ConcurrentDevicePtr(new ConcurrentDevice(deviceFPS,cameraID,config,cv::Size(width,heigth)));
     device->start();
 
 

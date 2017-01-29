@@ -7,8 +7,10 @@
 #include <OpenNiServerLib/OpenCVConverter.h>
 #include <boost/lexical_cast.hpp>
 #include <logger/Logger.h>
+#include <OniCTypes.h>
 
-ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, int mode):componentAlive(true),fps(fps),cameraIdx(cameraIdx),config(config),mode(mode),g_bIsDepthOn(false),g_bIsColorOn(false),g_bIsIROn(false),g_depthSensorInfo(NULL),g_colorSensorInfo(NULL),g_irSensorInfo(NULL)     {
+
+ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, const cv::Size& size):componentAlive(true),fps(fps),cameraIdx(cameraIdx),config(config),workingSize(size),g_bIsDepthOn(false),g_bIsColorOn(false),g_bIsIROn(false),g_depthSensorInfo(NULL),g_colorSensorInfo(NULL),g_irSensorInfo(NULL)     {
 
     openni::Status nRetVal = openni::OpenNI::initialize();
     if (nRetVal != openni::STATUS_OK)
@@ -170,10 +172,50 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
 
     if ((*ppSensorInfo)->getSupportedVideoModes().getSize()==1){
         jderobot::Logger::getInstance()->warning("Only one mode is avialable image will be post processed is the mode does not match with the device output");
-        this->videoMode= VideoMode(this->mode);
+        if (stream.getVideoMode().getResolutionX()== workingSize.width && stream.getVideoMode().getResolutionY() == workingSize.height) {
+            this->videoMode = VideoMode(workingSize.width,workingSize.height);
+            this->videoMode.setValid(true);
+        }
+        else{
+            this->videoMode = VideoMode(workingSize.width,workingSize.height);
+            this->videoMode.setValid(false);
+        }
+
     }
     else{
-        nRetVal = stream.setVideoMode((*ppSensorInfo)->getSupportedVideoModes()[this->mode]);
+        std::vector<std::pair<int,int>> id_fpsbyWorkingResolution;
+        for(int i=0;i < (*ppSensorInfo)->getSupportedVideoModes().getSize();i++)
+        {
+            openni::VideoMode videoMode = (*ppSensorInfo)->getSupportedVideoModes()[i];
+            jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(i)  + "]: fps: " + boost::lexical_cast<std::string>(videoMode.getFps()) + "x: " + boost::lexical_cast<std::string>(videoMode.getResolutionX()) + " x " +  boost::lexical_cast<std::string>(videoMode.getResolutionY()));
+            if (workingSize.width == videoMode.getResolutionX() && workingSize.height == videoMode.getResolutionY()){
+                id_fpsbyWorkingResolution.push_back(std::make_pair(videoMode.getFps(),i));
+            }
+        }
+
+        if (id_fpsbyWorkingResolution.size() ==0){
+            jderobot::Logger::getInstance()->error("No videomode supported with the selected configutation: " + boost::lexical_cast<std::string>(workingSize.width) + " x "  + boost::lexical_cast<std::string>(workingSize.height));
+            exit(2);
+        }
+
+        this->videoMode.setValid(true);
+
+        int distance=99999999;
+        int bestId=-1;
+        for (auto it=id_fpsbyWorkingResolution.begin(), end = id_fpsbyWorkingResolution.end(); it != end; it++){
+            int currentDistance= std::abs(it->first - this->fps);
+            if (currentDistance < distance){
+                distance=currentDistance;
+                bestId = it->second;
+            }
+        }
+
+        jderobot::Logger::getInstance()->info("Setting video mode to:");
+        jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(bestId)  + "]: fps: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getFps()) + "x: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionX()) + " x " +  boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionY()));
+
+
+
+        nRetVal = stream.setVideoMode((*ppSensorInfo)->getSupportedVideoModes()[bestId]);
         if (nRetVal != openni::STATUS_OK)
         {
             stream.destroy();
@@ -190,11 +232,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
         }
     }
 
-    for(int i=0;i < (*ppSensorInfo)->getSupportedVideoModes().getSize();i++)
-    {
-        openni::VideoMode videoMode = (*ppSensorInfo)->getSupportedVideoModes()[i];
-        jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(i)  + "]: fps: " + boost::lexical_cast<std::string>(videoMode.getFps()) + "x: " + boost::lexical_cast<std::string>(videoMode.getResolutionX()) + "y " +  boost::lexical_cast<std::string>(videoMode.getResolutionY()));
-    }
+
 
 
     *pbIsStreamOn = true;
@@ -257,12 +295,13 @@ int ConcurrentDevice::openCommon()
 
     int ret;
 
+    jderobot::Logger::getInstance()->info("--------------------------   DEPTH    ------------------------");
     ret = openStream( "depth", openni::SENSOR_DEPTH, config.openDepth, g_depthStream, &g_depthSensorInfo, &g_bIsDepthOn);
     if (ret != 0)
     {
         return ret;
     }
-
+    jderobot::Logger::getInstance()->info("--------------------------   COLOR    ------------------------");
     ret = openStream( "color", openni::SENSOR_COLOR, config.openColor, g_colorStream, &g_colorSensorInfo, &g_bIsColorOn);
     if (ret != 0)
     {
@@ -302,7 +341,7 @@ cv::Mat ConcurrentDevice::getDepthImage() {
                                                                   cv::Size(g_depthFrame.getWidth(),
                                                                            g_depthFrame.getHeight()));
         free(depthPixels);
-        if (this->videoMode.active){
+        if (!this->videoMode.valid){
             cv::Mat resizedImage;
             cv::resize(depthImage,resizedImage,cv::Size(this->videoMode.witdh,this->videoMode.heigth),0,0,cv::INTER_NEAREST);
             return resizedImage;
@@ -334,7 +373,7 @@ cv::Mat ConcurrentDevice::getRGBImage() {
                                                                 cv::Size(g_colorFrame.getWidth(),
                                                                          g_colorFrame.getHeight()));
         free(rgbPixels);
-        if (this->videoMode.active){
+        if (!this->videoMode.valid){
             cv::Mat resizedImage;
             cv::resize(colorImage,resizedImage,cv::Size(this->videoMode.witdh,this->videoMode.heigth));
             return resizedImage;

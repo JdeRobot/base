@@ -39,40 +39,17 @@ typedef struct
 struct VideoMode{
     int witdh;
     int heigth;
-    bool active;
+    bool valid;
 
     VideoMode(){
-        this->active=false;
+        this->valid=false;
     }
 
-    VideoMode(int mode){
-        this->active=true;
-        switch (mode){
-            case 0:
-                witdh=320;
-                heigth=240;
-                break;
-            case 2:
-                witdh=320;
-                heigth=240;
-                break;
-            case 4:
-                witdh=640;
-                heigth=480;
-                break;
-            case 6:
-                witdh=320;
-                heigth=240;
-                break;
-            case 8:
-                witdh=640;
-                heigth=480;
-                break;
-            default:
-                this->active=false;
-                std::cout << "Mode not supported" << std::endl;
-                break;
-        }
+    VideoMode(int witdh, int heigth):witdh(witdh), heigth(heigth),valid(false){
+    }
+
+    void setValid(bool value){
+        this->valid=value;
     }
 };
 
