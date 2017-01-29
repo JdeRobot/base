@@ -2,7 +2,7 @@
 // Created by frivas on 24/01/17.
 //
 
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include "DepthCamera.h"
 #include <opencv2/opencv.hpp>
 

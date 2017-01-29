@@ -7,7 +7,7 @@
 
 #include <jderobot/pointcloud.h>
 #include <Ice/Properties.h>
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include "myprogeo.h"
 #include "ConcurrentDevice.h"
 

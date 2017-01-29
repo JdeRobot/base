@@ -6,7 +6,7 @@
 #include "OpenNITypes.h"
 #include <OpenNiServerLib/OpenCVConverter.h>
 #include <boost/lexical_cast.hpp>
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 
 ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, int mode):componentAlive(true),fps(fps),cameraIdx(cameraIdx),config(config),mode(mode),g_bIsDepthOn(false),g_bIsColorOn(false),g_bIsIROn(false),g_depthSensorInfo(NULL),g_colorSensorInfo(NULL),g_irSensorInfo(NULL)     {
 
