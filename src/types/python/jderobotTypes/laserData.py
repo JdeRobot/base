@@ -18,12 +18,21 @@
 #
 
 
-class LaserData:
+class LaserData ():
 
-	values = [] # meters
-	minAngle = 0 # Angle of first value (rads)
-	maxAngle = 0 # Angle of last value (rads)
-	minRange = 0 # Max Range posible (meters)
-	maxRange = 0 #Min Range posible (meters)
-	timeStamp = 0 # seconds
+	def __init__():
+
+		self.values = [] # meters
+		self.minAngle = 0 # Angle of first value (rads)
+		self.maxAngle = 0 # Angle of last value (rads)
+		self.minRange = 0 # Max Range posible (meters)
+		self.maxRange = 0 #Min Range posible (meters)
+		self.timeStamp = 0 # seconds
+
+
+	def __str__(self):
+		s = "LaserData: {\n   minAngle: " + str(self.minAngle) + "\n   maxAngle: " + str(self.maxAngle)
+		s = s + "\n   minRange: " + str(self.minRange) + "\n   maxRange: " + str(self.maxRange) 
+		s = s + "\n   values: " + str(self.values) + "\n}"
+		return s 
 

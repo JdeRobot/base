@@ -51,16 +51,18 @@ class Laser:
     def update(self):
         if self.hasproxy():
             laserD = LaserData()
-            laser = self.proxy.getLaserData()
+            values = []
+            data = self.proxy.getLaserData()
 
-            laserD.values = laser.distaceData
-            for i in range (len(laserD.values)):
-                laserD.values[i] = laserD.values[i] / 1000
+            #laserD.values = laser.distanceData
+            for i in range (data.numLaser):
+                values.append(data.distanceData[i] / 1000) 
 
-            laserD.maxAngle = laser.maxAngle
-            laserD.minAngle = laser.minAngle
-            laserD.maxRange = laser.maxRange
-            laserD.minRange = laser.minRange
+            laserD.maxAngle = data.maxAngle
+            laserD.minAngle = data.minAngle
+            laserD.maxRange = data.maxRange
+            laserD.minRange = data.minRange
+            laserD.values = values
 
 
             self.lock.acquire()

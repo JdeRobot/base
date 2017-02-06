@@ -2,40 +2,46 @@ import rospy
 from sensor_msgs.msg import LaserScan
 import threading
 from math import pi as PI
+from jderobotTypes import LaserData
+
+
+
+def laserScan2LaserData(scan):
+    laser = LaserData()
+    laser.values = scan.ranges
+    laser.minAngle = scan.angle_min  - PI/2
+    laser.maxAngle = scan.angle_max  - PI/2
+    laser.maxRange = scan.range_max
+    laser.minRange = scan.range_min
+    laser.timeStamp = scan.header.stamp.secs + (scan.header.stamp.nsecs *1e-9)
+    return laser
 
 class ListenerLaser:
-    def __init__(self, nodeName, topic, init=False):
-        self.nodeName = nodeName
+    def __init__(self, topic):
         self.topic = topic
-        self.data = None
-        self.node = None
+        self.data = LaserData()
         self.sub = None
         self.lock = threading.Lock()
-        if (not init):
-            self.node = rospy.init_node(self.nodeName, anonymous=True)
-        #self.start()
-        self.sub = rospy.Subscriber(self.topic, LaserScan, self.__callback)
+        self.start()
  
-    def __callback (self, data):
-        print(self.nodeName)
+    def __callback (self, scan):
+        laser = laserScan2LaserData(scan)
+
         self.lock.acquire()
-        self.data = data
+        self.data = laser
         self.lock.release()
         
-    def hasproxy (self):
-        return self.sub != None
+    def stop(self):
+        self.sub.unregister()
+
+    def start (self):
+        self.sub = rospy.Subscriber(self.topic, LaserScan, self.__callback)
         
     def getLaserData(self):
         self.lock.acquire()
-        data = self.data
+        laser = self.data
         self.lock.release()
-        laser = LaserDat()
-        if (data != None):
-            laser.distanceData = data.ranges
-            laser.numLaser = len(data.ranges)
-            laser.minAngle = data.angle_min  - PI/2
-            laser.maxAngle = data.angle_max  - PI/2
-            laser.maxRange = data.range_max
-            laser.minRange = data.range_min
-            #laser = jderobot.LaserData(data.ranges, len(data.ranges), data.angle_min  - PI/2, data.angle_max  - PI/2, 0, 0)
+        
         return laser
+
+

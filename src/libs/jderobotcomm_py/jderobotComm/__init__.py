@@ -1,7 +1,7 @@
 import Ice
 import rospy
-from .ice.laserIceClient import LaserIceClient
-from .ros.listenerLaser import ListenerLaser
+
+from .laserClient import getLaserClient
 
 
 def init (ic):
@@ -14,13 +14,22 @@ def init (ic):
 	l = prop.getPropertiesForPrefix("")
 	keys = l.keys()
 	for i in keys:
-		if (i.endswith(".Server") and l[i] == "1"):
+		if (i.endswith(".Server") and l[i] == "2"):
 			rosserver = True
 
 	if (rosserver):
 		node = rospy.init_node(nodeName, anonymous=True)
 
 	return ic,node
+
+def destroy(ic=None, node=None):
+	if node:
+		rospy.signal_shutdown("Node Closed")
+	if ic:
+		ic.destroy()
+
+
+
 
 	
 
