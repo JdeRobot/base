@@ -27,7 +27,7 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <jderobot/camera.h>
 #include <cv.h>
-#include <log/Logger.h>
+#include <logger/Logger.h>
 #include <jderobot/types/image.h>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
 #include <zlib.h>
