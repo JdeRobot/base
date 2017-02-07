@@ -106,3 +106,6 @@ class LaserIceClient:
 
     def getLaserData(self):
         return self.laser.getLaserData()
+
+    def hasproxy (self):
+        return self.laser.hasproxy()

@@ -20,7 +20,7 @@
 
 class LaserData ():
 
-	def __init__():
+	def __init__(self):
 
 		self.values = [] # meters
 		self.minAngle = 0 # Angle of first value (rads)
@@ -33,6 +33,6 @@ class LaserData ():
 	def __str__(self):
 		s = "LaserData: {\n   minAngle: " + str(self.minAngle) + "\n   maxAngle: " + str(self.maxAngle)
 		s = s + "\n   minRange: " + str(self.minRange) + "\n   maxRange: " + str(self.maxRange) 
-		s = s + "\n   values: " + str(self.values) + "\n}"
+		s = s + "\n   timeStamp: " + str(self.timeStamp) + "\n   values: " + str(self.values) + "\n}"
 		return s 
 
