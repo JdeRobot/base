@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 if(roscpp_FOUND)
     project(jderobotcomm)
 
+    usePython(2)
+
     list(APPEND Ice_LIBRARIES Ice IceUtil)
 
     SET (CATKIN_DEVEL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
