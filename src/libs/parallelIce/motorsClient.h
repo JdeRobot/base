@@ -19,14 +19,13 @@
 
  */
 
-
-#ifndef POINTCLOUDCLIENT_H_
-#define POINTCLOUDCLIENT_H_
+#ifndef MOTORSCLIENT_H_
+#define MOTORSCLIENT_H_
 
 #include <IceUtil/IceUtil.h>
 #include <iostream>
 #include <Ice/Ice.h>
-#include <jderobot/pointcloud.h>
+#include <jderobot/motors.h>
 #include <cv.h>
 #include <sstream>
 #include <fstream>
@@ -34,38 +33,37 @@
 
 namespace jderobot {
 
-class pointcloudClient: public IceUtil::Thread {
+
+class motorsClient {
 public:
-	pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix);
-	pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix, std::string proxy);
+	motorsClient(Ice::CommunicatorPtr ic, std::string prefix, bool debug = false);
+	virtual ~motorsClient();
 
-	virtual ~pointcloudClient();
-	virtual void run();
+	void setV(float v);
+    void setW(float w);
+    float getMaxW();
+    float getMaxV();
+    void sendVelocities();
+    void sendV(float v);
+    void sendW(float w);
+   	bool hasProxy();
 
-	void getData(std::vector<jderobot::RGBPoint>& cloud, bool blocked=false);
-	int getRefreshRate(){return refreshRate;};
-	void pause();
-	void resume();
-	bool getPause(){return pauseStatus;};
-
-	void stop_thread();
 
 private:
-	bool newData;
-	IceUtil::Cond semBlock;
-
 	std::string prefix;
-	std::vector<jderobot::RGBPoint> data;
-	jderobot::pointCloudPrx prx;
-	long long int cycle;
-	IceUtil::Mutex controlMutex;
-	bool _done;
-	int refreshRate;
-	bool pauseStatus;
+	float v;
+	float w;
+	float maxV;
+	float maxW;
 
-	IceUtil::Cond sem;
+
+	jderobot::MotorsPrx prx;
+	IceUtil::Mutex controlMutex;
+	bool debug;
+	bool _done;
 
 };
 
+
 } /* namespace jderobot */
-#endif /* POINTCLOUDCLIENT_H_ */
+#endif /* LASERCLIENT_H_ */

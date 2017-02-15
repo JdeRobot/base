@@ -1,83 +1,85 @@
-/*
- *  Copyright (C) 1997-2011 JDERobot Developers Team
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *
- *  Authors : Maikel González <m.gonzalezbai@gmail.com>
- *            Francisco Pérez <f.perez475@gmail.com>
- *
- */
-
 #include "gui.h"
 
-namespace basic_component {
+GUI::GUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* camera, jderobot::motorsClient* motors)
+{
 
-    Gui::Gui(Shared* sm) : gtkmain(0, 0) {
+    this->camera = camera;
+    this->motors = motors;
 
-        this->sm = sm;
 
-        std::cout << "Loading glade\n";
+    QGridLayout* mainLayout = new QGridLayout();
+    QGridLayout* layoutControl = new QGridLayout();
+    QVBoxLayout* layoutButtons = new QVBoxLayout();
 
-        refXml = Gnome::Glade::Xml::create("./basic_component.glade");
-        //Get widgets       
-        refXml->get_widget("secondarywindow", secondarywindow);
-        // Camera images
-        refXml->get_widget("image1", gtk_image1);
 
-        secondarywindow->show();
-    }
+    camerasWidget = new CamerasWidget(this->camera);
 
-    Gui::~Gui() {
+    buttonStopRobot = new QPushButton("Stop Robot");
+    checkCameras = new QCheckBox("Camera");
 
-    }
+	InfoCurrentV = new QLabel("Current v (m/s):");
+	InfoCurrentW = new QLabel("Current w (rad/s):");
+	currentV = new QLabel("0");
+	currentW = new QLabel("0");
 
-    void Gui::ShowImage() {
-	this->image = this->sm->getImage();
-        setCamara(this->image, 1);
-    }
+    canvasVW = new controlVW();
+    canvasVW->setIC(ic);
 
-    void Gui::display() {
+    layoutControl->addWidget(canvasVW, 0, 0);
 
-        ShowImage();
-        while (gtkmain.events_pending())
-            gtkmain.iteration();
+    layoutButtons->addWidget(InfoCurrentV, 0);
+    layoutButtons->addWidget(currentV, 1);
+    layoutButtons->addWidget(InfoCurrentW, 2);
+    layoutButtons->addWidget(currentW, 3);
 
-    }
+	QSpacerItem *item = new QSpacerItem(0,200, QSizePolicy::Expanding, QSizePolicy::Fixed);
+	layoutButtons->addItem(item);
 
-    // First parameter is the widget which will show the image and the id indicates which widget is. This is useful when we have
-    // two cameras and we want to choose which one will offer us the image.
-    void Gui::setCamara(const cv::Mat image, int id) {
+    layoutButtons->addWidget(buttonStopRobot, 2);
+    layoutButtons->addWidget(checkCameras, 4);
 
-        // Set image
-        Glib::RefPtr<Gdk::Pixbuf> imgBuff = Gdk::Pixbuf::create_from_data((const guint8*) image.data,
-                Gdk::COLORSPACE_RGB,
-                false,
-                8,
-                image.cols,
-                image.rows,
-                image.step);
+    mainLayout->addLayout(layoutControl, 0, 0);
+    mainLayout->addLayout(layoutButtons, 0, 1);
 
-        if (id == 1) {
-            gtk_image1->clear();
-            gtk_image1->set(imgBuff);
-        } else {
-            gtk_image2->clear();
-            gtk_image2->set(imgBuff);
-        }
+    setLayout(mainLayout);
+    setVisible(true);
+    adjustSize();
 
-    }
+    connect(this, SIGNAL(signal_updateGUI()), this, SLOT(on_updateGUI_recieved()));
+    connect(buttonStopRobot, SIGNAL(clicked()),this, SLOT(on_buttonStopRobot_clicked()) );
+    connect(canvasVW, SIGNAL(VW_changed(float,float)), this, SLOT(on_update_canvas_recieved(float, float)));
+    connect(checkCameras, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
 
-} // namespace    
+    show();
 
+}
+
+void GUI::on_checks_changed()
+{
+    camerasWidget->setVisible(checkCameras->isChecked());
+}
+
+void GUI::on_update_canvas_recieved(float v, float w)
+{
+
+    this->motors->setV((float)v);
+    this->motors->setW((float)w);
+    this->motors->sendVelocities();
+}
+
+void GUI::on_buttonStopRobot_clicked()
+{
+    canvasVW->Stop();
+}
+
+void GUI::updateThreadGUI()
+{
+    emit signal_updateGUI();
+}
+
+void GUI::on_updateGUI_recieved()
+{
+    camerasWidget->update();
+	currentV->setText( QString::number(canvasVW->getV()));
+	currentW->setText( QString::number(canvasVW->getW()));
+}
