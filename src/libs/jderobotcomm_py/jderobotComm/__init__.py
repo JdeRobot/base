@@ -2,6 +2,7 @@ import Ice
 import rospy
 
 from .laserClient import getLaserClient
+from .cameraClient import getCameraClient
 
 
 def init (ic):
