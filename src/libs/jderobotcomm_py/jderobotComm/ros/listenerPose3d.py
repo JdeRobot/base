@@ -5,6 +5,16 @@ from math import asin, atan2, pi
 from jderobotTypes import Pose3d
 
 def quat2Yaw(qw, qx, qy, qz):
+    '''
+    Translates from Quaternion to Yaw. 
+
+    @param qw,qx,qy,qz: Quaternion values
+
+    @type qw,qx,qy,qz: float
+
+    @return Yaw value translated from Quaternion
+
+    '''
     rotateZa0=2.0*(qx*qy + qw*qz)
     rotateZa1=qw*qw + qx*qx - qy*qy - qz*qz
     rotateZ=0.0
@@ -13,6 +23,17 @@ def quat2Yaw(qw, qx, qy, qz):
     return rotateZ
 
 def quat2Pitch(qw, qx, qy, qz):
+    '''
+    Translates from Quaternion to Pitch. 
+
+    @param qw,qx,qy,qz: Quaternion values
+
+    @type qw,qx,qy,qz: float
+
+    @return Pitch value translated from Quaternion
+
+    '''
+
     rotateYa0=-2.0*(qx*qz - qw*qy)
     rotateY=0.0
     if(rotateYa0 >= 1.0):
@@ -25,6 +46,16 @@ def quat2Pitch(qw, qx, qy, qz):
     return rotateY
 
 def quat2Roll (qw, qx, qy, qz):
+    '''
+    Translates from Quaternion to Roll. 
+
+    @param qw,qx,qy,qz: Quaternion values
+
+    @type qw,qx,qy,qz: float
+
+    @return Roll value translated from Quaternion
+
+    '''
     rotateXa0=2.0*(qy*qz + qw*qx)
     rotateXa1=qw*qw - qx*qx - qy*qy + qz*qz
     rotateX=0.0
@@ -35,6 +66,16 @@ def quat2Roll (qw, qx, qy, qz):
 
 
 def odometry2Pose3D(odom):
+    '''
+    Translates from ROS Odometry to JderobotTypes Pose3d. 
+
+    @param odom: ROS Odometry to translate
+
+    @type odom: Odometry
+
+    @return a Pose3d translated from odom
+
+    '''
     pose = Pose3d()
     ori = odom.pose.pose.orientation
 
@@ -52,7 +93,18 @@ def odometry2Pose3D(odom):
 
 
 class ListenerPose3d:
+    '''
+        ROS Pose3D Subscriber. Pose3D Client to Receive pose3d from ROS nodes.
+    '''
     def __init__(self, topic):
+        '''
+        ListenerPose3d Constructor.
+
+        @param topic: ROS topic to subscribe
+        
+        @type topic: String
+
+        '''
         self.topic = topic
         self.data = Pose3d()
         self.sub = None
@@ -60,6 +112,14 @@ class ListenerPose3d:
         self.start()
  
     def __callback (self, odom):
+        '''
+        Callback function to receive and save Pose3d. 
+
+        @param odom: ROS Odometry received
+        
+        @type odom: Odometry
+
+        '''
         pose = odometry2Pose3D(odom)
 
         self.lock.acquire()
@@ -67,12 +127,26 @@ class ListenerPose3d:
         self.lock.release()
         
     def stop(self):
+        '''
+        Stops (Unregisters) the client.
+
+        '''
         self.sub.unregister()
 
     def start (self):
+        '''
+        Starts (Subscribes) the client.
+
+        '''
         self.sub = rospy.Subscriber(self.topic, Odometry, self.__callback)
         
     def getPose3d(self):
+        '''
+        Returns last Pose3d. 
+
+        @return last JdeRobotTypes Pose3d saved
+
+        '''
         self.lock.acquire()
         pose = self.data
         self.lock.release()

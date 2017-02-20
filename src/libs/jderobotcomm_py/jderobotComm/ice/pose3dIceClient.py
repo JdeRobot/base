@@ -27,8 +27,21 @@ from jderobotTypes import Pose3d
 
 
 class Pose3D:
+    '''
+        Pose3d Connector. Recives Pose3d from Ice interface when you run update method.
+    '''
 
     def __init__(self, ic, prefix):
+        '''
+        Pose3d Contructor.
+        Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        '''
         self.lock = threading.Lock()
 
         self.pose = Pose3d()
@@ -51,6 +64,9 @@ class Pose3D:
             exit(-1)
 
     def update(self):
+        '''
+        Updates Pose3d.
+        '''
         pos = Pose3d()
         if self.hasproxy():
             pose = self.proxy.getPose3DData()
@@ -68,9 +84,21 @@ class Pose3D:
         self.lock.release()
 
     def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
         return hasattr(self,"proxy") and self.proxy
 
-    def getPose3d(self):	   
+    def getPose3d(self):
+        '''
+        Returns last Pose3d. 
+
+        @return last JdeRobotTypes Pose3d saved
+
+        '''	   
         self.lock.acquire()
         pose = self.pose
         self.lock.release()
@@ -78,6 +106,16 @@ class Pose3D:
 
 
     def quat2Yaw(self, qw, qx, qy, qz):
+        '''
+        Translates from Quaternion to Yaw. 
+
+        @param qw,qx,qy,qz: Quaternion values
+
+        @type qw,qx,qy,qz: float
+
+        @return Yaw value translated from Quaternion
+
+        '''
         rotateZa0=2.0*(qx*qy + qw*qz)
         rotateZa1=qw*qw + qx*qx - qy*qy - qz*qz
         rotateZ=0.0
@@ -86,6 +124,16 @@ class Pose3D:
         return rotateZ
 
     def quat2Pitch(self, qw, qx, qy, qz):
+        '''
+        Translates from Quaternion to Pitch. 
+
+        @param qw,qx,qy,qz: Quaternion values
+
+        @type qw,qx,qy,qz: float
+
+        @return Pitch value translated from Quaternion
+
+        '''
         rotateYa0=-2.0*(qx*qz - qw*qy)
         rotateY=0.0
         if(rotateYa0 >= 1.0):
@@ -98,6 +146,16 @@ class Pose3D:
         return rotateY
 
     def quat2Roll (self, qw, qx, qy, qz):
+        '''
+        Translates from Quaternion to Roll. 
+
+        @param qw,qx,qy,qz: Quaternion values
+
+        @type qw,qx,qy,qz: float
+
+        @return Roll value translated from Quaternion
+
+        '''
         rotateXa0=2.0*(qy*qz + qw*qx)
         rotateXa1=qw*qw - qx*qx - qy*qy + qz*qz
         rotateX=0.0
@@ -111,7 +169,21 @@ class Pose3D:
 
 
 class Pose3dIceClient:
+    '''
+        Pose3d Ice Client. Recives Pose3d from Ice interface running Pose3d update method in a thread.
+    '''
     def __init__(self,ic,prefix, start = False):
+        '''
+        Pose3dIceClient Contructor.
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+        @param start: indicates if start automatically the client
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        @type start: Boolean
+        '''
         self.pose3d = Pose3D(ic,prefix)
 
         self.kill_event = threading.Event()
@@ -121,14 +193,37 @@ class Pose3dIceClient:
         if start:
             self.start()
 
-    # if client is stopped you can not start again, Threading.Thread raised error
+
     def start(self):
+        '''
+        Starts the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.clear()
         self.thread.start()
 
-    # if client is stopped you can not start again
+    
     def stop(self):
+        '''
+        Stops the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.set()
 
     def getPose3d(self):
+        '''
+        Returns last Pose3d. 
+
+        @return last JdeRobotTypes Pose3d saved
+
+        '''
         return self.pose3d.getPose3d()
+
+    def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
+        return self.pose3d.hasproxy()

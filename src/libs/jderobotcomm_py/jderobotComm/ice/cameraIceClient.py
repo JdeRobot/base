@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1997-2016 JDE Developers Team
+#  Copyright (C) 1997-2017 JDE Developers Team
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,8 +27,22 @@ from jderobotTypes import Image
 
 
 class Camera:
+    '''
+        Camera Connector. Recives image from Ice interface when you run update method.
+    '''
 
     def __init__(self, ic, prefix):
+        '''
+        Camera Contructor.
+        Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        '''
+
         self.lock = threading.Lock()
         self.image = Image()
 
@@ -53,6 +67,9 @@ class Camera:
             exit(-1)
 
     def update(self):
+        '''
+        Updates Image.
+        '''
         if self.hasproxy():
             img = Image()
             imageData = self.proxy.getImageData(self.imgFormat)
@@ -71,6 +88,12 @@ class Camera:
             self.lock.release()
 
     def getImage(self):
+        '''
+        Returns last Image. 
+
+        @return last JdeRobotTypes Image saved
+
+        '''
         img = Image()      
         if self.hasproxy():
             self.lock.acquire()
@@ -79,13 +102,33 @@ class Camera:
         return img
 
     def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
         return hasattr(self,"proxy") and self.proxy
 
 
 
 
 class CameraIceClient:
+    '''
+        Camera Ice Client. Recives image from Ice interface running camera update method in a thread.
+    '''
     def __init__(self,ic,prefix, start = False):
+        '''
+        CameraIceClient Contructor.
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+        @param start: indicates if start automatically the client
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        @type start: Boolean
+        '''
         self.camera = Camera(ic,prefix)
 
         self.kill_event = threading.Event()
@@ -96,18 +139,38 @@ class CameraIceClient:
         if start:
             self.start()
 
-    # if client is stopped you can not start again, Threading.Thread raised error
+    
     def start(self):
+        '''
+        Starts the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.clear()
         self.thread.start()
 
-    # if client is stopped you can not start again
+    
     def stop(self):
+        '''
+        Stops the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.set()
 
     def getImage(self):
+        '''
+        Returns last Image. 
+
+        @return last JdeRobotTypes Image saved
+
+        '''
         return self.camera.getImage()
 
 
     def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
         return self.camera.hasproxy()

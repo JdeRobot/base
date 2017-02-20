@@ -26,8 +26,21 @@ from jderobotTypes import LaserData
 
 
 class Laser:
+    '''
+        Laser Connector. Recives LaserData from Ice interface when you run update method.
+    '''
 
     def __init__(self, ic, prefix):
+        '''
+        Laser Contructor.
+        Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        '''
         self.lock = threading.Lock()
         self.laser = LaserData()
 
@@ -49,6 +62,9 @@ class Laser:
             exit(-1)
 
     def update(self):
+        '''
+        Updates LaserData.
+        '''
         if self.hasproxy():
             laserD = LaserData()
             values = []
@@ -70,9 +86,22 @@ class Laser:
             self.lock.release()
 
     def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
+
         return hasattr(self,"proxy") and self.proxy
 
-    def getLaserData(self):     
+    def getLaserData(self):
+        '''
+        Returns last LaserData. 
+
+        @return last JdeRobotTypes LaserData saved
+
+        '''     
         if self.hasproxy():
             self.lock.acquire()
             laser = self.laser
@@ -85,7 +114,21 @@ class Laser:
 
 
 class LaserIceClient:
+    '''
+        Laser Ice Client. Recives LaserData from Ice interface running Laser update method in a thread.
+    '''
     def __init__(self,ic,prefix, start = False):
+        '''
+        LaserIceClient Contructor.
+
+        @param ic: Ice Communicator
+        @param prefix: prefix name of client in config file
+        @param start: indicates if start automatically the client
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        @type start: Boolean
+        '''
         self.laser = Laser(ic,prefix)
 
         self.kill_event = threading.Event()
@@ -95,17 +138,36 @@ class LaserIceClient:
         if start:
             self.start()
 
-    # if client is stopped you can not start again, Threading.Thread raised error
+    
     def start(self):
+        '''
+        Starts the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.clear()
         self.thread.start()
 
-    # if client is stopped you can not start again
     def stop(self):
+        '''
+        Stops the client. If client is stopped you can not start again, Threading.Thread raised error
+
+        '''
         self.kill_event.set()
 
     def getLaserData(self):
+        '''
+        Returns last LaserData. 
+
+        @return last JdeRobotTypes LaserData saved
+
+        '''
         return self.laser.getLaserData()
 
     def hasproxy (self):
+        '''
+        Returns if proxy has ben created or not. 
+
+        @return if proxy has ben created or not (Boolean)
+
+        '''
         return self.laser.hasproxy()

@@ -10,6 +10,18 @@ from cv_bridge import CvBridge, CvBridgeError
 
 
 def imageMsg2Image(img, bridge):
+    '''
+    Translates from ROS Image to JderobotTypes Image. 
+
+    @param img: ROS Image to translate
+    @param bridge: bridge to do translation
+
+    @type img: sensor_msgs.msg.Image
+    @type brige: CvBridge
+
+    @return a JderobotTypes.Image translated from img
+
+    '''
     image = Image()
 
     image.width = img.width
@@ -21,7 +33,18 @@ def imageMsg2Image(img, bridge):
     return image
 
 class ListenerCamera:
+    '''
+        ROS Camera (Image) Subscriber. Camera Client to Receive Images from ROS nodes.
+    '''
     def __init__(self, topic):
+        '''
+        ListenerCamera Constructor.
+
+        @param topic: ROS topic to subscribe
+        
+        @type topic: String
+
+        '''
         self.topic = topic
         self.data = Image()
         self.sub = None
@@ -31,6 +54,14 @@ class ListenerCamera:
         self.start()
  
     def __callback (self, img):
+        '''
+        Callback function to receive and save Images. 
+
+        @param img: ROS Image received
+        
+        @type img: sensor_msgs.msg.Image
+
+        '''
         image = imageMsg2Image(img, self.bridge)
 
         self.lock.acquire()
@@ -38,12 +69,26 @@ class ListenerCamera:
         self.lock.release()
         
     def stop(self):
+        '''
+        Stops (Unregisters) the client.
+
+        '''
         self.sub.unregister()
 
     def start (self):
+        '''
+        Starts (Subscribes) the client.
+
+        '''
         self.sub = rospy.Subscriber(self.topic, ImageROS, self.__callback)
         
     def getLaserData(self):
+        '''
+        Returns last Image. 
+
+        @return last JdeRobotTypes Image saved
+
+        '''
         self.lock.acquire()
         image = self.data
         self.lock.release()
