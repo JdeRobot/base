@@ -17,24 +17,22 @@
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
 
-class Pose3d ():
+class CMDVel ():
 
 	def __init__(self):
 
-		self.x = 0 # X coord [meters]
-		self.y = 0 # Y coord [meters]
-		self.z = 0 # Z coord [meters]
-		self.h = 1 # H param
-		self.yaw = 0 #Yaw angle[rads]
-		self.pitch = 0 # Pitch angle[rads]
-		self.roll = 0 # Roll angle[rads]
-		self.q = [0,0,0,0] # Quaternion
+		self.vx = 0 # vel in x[m/s] (use this for V in wheeled robots)
+		self.vy = 0 # vel in y[m/s]
+		self.vz = 0 # vel in z[m/s]
+		self.ax = 0 # angular vel in X axis [rad/s]
+		self.ay = 0 # angular vel in X axis [rad/s]
+		self.az = 0 # angular vel in Z axis [rad/s] (use this for W in wheeled robots)
 		self.timeStamp = 0 # Time stamp [s]
 
 
 	def __str__(self):
-		s = "Pose3D: {\n   x: " + str(self.x) + "\n   Y: " + str(self.y)
-		s = s + "\n   Z: " + str(self.z) + "\n   H: " + str(self.h) 
-		s = s + "\n   Yaw: " + str(self.yaw) + "\n   Pitch: " + str(self.pitch) + "\n   Roll: " + str(self.roll)
-		s = s + "\n   quaternion: " + str(self.q) + "\n   timeStamp: " + str(self.timeStamp)  + "\n}"
+		s = "CMDVel: {\n   vx: " + str(self.vx) + "\n   vy: " + str(self.vy)
+		s = s + "\n   vz: " + str(self.vz) + "\n   ax: " + str(self.ax) 
+		s = s + "\n   ay: " + str(self.ay) + "\n   az: " + str(self.az)
+		s = s + "\n   timeStamp: " + str(self.timeStamp)  + "\n}"
 		return s 
