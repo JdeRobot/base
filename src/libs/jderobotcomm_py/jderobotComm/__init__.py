@@ -3,6 +3,8 @@ import rospy
 
 from .laserClient import getLaserClient
 from .cameraClient import getCameraClient
+from .pose3dClient import getPose3dClient
+from .motorsClient import getMotorsClient
 
 
 def init (ic):
