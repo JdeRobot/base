@@ -12,12 +12,10 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
 
     camerasWidget = new CamerasWidget(robot);
-    glwidget = new GLWidget(state, robot);
 
     buttonStopRobot = new QPushButton("Stop Robot");
     checkLaser = new QCheckBox("Laser");
     checkCameras = new QCheckBox("Cameras");
-    check3DWorld = new QCheckBox("3DWorld");
 
 	InfoCurrentV = new QLabel("Current v (m/s):");
 	InfoCurrentW = new QLabel("Current w (rad/s):");
@@ -43,9 +41,8 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 	layoutButtons->addItem(item);
 
     layoutButtons->addWidget(buttonStopRobot, 2);
-    layoutButtons->addWidget(check3DWorld, 3);
-    layoutButtons->addWidget(checkCameras, 4);
-    layoutButtons->addWidget(checkLaser, 5);
+    layoutButtons->addWidget(checkCameras, 3);
+    layoutButtons->addWidget(checkLaser, 4);
 
 
 
@@ -64,7 +61,6 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
     connect(canvasVW, SIGNAL(VW_changed(float,float)), this, SLOT(on_update_canvas_recieved(float, float)));
 
-    connect(check3DWorld, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
     connect(checkLaser, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
     connect(checkCameras, SIGNAL(stateChanged(int)), this, SLOT(on_checks_changed()));
 
@@ -76,7 +72,6 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
 void GUI::on_checks_changed()
 {
-    glwidget->setVisible(check3DWorld->isChecked());
     camerasWidget->setVisible(checkCameras->isChecked());
     laserWidget->setVisible(checkLaser->isChecked());
 }
@@ -101,7 +96,6 @@ void GUI::updateThreadGUI()
 void GUI::on_updateGUI_recieved()
 {
     camerasWidget->update();
-    glwidget->updateGL();
     laserWidget->update(this->robot->getSensors()->getLaserData());
 	currentV->setText( QString::number(canvasVW->getV()));
 	currentW->setText( QString::number(canvasVW->getW()));
