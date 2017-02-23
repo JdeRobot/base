@@ -25,7 +25,7 @@
 
 unset(PYTHON_EXECUTABLE CACHE)
 set(PYTHONINTERP_FOUND FALSE)
-find_package(PythonInterp 3)
+find_package(PythonInterp 3 REQUIRED)
 find_package_handle_standard_args(Python3Interp
                                   REQUIRED_VARS PYTHONINTERP_FOUND)
 # Set all those variables that we promised
@@ -38,3 +38,17 @@ set(PYTHON3_VERSION_PATCH ${PYTHON_VERSION_PATCH})
 # with a different required version number.
 unset(PYTHON_EXECUTABLE CACHE)
 set(PYTHONINTERP_FOUND FALSE)
+
+
+#Searching module path of python3
+execute_process(
+  COMMAND ${PYTHON3_EXECUTABLE} -c "import os;print(os.path.dirname(os.__file__))"
+  RESULT_VARIABLE _RESULT
+  OUTPUT_VARIABLE PYTHON3_MODULE_PATH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(_RESULT)
+  message(FATAL_ERROR "Failed to determine python information")
+endif(_RESULT)
+unset(_RESULT)

@@ -20,10 +20,10 @@
 #  PYTHON2_VERSION_PATCH       - Python patch version found e.g. 2
 #
 # Nuke the cache, somebody might have looked for Python 2...
-# copy from:  https://gitlab.dune-project.org/quality/dune-python/blob/694ae69fe57de42b1a87373ed9eea8d76a1ebfd3/cmake/modules/FindPython2Interp.cmake
+# copied from:  https://gitlab.dune-project.org/quality/dune-python/blob/694ae69fe57de42b1a87373ed9eea8d76a1ebfd3/cmake/modules/FindPython2Interp.cmake
 unset(PYTHON_EXECUTABLE CACHE)
 set(PYTHONINTERP_FOUND FALSE)
-find_package(PythonInterp 2)
+find_package(PythonInterp 2 REQUIRED)
 find_package_handle_standard_args(Python2Interp
                                   REQUIRED_VARS PYTHONINTERP_FOUND)
 # Set all those variables that we promised
@@ -36,3 +36,16 @@ set(PYTHON2_VERSION_PATCH ${PYTHON_VERSION_PATCH})
 # with a different required version number.
 unset(PYTHON_EXECUTABLE CACHE)
 set(PYTHONINTERP_FOUND FALSE)
+
+#Searching module path of python2
+execute_process(
+  COMMAND ${PYTHON2_EXECUTABLE} -c "import os;print(os.path.dirname(os.__file__))"
+  RESULT_VARIABLE _RESULT
+  OUTPUT_VARIABLE PYTHON2_MODULE_PATH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(_RESULT)
+  message(FATAL_ERROR "Failed to determine python information")
+endif(_RESULT)
+unset(_RESULT)
