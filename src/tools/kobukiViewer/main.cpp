@@ -1,5 +1,4 @@
 #include "robot/robot.h"
-#include "robot/threadupdaterobot.h"
 #include "gui/threadupdategui.h"
 #include "gui/stategui.h"
 
@@ -20,8 +19,6 @@ int main(int argc, char *argv[])
          Robot *robot = new Robot(ic);
          StateGUI* state = new StateGUI();
 
-         ThreadUpdateRobot* thread_update_robot = new ThreadUpdateRobot(robot,state);
-         thread_update_robot->start();
 
          ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, state, ic);
          thread_update_gui->start();

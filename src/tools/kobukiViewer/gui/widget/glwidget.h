@@ -46,6 +46,8 @@
 
 #include <GL/glut.h>
 #include <GL/gl.h>
+#include <jderobot/types/laserData.h>
+#include <jderobot/types/pose3d.h>
 
 #include "../stategui.h"
 #include "../../robot/robot.h"
@@ -79,7 +81,7 @@ public:
 
 private:
 
-    LaserD laserData;
+    JdeRobotTypes::LaserData laserData;
 
     StateGUI *stategui;
     Robot* robot;
