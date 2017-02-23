@@ -1,9 +1,8 @@
 #include "gui.h"
 
-GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
+GUI::GUI(Robot* robot, Ice::CommunicatorPtr ic)
 {
 
-    this->state = state;
     this->robot = robot;
 
     QGridLayout* mainLayout = new QGridLayout();
@@ -26,8 +25,6 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
     canvasVW->setIC(ic);
     laserWidget =new LaserWidget();
 
-    depurateWindow = new DepurateWindow();
-    state->setDepurateWindow(depurateWindow);
 
     int indiceFilaGui = 0;
     layoutControl->addWidget(canvasVW, 0, 0);
@@ -66,8 +63,6 @@ GUI::GUI(Robot* robot, StateGUI *state, Ice::CommunicatorPtr ic)
 
     show();
 
-    depurateWindow->setVisible(false);
-
 }
 
 void GUI::on_checks_changed()
@@ -99,6 +94,5 @@ void GUI::on_updateGUI_recieved()
     laserWidget->update(this->robot->getSensors()->getLaserData());
 	currentV->setText( QString::number(canvasVW->getV()));
 	currentW->setText( QString::number(canvasVW->getW()));
-    depurateWindow->update();
 }
 

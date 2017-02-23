@@ -4,7 +4,6 @@
 #include <QtWidgets>
 
 #include "../robot/robot.h"
-#include "stategui.h"
 
 #include "widget/controlvw.h"
 #include "widget/cameraswidget.h"
@@ -15,7 +14,7 @@ class GUI:public QWidget
     Q_OBJECT
 
 public:
-    GUI(Robot* robot, StateGUI* state, Ice::CommunicatorPtr ic);
+    GUI(Robot* robot, Ice::CommunicatorPtr ic);
     void updateThreadGUI();
 
 private:
@@ -26,7 +25,6 @@ private:
     LaserWidget* laserWidget;
 
     Robot* robot;
-    StateGUI* state;
 
     QCheckBox* checkCameras;
     QCheckBox* checkLaser;

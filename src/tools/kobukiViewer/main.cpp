@@ -1,6 +1,5 @@
 #include "robot/robot.h"
 #include "gui/threadupdategui.h"
-#include "gui/stategui.h"
 
 #include "easyiceconfig/EasyIce.h"
 
@@ -17,10 +16,9 @@ int main(int argc, char *argv[])
          // Variables Compartidas
          // Robot -> Sensores, navegacion, actuadores
          Robot *robot = new Robot(ic);
-         StateGUI* state = new StateGUI();
 
 
-         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, state, ic);
+         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, ic);
          thread_update_gui->start();
 
     } catch (const Ice::Exception& ex) {

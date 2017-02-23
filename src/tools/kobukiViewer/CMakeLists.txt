@@ -16,10 +16,9 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
     SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h)
     SET(RESOURCES resources.qrc)
 
-	SET(SOURCE main.cpp depuratewindow.cpp 
+	SET(SOURCE main.cpp  
 				    robot/actuators.cpp robot/robot.cpp robot/sensors.cpp  
-			        pioneer/pioneer.c pioneer/pioneeropengl.c
-			        gui/gui.cpp gui/stategui.cpp gui/threadupdategui.cpp
+			        gui/gui.cpp gui/threadupdategui.cpp
 			        gui/widget/cameraswidget.cpp gui/widget/controlvw.cpp gui/widget/laserwidget.cpp
 			        ${HEADERS}
 			        ${RESOURCES}
