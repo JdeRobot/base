@@ -12,6 +12,9 @@ include(buildpresets.cmake)
 # include Modules 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
+# include pythonAux Macros
+include(${PROJECT_SOURCE_DIR}/cmake/pythonAux.cmake)
+
 #check compiller
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	include(CheckCXXCompilerFlag)
@@ -87,32 +90,6 @@ macro(list_subdirectories2 retval curdir return_relative)
     endif()
   endforeach()
   set(${retval} ${list_of_dirs})
-endmacro()
-
-#macro to switch pythonInterp
-macro(usePython ver)
-  if (${ver} EQUAL 2 AND ${PYTHON2INTERP_FOUND})
-    set(PYTHON_EXECUTABLE ${PYTHON2_EXECUTABLE})
-    set(PYTHON_VERSION_STRING ${PYTHON2_VERSION_STRING})
-    set(PYTHON_VERSION_MAJOR ${PYTHON2_VERSION_MAJOR})
-    set(PYTHON_VERSION_MINOR ${PYTHON2_VERSION_MINOR})
-    set(PYTHON_VERSION_PATCH ${PYTHON2_VERSION_PATCH})
-    set(PYTHONINTERP_FOUND TRUE)
-  elseif(${ver} EQUAL 3 AND ${PYTHON3INTERP_FOUND})
-    set(PYTHON_EXECUTABLE ${PYTHON3_EXECUTABLE})
-    set(PYTHON_VERSION_STRING ${PYTHON3_VERSION_STRING})
-    set(PYTHON_VERSION_MAJOR ${PYTHON3_VERSION_MAJOR})
-    set(PYTHON_VERSION_MINOR ${PYTHON3_VERSION_MINOR})
-    set(PYTHON_VERSION_PATCH ${PYTHON3_VERSION_PATCH})
-    set(PYTHONINTERP_FOUND TRUE)
-  else(${ver} EQUAL 2 AND ${PYTHON2INTERP_FOUND})
-    unset(PYTHON_EXECUTABLE)
-    unset(PYTHON_VERSION_STRING)
-    unset(PYTHON_VERSION_MAJOR)
-    unset(PYTHON_VERSION_MINOR)
-    unset(PYTHON_VERSION_PATCH)
-    set(PYTHONINTERP_FOUND FALSE)
-  endif(${ver} EQUAL 2 AND ${PYTHON2INTERP_FOUND})
 endmacro()
 
 
