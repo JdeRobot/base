@@ -75,6 +75,12 @@ class MotorsIceClient:
             self.proxy.setL(vel.vy)
             self.lock.release()
 
+    def getMaxW(self):
+        return self.maxW
+
+    def getMaxV(self):
+        return self.maxV
+
     def sendV(self, v):
         self.sendVX(v)
 

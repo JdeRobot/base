@@ -3,6 +3,7 @@ from geometry_msgs.msg import Twist
 import threading
 from math import pi as PI
 from jderobotTypes import CMDVel
+from .threadPublisher import ThreadPublisher
 
 
 
@@ -25,17 +26,13 @@ def cmdvel2Twist(vel):
     tw.angular.y = vel.ay
     tw.angular.z = vel.az
 
-    secs = int(vel.timeStamp)
-    nsecs = int((vel.timeStamp-secs)* 1e9) # nanosecs
-    tw.header.stamp.secs = secs
-    tw.header.stamp.nsecs = nsecs
     return tw
 
 class PublisherMotors:
     '''
         ROS Motors Publisher. Motors Client to Send CMDVel to ROS nodes.
     '''
-    def __init__(self, topic):
+    def __init__(self, topic, maxV, maxW):
         '''
         ListenerMotors Constructor.
 
@@ -44,32 +41,53 @@ class PublisherMotors:
         @type topic: String
 
         '''
+        self.maxW = maxW
+        self.maxV = maxV
+
         self.topic = topic
         self.data = CMDVel()
-        self.pub = None
+        self.pub = self.pub = rospy.Publisher(self.topic, Twist, queue_size=1)
         self.lock = threading.Lock()
+
+        self.kill_event = threading.Event()
+        self.thread = ThreadPublisher(self, self.kill_event)
+
+        self.thread.daemon = True
         self.start()
  
-    def __publish (self):
+    def publish (self):
         '''
         Function to publish cmdvel. 
         '''
+        print("Hola")
+        self.lock.acquire()
         tw = cmdvel2Twist(self.data)
+        self.lock.release()
         self.pub.publish(tw)
         
     def stop(self):
         '''
-        Stops (Unregisters) the client.
+        Stops (Unregisters) the client. If client is stopped you can not start again, Threading.Thread raised error
 
         '''
+        self.kill_event.set()
         self.pub.unregister()
 
     def start (self):
         '''
-        Starts (Subscribes) the client.
+        Starts (Subscribes) the client. If client is stopped you can not start again, Threading.Thread raised error
 
         '''
-        self.pub = rospy.Publisher(self.topic, Twist, queue_size=1)
+        self.kill_event.clear()
+        self.thread.start()
+        
+
+
+    def getMaxW(self):
+        return self.maxW
+
+    def getMaxV(self):
+        return self.maxV
         
 
     def sendVelocities(self, vel):
@@ -83,7 +101,6 @@ class PublisherMotors:
         '''
         self.lock.acquire()
         self.data = vel
-        self.__publish()
         self.lock.release()
 
     def sendV(self, v):
@@ -130,7 +147,6 @@ class PublisherMotors:
         '''
         self.lock.acquire()
         self.data.vx = vx
-        self.__publish()
         self.lock.release()
 
     def sendVY(self, vy):
@@ -144,7 +160,6 @@ class PublisherMotors:
         '''
         self.lock.acquire()
         self.data.vy = vy
-        self.__publish()
         self.lock.release()
 
     def sendAZ(self, az):
@@ -158,7 +173,6 @@ class PublisherMotors:
         '''
         self.lock.acquire()
         self.data.vz = vz
-        self.__publish()
         self.lock.release()
 
 

@@ -28,7 +28,7 @@ def imageMsg2Image(img, bridge):
     image.height = img.height
     image.format = "RGB8"
     image.timeStamp = img.header.stamp.secs + (img.header.stamp.nsecs *1e-9)
-    cv_image = bridge.imgmsg_to_cv2(image, "rgb8")
+    cv_image = bridge.imgmsg_to_cv2(img, "rgb8")
     image.data = cv_image
     return image
 
@@ -82,7 +82,7 @@ class ListenerCamera:
         '''
         self.sub = rospy.Subscriber(self.topic, ImageROS, self.__callback)
         
-    def getLaserData(self):
+    def getImage(self):
         '''
         Returns last Image. 
 

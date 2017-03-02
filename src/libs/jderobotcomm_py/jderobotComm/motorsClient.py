@@ -40,8 +40,25 @@ def __getPublisherMotors(ic, prefix):
     if (sys.version_info[0] == 2):
         print("Publishing Motors with ROS messages")
         prop = prop = ic.getProperties()
-        topic = prop.getPropertyWithDefault(prefix+".Topic","");
-        client = PublisherMotors(topic)
+        topic = prop.getPropertyWithDefault(prefix+".Topic","")
+
+        maxWstr = prop.getProperty(prefix+".maxW")
+        if maxWstr:
+            maxW = float(maxWstr)
+        else:
+            maxW = 0.5
+            print (prefix+".maxW not provided, the default value is used: "+ repr(maxW))
+                
+
+        maxVstr = prop.getProperty(prefix+".maxV")
+        if maxWstr:
+            maxV = float(maxVstr)
+        else:
+            maxV = 5
+            print (prefix+".maxV not provided, the default value is used: "+ repr(maxV))
+
+        
+        client = PublisherMotors(topic, maxV, maxW)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
