@@ -1,4 +1,6 @@
 set(module "Ice")
+
+usePython(2)
 find_python_module(${module} REQUIRED)
 
 string(TOUPPER ${module} module_upper)
