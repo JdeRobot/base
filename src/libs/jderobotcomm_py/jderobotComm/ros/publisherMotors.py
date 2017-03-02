@@ -59,7 +59,6 @@ class PublisherMotors:
         '''
         Function to publish cmdvel. 
         '''
-        print("Hola")
         self.lock.acquire()
         tw = cmdvel2Twist(self.data)
         self.lock.release()
