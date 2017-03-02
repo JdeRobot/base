@@ -4,21 +4,17 @@
 #include <QtWidgets>
 
 #include "../robot/robot.h"
-#include "stategui.h"
 
 #include "widget/controlvw.h"
 #include "widget/cameraswidget.h"
-#include "widget/glwidget.h"
 #include "widget/laserwidget.h"
-
-#include "../depuratewindow.h"
 
 class GUI:public QWidget
 {
     Q_OBJECT
 
 public:
-    GUI(Robot* robot, StateGUI* state, Ice::CommunicatorPtr ic);
+    GUI(Robot* robot, Ice::CommunicatorPtr ic);
     void updateThreadGUI();
 
 private:
@@ -26,14 +22,10 @@ private:
 
     controlVW* canvasVW;
     CamerasWidget* camerasWidget;
-    GLWidget* glwidget;
     LaserWidget* laserWidget;
-    DepurateWindow* depurateWindow;
 
     Robot* robot;
-    StateGUI* state;
 
-    QCheckBox* check3DWorld;
     QCheckBox* checkCameras;
     QCheckBox* checkLaser;
 

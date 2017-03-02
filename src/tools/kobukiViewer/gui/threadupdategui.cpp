@@ -1,10 +1,10 @@
 #include "threadupdategui.h"
 
-ThreadUpdateGUI::ThreadUpdateGUI(Robot* robot, StateGUI* state, Ice::CommunicatorPtr ic)
+ThreadUpdateGUI::ThreadUpdateGUI(Robot* robot, Ice::CommunicatorPtr ic)
 {
     this->robot = robot;
 
-    gui = new GUI(robot, state, ic);
+    gui = new GUI(robot, ic);
     gui->show();
 
 }
