@@ -91,7 +91,7 @@ endmacro()
 
 
 
-MACRO to install python modules for python2 and 3 
+#MACRO to install python modules for python2 and 3 
 macro (install_python module component)
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/py2/${module}
 
