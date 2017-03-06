@@ -6,7 +6,7 @@ if(roscpp_FOUND)
 
     SET (CMAKE_PREFIX_PATH /opt/ros/kinetic)
 
-	list(APPEND DEPS ros-jade-roscpp ros-jade-std-msgs ros-jade-message-generation ros-jade-cv-bridge ros-jade-image-transport ros-jade-roscpp-core)
+	list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-message-generation ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy)
 
 #	list(APPEND DEPS_DEV )
 else()
