@@ -104,13 +104,6 @@ endmacro()
 
 include(FindPkgConfig)
 
-PKG_CHECK_MODULES(gsl REQUIRED gsl)
-include_directories(${gsl_INCLUDE_DIRS})
-link_directories(${gsl_LIBRARIES_DIRS})
-
-PKG_CHECK_MODULES(eigen REQUIRED eigen3)
-include_directories(${eigen_INCLUDE_DIRS})
-
 
 link_directories(${INTERFACES_CPP_DIR}/jderobot)
 FOREACH(LibFile ${LIBS_NEEDED})
@@ -122,8 +115,7 @@ ENDFOREACH(LibFile)
 
 include(Deps/LoadJderobotDependencies.cmake)
 
-list(APPEND DEPS libgsl2 gsl-bin)
-list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libeigen3-dev libgsl-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
+list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
 list(APPEND DEPS_DEV "${DEPS}")
 
 # list(APPEND uses ; separator. We need ,
