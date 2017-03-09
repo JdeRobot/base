@@ -6,7 +6,19 @@ if(roscpp_FOUND)
 
     SET (CMAKE_PREFIX_PATH /opt/ros/kinetic)
 
-	list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-message-generation ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy)
+    usePython(2)
+    set (CATKIN_BUILD_BINARY_PACKAGE 1) #doesn't add ROS environment files to package
+
+    find_package(catkin REQUIRED COMPONENTS
+      roscpp
+      std_msgs
+      cv_bridge
+      image_transport
+      nav_msgs
+      geometry_msgs
+    )
+
+	list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs)
 
 #	list(APPEND DEPS_DEV )
 else()

@@ -6,16 +6,6 @@ if(roscpp_FOUND)
 
     list(APPEND Ice_LIBRARIES Ice IceUtil)
 
-    SET (CATKIN_DEVEL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
-
-    find_package(catkin REQUIRED COMPONENTS
-      roscpp
-      std_msgs
-      cv_bridge
-      image_transport
-      nav_msgs
-      geometry_msgs
-    )
 
     catkin_package(
       CATKIN_DEPENDS roscpp std_msgs message_runtime
