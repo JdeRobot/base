@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python2
 #
 #  Copyright (C) 1997-2016 JDE Developers Team
 #
