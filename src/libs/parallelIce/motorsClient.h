@@ -30,6 +30,7 @@
 #include <sstream>
 #include <fstream>
 #include <logger/Logger.h>
+#include <boost/shared_ptr.hpp>
 
 namespace jderobot {
 
@@ -63,6 +64,8 @@ private:
 	bool _done;
 
 };
+
+	typedef boost::shared_ptr<motorsClient> MotorsClientPtr;
 
 
 } /* namespace jderobot */
