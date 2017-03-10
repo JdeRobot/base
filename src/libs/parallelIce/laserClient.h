@@ -30,6 +30,7 @@
 #include <sstream>
 #include <fstream>
 #include <logger/Logger.h>
+#include <boost/shared_ptr.hpp>
 
 namespace jderobot {
 
@@ -62,6 +63,7 @@ private:
 	IceUtil::Cond sem;
 
 };
+	typedef boost::shared_ptr<laserClient> LaserClientPtr;
 
 
 } /* namespace jderobot */

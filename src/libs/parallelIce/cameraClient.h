@@ -32,6 +32,7 @@
 #include <fstream>
 #include <climits>
 #include <logger/Logger.h>
+#include <boost/shared_ptr.hpp>
 
 namespace jderobot {
 
@@ -74,6 +75,8 @@ private:
 	std::string mImageFormat;
 
 };
+
+	typedef boost::shared_ptr<cameraClient> CameraClientPtr;
 
 } /* namespace jderobot */
 #endif /* CAMERACLIENT_H_ */
