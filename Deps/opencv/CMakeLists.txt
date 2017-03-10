@@ -42,8 +42,8 @@ IF (DEFINED OpenCV_VERSION)
 		#endforeach()
 
 	ENDIF()
-	list(APPEND DEPS "opencv-libs, opencv-main, opencv-python")
-	list(APPEND DEPS_DEV "opencv-libs, opencv-main, opencv-python, opencv-dev")
+	list(APPEND DEPS "ros-kinetic-opencv3")
+	list(APPEND DEPS_DEV "ros-kinetic-opencv3")
 ENDIF()
 
 
