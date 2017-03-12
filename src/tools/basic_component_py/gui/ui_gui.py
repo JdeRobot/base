@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(400, 370)
-        MainWindow.setMinimumSize(QtCore.QSize(400, 370))
-        MainWindow.setMaximumSize(QtCore.QSize(400, 370))
+        MainWindow.resize(430, 400)
+        MainWindow.setMinimumSize(QtCore.QSize(430, 400))
+        MainWindow.setMaximumSize(QtCore.QSize(800, 800))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -35,6 +35,12 @@ class Ui_MainWindow(object):
         self.YValue.setGeometry(QtCore.QRect(150, 340, 41, 21))
         self.YValue.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.YValue.setObjectName("YValue")
+        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(350, 320, 80, 80))
+        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
+        self.logoLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
+        self.logoLayout.setSpacing(0)
+        self.logoLayout.setObjectName("logoLayout")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)

@@ -41,12 +41,13 @@ class CameraWidget(QtWidgets.QWidget):
 
     def updateImage(self):
 
-        img = self.winParent.getCamera().getImage()
-        if img is not None:
-            image = QImage(img.data, img.shape[1], img.shape[0],
-                                 img.shape[1] * img.shape[2], QImage.Format_RGB888)
+        if (self.winParent.getCamera()):
+            img = self.winParent.getCamera().getImage().data
+            if img is not None:
+                image = QImage(img.data, img.shape[1], img.shape[0],
+                                     img.shape[1] * img.shape[2], QImage.Format_RGB888)
 
-            size = QtCore.QSize(img.shape[1], img.shape[0])
-            self.resize(size)
-            self.imgLabel.resize(size)
-            self.imgLabel.setPixmap(QPixmap.fromImage(image))
+                size = QtCore.QSize(img.shape[1], img.shape[0])
+                self.resize(size)
+                self.imgLabel.resize(size)
+                self.imgLabel.setPixmap(QPixmap.fromImage(image))

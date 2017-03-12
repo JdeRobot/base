@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 #
 #  Copyright (C) 1997-2016 JdeRobot Developers Team
@@ -21,8 +21,7 @@
 
 import sys
 
-from parallelIce.cameraClient import CameraClient
-from parallelIce.motors import Motors
+import jderobotComm as comm
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt5.QtWidgets import QApplication
@@ -34,8 +33,13 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
     ic = EasyIce.initialize(sys.argv)
-    camera = CameraClient(ic,"basic_component.Camera",True)
-    motors = Motors(ic,"basic_component.Motors")
+
+    #starting comm
+    ic, node = comm.init(ic)
+
+
+    camera = comm.getCameraClient(ic,"basic_component.Camera")
+    motors = comm.getMotorsClient(ic,"basic_component.Motors")
 
     app = QApplication(sys.argv)
     frame = MainWindow()
