@@ -38,7 +38,7 @@ void LaserWidget::paintEvent(QPaintEvent *)
     int cx = _width/2;
     int cy = _height/2; 
 
-    float x0, y0, x1, y1, d, ang;
+    float x1, y1, d, ang;
 
     int width = 2;
     QPen pen;
@@ -57,10 +57,8 @@ void LaserWidget::paintEvent(QPaintEvent *)
 
 
         ang = this->laserData.minAngle;
-        x0 = cx + (this->laserData.values[0] / d) * cos(ang);
-        y0 = cy - ((this->laserData.values[0] / d) * sin(ang));
 
-        for (int i = 1; i < this->laserData.values.size(); i++) {
+        for (int i = 0; i < this->laserData.values.size(); i++) {
 
         
             ang = this->laserData.minAngle + i*step;
@@ -68,10 +66,7 @@ void LaserWidget::paintEvent(QPaintEvent *)
             y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
 
 
-            painter.drawLine(QPointF(x0,y0), QPointF(x1,y1));
-
-            x0 = x1;
-            y0 = y1;
+            painter.drawPoint(QPointF(x1,y1));
 
         }
     }
