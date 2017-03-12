@@ -22,8 +22,10 @@ from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QHBoxLayout, QVBoxLay
 from filters.hsvFilter import HSVMAX, HSVMIN
 from filters.rgbFilter import RGBMAX, RGBMIN
 from filters.yuvFilter import YUVMAX, YUVMIN
+from .logoWidget import  LogoWidget
 
-
+WIDTH = 1340
+HEIGTH = 200
 
 class ControlWidget(QWidget):
     
@@ -42,8 +44,8 @@ class ControlWidget(QWidget):
         
     def initUI(self):
 
-        self.setMinimumSize(1340,200)
-        self.setMaximumSize(1340,200)
+        self.setMinimumSize(WIDTH,HEIGTH)
+        self.setMaximumSize(WIDTH,HEIGTH)
 
         '''Radio buttons for Original/RGB/HSV/YUV images'''
         self.origButton = QRadioButton("Original")
@@ -63,6 +65,7 @@ class ControlWidget(QWidget):
         self.hLayout = QHBoxLayout(self)
         self.hLayout.setObjectName("hLayout")
 
+
         ''' Vertical Layout for radio buttons '''
         self.radioLayout = QVBoxLayout()
         self.radioLayout.setObjectName("radioLayout")
@@ -72,6 +75,13 @@ class ControlWidget(QWidget):
         self.radioLayout.addWidget(self.yuvButton)
         self.vSpacer = QSpacerItem(30, 500, QSizePolicy.Ignored, QSizePolicy.Ignored);
         self.radioLayout.addItem(self.vSpacer)
+
+
+        self.logoLayout = QVBoxLayout()
+        self.logo = LogoWidget(self, HEIGTH, HEIGTH)
+        self.logoLayout.addWidget(self.logo)
+
+        
 
         
         hmin,smin,vmin = HSVMIN
@@ -89,6 +99,7 @@ class ControlWidget(QWidget):
         self.hminLayout.addWidget(self.hminLabel)
         self.hminLayout.addWidget(self.hminValue)
         self.hminLayout.addWidget(self.hminSlider)
+        
 
         ''' Vertical Layout for HMAX Slider''' 
         self.hmaxLayout = QVBoxLayout()
@@ -162,6 +173,7 @@ class ControlWidget(QWidget):
     
         '''Adding all the vertical layouts to the main horizontal layout'''
         self.hLayout.addLayout(self.radioLayout)
+        self.hLayout.addLayout(self.logoLayout)
         self.hLayout.addLayout(self.hminLayout)
         self.hLayout.addLayout(self.hmaxLayout)
         self.hLayout.addLayout(self.sminLayout)
@@ -169,6 +181,7 @@ class ControlWidget(QWidget):
         self.hLayout.addLayout(self.vminLayout)
         self.hLayout.addLayout(self.vmaxLayout)
         self.setLayout(self.hLayout)
+
 
         '''Signals for sliders value changes'''
         self.hminSlider.valueChanged.connect(self.changeHmin)     
