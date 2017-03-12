@@ -1,3 +1,5 @@
+Version JdeRobot
+
 Example of execution:
 
 In the first run, MAVProxyWinLAN.sh script must be launched in MavProxy folder.
