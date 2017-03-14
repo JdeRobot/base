@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<sdf version="1.3">
+    <model name="circuito2">
+           <static>true</static>
+        <link name="mapa">
+            <pose>0 0 0 0 0 0</pose>
+            <collision name="collision">
+               <geometry>
+				<plane>
+            <normal>0 0 1</normal>
+            <size>1000 1000</size>
+        </plane>	
+				</geometry>
+          </collision>
+            <visual name="visual">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>model://pistaSimple/meshes/pistaSimple.dae</uri>
+                  </mesh>
+              </geometry>
+          </visual>
+      </link>   
+	<link name="pared">
+            <pose>0 0 0 0 0 0</pose>
+            <collision name="collision">
+               <geometry>
+				 <mesh>
+                        <uri>model://pistaSimple/meshes/pared.dae</uri>
+                  </mesh>
+				</geometry>
+          </collision>
+            <visual name="visual">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>model://pistaSimple/meshes/pared.dae</uri>
+                  </mesh>
+              </geometry>
+          </visual>
+      </link>      
+  </model>
+</sdf>

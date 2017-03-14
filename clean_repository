@@ -10,7 +10,7 @@ delete=-delete
 [ "$1" = "--verbose" ] && delete="-print $delete"
 
 # Execution is only allowed from root directory
-test -d src/stable && test -d src/testing
+test -d src
 if [ $? -ne 0 ]
 then
     echo 'Execution is only allowed from root directory'>&2
@@ -38,7 +38,7 @@ find -type f -name CMakeCache.txt $delete
 
 ## remove generated interface source files
 # whitelist approach
-find src/stable/interfaces/ ! -name '*.ice' ! -name 'CMakeLists.txt' ! -name '.keepme' -type f $delete
+find src/interfaces/ ! -name '*.ice' ! -name 'CMakeLists.txt' ! -name '.keepme' -type f $delete
 
 ## remove generated libraries (*.so and *.a files)
 find -type f -name '*\.so' $delete

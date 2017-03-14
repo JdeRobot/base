@@ -1,3 +1,112 @@
+jderobot (5.4.2) unstable; urgency=low
+
+  * release 5.4.2
+  * [PR #600] Enhancement. Updated Dockerfiles to use Jderobot 5.4.1
+  * [PR #604] Fix. Taxis now uses pose3D plugins instead of imuplugins 
+  * [PR #612] Fix. Updated the kobukiViewer cfg file for the new version of turtlebot plugin
+  * [PR #613] Fix. Modified IP's added WebSockets of drivers
+  * [PR #616] Fix. Taxi pose3d scale is now configured into IS metrics
+  * [PR #617] Fix. Added postinst script to jderobot-deps-dev metapackage
+  * [PR #628] New tool. Added colorTuner_py tool
+  * [PR #630] Fix. Solved bug in KobukiViewerJS and UavVieweJS
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 16 Nov 2016 14:05:00 +0100
+
+jderobot (5.4.1) unstable; urgency=low
+
+  * release 5.4.1  
+  * IMPORTANT NOTE. This changelog seems very short but it includes several version jumps of our third party software, so take a look specially to the issue #542, so it contains all the changes needed and references all the PR's made for the distribution upgrade. We no longer support Ubuntu 14.04 in benefit of Ubuntu 16.04, so we are now in the state of the art of all our third party and own code. Nevertheless, if someone wants to stay in ubuntu trusty, we have a branch called pre_xenial in our git repo.
+  * [PR #523] Enhancement. Ardrone2 and flyingKinect2 are now self-content. No crossed dependencies.
+  * [PR #525] Fix. JdeRobot libraries installation with a single-pass. cmake && make needed only once to install all the libraries.
+  * [PR #527] Enhancement. Added easyIce to all the JdeRobot components.
+  * [PR #528] Enhancement. Refactor of turtlebot plugin for gazebo. New and improved code organization and it now allows to connect all interfaces with a single port.
+  * [PR #531] Enhancement. The whole project now uses installation variable CMAKE_INSTALL_PREFIX instead of hardcoded paths (/usr/local).
+  * [PR #532] Enhancement. resourcelocator now uses installation variable CMAKE_INSTALL_PREFIX instead of hardcoded paths (/usr/local).
+  * [PR #534] Enhancement. build-independent directories no longer supported. Deleted.
+  * [PR #535] Enhancement. New emSensor driver and viewer. Sensor used in cars for parking.
+  * [PR #541] Enhancement. ParallelIce library it's now available to use for python components. New parallelIce_py library added.
+  * [PR #546] Enhancement. Added support for Gazebo Web.
+  * [PR #550] Enhancement. Added JdeRobot support for Windows using Docker. Only for teaching robotics.
+  * [PR #558] Enhancement. Added nodeJS to launch webtools. Also added nodeJS as dependency for JdeRobot.
+  * [PR #568] XENIAL UPGRADE. Added Gazebo7 to JdeRobot dependencies. Also changed all the code needed related with this new version. Deleted nao and flyingkinect plugins. No longer supported.
+  * [PR #570] XENIAL UPGRADE. Added Python3.5 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #571] XENIAL UPGRADE. Added Ice3.6 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #572] XENIAL UPGRADE. Added PCL1.8 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #573] XENIAL UPGRADE. Added OpenCV3 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #574] XENIAL UPGRADE. Added VTK7 to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #575] Fix. Cmake didn't install dynamic libraries in the system after building the project.
+  * [PR #578] Enhancement. Added easyIce to laser_server
+  * [PR #579] XENIAL UPGRADE. Updated uav_viewer from Qt4 to Qt5. Also replaced qwt for qfi. Also changed all the code needed related with this new version.
+  * [PR #580] XENIAL UPGRADE. Updated kobukiViewer from Qt4 to Qt5. Also changed all the code needed related with this new version.
+  * [PR #581] XENIAL UPGRADE. Updated basic_component from Qt4 to Qt5. Also changed all the code needed related with this new version.
+  * [PR #584] XENIAL UPGRADE. Added PyQt5 (Qt5 for Python3) to JdeRobot dependencies instead of PyQt4. Also changed all the code needed related with this new version.
+  * [PR #587] XENIAL UPGRADE. Added qfi (Qt Flying Instruments) to JdeRobot dependencies. Also changed all the code needed related with this new version.
+  * [PR #590] Upgrade. kobuki_driver changes from Pose2D to LegacyPose2D, due to kobukilib upgrade (from v0.3 to v0.7)
+  * [PR #591] XENIAL UPGRADE. Upgrade dependencies of some third party software for xenial installation.
+  * [PR #596] Fix. Changed type from char to string in boost xml_writer_settings instruction.
+  * [PR #597] Fix. Installation of python files for  Python3.5
+  * [PR #598] UPGRADE XENIAL. Added pip3 configuration for ice3.6 after JdeRobot installation.  
+  
+ -- Francisco Perez <f.perez475@gmail.com>,  Tue, 25 Oct 2016 00:15:00 +0100
+
+
+jderobot (5.4.0) unstable; urgency=low
+
+  * release 5.4.0
+  * [PR #517] Deleted stable, components and testing directorires. New organization of source code.
+  * [PR #518] Solved compilation fail caused by a CMakeLists directive from VisualHFSM
+  * [PR #520] Deleted unnecessary precompiled binaries.
+  * [PR #522] Deleted extra CMakeLists from root directory.
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Thu, 21 Jul 2016 21:00:00 +0100
+
+jderobot (5.3.3) unstable; urgency=low
+
+  * release 5.3.3
+  * [PR #408] New description and summary for the JdeRobot debian package.
+  * [PR #412] Moving JdeRobot drivers from components to drivers directory.
+  * [PR #414] Added max v and w speed configuration feature and minor GUI improvements to kobukiViewer.
+  * [PR #422] New UavViewerJS GUI and better JS files organization.
+  * [PR #423] Added new world for drone indoor.
+  * [PR #429] Migration of refereeViewer to teaching robotics repository.
+  * [PR #433 #444 #446] Moving JdeRobot tools from components to tools directory.
+  * [PR #438] Now visualHFSM can be opened from any folder and now the state can have more than one transition and they behave properly.
+  * [PR #445] Quick-fixes CMAKE_CXX_FLAGS resetting. Removes direct c++0x asignment.
+  * [PR #447] Configurable speed for uav_viewer from configuration file.
+  * [PR #450] Solved namingService issue when deactivated from cfg file.
+  * [PR #451] Added Actors_GrannyAnnie2.world to gazeboserver worlds.
+  * [PR #453] Fixes CMake checks and output for OpenGL and GLUT.
+  * [PR #456] Taxi models plugins loading are fixed.
+  * [PR #460] Now is possible to choose the name of the proxy with visualHFSM.
+  * [PR #464] Includes new paths to the install generation step in CMake.
+  * [PR #469] Quick-fix for x32 openni related components.
+  * [PR #473] Fixed gui bug in recorder2 and replayer2.
+  * [PR #474] Solved bottle neck in uavviewerjs and kobukiviewerjs.
+  * [PR #483] New tool basic_component_py.
+  * [PR #484] New driver laser_server for hokuyo laser.
+  * [PR #487] New driver MAVLinkDriver for several drones.
+  * [PR #488] Add dpkg package name discovery for boost and pcl.
+  * [PR #490] Reduced uav_viewer GUI to be more usable.
+  * [PR #492] All tools with GTK GUI now use resourcelocator.
+  * [PR #494] Gazebo models with plugin absolute paths for yellow and white Taxi 
+  * [PR #495] Added toggleable data to uav_viewer.
+  * hotfix! added EasyIce to the laser_server CMakeLists.
+  * [PR #496] Pose3d kobuki driver. Removed encoders.
+  * [PR #499] Replayer Pose3D and Pose3DEncoders threads sync fixed.
+  * [PR #500] Created config file to connect ColorTunner to ardrone_server .
+  * [PR #501] Interfaces on demand and minor GUI improvements for uav_viewer.
+  * [PR #502] Solved several problems with basic_component.
+  * [PR #503] Solved some problems with Jderobot example 3.2.
+  * [PR #504] Fixes package discovery for boost.
+  * [PR #505] Fix imageFormat error between recorder2 and cameraServer.
+  * hotfix! Solved a problem reading v and w max from cfg file in kobukiViewer.
+  * [PR #510] basic_component_py now has optional interfaces.
+  * [PR #511] Added face up option to laser_server.
+  * [PR #512] Fixes the 2-pass cmake problem for package generation.
+  * [PR #514] Solved laser wrong readings from kobukiViewer.
+
+ -- Francisco Perez <f.perez475@gmail.com>,  Thu, 30 Jun 2016 12:00:00 +0100
+
 jderobot (5.3.2) unstable; urgency=low
 
   * release 5.3.2

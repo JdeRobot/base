@@ -9,6 +9,12 @@ endif()
 include(buildpresets.cmake)
 
 
+# include Modules 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
+
+# include pythonAux Macros
+include(${PROJECT_SOURCE_DIR}/cmake/pythonAux.cmake)
+
 #check compiller
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	include(CheckCXXCompilerFlag)
@@ -32,17 +38,18 @@ endif()
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
 # Folder with ICE cpp interfaces
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/)
+SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/)
 # Folder with ICE python interfaces
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/)
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/)
 # Folder with ICE java interfaces
-SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/java/)
+SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/)
 # Folder JdeRobot libraries 
-SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs) 
+SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/libs) 
 # Folder ICE interface definitions
-SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice)
+SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice)
 # Main libraries
-SET( LIBS_NEEDED  colorspaces jderobotutil progeo pioneer fuzzylib visionlib parallelIce )
+SET( LIBS_NEEDED  jderobotutil colorspaces colorspacesmm easyiceconfig parallelIce depthLib geometry logger ns progeo pioneer fuzzylib  )
+SET( LIBS_EXTRA     jderobotHandlers jderobotViewer   resourcelocator xmlParser cvblob cvfast imgAnalyze JderobotInterfaces)
 
 # Create directories if necessary
 file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
@@ -87,7 +94,6 @@ endmacro()
 
 
 
-
 ###################
 #                 #
 #  CHECK SYSTEM   #
@@ -97,13 +103,6 @@ endmacro()
   # FIND & CHECK PRINCIPAL LIBRARIES
 
 include(FindPkgConfig)
-
-PKG_CHECK_MODULES(gsl REQUIRED gsl)
-include_directories(${gsl_INCLUDE_DIRS})
-link_directories(${gsl_LIBRARIES_DIRS})
-
-PKG_CHECK_MODULES(eigen REQUIRED eigen3)
-include_directories(${eigen_INCLUDE_DIRS})
 
 
 link_directories(${INTERFACES_CPP_DIR}/jderobot)
@@ -116,8 +115,7 @@ ENDFOREACH(LibFile)
 
 include(Deps/LoadJderobotDependencies.cmake)
 
-list(APPEND DEPS libvtk5.8)
-list(APPEND DEPS_DEV git cmake make gcc-4.8 g++-4.8 gcc g++ pkg-config libeigen3-dev libgsl0ldbl libgsl0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libvtk5-dev)
+list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
 list(APPEND DEPS_DEV "${DEPS}")
 
 # list(APPEND uses ; separator. We need ,
@@ -137,75 +135,96 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/libJderobotInterfaces.so DESTINATION /usr/local/lib/jderobot COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 
 # Install python files
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/*py)
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/*py)
 FOREACH(header ${HEADERS_FILES})
-	INSTALL(FILES ${header} DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
+	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/ COMPONENT core)
 ENDFOREACH(header)
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/python/jderobot/__init__.py DESTINATION /usr/lib/python2.7/jderobot/ COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot/__init__.py DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
 
 # install all libraries 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/*/*.so*)
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/libs/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
+	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/stable/libs/visionlib/*/*.so*)
+FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/libs/visionlib/*/*.so*)
 FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION /usr/local/lib/jderobot COMPONENT core)
+	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
 ENDFOREACH(lib)
 
 
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
     string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs" "" new_source2 ${new_source1})
-    INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source2} COMPONENT core)
+		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/libs" "" new_source2 ${new_source1})
+    INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source2} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install libraries headers
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/libs/*.h)
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/*.h)
 FOREACH(currentSourceFile ${HEADERS_FILES})
 	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-	INSTALL (FILES ${currentSourceFile} DESTINATION /usr/local/include/jderobot/${new_source1} COMPONENT core)
+	INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source1} COMPONENT core)
 ENDFOREACH(currentSourceFile)
 
 # Install Executables
-list_subdirectories2( LIST_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/ 1)
+list_subdirectories2( LIST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ 1)
+list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)
 
-FOREACH (currentBin ${LIST_COMPONENTS})
-    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
-    endif()
-    if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin})
-        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/stable/components/${currentBin}/${currentBin} DESTINATION /usr/local/bin OPTIONAL COMPONENT core)
+FOREACH (currentBin ${LIST_DRIVERS})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/${currentBin}/${currentBin})
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
+    else()
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/drivers/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
     endif()
 ENDFOREACH(currentBin)
 
+FOREACH (currentBin ${LIST_TOOLS})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/${currentBin}/${currentBin})
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
+    else()
+        INSTALL (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/tools/${currentBin}/${currentBin} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin OPTIONAL COMPONENT core)
+    endif()
+ENDFOREACH(currentBin)
+
+
+
 # Install interfaces headers
-INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/stable/interfaces/cpp/jderobot/
-    DESTINATION /usr/local/include/jderobot
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/jderobot/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot
 	COMPONENT core
     FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
 
 # Install slice
-FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/interfaces/slice/jderobot/*.ice)
-INSTALL (FILES ${SLICE_FILES} DESTINATION /usr/local/include/jderobot/slice COMPONENT core)
+FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice/jderobot/*.ice)
+INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT core)
 
 # Install CONF
-FILE(GLOB_RECURSE CONF_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.cfg)
-INSTALL (FILES ${CONF_FILES} DESTINATION /usr/local/share/jderobot/conf COMPONENT core)
+FILE(GLOB_RECURSE CONF_DRIVER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/*.cfg)
+FILE(GLOB_RECURSE CONF_TOOL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/*.cfg)
+
+SET(CONF_FILES ${CONF_COMPONENT_FILES} ${CONF_DRIVER_FILES} ${CONF_TOOL_FILES})
+INSTALL (FILES ${CONF_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
 
 # Install Glade
-FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/stable/components/*.glade)
-INSTALL (FILES ${GLADE_FILES} DESTINATION /usr/local/share/jderobot/glade COMPONENT core)
+FILE(GLOB_RECURSE GLADE_DRIVER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/*.glade)
+FILE(GLOB_RECURSE GLADE_TOOL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/*.glade)
+
+SET(GLADE_FILES ${GLADE_COMPONENT_FILES} ${GLADE_DRIVER_FILES} ${GLADE_TOOL_FILES})
+INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT core)
 
 # Install Deps cmake's tree
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+
+
+
+
+
 
 
 #file(WRITE dummy_main1.c "int main(int argc, char** argv){return 0;}")
@@ -254,7 +273,7 @@ SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
-SET (CPACK_PACKAGE_VERSION_MINOR 3)
+SET (CPACK_PACKAGE_VERSION_MINOR 4)
 SET (CPACK_PACKAGE_VERSION_PATCH 2)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 
@@ -297,10 +316,10 @@ SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
 "Software development suite for robotics and computer vision applications.")
 SET (CPACK_PACKAGE_DESCRIPTION
 "JdeRobot is a software development suite for robotics and computer vision applications. 
-The applications are made up of a collection of concurrent processes (named components) that
-interoperate among them. They exchange messages using ICE communication middleware. The components may 
-run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
-JdeRobot includes a collection of drivers and tools.
+ The applications are made up of a collection of concurrent processes (named components) that
+ interoperate among them. They exchange messages using ICE communication middleware. The components may 
+ run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
+ JdeRobot includes a collection of drivers and tools.
  Get source from https://github.com/RoboticsURJC/JdeRobot
  Package created with revision ${GIT_HEAD}")
 
@@ -336,3 +355,25 @@ execute_process(
 
 #SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
 include (CPack Documentation)
+
+
+
+
+SET(JdeRobot_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/jderobot )
+SET(ALL_LIBS  ${LIBS_NEEDED} ${LIBS_EXTRA})
+foreach (l ${ALL_LIBS} )
+	if (TARGET ${l})
+		SET(JdeRobot_LIBS_NAMES ${JdeRobot_LIBS_NAMES} ${l})
+	endif()
+endforeach()
+
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/JdeRobotInstallConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake" @ONLY)
+install (SCRIPT "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake")
+SET(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+install(FILES
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake"
+  "${PROJECT_BINARY_DIR}/JdeRobotConfigVersion.cmake"
+  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
+

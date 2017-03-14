@@ -26,6 +26,7 @@
 
 build=.dpkg_pkgs
 mkdir -p $build
+post=../scripts/cmake/postinst
 for pkginfo in *.info
 do
 	pkgname=${pkginfo%.info}
@@ -33,6 +34,8 @@ do
 	target=$build/$pkgname/DEBIAN
 	mkdir -p $target
 	cp $pkginfo $target/control
+	cp $post  $target
+	chmod 555 $target/postinst
 	dpkg --build $build/$pkgname
 	cp $build/${pkgname}.deb .
 done
