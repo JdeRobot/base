@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="monaco">
+  <pose>0 0 0 0 0 0</pose>
+  <static>false</static>
+    <link name="monaco">
+    	<pose>0 0 0 0 0 0</pose>
+        <collision name="collision">
+            <geometry>
+               <mesh>
+                  <uri>model://monaco/meshes/Monaco.dae</uri>
+               </mesh>
+            </geometry>
+        </collision>
+        <visual name="visual">
+            <geometry>
+               <mesh>
+                  <uri>model://monaco/meshes/Monaco.dae</uri>
+               </mesh>
+            </geometry>
+        </visual>
+     </link>
+</model>
+</sdf>
