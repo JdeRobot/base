@@ -34,6 +34,7 @@
 #include <turtlebot/interfaces/pose3di.h>
 #include <turtlebot/interfaces/pushcamerai.h>
 #include <turtlebot/interfaces/laseri.h>
+#include <turtlebot/interfaces/bumperi.h>
 
 #include <turtlebot/turtlebotsensors.hh>
 #include <turtlebot/turtlebotcontrol.hh>

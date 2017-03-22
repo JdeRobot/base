@@ -47,6 +47,18 @@ public:
     double maxRange = 10; //10 m
 };
 
+class BumperD
+{
+public:
+    int numContacts = 0;
+    std::string contact1 = "";
+    std::string contact2 = "";
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    float depth = 0;
+};
+
 class TurtlebotSensors
 {
 public:
@@ -71,6 +83,7 @@ public:
 public:
     gazebo::sensors::CameraSensorPtr cam[NUM_CAMS];
     gazebo::sensors::RaySensorPtr laser;
+    gazebo::sensors::ContactSensorPtr bumper;
 
 
 private:
@@ -80,15 +93,18 @@ private:
 private:
     gazebo::event::ConnectionPtr sub_cam[NUM_CAMS];
     gazebo::event::ConnectionPtr sub_laser;
+    gazebo::event::ConnectionPtr sub_bumper;
     gazebo::event::ConnectionPtr updatePose;
 
     void _on_cam(int id);
     void _on_laser();
+    void _on_bumper();
     void _on_pose();
 
 public:
     cv::Mat img[NUM_CAMS];
     LaserD laserData;
+    BumperD bumperData;
     gazebo::math::Pose pose;
 
     double position;

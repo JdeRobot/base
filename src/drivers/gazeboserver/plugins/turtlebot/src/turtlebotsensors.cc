@@ -49,6 +49,8 @@ TurtlebotSensors::Load(ModelPtr model){
             cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
             cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
+        if (name.find("bumper") != std::string::npos)
+            bumper = std::static_pointer_cast<ContactSensor>(s);
 
         pose = model->GetWorldPose();
     }
@@ -71,6 +73,13 @@ TurtlebotSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t laser was not connected (NULL pointer)" << std::endl;
 
+
+    if (bumper){
+        sub_bumper = bumper->ConnectUpdated(
+            boost::bind(&TurtlebotSensors::_on_bumper, this));
+    }else
+        std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
+
     ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
 
     //Pose3d
@@ -86,6 +95,7 @@ TurtlebotSensors::debugInfo(){
     std::cout << fmt % cam[CAM_LEFT]->Name() % cam[CAM_LEFT]->Id();
     std::cout << fmt % cam[CAM_RIGHT]->Name() % cam[CAM_RIGHT]->Id();
     std::cout << fmt % laser->Name() % laser->Id();
+    std::cout << fmt % bumper->Name() % bumper->Id();
 }
 
 void
@@ -141,6 +151,42 @@ TurtlebotSensors::_on_laser(){
 
     laserData = data;
 
+}
+
+void
+TurtlebotSensors::_on_bumper(){
+
+    BumperD bumperData;
+
+    //laser values
+    gazebo::msgs::Contacts contacts;
+    contacts = this->bumper->Contacts();
+
+    int end = contacts.contact_size();
+
+    bumperData.numContacts = contacts.contact_size();
+    bumperData.contact1 = contacts.contact(end).collision1();
+    bumperData.contact2 = contacts.contact(end).collision2();
+
+
+    for (int i = 0; i < contacts.contact_size(); ++i)
+      {
+        std::cout << "Collision between[" << contacts.contact(i).collision1()
+                  << "] and [" << contacts.contact(i).collision2() << "]\n";
+
+        for (int j = 0; j < contacts.contact(i).position_size(); ++j)
+        {
+          std::cout << j << "  Position:"
+                    << contacts.contact(i).position(j).x() << " "
+                    << contacts.contact(i).position(j).y() << " "
+                    << contacts.contact(i).position(j).z() << "\n";
+          std::cout << "   Normal:"
+                    << contacts.contact(i).normal(j).x() << " "
+                    << contacts.contact(i).normal(j).y() << " "
+                    << contacts.contact(i).normal(j).z() << "\n";
+          std::cout << "   Depth:" << contacts.contact(i).depth(j) << "\n";
+        }
+      }
 }
 
 void
