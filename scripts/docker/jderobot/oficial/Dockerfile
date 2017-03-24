@@ -1,7 +1,7 @@
 FROM ubuntu:xenial
 
 
-MAINTAINER Aitor Martínez Fernández+aitor-martinez.fernandez@gmail.com
+LABEL manteiner Aitor Martínez Fernández+aitor.martinez.fernandez@gmail.com
 
 ########## USAGE ##############
 
@@ -13,21 +13,22 @@ LABEL Usage.listVideos="docker run --rm jderobot/jderobot lsvideo"
 
 ########## setup Repositories ##############
 
-## Gazebo ##
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
-
-RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable xenial main" > /etc/apt/sources.list.d/gazebo-latest.list
+## ROS ##
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list
 
 ## ZeroC ##
 RUN sh -c 'echo deb http://zeroc.com/download/apt/ubuntu16.04 stable main > /etc/apt/sources.list.d/zeroc.list'
-
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 5E6DA83306132997
+
+## Gazebo ##
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable xenial main" > /etc/apt/sources.list.d/gazebo-stable.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 
 
 ## JdeRobot ##
 RUN sh -c 'echo "deb http://jderobot.org/apt xenial main" > /etc/apt/sources.list.d/jderobot.list'
-
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B0E7F58E82C8091DF945A0453DA08892EE69A25C
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv B0E7F58E82C8091DF945A0453DA08892EE69A25C
 
 
 ########## Install JdeRobot ##############
@@ -57,6 +58,11 @@ RUN apt-get update && apt-get install -q -y \
     pkg-config \
     psmisc \
     && rm -rf /var/lib/apt/lists/*
+
+
+######## Adding source commads to bashrc #######
+RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc 
+RUN cat /usr/local/share/jderobot/gazebo/gazebo-setup.sh >> /root/.bashrc 
     
     
 ####### clone gzweb #######

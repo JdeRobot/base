@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source /opt/ros/kinetic/setup.bash
+
 if [ "$1" = 'video' ]; then
    
     cd /cfg
