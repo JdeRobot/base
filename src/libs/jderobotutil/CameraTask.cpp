@@ -80,7 +80,7 @@ void CameraTask::run(){
     int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
     if (process > (int)cycle ){
-      jderobot::Logger::getInstance()->warning("-------- Camera timeout-" );
+      LOG(WARNING) << "-------- Camera timeout-";
     }
     else{
       int delay = (int)cycle - process;
@@ -102,7 +102,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   if (format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name)
   {
     if (image.channels() != 3){
-        jderobot::Logger::getInstance()->error("Error, image with FORMAT_RGB8_Z must have 3 channels");
+        LOG(ERROR) << "Error, image with FORMAT_RGB8_Z must have 3 channels";
         return;
     }
     unsigned long source_len = image.rows*image.cols*3;
@@ -113,16 +113,16 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
     int r = compress((Bytef *) compress_buf, (uLongf *) &compress_len, (const Bytef *) &(image.data[0]), (uLong)source_len );
 
     if(r != Z_OK) {
-      jderobot::Logger::getInstance()->error("Compression Error");
+      LOG(ERROR) << "Compression Error";
       switch(r) {
         case Z_MEM_ERROR:
-          jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
+          LOG(ERROR) << "Compression Error: Not enough memory to compress";
           break;
         case Z_BUF_ERROR:
-          jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small.");
+          LOG(ERROR) << "Compression Error: Target buffer too small.";
           break;
         case Z_STREAM_ERROR:
-          jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level.");
+          LOG(ERROR) << "Compression Error: Invalid compression level.";
           break;
       }
     }
@@ -150,7 +150,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   else if (format == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name)
   {
     if (image.channels() != 3){
-        jderobot::Logger::getInstance()->error("Error, image with FORMAT_RGB8_Z must have 3 channels");
+        LOG(ERROR) << "Error, image with FORMAT_RGB8_Z must have 3 channels";
         return;
     }
 
@@ -172,7 +172,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   else if (format == colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name)
   {
     if (image.channels() != 1){
-        jderobot::Logger::getInstance()->error("Error, image with FORMAT_GRAY8_Z must have 1 channels");
+        LOG(ERROR) << "Error, image with FORMAT_GRAY8_Z must have 1 channels";
         return;
     }
 
@@ -184,16 +184,16 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
 
     int r = compress2((Bytef *) compress_buf, (uLongf *) &compress_len, (Bytef *) &(image.data[0]), (uLong)source_len , 9);
     if(r != Z_OK) {
-      jderobot::Logger::getInstance()->error("Compression Error");
+      LOG(ERROR) << "Compression Error";
       switch(r) {
       case Z_MEM_ERROR:
-        jderobot::Logger::getInstance()->error("Compression Error: Not enough memory to compress");
+        LOG(ERROR) << "Compression Error: Not enough memory to compress";
         break;
       case Z_BUF_ERROR:
-        jderobot::Logger::getInstance()->error("Compression Error: Target buffer too small");
+        LOG(ERROR) << "Compression Error: Target buffer too small";
         break;
       case Z_STREAM_ERROR:    // Invalid compression level
-        jderobot::Logger::getInstance()->error("Compression Error: Invalid compression level");
+        LOG(ERROR) << "Compression Error: Invalid compression level";
         break;
       }
     }
@@ -208,7 +208,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   else if (format == colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name)
   {
     if (image.channels() != 1){
-        jderobot::Logger::getInstance()->error("Error, image with FORMAT_GRAY8_Z must have 1 channels");
+        LOG(ERROR) << "Error, image with FORMAT_GRAY8_Z must have 1 channels";
         return;
     }
     reply->pixelData.resize(image.rows*image.cols);
@@ -216,7 +216,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   }
   else
   {
-    jderobot::Logger::getInstance()->error("Format image not recognized: " + format);
+    LOG(ERROR) << "Format image not recognized: " + format;
   }
   cb->ice_response(reply);
 }

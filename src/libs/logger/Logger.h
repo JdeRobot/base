@@ -25,120 +25,34 @@
 #include <fstream>
 #include <vector>
 #include <Ice/Properties.h>
+#include <glog/logging.h>
 
 
 namespace jderobot
 {
-	enum Levels{
 
-		DEBUG=0,
-		INFO,
-		WARNING,
-		ERROR
-	};
-
-
-	/**
-	 * Logger class implements a thread safe logger, implemented as singleton.
-	 * This logger allows save traces in file and show the traces in the screen simultaneously.
-	 */
-	class Logger
-	{
+	class Logger {
 
 	public:
+		static void initialize(const std::string& appName){
 
-		/**
-		 * \brief Singleton to get the instance. Just one object in memory for execution
-		 */
+            for (google::LogSeverity s = google::WARNING; s < google::NUM_SEVERITIES; s++)
+                google::SetLogDestination(s, "");
+            google::SetLogDestination(google::INFO, "log.log");
+            FLAGS_alsologtostderr = 1;
+			fLI::FLAGS_max_log_size=10;
+		}
 
-		static Logger* getInstance();
+        static void setFileLog(const std::string& logFile){
+            for (google::LogSeverity s = google::WARNING; s < google::NUM_SEVERITIES; s++)
+                google::SetLogDestination(s, "");
+            google::SetLogDestination(google::INFO, logFile.c_str());
+        }
 
-		/**
-		 * \brief Set the name of file to save every traces.
-		 * It's not mandatory config, if you don't configure this field
-		 * just see the traces in the screen
-		 *
-		 * @param logFile The name of file
-		 *
-		 */
-		void setFileLog (std::string logFile);
+        static void setLogLevel(int level){
+            fLI::FLAGS_minloglevel=level;
 
-		/**
-		 * \brief Set log level for log file. Just the upper levers will be saved in file.
-		 *
-		 * @param levels The level of log file
-		 *
-		 */
-		void setFileLevel (enum Levels);
-
-		/**
-		 * \brief Set log level for screen. Just the upper levers will be shown in the screen
-		 *
-		 * @param levels The level of screen log
-		 *
-		 */
-		void setScreenLevel (enum Levels);
-
-		/**
-		 * \brief Save log message as debug level
-		 *
-		 * @param message The message saved
-		 *
-		 */
-		void debug (std::string message);
-
-		/**
-		 * \brief Save log message as info level
-		 *
-		 * @param message The message saved
-		 *
-		 */
-		void info (std::string message);
-
-		/**
-		 * \brief Save log message as warning level
-		 *
-		 * @param message The message saved
-		 *
-		 */
-		void warning (std::string message);
-
-		/**
-		 * \brief Save log message as error level
-		 *
-		 * @param message The message saved
-		 *
-		 */
-		void error (std::string message);
-
-
-		/**
-		 * \brief Analyzes the configuration keys related to the logger
-		 *
-		 * @param prop the Ice properties
-		 * @param componentPrefix The string prefix of the component
-		 */
-		void analizeProperties(Ice::PropertiesPtr& prop, const std::string& componentPrefix);
-
-	private:
-
-		Logger();
-		~Logger();
-
-		void trace (Levels level, std::string message);
-
-		void trace_screen (Levels level, std::string message);
-
-		std::string mLogFile;
-		std::ofstream* mFs;
-
-		Levels mLogLevel;
-		Levels mScrenLevel;
-		int mLastLevel;
-
-		pthread_mutex_t mWriteLock;
-
-		std::stringstream mLogDateTime;
+        }
 	};
 }
 

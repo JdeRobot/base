@@ -82,7 +82,7 @@ void control::checkStatus(){
 	}
 	else{
 		if (this->repeat){
-			jderobot::Logger::getInstance()->info("-------------- STARTING THE LOG AGAIN --------------");
+			LOG(INFO) << "-------------- STARTING THE LOG AGAIN --------------";
 			IceUtil::Time now = IceUtil::Time::now();
 			long long int nowInt=(now.toMicroSeconds())/1000;
 			this->newTime=nowInt;
@@ -90,7 +90,8 @@ void control::checkStatus(){
 			this->sem.broadcast();
 		}
 		this->status=jderobot::FINISHED;
-		jderobot::Logger::getInstance()->info("-------------- FINISHED --------------");
+        LOG(INFO) << "-------------- FINISHED --------------";
+
 	}
 	this->controlMutex.unlock();
 }

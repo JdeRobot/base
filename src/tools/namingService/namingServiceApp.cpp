@@ -49,6 +49,8 @@ void exitComponent(int s)
 
 int main(int argc, char** argv){
 
+	jderobot::Logger::initialize(argv[0]);
+
 	struct sigaction sigIntHandler;
 
 	sigIntHandler.sa_handler = exitComponent;
@@ -68,8 +70,7 @@ int main(int argc, char** argv){
 		return 1;
 	}
 	catch (const char* msg) {
-		jderobot::Logger::getInstance()->error(msg);
-		return 1;
+		LOG(FATAL) << msg;
 	}
 
 
@@ -81,26 +82,17 @@ int main(int argc, char** argv){
 
 		std::string logFile = prop->getProperty(prefixComponent + ".Log.File.Name");
 		if (logFile.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set log file!");
+			LOG(WARNING) << "You didn't set log file!";
 		else
-			jderobot::Logger::getInstance()->setFileLog(logFile);
+			jderobot::Logger::setFileLog(logFile);
 
-		std::string logLevel = prop->getProperty(prefixComponent + ".Log.File.Level");
+		std::string logLevel = prop->getProperty(prefixComponent + ".Log.Level");
 		if (logLevel.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set *.Log.File.Level key!");
+			LOG(WARNING) << "You didn't set *.Log.Level key!";
 		else
-			jderobot::Logger::getInstance()->setFileLevel(jderobot::Levels(boost::lexical_cast<int>(logLevel)));
+			jderobot::Logger::setLogLevel(boost::lexical_cast<int>(logLevel));
 
-		std::string screenLevel = prop->getProperty(prefixComponent + ".Log.Screen.Level");
-		if (screenLevel.size()==0)
-			jderobot::Logger::getInstance()->warning("You didn't set *.Log.Screen.Level key!");
-		else
-			jderobot::Logger::getInstance()->setScreenLevel(jderobot::Levels(boost::lexical_cast<int>(screenLevel)));
-
-		jderobot::Logger::getInstance()->info("Logger:: screenLevel=" + screenLevel + " logLevel=" + logLevel + " LogFile=" + logFile);
-
-
-
+		LOG(INFO) << "Logger:: logLevel=" + logLevel + " LogFile=" + logFile;
 
 		// Analyze EndPoint
 		std::string Endpoints = prop->getProperty(prefixComponent + ".Endpoints");
@@ -110,7 +102,7 @@ int main(int argc, char** argv){
 		if (communicator_active){
 
 			std::string Name = prop->getProperty(prefixComponent + ".Name");
-			jderobot::Logger::getInstance()->info("Creating Communicator: " + Name + " (" + Endpoints + ")");
+			LOG(INFO) << "Creating Communicator: " + Name + " (" + Endpoints + ")";
 			std::string objPrefix(prefixComponent);
 			namingservice_prx = new NamingService::NamingServiceJdeRobot (objPrefix);
 
@@ -118,8 +110,7 @@ int main(int argc, char** argv){
 		}
 		else
 		{
-			jderobot::Logger::getInstance()->warning("No NamingService Interface declared!");
-			exit(-1);
+			LOG(FATAL) << "No NamingService Interface declared!";
 		}
 
 		adapter->activate();
@@ -136,7 +127,7 @@ int main(int argc, char** argv){
 		return 1;
 	}
 
-	jderobot::Logger::getInstance()->info("Component finished correctly!");
+	LOG(INFO)<< "Component finished correctly!";
 
 	return 0;
 

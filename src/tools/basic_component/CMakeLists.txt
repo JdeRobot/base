@@ -83,6 +83,7 @@ if (${QT5_COMPILE})
     ${ZLIB_LIBRARIES}
 ${CMAKE_THREAD_LIBS_INIT}
     ${resourcelocator_LIBRARIES}
+            ${GLOG_LIBRARIES}
     )
 ENDIF()
 

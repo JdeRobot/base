@@ -34,14 +34,14 @@ void NamingServiceJdeRobot::bind (const jderobot::NamingNodePtr& node, const Ice
 {
 	if (exists(node))
 	{
-		jderobot::Logger::getInstance()->warning("Name already bind " + node->name + " replace it ...");
+		LOG(WARNING) << "Name already bind " + node->name + " replace it ...";
 		remove(node);
 	}
 
 	mNodes->nodes.push_back(node);
 
-	jderobot::Logger::getInstance()->info("Bind:: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
-			node->ip + ":" + boost::lexical_cast<std::string>(node->port) );
+	LOG(INFO) <<"Bind:: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
+			node->ip + ":" + boost::lexical_cast<std::string>(node->port);
 
 	save();
 }
@@ -50,20 +50,20 @@ void NamingServiceJdeRobot::unbind (const jderobot::NamingNodePtr& node, const I
 {
 	if (! exists(node))
 	{
-		jderobot::Logger::getInstance()->error("Name not exist to unbind " + node->name);
+		LOG(ERROR) << "Name not exist to unbind " + node->name;
 		jderobot::NameNotExistException ex ("Name not exist to unbind " + node->name);
 		throw ex;
 	}
 
 	if (remove(node))
 	{
-		jderobot::Logger::getInstance()->info("unbind:: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
-				node->ip + ":" + boost::lexical_cast<std::string>(node->port) );
+		LOG(INFO) << "unbind:: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
+				node->ip + ":" + boost::lexical_cast<std::string>(node->port);
 
 		save();
 	}
 	else
-		jderobot::Logger::getInstance()->error("unbind:: there was an error with unbind node" );
+		LOG(ERROR) << "unbind:: there was an error with unbind node" ;
 
 }
 
@@ -80,7 +80,7 @@ jderobot::NodeContainerPtr NamingServiceJdeRobot::resolveByName (const std::stri
 
 	if (result->nodes.size() == 0)
 	{
-		jderobot::Logger::getInstance()->error("Name not exist to resolveByName " + name);
+		LOG(ERROR) << "Name not exist to resolveByName " + name;
 		jderobot::NameNotExistException ex ("Name not exist to resolveByName " + name);
 		throw ex;
 	}
@@ -100,7 +100,7 @@ jderobot::NodeContainerPtr NamingServiceJdeRobot::resolveByInterface (const std:
 
 	if (result->nodes.size() == 0)
 	{
-		jderobot::Logger::getInstance()->error("Interface not exist to resolveByInterface " + interface);
+		LOG(ERROR) << "Interface not exist to resolveByInterface " + interface;
 		jderobot::InterfaceNotExistException ex ("Interface not exist to resolveByInterface " + interface);
 		throw ex;
 	}
@@ -149,7 +149,7 @@ bool NamingServiceJdeRobot::load ()
 {
 	std::ifstream in(serializeFile.c_str());
 
-	jderobot::Logger::getInstance()->info ("Trying to get persistent data from " + serializeFile);
+	LOG(INFO) << "Trying to get persistent data from " + serializeFile;
 	std::string line;
 	while (std::getline(in, line))
 	{
@@ -158,7 +158,7 @@ bool NamingServiceJdeRobot::load ()
 
 		if (elems.size() != 5)
 		{
-			jderobot::Logger::getInstance()->warning("Restore error line (not process): " + line);
+			LOG(WARNING)<<  "Restore error line (not process): " + line;
 			continue;
 		}
 
@@ -171,8 +171,8 @@ bool NamingServiceJdeRobot::load ()
 
 		mNodes->nodes.push_back(node);
 
-		jderobot::Logger::getInstance()->info("Restore node: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
-					node->ip + ":" + boost::lexical_cast<std::string>(node->port) );
+		LOG(INFO) << "Restore node: " + node->name + " - " + node->interfaceName + " - " + node->protocol + " - " +
+					node->ip + ":" + boost::lexical_cast<std::string>(node->port) ;
 
 	}
 	return true;

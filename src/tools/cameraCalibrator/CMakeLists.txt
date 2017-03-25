@@ -29,5 +29,6 @@ add_executable (cameraCalibrator  ${SOURCE_FILES})
         #    ${Gearbox_LIBRARIES}
 	${easyiceconfig_LIBRARIES} 
         ${ZeroCIce_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT} 
+        ${CMAKE_THREAD_LIBS_INIT}
+			${GLOG_LIBRARIES}
 )

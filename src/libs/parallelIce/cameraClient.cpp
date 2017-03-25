@@ -53,7 +53,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
+		LOG(FATAL) << prefix + " Not camera provided";
 	}
 	//check if default format is defined
 	std::string definedFormat=prop->getProperty(prefix+"ImageFormat");
@@ -95,7 +95,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
     this->mImageFormat = definedFormat;
   }
 
-	jderobot::Logger::getInstance()->info("Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+	LOG(INFO) << "Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name;
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
@@ -133,7 +133,7 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix, std::str
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
+		LOG(FATAL)<< prefix + " Not camera provided" ;
 	}
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
@@ -157,7 +157,7 @@ void cameraClient::setImageFormat (std::string format)
 {
 	mImageFormat = format;
 
-	jderobot::Logger::getInstance()->info("Changed format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+	LOG(INFO) << "Changed format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name;
 };
 
 
@@ -315,7 +315,7 @@ cameraClient::run(){
 
 		}
 		catch(...){
-			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
+			LOG(WARNING) << prefix +"error during request (connection error)";
 			usleep(50000);
 
 		}
@@ -325,7 +325,7 @@ cameraClient::run(){
 
 
 		if (process > (int)cycle ){
-			jderobot::Logger::getInstance()->warning("--------" + prefix + " adquisition timeout-");
+			DLOG(WARNING) << "--------" + prefix + " adquisition timeout-";
 		}
 		else{
 			int delay = (int)cycle - process;
@@ -344,7 +344,7 @@ cameraClient::run(){
 		if (iterIndex == INT_MAX) 
 		{
 			iterIndex = 0;
-			jderobot::Logger::getInstance()->info( "*** Counter reset");
+			DLOG(INFO) << "*** Counter reset";
 		}
 
 	}

@@ -1,5 +1,5 @@
 
-SET( SOURCE_FILES main.cpp NamingServiceJdeRobot.h NamingServiceJdeRobot.cpp)
+SET( SOURCE_FILES namingServiceApp.cpp NamingServiceJdeRobot.h NamingServiceJdeRobot.cpp)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -24,4 +24,5 @@ TARGET_LINK_LIBRARIES(namingService
     ${easyiceconfig_LIBRARIES}   
     JderobotInterfaces
     logger
+	${GLOG_LIBRARIES}
 )

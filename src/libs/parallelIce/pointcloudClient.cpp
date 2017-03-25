@@ -47,7 +47,7 @@ pointcloudClient::pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix) 
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
+		LOG(ERROR)<< prefix + " Not camera provided";
 		throw "Invalid proxy" + prefix;
 	}
 	_done=false;
@@ -85,7 +85,7 @@ pointcloudClient::pointcloudClient(Ice::CommunicatorPtr ic, std::string prefix, 
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
+		LOG(ERROR) << prefix + " Not camera provided";
 		throw "Invalid proxy" + prefix;
 	}
 	_done=false;
@@ -136,7 +136,7 @@ void pointcloudClient::run(){
 			this->semBlock.broadcast();
 		}
 		catch(...){
-			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
+			LOG(WARNING) << prefix +"error during request (connection error)";
 			usleep(50000);
 
 		}
@@ -147,7 +147,7 @@ void pointcloudClient::run(){
 		int process = this->cycle - (IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds());
 
 		if (process > (int)cycle ){
-			jderobot::Logger::getInstance()->warning(prefix + ": pointCloud adquisition timeout-");
+			DLOG(WARNING) << prefix + ": pointCloud adquisition timeout-";
 		}
 		else{
 			int delay = (int)cycle - process;
