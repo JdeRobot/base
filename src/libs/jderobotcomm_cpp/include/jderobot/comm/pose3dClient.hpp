@@ -24,8 +24,7 @@
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
 #include <jderobot/comm/interfaces/pose3dClient.hpp>
-#include <jderobot/comm/ice/pose3dIceClient.hpp>
-#include <jderobot/comm/ros/listenerPose.hpp>
+
 
 
 

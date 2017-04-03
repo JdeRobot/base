@@ -49,7 +49,6 @@ void exitComponent(int s)
 
 int main(int argc, char** argv){
 
-	jderobot::Logger::initialize(argv[0]);
 
 	struct sigaction sigIntHandler;
 
@@ -79,20 +78,8 @@ int main(int argc, char** argv){
 		std::string prefixComponent("NamingService");
 
 		// Analyze LOG section
+		jderobot::Logger::initialize(argv[0],prop,prefixComponent);
 
-		std::string logFile = prop->getProperty(prefixComponent + ".Log.File.Name");
-		if (logFile.size()==0)
-			LOG(WARNING) << "You didn't set log file!";
-		else
-			jderobot::Logger::setFileLog(logFile);
-
-		std::string logLevel = prop->getProperty(prefixComponent + ".Log.Level");
-		if (logLevel.size()==0)
-			LOG(WARNING) << "You didn't set *.Log.Level key!";
-		else
-			jderobot::Logger::setLogLevel(boost::lexical_cast<int>(logLevel));
-
-		LOG(INFO) << "Logger:: logLevel=" + logLevel + " LogFile=" + logFile;
 
 		// Analyze EndPoint
 		std::string Endpoints = prop->getProperty(prefixComponent + ".Endpoints");

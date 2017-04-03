@@ -32,4 +32,6 @@ TARGET_LINK_LIBRARIES(opencvdemo
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

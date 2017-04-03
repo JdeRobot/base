@@ -43,4 +43,6 @@ TARGET_LINK_LIBRARIES(recorder2
     JderobotInterfaces
     jderobotutil
     ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

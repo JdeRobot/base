@@ -24,8 +24,6 @@
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
 #include <jderobot/comm/interfaces/laserClient.hpp>
-#include <jderobot/comm/ice/laserIceClient.hpp>
-#include <jderobot/comm/ros/listenerLaser.hpp>
 
 
 

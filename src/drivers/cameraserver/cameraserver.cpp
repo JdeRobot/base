@@ -226,7 +226,7 @@ int main(int argc, char** argv)
             }
             catch (Ice::ConnectionRefusedException& ex)
             {
-                jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
+                LOG(ERROR) << "Impossible to connect with NameService!";
                 exit(-1);
             }
         }

@@ -40,4 +40,6 @@ TARGET_LINK_LIBRARIES(cameraview
 	${resourcelocator_LIBRARIES}
     ${catkin_LIBRARIES}
     ${jderobotcomm_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

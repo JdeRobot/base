@@ -26,6 +26,7 @@
 #include <vector>
 #include <Ice/Properties.h>
 #include <glog/logging.h>
+#include <boost/lexical_cast.hpp>
 
 
 namespace jderobot
@@ -42,6 +43,25 @@ namespace jderobot
             FLAGS_alsologtostderr = 1;
 			fLI::FLAGS_max_log_size=10;
 		}
+
+        static void initialize(const std::string& appName,const Ice::PropertiesPtr& prop, const std::string& prefixComponent){
+
+            initialize(appName);
+
+            std::string logFile = prop->getProperty(prefixComponent + ".Log.File.Name");
+            if (logFile.size()==0)
+                LOG(WARNING) << "You didn't set log file!";
+            else
+                jderobot::Logger::setFileLog(logFile);
+
+            std::string logLevel = prop->getProperty(prefixComponent + ".Log.Level");
+            if (logLevel.size()==0)
+                LOG(WARNING) << "You didn't set *.Log.Level key!";
+            else
+                jderobot::Logger::setLogLevel(boost::lexical_cast<int>(logLevel));
+
+            LOG(INFO) << "Logger:: logLevel=" + logLevel + " LogFile=" + logFile;
+        }
 
         static void setFileLog(const std::string& logFile){
             for (google::LogSeverity s = google::WARNING; s < google::NUM_SEVERITIES; s++)

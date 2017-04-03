@@ -24,8 +24,7 @@
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
 #include <jderobot/comm/interfaces/motorsClient.hpp>
-#include <jderobot/comm/ice/motorsIceClient.hpp>
-#include <jderobot/comm/ros/publisherMotors.hpp>
+
 
 
 

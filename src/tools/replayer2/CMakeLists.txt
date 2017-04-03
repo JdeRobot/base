@@ -41,4 +41,6 @@ TARGET_LINK_LIBRARIES(replayer2
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

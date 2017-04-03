@@ -30,6 +30,7 @@ TARGET_LINK_LIBRARIES ( naooperator
     colorspacesmm
     ${CMAKE_THREAD_LIBS_INIT}
     ${resourcelocator_LIBRARIES}
-)
+        ${GLOG_LIBRARIES}
+        )
 
 ENDIF()

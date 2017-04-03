@@ -34,4 +34,6 @@ TARGET_LINK_LIBRARIES(giraffeClient
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

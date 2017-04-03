@@ -62,7 +62,7 @@ namespace replayer {
 	class CameraI: virtual public jderobot::Camera {
 	public:
 		CameraI(std::string& propertyPrefix, Ice::CommunicatorPtr ic, long long int initStateIN): prefix(propertyPrefix) {
-			jderobot::Logger::getInstance()->info("Creating " + propertyPrefix );
+			LOG(INFO)<< "Creating " + propertyPrefix;
 
 		   imageDescription = (new jderobot::ImageDescription());
 		   prop = ic->getProperties();
@@ -73,8 +73,8 @@ namespace replayer {
 		   this->dataPath=prop->getProperty(propertyPrefix+"Dir");
 		   this->fileFormat=prop->getProperty(propertyPrefix+"FileFormat");
 		   this->format = prop->getProperty(propertyPrefix+"Format");
-		   jderobot::Logger::getInstance()->info("PATH " + this->dataPath );
-		   jderobot::Logger::getInstance()->info("FORMAT: " + this->fileFormat );
+			LOG(INFO)<< "PATH " + this->dataPath ;
+			LOG(INFO)<< "FORMAT: " + this->fileFormat ;
 
 
 		   this->initState=initStateIN;
@@ -97,7 +97,7 @@ namespace replayer {
 		}
 
 		virtual ~CameraI() {
-			jderobot::Logger::getInstance()->info("Stopping and joining thread for camera: " +  cameraDescription->name);
+			LOG(INFO)<< "Stopping and joining thread for camera: " +  cameraDescription->name;
 		}
 
 		virtual jderobot::ImageDescriptionPtr getImageDescription(const Ice::Current& c){
@@ -126,12 +126,12 @@ namespace replayer {
 		}
 
 		virtual std::string startCameraStreaming(const Ice::Current&){
-			jderobot::Logger::getInstance()->info("Should be made anything to start camera streaming: " + cameraDescription->name);
+			LOG(INFO)<< "Should be made anything to start camera streaming: " + cameraDescription->name;
 			return std::string("");
 		}
 
 		virtual void stopCameraStreaming(const Ice::Current&) {
-			jderobot::Logger::getInstance()->info("Should be made anything to stop camera streaming: " + cameraDescription->name);
+			LOG(INFO)<< "Should be made anything to stop camera streaming: " + cameraDescription->name;
 		}
 
 		virtual void reset(const Ice::Current&)
@@ -166,7 +166,7 @@ namespace replayer {
 				std::string fileName(this->path + "cameraData.jde");
 				std::ifstream myfile(fileName.c_str());
 				if (!myfile.is_open())
-					jderobot::Logger::getInstance()->error("Error while trying to open: " + fileName);
+					LOG(ERROR)<< "Error while trying to open: " + fileName;
 				while(this->isAlive()){
 					while ( myfile.good() ){
 						bool playing=controller->getPlay();
@@ -387,7 +387,7 @@ namespace replayer {
 					std::string fileName(this->path + "pointCloudData.jde");
 					std::ifstream myfile(fileName.c_str());
 					if (!myfile.is_open())
-						jderobot::Logger::getInstance()->error("-----Error while trying to open: " + fileName);
+						LOG(ERROR) <<"-----Error while trying to open: " + fileName;
 					while(this->isAlive()){
 						while ( myfile.good() ){
 							bool playing=controller->getPlay();
@@ -524,7 +524,7 @@ namespace replayer {
 					std::string fileName(this->path + "laserData.jde");
 					std::ifstream myfile(fileName.c_str());
 					if (!myfile.is_open())
-						jderobot::Logger::getInstance()->error("-----Error while trying to open: " + fileName);
+						LOG(ERROR) <<"-----Error while trying to open: " + fileName;
 					while(this->isAlive()){
 						while ( myfile.good() ){
 							bool playing=controller->getPlay();
@@ -677,7 +677,7 @@ namespace replayer {
 						std::string fileName(this->path + "pose3dencoderData.jde");
 						std::ifstream myfile(fileName.c_str());
 						if (!myfile.is_open())
-							jderobot::Logger::getInstance()->error("-----Error while trying to open: " + fileName);
+							LOG(ERROR) <<"-----Error while trying to open: " + fileName;
 						while(this->isAlive()){
 							while ( myfile.good() ){
 								bool playing=controller->getPlay();
@@ -1008,7 +1008,7 @@ namespace replayer {
 						std::string fileName(this->path + "encoderData.jde");
 						std::ifstream myfile(fileName.c_str());
 						if (!myfile.is_open())
-							jderobot::Logger::getInstance()->error("-----Error while trying to open: " + fileName);
+							LOG(ERROR) <<"-----Error while trying to open: " + fileName;
 						while(this->isAlive()){
 							while ( myfile.good() ){
 								bool playing=controller->getPlay();
@@ -1229,10 +1229,10 @@ int main(int argc, char** argv) {
 		}
 
 		// Analyze LOG section
-		jderobot::Logger::getInstance()->analizeProperties(prop,componentPrefix);
+		jderobot::Logger::initialize(argv[0],prop,componentPrefix);
 
 		int nCameras = prop->getPropertyAsIntWithDefault(componentPrefix+".nCameras",0);
-		jderobot::Logger::getInstance()->info( "Cameras to load: " + boost::lexical_cast<std::string>(nCameras));
+		LOG(INFO) << "Cameras to load: " + boost::lexical_cast<std::string>(nCameras);
 		std::string Endpoints = prop->getProperty(componentPrefix+".Endpoints");
 		cameras.resize(nCameras);
 		Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints(componentPrefix+"", Endpoints);
@@ -1242,7 +1242,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".Camera." + objId + ".");
 			std::string cameraName = prop->getProperty(objPrefix + "Name");
-			jderobot::Logger::getInstance()->info( "Creating camera: " + cameraName);
+			LOG(INFO) << "Creating camera: " + cameraName;
 
 			if (cameraName.size() == 0) { //no name specified, we create one using the index
 				cameraName = "camera" + objId;
@@ -1261,7 +1261,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".PointCloud." + objId + ".");
 			std::string Name = prop->getProperty(objPrefix + "Name");
-			jderobot::Logger::getInstance()->info("Creating pointCloud " + Name );
+			LOG(INFO) <<"Creating pointCloud " + Name ;
 
 
 			if (Name.size() == 0) { //no name specified, we create one using the index
@@ -1289,7 +1289,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".laser." + objId + ".");
 			std::string Name = prop->getProperty(objPrefix + "Name");
-			jderobot::Logger::getInstance()->info("Creating laser " + Name );
+			LOG(INFO) <<"Creating laser " + Name ;
 
 			if (Name.size() == 0) { //no name specified, we create one using the index
 				Name = "laser" + objId;
@@ -1317,7 +1317,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".pose3dencoder." + objId + ".");
 			std::string Name = prop->getProperty(objPrefix + "Name");
-			jderobot::Logger::getInstance()->info("Creating pose3dencoders " + Name );
+			LOG(INFO) <<"Creating pose3dencoders " + Name ;
 
 			if (Name.size() == 0) { //no name specified, we create one using the index
 				Name = "pose3dencoders" + objId;
@@ -1342,7 +1342,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".pose3d." + objId + ".");
 			std::string Name = prop->getProperty(objPrefix + "Name");
-            jderobot::Logger::getInstance()->info("Creating pose3d " + Name );
+            LOG(INFO) <<"Creating pose3d " + Name ;
 			
 			if (Name.size() == 0) { //no name specified, we create one using the index
 				Name = "pose3d" + objId;
@@ -1366,7 +1366,7 @@ int main(int argc, char** argv) {
 			std::string objId = objIdS.str();
 			std::string objPrefix(componentPrefix+".encoder." + objId + ".");
 			std::string Name = prop->getProperty(objPrefix + "Name");
-			jderobot::Logger::getInstance()->info("Creating encoders " + Name );
+			LOG(INFO) <<"Creating encoders " + Name ;
 
 
 			if (Name.size() == 0) { //no name specified, we create one using the index

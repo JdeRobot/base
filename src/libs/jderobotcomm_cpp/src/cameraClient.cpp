@@ -17,6 +17,10 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 #include <jderobot/comm/cameraClient.hpp>
+#include <jderobot/comm/ice/cameraIceClient.hpp>
+#ifdef JDERROS
+#include <jderobot/comm/ros/listenerCamera.hpp>
+#endif
 
 namespace JdeRobotComm {
 
@@ -44,16 +48,18 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 		}
 		case 2:
 		{
-		 	std::cout << "Receiving Image from ROS messages" << std::endl;
-		 	std::string nodeName;
-		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","CameraNode");
-		 	std::string topic;
-		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
-		 	ListenerCamera* lc;
-		 	lc = new ListenerCamera(0, nullptr, nodeName, topic);
-		 	lc->start();
-		 	client = (JdeRobotComm::CameraClient*) lc;
-
+			#ifdef JDERROS
+				std::cout << "Receiving Image from ROS messages" << std::endl;
+				std::string nodeName;
+				nodeName =  prop->getPropertyWithDefault(prefix+".Name","CameraNode");
+				std::string topic;
+				topic = prop->getPropertyWithDefault(prefix+".Topic","");
+				ListenerCamera* lc;
+				lc = new ListenerCamera(0, nullptr, nodeName, topic);
+				lc->start();
+				client = (JdeRobotComm::CameraClient*) lc;
+			#endif
+			throw "ERROR: ROS is not available";
 		 	break;
 		}
 		default:

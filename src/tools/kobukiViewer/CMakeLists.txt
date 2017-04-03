@@ -62,6 +62,8 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         JderobotInterfaces
         jderobotutil
         ${catkin_LIBRARIES}
-    )
+            ${GLOG_LIBRARIES}
+
+            )
 ENDIF()
 

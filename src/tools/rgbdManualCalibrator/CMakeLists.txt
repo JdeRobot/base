@@ -43,4 +43,6 @@ TARGET_LINK_LIBRARIES( rgbdManualCalibrator
  parallelIce
  ${ZLIB_LIBRARIES}    
 ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)
