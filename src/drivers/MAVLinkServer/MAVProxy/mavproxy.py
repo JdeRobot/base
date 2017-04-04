@@ -741,9 +741,9 @@ def main_loop():
     if not mpstate.status.setup_mode and not opts.nowait:
         for master in mpstate.mav_master:
             send_heartbeat(master)
-            if master.linknum == 0:
-                print("Waiting for heartbeat from %s" % master.address)
-                master.wait_heartbeat()
+            #if master.linknum == 0:
+            #    print("Waiting for heartbeat from %s" % master.address)
+            #    master.wait_heartbeat()
         set_stream_rates()
     if mpstate is None or mpstate.status.exit:
         return
@@ -782,7 +782,6 @@ def main_loop():
         if master.fd is None:
             if master.port.inWaiting() > 0:
                 process_master(master)
-
     periodic_tasks()
     rin = []
     for master in mpstate.mav_master:
@@ -931,7 +930,7 @@ def openPose3DChannel(Pose3D):
         ic = Ice.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("Pose3DAdapter", "default -p 9998")
         object = Pose2Tx
-        #print object.getPose3DData()
+        #print (object.getPose3DData())
         adapter.add(object, ic.stringToIdentity("Pose3D"))
         adapter.activate()
         ic.waitForShutdown()
@@ -1068,15 +1067,16 @@ def sendCMDVel2Vehicle(CMDVel,Pose3D):
 
         CMDVel2send = CMDVel.getCMDVelData()
         Pose3D2send = Pose3D.getPose3DData()
+        print(Pose3D2send)
         NEDvel = body2NED(CMDVel2send, Pose3D2send) # [x,y,z]
         linearXstring = str(NEDvel[0])
         linearYstring = str(NEDvel[1])
         linearZstring = str(NEDvel[2])
         angularZstring = str(CMDVel.angularZ*180/math.pi)
         velocitystring = 'velocity '+ linearXstring + ' ' + linearYstring + ' ' + linearZstring
-        angularString = 'setyaw ' + angularZstring + ' 1 1'
+        angularString = 'setyaw ' + angularZstring + ' 1 0'
         process_stdin(velocitystring)  # SET_POSITION_TARGET_LOCAL_NED
-        process_stdin(angularString)
+        #process_stdin(angularString)
 
 def sendWayPoint2Vehicle(Pose3D):
 
@@ -1111,6 +1111,7 @@ def landDecision(PH_Extra):
         if PH_Extra.takeOffDecision:
             print("Takeoff")
             operation_takeoff=True
+            print(time_end_operation_takeoff)
             time_init_operation_takeoff = int(round(time.time() * 1000))
             time_end_operation_takeoff = time_init_operation_takeoff + 5000
             print("Arming proppellers")
@@ -1154,26 +1155,26 @@ def cartesian2global(poseXYZ):
 def body2NED(CMDVel, Pose3D):
 
 
-    #q1 = [0, CMDVel.linearX, CMDVel.linearY, CMDVel.linearZ]
-    #q2 = [Pose3D.q0, Pose3D.q1, Pose3D.q2, Pose3D.q3]
+    q1 = [0, CMDVel.linearX, CMDVel.linearY, CMDVel.linearZ]
+    q2 = [Pose3D.q0, Pose3D.q1, Pose3D.q2, Pose3D.q3]
 
-    #q1 = qNormal(q1)
-    #q2 = qNormal(q2)
+    q1 = qNormal(q1)
+    q2 = qNormal(q2)
 
-    ##rotation = q2*q1*q2'
+    #rotation = q2*q1*q2'
 
-    #q2inverse = qInverse(q2)
-    #qtempotal = qMultiply(q1,q2inverse)
-    #q = qMultiply(q2,qtempotal)
+    q2inverse = qInverse(q2)
+    qtempotal = qMultiply(q1,q2inverse)
+    q = qMultiply(q2,qtempotal)
 
-    #rotatedVector = q[1:len(q)] #obtain [q1,q2,q3]
+    rotatedVector = q[1:len(q)] #obtain [q1,q2,q3]
 
-    #return rotatedVector
+    return rotatedVector
 
-     q0 = Pose3D.q0
-     q1 = Pose3D.q1
-     q2 = Pose3D.q2
-     q3 = Pose3D.q3
+     #q0 = Pose3D.q0
+     #q1 = Pose3D.q1
+     #q2 = Pose3D.q2
+     #q3 = Pose3D.q3
 
      # obtain eulers from quaternion TO BE IMPROVED!!!!!!!!!!!
 
@@ -1183,21 +1184,21 @@ def body2NED(CMDVel, Pose3D):
 
      # Body velocity (x,y,z)
 
-     bvx = CMDVel.linearX
-     bvy = CMDVel.linearY
-     bvz = CMDVel.linearZ
+     #bvx = CMDVel.linearX
+     #bvy = CMDVel.linearY
+     #bvz = CMDVel.linearZ
 
-     NEDvel = [0,0,0] #[x,y,z]
+     #NEDvel = [0,0,0] #[x,y,z]
 
      #NEDvel[0] = bvx * math.cos(pitch)*math.cos(yaw)   + bvy * (math.sin(roll)*math.sin(pitch)*math.cos(yaw) - math.cos(roll)*math.sin(yaw))   + bvz * (math.cos(roll)*math.sin(pitch)*math.cos(yaw) + math.sin(roll)*math.sin(yaw))
      #NEDvel[1] = bvx * math.cos(pitch)*math.sin(yaw)   + bvy * (math.sin(roll)*math.sin(pitch)*math.sin(yaw) + math.cos(roll)*math.cos(yaw))   + bvz * (math.cos(roll)*math.sin(pitch)*math.sin(yaw) - math.sin(roll)*math.cos(yaw))
      #NEDvel[2] = -bvx * math.sin(pitch)                + bvy * (math.sin(roll)*math.cos(pitch))                                                + bvz * (math.cos(roll)*math.cos(pitch))
 
-     NEDvel[0]=bvx
-     NEDvel[1]=bvy
-     NEDvel[2]=bvz
+     #NEDvel[0]=bvx
+     #NEDvel[1]=bvy
+     #NEDvel[2]=bvz
 
-     return NEDvel
+     #return NEDvel
 
 def qMultiply (q1,q2):
 
@@ -1511,8 +1512,13 @@ if __name__ == '__main__':
     #####################################################################
     global operation_takeoff
     global on_air
+    global time_init_operation_takeoff
+    global time_end_operation_takeoff
+
     operation_takeoff = False
     on_air = False
+    time_init_operation_takeoff = 10000000000000000000
+    time_end_operation_takeoff = 10000000000000000000
     print("Variables a false")
     # run main loop as a thread
     mpstate.status.thread = threading.Thread(target=listener_loop, name='listener_loop')
@@ -1554,15 +1560,15 @@ if __name__ == '__main__':
 
     # Open an ICE TX communication and leave it open in a parallel threat
 
-    #PoseTheading = threading.Thread(target=openPose3DChannelWP, args=(WP_Pose3D,), name='WayPoint_Theading')
-    #PoseTheading.daemon = True
-    #PoseTheading.start()
+    PoseTheading = threading.Thread(target=openPose3DChannelWP, args=(WP_Pose3D,), name='WayPoint_Theading')
+    PoseTheading.daemon = True
+    PoseTheading.start()
 
     # Open an MAVLink TX communication and leave it open in a parallel threat
 
-    #PoseTheading = threading.Thread(target=sendWayPoint2Vehicle, args=(WP_Pose3D,), name='WayPoint2Vehicle_Theading')
-    #PoseTheading.daemon = True
-    #PoseTheading.start()
+    PoseTheading = threading.Thread(target=sendWayPoint2Vehicle, args=(WP_Pose3D,), name='WayPoint2Vehicle_Theading')
+    PoseTheading.daemon = True
+    PoseTheading.start()
 
     # Open an MAVLink TX communication and leave it open in a parallel threat
 
