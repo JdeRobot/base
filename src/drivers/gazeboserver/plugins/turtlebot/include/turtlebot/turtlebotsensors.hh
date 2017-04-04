@@ -50,13 +50,8 @@ public:
 class BumperD
 {
 public:
-    int numContacts = 0;
-    std::string contact1 = "";
-    std::string contact2 = "";
-    float x = 0;
-    float y = 0;
-    float z = 0;
-    float depth = 0;
+    int bumper;
+    int state;
 };
 
 class TurtlebotSensors

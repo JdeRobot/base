@@ -23,7 +23,6 @@
 
 #include <jderobot/bumper.h>
 #include <turtlebot/turtlebotsensors.hh>
-#include <gazebo/msgs/msgs.hh>
 
 namespace turtlebot{
 namespace interfaces{

@@ -39,8 +39,9 @@ TurtlebotSensors::Load(ModelPtr model){
     this->base_link_id = model->GetChildLink("rack")->GetId();
 
     SensorManager *sm = SensorManager::Instance();
-
+    
     for (SensorPtr s: sm->GetSensors()){
+        std::cout << s->Name() << std::endl;
 //        if (s->GetParentId() != base_link_id) continue;
         std::string name = s->Name();
         if (name.find("laser") != std::string::npos)
@@ -49,8 +50,9 @@ TurtlebotSensors::Load(ModelPtr model){
             cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
             cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
-        if (name.find("bumper") != std::string::npos)
+        if (name.find("bumper") != std::string::npos){
             bumper = std::static_pointer_cast<ContactSensor>(s);
+        }
 
         pose = model->GetWorldPose();
     }
@@ -77,6 +79,7 @@ TurtlebotSensors::Init(){
     if (bumper){
         sub_bumper = bumper->ConnectUpdated(
             boost::bind(&TurtlebotSensors::_on_bumper, this));
+        bumper->SetActive(true);
     }else
         std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
 
@@ -158,35 +161,20 @@ TurtlebotSensors::_on_bumper(){
 
     BumperD bumperData;
 
-    //laser values
-    gazebo::msgs::Contacts contacts;
-    contacts = this->bumper->Contacts();
+    //bumper values
+    std::map<std::string, gazebo::physics::Contact> contacts;
+    contacts = bumper->Contacts("turtlebot::create::base::base_collision");
 
-    int end = contacts.contact_size();
+    /*for (auto const& element : contacts) {
+        std::cout << element.first << std::endl;
+        std::cout << element.second.count << std::endl;
+    }*/
 
-    bumperData.numContacts = contacts.contact_size();
-    bumperData.contact1 = contacts.contact(end).collision1();
-    bumperData.contact2 = contacts.contact(end).collision2();
-
-
-    for (int i = 0; i < contacts.contact_size(); ++i)
-      {
-        std::cout << "Collision between[" << contacts.contact(i).collision1()
-                  << "] and [" << contacts.contact(i).collision2() << "]\n";
-
-        for (int j = 0; j < contacts.contact(i).position_size(); ++j)
-        {
-          std::cout << j << "  Position:"
-                    << contacts.contact(i).position(j).x() << " "
-                    << contacts.contact(i).position(j).y() << " "
-                    << contacts.contact(i).position(j).z() << "\n";
-          std::cout << "   Normal:"
-                    << contacts.contact(i).normal(j).x() << " "
-                    << contacts.contact(i).normal(j).y() << " "
-                    << contacts.contact(i).normal(j).z() << "\n";
-          std::cout << "   Depth:" << contacts.contact(i).depth(j) << "\n";
-        }
-      }
+    if (contacts.size() > 0) {
+        bumperData.bumper = 1;
+        bumperData.state = 1;
+    }else
+        bumperData.state = 0;
 }
 
 void

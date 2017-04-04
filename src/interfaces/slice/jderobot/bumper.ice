@@ -27,12 +27,22 @@
 
 module jderobot{  
 
-	/* bumper information */
+  /* ROS bumper msg
+
+     bumper: 
+       LEFT = 0
+       CENTER = 1
+       RIGHT = 2
+    
+     state:
+       PRESSED = 1
+       RELEASED = 0
+  */
+
   class BumperData
   {
-    int numContacts;
-    string contact1;
-    string contact2;
+    int bumper;
+    int state;
     Time timeStamp;
   };
 

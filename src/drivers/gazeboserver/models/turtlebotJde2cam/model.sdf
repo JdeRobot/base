@@ -519,11 +519,6 @@
            </contact>
          </surface>
        </collision>
-       <sensor name='bumper' type='contact'>
-        <contact>
-          <collision>create::base::base_collision</collision>
-        </contact>
-      </sensor>
         <sensor name='laser' type='ray'>
           <ray>
             <scan>
