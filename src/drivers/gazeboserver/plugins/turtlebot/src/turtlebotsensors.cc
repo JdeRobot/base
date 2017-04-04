@@ -159,7 +159,7 @@ TurtlebotSensors::_on_laser(){
 void
 TurtlebotSensors::_on_bumper(){
 
-    BumperD bumperData;
+    BumperD data;
 
     //bumper values
     std::map<std::string, gazebo::physics::Contact> contacts;
@@ -171,10 +171,12 @@ TurtlebotSensors::_on_bumper(){
     }*/
 
     if (contacts.size() > 0) {
-        bumperData.bumper = 1;
-        bumperData.state = 1;
+        data.bumper = 1;
+        data.state = 1;
     }else
-        bumperData.state = 0;
+        data.state = 0;
+
+    bumperData = data;
 }
 
 void
