@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: pymavlink
+Version: 2.0.8
+Summary: Python MAVLink code
+Home-page: http://github.com/mavlink/mavlink
+Author: UNKNOWN
+Author-email: UNKNOWN
+License: LGPLv3
+Description: A Python library for handling MAVLink protocol streams and log files. This allows for the creation of simple scripts to analyse telemetry logs from autopilots such as ArduPilot which use the MAVLink protocol. See the scripts that come with the package for examples of small, useful scripts that use pymavlink. For more information about the MAVLink protocol see http://qgroundcontrol.org/mavlink/
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Scientific/Engineering
