@@ -23,8 +23,8 @@ add_executable (cameraCalibrator  ${SOURCE_FILES})
         ${libglademm_LIBRARIES}
         colorspacesmm
         JderobotInterfaces
+		parallelIce
         jderobotutil
-        parallelIce
         ${ZLIB_LIBRARIES}
         #    ${Gearbox_LIBRARIES}
 	${easyiceconfig_LIBRARIES} 

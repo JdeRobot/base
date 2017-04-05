@@ -32,11 +32,11 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     ${gtkglextmm_LIBRARIES}
     colorspacesmm
     JderobotInterfaces
+	parallelIce
     jderobotutil
     progeo
 	geometry
     pioneer
-    parallelIce
     ${gsl_LIBRARIES}
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}

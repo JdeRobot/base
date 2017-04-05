@@ -21,6 +21,7 @@
 
 #include "cameraClient.h"
 #include <zlib.h>
+#include <jderobotutil/CameraUtils.h>
 
 
 namespace jderobot {
@@ -55,47 +56,12 @@ cameraClient::cameraClient(Ice::CommunicatorPtr ic, std::string prefix) {
 		std::cerr << msg << std::endl;
 		LOG(FATAL) << prefix + " Not camera provided";
 	}
+
+
 	//check if default format is defined
 	std::string definedFormat=prop->getProperty(prefix+"ImageFormat");
+	this->mImageFormat = CameraUtils::negotiateDefaultFormat(this->prx,definedFormat);
 
-	// Discover what format are supported.
-	jderobot::ImageFormat formats = this->prx->getImageFormat();
-
-	std::vector<std::string>::iterator it;
-  it = std::find(formats.begin(), formats.end(), definedFormat);
-  if (it==formats.end()){
-    it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-
-    if (it != formats.end())
-    {
-      this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8.get()->name;
-      it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name);
-      if (it != formats.end())
-        this->mImageFormat = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
-    }
-    else
-    {
-      it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name);
-      if (it != formats.end())
-      {
-        this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name;
-        it = std::find(formats.begin(), formats.end(), colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name);
-        if (it != formats.end())
-          this->mImageFormat = colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name;
-      }
-      else{
-        this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name;
-        it = std::find(formats.begin(), formats.end(), colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name);
-        if (it != formats.end())
-          this->mImageFormat = colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name;
-      }
-    }
-  }
-  else{
-    this->mImageFormat = definedFormat;
-  }
-
-	LOG(INFO) << "Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name;
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
@@ -180,7 +146,6 @@ void cameraClient::resume(){
 void
 cameraClient::run(){
 	jderobot::ImageDataPtr dataPtr;
-	colorspaces::Image::FormatPtr fmt;
 	IceUtil::Time last;
 
 	int iterIndex = 0;
@@ -198,120 +163,13 @@ cameraClient::run(){
 		try{
 
 			dataPtr = this->prx->getImageData(this->mImageFormat);
-			fmt = colorspaces::Image::Format::searchFormat(dataPtr->description->format);
-			if (!fmt)
-				throw "Format not supported";
+			cv::Mat image = CameraUtils::getImageFromCameraProxy(dataPtr);
+			this->controlMutex.lock();
+			image.copyTo(this->data);
+			this->newData=true;
+			this->semBlock.broadcast();
+			this->controlMutex.unlock();
 
-			if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name ||
-					dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16_Z.get()->name	)
-			{
-
-				size_t dest_len = dataPtr->description->width*dataPtr->description->height*3;
-				size_t source_len = dataPtr->pixelData.size();
-
-				unsigned char* origin_buf = (uchar*) malloc(dest_len);
-
-				int r = uncompress((Bytef *) origin_buf, (uLongf *) &dest_len, (const Bytef *) &(dataPtr->pixelData[0]), (uLong)source_len);
-
-				if(r != Z_OK) {
-					fprintf(stderr, "[CMPR] Error:\n");
-					switch(r) {
-					case Z_MEM_ERROR:
-						fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
-						break;
-					case Z_BUF_ERROR:
-						fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
-						break;
-					case Z_STREAM_ERROR:    // Invalid compression level
-						fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
-						break;
-					}
-				}
-				else
-				{
-					colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(origin_buf[0]));
-					colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
-					this->controlMutex.lock();
-					cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
-					this->newData=true;
-					this->semBlock.broadcast();
-					this->controlMutex.unlock();
-					img_rgb888.release();
-				}
-
-
-				if (origin_buf)
-					free(origin_buf);
-
-			}
-			else if (dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_RGB8.get()->name ||
-					dataPtr->description->format == colorspaces::ImageRGB8::FORMAT_DEPTH8_16.get()->name  )
-			{
-				colorspaces::Image imageRGB(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageRGB8::FORMAT_RGB8,&(dataPtr->pixelData[0]));
-				colorspaces::ImageRGB8 img_rgb888(imageRGB);//conversion will happen if needed
-				this->controlMutex.lock();
-				cv::Mat(cvSize(img_rgb888.width,img_rgb888.height), CV_8UC3, img_rgb888.data).copyTo(this->data);
-				this->newData=true;
-
-				this->semBlock.broadcast();
-				this->controlMutex.unlock();
-				img_rgb888.release();
-			}
-			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8_Z.get()->name) {
-				//gay compressed
-				size_t dest_len = dataPtr->description->width*dataPtr->description->height;
-				size_t source_len = dataPtr->pixelData.size();
-
-				unsigned char* origin_buf = (uchar*) malloc(dest_len);
-
-				int r = uncompress((Bytef *) origin_buf, (uLongf *) &dest_len, (const Bytef *) &(dataPtr->pixelData[0]), (uLong)source_len);
-
-				if(r != Z_OK) {
-					fprintf(stderr, "[CMPR] Error:\n");
-					switch(r) {
-					case Z_MEM_ERROR:
-						fprintf(stderr, "[CMPR] Error: Not enough memory to compress.\n");
-						break;
-					case Z_BUF_ERROR:
-						fprintf(stderr, "[CMPR] Error: Target buffer too small.\n");
-						break;
-					case Z_STREAM_ERROR:    // Invalid compression level
-						fprintf(stderr, "[CMPR] Error: Invalid compression level.\n");
-						break;
-					}
-				}
-				else
-				{
-					colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(origin_buf[0]));
-					colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
-
-					this->controlMutex.lock();
-					cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
-					this->newData=true;
-					this->semBlock.broadcast();
-					this->controlMutex.unlock();
-
-					img_gray8.release();
-				}
-
-
-				if (origin_buf)
-					free(origin_buf);
-			}
-			else if (dataPtr->description->format == colorspaces::ImageGRAY8::FORMAT_GRAY8.get()->name){
-				colorspaces::Image imageGray(dataPtr->description->width,dataPtr->description->height,colorspaces::ImageGRAY8::FORMAT_GRAY8,&(dataPtr->pixelData[0]));
-				colorspaces::ImageGRAY8 img_gray8(imageGray);//conversion will happen if needed
-				this->controlMutex.lock();
-				cv::Mat(cvSize(img_gray8.width,img_gray8.height), CV_8UC1, img_gray8.data).copyTo(this->data);
-				this->newData=true;
-
-				this->semBlock.broadcast();
-				this->controlMutex.unlock();
-				img_gray8.release();
-			}
-			else{
-				//TODO raise exception
-			}
 
 		}
 		catch(...){

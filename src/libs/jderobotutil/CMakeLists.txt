@@ -2,9 +2,21 @@ include_directories(${SLICE_DIR}) # Aquí se alojan las cabeceras de las interfa
 include_directories(${INTERFACES_CPP_DIR}) # Aquí se alojan las cabeceras de las interfaces ICE en C++
 include_directories(${LIBS_DIR}) # Aquí se alojan las cabeceras de las interfaces ICE en C++
 
-add_library (jderobotutil STATIC jderobotutil.h observer.cpp observer.h paramdict.cpp paramdict.h time.cpp time.h uncopyable.h CameraTask.h CameraTask.cpp CameraHandler.cpp CameraHandler.h)
 
-add_library (jderobotutilshare SHARED jderobotutil.h observer.cpp observer.h paramdict.cpp paramdict.h time.cpp time.h uncopyable.h CameraTask.h CameraTask.cpp CameraHandler.cpp CameraHandler.h)
+SET(JDEROBOT_UTILS_SOURCES
+        jderobotutil.h
+        observer
+        paramdict
+        time
+        uncopyable.h
+        CameraTask
+        CameraHandler
+        CameraUtils
+        )
+
+add_library (jderobotutil STATIC ${JDEROBOT_UTILS_SOURCES})
+
+add_library (jderobotutilshare SHARED ${JDEROBOT_UTILS_SOURCES})
 
 set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)
 

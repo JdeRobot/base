@@ -36,6 +36,7 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 	colorspacesmm
 	JderobotInterfaces
 	parallelIce
+	jderobotutil
 	${easyiceconfig_LIBRARIES} 
 	${ZeroCIce_LIBRARIES}
 	${ZLIB_LIBRARIES}

@@ -1,4 +1,17 @@
-SET(SOURCE_FILES recordergui.cpp poolWriteImages.cpp poolWritePose3dEncoders.cpp poolWriteLasers.cpp poolWritePointCloud.cpp poolWriteEncoders.cpp )
+SET(SOURCE_FILES
+		recorder2.cpp
+		recordergui
+		pools/PoolWriteImages
+		pools/poolWritePose3dEncoders
+		pools/poolWriteLasers
+		pools/poolWritePointCloud
+		pools/poolWriteEncoders
+		pools/poolWritePose3d
+		buffer/RingBuffer
+		pools/RecorderPool
+		pools/PoolsManager
+		buffer/RecorderInterface
+		)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -22,8 +35,6 @@ link_directories(
 )
 
 add_executable (recorder2
-recorder2.cpp
-poolWritePose3d.cpp
 ${SOURCE_FILES})
 
 
@@ -42,7 +53,7 @@ TARGET_LINK_LIBRARIES(recorder2
     colorspacesmm
     JderobotInterfaces
     jderobotutil
+	ns
     ${resourcelocator_LIBRARIES}
-		${GLOG_LIBRARIES}
-
-		)
+	${GLOG_LIBRARIES}
+)
