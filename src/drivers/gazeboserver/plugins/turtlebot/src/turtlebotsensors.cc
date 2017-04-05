@@ -39,8 +39,9 @@ TurtlebotSensors::Load(ModelPtr model){
     this->base_link_id = model->GetChildLink("rack")->GetId();
 
     SensorManager *sm = SensorManager::Instance();
-
+    
     for (SensorPtr s: sm->GetSensors()){
+        std::cout << s->Name() << std::endl;
 //        if (s->GetParentId() != base_link_id) continue;
         std::string name = s->Name();
         if (name.find("laser") != std::string::npos)
@@ -49,6 +50,9 @@ TurtlebotSensors::Load(ModelPtr model){
             cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
         if (name.find("cam_turtlebot_right") != std::string::npos)
             cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
+        if (name.find("bumper") != std::string::npos){
+            bumper = std::static_pointer_cast<ContactSensor>(s);
+        }
 
         pose = model->GetWorldPose();
     }
@@ -71,6 +75,14 @@ TurtlebotSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t laser was not connected (NULL pointer)" << std::endl;
 
+
+    if (bumper){
+        sub_bumper = bumper->ConnectUpdated(
+            boost::bind(&TurtlebotSensors::_on_bumper, this));
+        bumper->SetActive(true);
+    }else
+        std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
+
     ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
 
     //Pose3d
@@ -86,6 +98,7 @@ TurtlebotSensors::debugInfo(){
     std::cout << fmt % cam[CAM_LEFT]->Name() % cam[CAM_LEFT]->Id();
     std::cout << fmt % cam[CAM_RIGHT]->Name() % cam[CAM_RIGHT]->Id();
     std::cout << fmt % laser->Name() % laser->Id();
+    std::cout << fmt % bumper->Name() % bumper->Id();
 }
 
 void
@@ -141,6 +154,29 @@ TurtlebotSensors::_on_laser(){
 
     laserData = data;
 
+}
+
+void
+TurtlebotSensors::_on_bumper(){
+
+    BumperD data;
+
+    //bumper values
+    std::map<std::string, gazebo::physics::Contact> contacts;
+    contacts = bumper->Contacts("turtlebot::create::base::base_collision");
+
+    /*for (auto const& element : contacts) {
+        std::cout << element.first << std::endl;
+        std::cout << element.second.count << std::endl;
+    }*/
+
+    if (contacts.size() > 0) {
+        data.bumper = 1;
+        data.state = 1;
+    }else
+        data.state = 0;
+
+    bumperData = data;
 }
 
 void
