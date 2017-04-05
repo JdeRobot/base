@@ -34,8 +34,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.teleop = TeleopWidget(self)
+        self.teleop=TeleopWidget(self,0)
+        self.teleop1=TeleopWidget(self,1)
         self.tlLayout.addWidget(self.teleop)
+        self.tlLayout_1.addWidget(self.teleop1)
         self.teleop.setVisible(True)
 
         self.record = False
@@ -44,9 +46,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.cameraCheck.stateChanged.connect(self.showCameraWidget)
         self.sensorsCheck.stateChanged.connect(self.showSensorsWidget)
-
-        self.rotationDial.valueChanged.connect(self.rotationChange)
-        self.altdSlider.valueChanged.connect(self.altitudeChange)
 
         self.cameraWidget = CameraWidget(self)
         self.sensorsWidget = SensorsWidget(self)
@@ -98,10 +97,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def stopClicked(self):
         if self.record == True:
             self.extra.record(False)
-        self.rotationDial.setValue(self.altdSlider.maximum() / 2)
-        self.altdSlider.setValue(self.altdSlider.maximum() / 2)
         self.cmdvel.sendCMDVel(0, 0, 0, 0, 0, 0)
         self.teleop.stopSIG.emit()
+        self.teleop1.stopSIG.emit()
 
     def takeOffClicked(self):
         if (self.takeoff == True):
@@ -141,23 +139,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def closeSensorsWidget(self):
         self.sensorsCheck.setChecked(False)
 
-    def rotationChange(self, value):
-        value = (1.0 / (self.rotationDial.maximum() / 2)) * (value - (self.rotationDial.maximum() / 2))
-        self.rotValue.setText('%.2f' % value)
-        self.cmdvel.setYaw(value)
-        self.cmdvel.sendVelocities()
-
-    def altitudeChange(self, value):
-        value = (1.0 / (self.altdSlider.maximum() / 2)) * (value - (self.altdSlider.maximum() / 2))
-        self.altdValue.setText('%.2f' % value)
-        self.cmdvel.setVZ(value)
-        self.cmdvel.sendVelocities()
-
-    def setXYValues(self, newX, newY):
+    def setXYValues(self,newX,newY):
         self.XValue.setText('%.2f' % newX)
-        self.YValue.setText('%.2f' % newY)
+        self.YValue.setText('%.2f' % -newY)
         self.cmdvel.setVX(-newY)
         self.cmdvel.setVY(-newX)
+        self.cmdvel.sendVelocities()
+
+    def setZYawValues(self,newZ,newYaw):
+        self.altdValue.setText('%.2f' % -newZ)
+        self.rotValue.setText('%.2f' % newYaw)
+        self.cmdvel.setVZ(-newZ)
+        self.cmdvel.setYaw(newYaw)
         self.cmdvel.sendVelocities()
 
     def closeEvent(self, event):
@@ -165,4 +158,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.navdata.stop()
         self.pose.stop()
         event.accept()
-
