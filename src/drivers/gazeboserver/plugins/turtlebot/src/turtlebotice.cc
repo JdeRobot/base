@@ -104,6 +104,10 @@ void TurtlebotIce::bootstrap(){
     name = prop->getProperty("Turtlebot.Laser.Name");
     adapter->add(laseri, ic->stringToIdentity(name));
 
+    ObjectPtr bumperi = new BumperI(sensor);
+    name = prop->getProperty("Turtlebot.Bumper.Name");
+    adapter->add(bumperi, ic->stringToIdentity(name));
+
     //ObjectPtr camerai = new CameraI(sensor);
     ObjectPtr cameraiL;
     {

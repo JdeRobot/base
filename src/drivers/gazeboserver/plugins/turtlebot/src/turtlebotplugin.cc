@@ -77,6 +77,7 @@ TurtlebotPlugin::Init(){
     sensors.cam[TurtlebotSensors::CAM_LEFT]->SetActive(true);
     sensors.cam[TurtlebotSensors::CAM_RIGHT]->SetActive(true);
     sensors.laser->SetActive(true);
+    sensors.bumper->SetActive(true);
 
     cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_LEFT]);
     cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_RIGHT]);
