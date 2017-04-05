@@ -1,5 +1,18 @@
 
+configure_file(
+    basic_component_py.in
+    basic_component_py
+    @ONLY
+)
+
 ## INSTALL ##
+
+# install Launcher
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/basic_component_py
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+    DESTINATION bin
+)
 
 # Install .py
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*py)
