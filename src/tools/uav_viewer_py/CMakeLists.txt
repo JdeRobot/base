@@ -1,6 +1,18 @@
 
+configure_file(
+    uav_viewer_py.in
+    uav_viewer_py
+    @ONLY
+)
 
 ## INSTALL ##
+
+# Install launcher
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/uav_viewer_py
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+    DESTINATION bin
+)
 
 # Install .py
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*py)
