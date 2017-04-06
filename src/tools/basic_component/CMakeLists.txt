@@ -1,7 +1,7 @@
 if (${QT5_COMPILE})
     
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
-    set(CMAKE_AUTOMOC ON)
+#    set(CMAKE_AUTOMOC ON)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
 
@@ -19,7 +19,7 @@ if (${QT5_COMPILE})
         ${HEADERS}
     )
 
-	qt5_wrap_cpp(gui_SRC ${SOURCE})	
+	qt5_wrap_cpp(qt_SRC ${SOURCE})	
 
     SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" )
 
@@ -47,7 +47,7 @@ if (${QT5_COMPILE})
     )
 
 
-    add_executable( basic_component ${SOURCE} ${INTERFACES_CPP_DIR} ${gui_SRC})
+    add_executable( basic_component ${SOURCE} ${INTERFACES_CPP_DIR} ${qt_SRC})
                    
     target_link_libraries(basic_component
         colorspacesmm
