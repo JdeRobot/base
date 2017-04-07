@@ -8,14 +8,16 @@
         <collision name="collision">
             <geometry>
                <mesh>
-                  <uri>model://monaco/meshes/Monaco.dae</uri>
+                  <scale>15 15 15</scale>
+                  <uri>model://monaco/meshes/CircuitoMonaco.dae</uri>
                </mesh>
             </geometry>
         </collision>
         <visual name="visual">
             <geometry>
                <mesh>
-                  <uri>model://monaco/meshes/Monaco.dae</uri>
+                  <scale>15 15 15</scale>
+                  <uri>model://monaco/meshes/CircuitoMonaco.dae</uri>
                </mesh>
             </geometry>
         </visual>
