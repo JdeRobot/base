@@ -56,71 +56,66 @@ SET(OpenCVGUI_LIBRARIES ${OpenCV_GUI_LIBS})
 
 
 
-#DEPRECATED
+#TRY MANUAL IF AUTO NOT WORKS
 IF (NOT DEFINED OpenCV_VERSION)
-	FIND_PATH( OpenCVHG_INCLUDE_DIR NAMES highgui.h PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES include/opencv/ )
-	message("dir: ${OpenCV_DIR}")
+	IF (NOT OpenCV_DIR)
+		SET(OpenCV_DIR /opt/ros/kinetic/)
+	ENDIF()
+	FIND_PATH( OpenCV_INCLUDE_DIR NAMES highgui.h PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES include/opencv/ )
+	IF (NOT OpenCV_INCLUDE_DIR)
+		#TRY ROS OPENCV PATH
+		FIND_PATH( OpenCV_INCLUDE_DIR NAMES opencv/highgui.h PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES include/opencv-3.2.0-dev)
+		SET(OPENCV_ROS ON)
+	ENDIF()
+	IF (OpenCV_INCLUDE_DIR)
+		MESSAGE("OpenCV was found in: ${OpenCV_DIR}")
 
-	IF (OpenCVHG_INCLUDE_DIR)
-	 
-		MESSAGE("OpenCVHighGui was found in: ${OpenCVHG_INCLUDE_DIR}")
-	  
-		FIND_PATH( OpenCV_INCLUDE_DIR NAMES include/opencv/cv.h PATHS ${OpenCV_DIR}  ENV C++LIB ENV PATH  )
-		INCLUDE_DIRECTORIES(
-				${OpenCV_INCLUDE_DIR}/include/
-				${OpenCV_INCLUDE_DIR}/include/opencv
-				${OpenCV_INCLUDE_DIR}/include/opencv2
-		)
-		MESSAGE("inc dir: ${OpenCV_INCLUDE_DIR}")
-		IF( OpenCV_INCLUDE_DIR )
-	    	MESSAGE("OpenCV was found in: ${OpenCV_INCLUDE_DIR}")
-	
-		    FIND_LIBRARY( OpenCV_LIBRARY1 NAMES opencv_core PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY2 NAMES opencv_highgui PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY3 NAMES opencv_contrib PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY4 NAMES opencv_calib3d PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY5 NAMES opencv_flann PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY6 NAMES opencv_gpu PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY7 NAMES opencv_imgproc PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY8 NAMES opencv_legacy PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY9 NAMES opencv_ml PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY10 NAMES opencv_features2d PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY11 NAMES opencv_objdetect PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    FIND_LIBRARY( OpenCV_LIBRARY14 NAMES opencv_video PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
-		    SET (OpenCV_LIBRARIES ${OpenCV_LIBRARY1} ${OpenCV_LIBRARY5}  ${OpenCV_LIBRARY7}  ${OpenCV_LIBRARY9} ${OpenCV_LIBRARY10}  ${OpenCV_LIBRARY14} )
-		    SET (OpenCVGUI_LIBRARIES ${OpenCV_LIBRARY2} ${OpenCV_LIBRARY3} ${OpenCV_LIBRARY4} ${OpenCV_LIBRARY6} ${OpenCV_LIBRARY8} ${OpenCV_LIBRARY11})
+		IF (OPENCV_ROS)
+			INCLUDE_DIRECTORIES(
+					${OpenCV_INCLUDE_DIR}/
+					${OpenCV_INCLUDE_DIR}/opencv
+					${OpenCV_INCLUDE_DIR}/opencv2
+			)
+			SET(OPENCV_MODULE_SUFIX "3")
+		ELSE()
+			INCLUDE_DIRECTORIES(
+					${OpenCV_INCLUDE_DIR}/include/
+					${OpenCV_INCLUDE_DIR}/include/opencv
+					${OpenCV_INCLUDE_DIR}/include/opencv2
+			)
+			SET(OPENCV_MODULE_SUFIX "")
+		ENDIF()
 
-		    IF( OpenCV_LIBRARIES )
-				#MESSAGE("OPENCV LIBRARY FOUND IN ${OpenCV_LIBRARY2}")
+		SET(OPENCV_MODULES opencv_core opencv_flann opencv_imgproc opencv_ml opencv_features2d opencv_video)
+		SET(OPENCV_GUI_MODULES opencv_highgui opencv_calib3d opencv_objdetect)
 
-				link_directories(${OpenCV_LIBRARIES})	
-			    include_directories(${OpenCV_INCLUDE_DIR})
+		FOREACH (MOD ${OPENCV_MODULES})
+			MESSAGE("LOOKING FOR ${MOD}${OPENCV_MODULE_SUFIX} INTO ${OpenCV_DIR}")
+	    		FIND_LIBRARY( OpenCV_LIBRARY_${MOD} NAMES ${MOD}${OPENCV_MODULE_SUFIX} PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
+			IF ( NOT OpenCV_LIBRARY_${MOD})
+				MESSAGE(FATAL_ERROR "OPENCV MODULE: ${MOD} NOT FOUND")
+			ELSE()
+				SET (OpenCV_LIBRARIES ${OpenCV_LIBRARIES} ${OpenCV_LIBRARY_${MOD}})
+			ENDIF()
+		ENDFOREACH()
 
-				SET(DEPS "${DEPS}opencv-libs, opencv-main, opencv-python ,")
-		    ENDIF( OpenCV_LIBRARIES )
+		FOREACH (MOD ${OPENCV_GUI_MODULES})
+	    		FIND_LIBRARY( OpenCV_LIBRARY_${MOD} NAMES ${MOD}${OPENCV_MODULE_SUFIX} PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64)
+			IF ( NOT OpenCV_LIBRARY_${MOD})
+				MESSAGE(FATAL_ERROR "OPENCV MODULE: ${MOD} NOT FOUND")
+			ELSE()
+				SET (OpenCVGUI_LIBRARIES ${OpenCVGUI_LIBRARIES} ${OpenCV_LIBRARY_${MOD}})
+			ENDIF()
+		ENDFOREACH()
 
 
-		ELSE(OpenCV_INCLUDE_DIR)
-			MESSAGE( FATAL_ERROR "*** OpenCV not found")
-		ENDIF(OpenCV_INCLUDE_DIR)
-
-	ELSE(OpenCVHG_INCLUDE_DIR)
-
-		MESSAGE(FATAL_ERROR "*** OpenCV: libhighgui-dev not found!")
-
-	ENDIF(OpenCVHG_INCLUDE_DIR)
+	ELSE(OpenCV_INCLUDE_DIR)
+		MESSAGE(FATAL_ERROR "*** OpenCV: not found!")
+	ENDIF(OpenCV_INCLUDE_DIR)
 
 ENDIF()
 
-
-
 message("***OpenCV Version: ${OpenCV_VERSION}")
-message("***OpenCV CORE LIBS: ${OpenCV_CORE_LIBS}")
-message("***OpenCV GUI LIBS: ${OpenCV_GUI_LIBS}")
-message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")
-
-
-message("***OpenCV Version: ${OpenCV_VERSION}")
-message("***OpenCV CORE LIBS: ${OpenCV_CORE_LIBS}")
-message("***OpenCV GUI LIBS: ${OpenCV_GUI_LIBS}")
+message("***OpenCV CORE LIBS: ${OpenCV_LIBRARIES}")
+message("***OpenCV GUI LIBS: ${OpenCVGUI_LIBRARIES}")
 message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")
