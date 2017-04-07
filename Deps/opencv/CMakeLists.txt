@@ -56,7 +56,7 @@ SET(OpenCVGUI_LIBRARIES ${OpenCV_GUI_LIBS})
 
 
 
-#TRY MANUAL IF AUTO NOT WORKS
+#TRY MANUAL IF AUTO FAILS
 IF (NOT DEFINED OpenCV_VERSION)
 	IF (NOT OpenCV_DIR)
 		SET(OpenCV_DIR /opt/ros/kinetic/)
@@ -68,6 +68,7 @@ IF (NOT DEFINED OpenCV_VERSION)
 		SET(OPENCV_ROS ON)
 	ENDIF()
 	IF (OpenCV_INCLUDE_DIR)
+		SET(OpenCV_VERSION ${OpenCV_DIR})
 		MESSAGE("OpenCV was found in: ${OpenCV_DIR}")
 
 		IF (OPENCV_ROS)
@@ -86,8 +87,9 @@ IF (NOT DEFINED OpenCV_VERSION)
 			SET(OPENCV_MODULE_SUFIX "")
 		ENDIF()
 
-		SET(OPENCV_MODULES opencv_core opencv_flann opencv_imgproc opencv_ml opencv_features2d opencv_video)
+		SET(OPENCV_MODULES opencv_core opencv_flann opencv_imgproc opencv_ml opencv_features2d opencv_video opencv_imgcodecs)
 		SET(OPENCV_GUI_MODULES opencv_highgui opencv_calib3d opencv_objdetect)
+
 
 		FOREACH (MOD ${OPENCV_MODULES})
 			MESSAGE("LOOKING FOR ${MOD}${OPENCV_MODULE_SUFIX} INTO ${OpenCV_DIR}")
