@@ -1,4 +1,8 @@
-#include <jderobot/comm/laserClient.hpp>
+#include <jderobot/comm/interfaces/laserClient.hpp>
+#include <jderobot/comm/ice/laserIceClient.hpp>
+#ifdef JDERROS
+#include <jderobot/comm/ros/listenerLaser.hpp>
+#endif
 
 namespace JdeRobotComm {
 
@@ -26,15 +30,18 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 		}
 		case 2:
 		{
-		 	std::cout << "Receiving LaserData from ROS messages" << std::endl;
-		 	std::string nodeName;
-		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","LaserNode");
-		 	std::string topic;
-		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
-		 	ListenerLaser* lc;
-		 	lc = new ListenerLaser(0, nullptr, nodeName, topic);
-		 	lc->start();
-		 	client = (JdeRobotComm::LaserClient*) lc;
+            #ifdef JDERROS
+                std::cout << "Receiving LaserData from ROS messages" << std::endl;
+                std::string nodeName;
+                nodeName =  prop->getPropertyWithDefault(prefix+".Name","LaserNode");
+                std::string topic;
+                topic = prop->getPropertyWithDefault(prefix+".Topic","");
+                ListenerLaser* lc;
+                lc = new ListenerLaser(0, nullptr, nodeName, topic);
+                lc->start();
+                client = (JdeRobotComm::LaserClient*) lc;
+            #endif
+            throw "ERROR: ROS is not available";
 
 		 	break;
 		}

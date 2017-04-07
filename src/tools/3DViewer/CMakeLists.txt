@@ -25,12 +25,13 @@ IF (with_pcl)
 			JderobotInterfaces
 			${easyiceconfig_LIBRARIES}
 			${ZeroCIce_LIBRARIES}
-			${CMAKE_THREAD_LIBS_INIT}
 			${ZLIB_LIBRARIES}
 			logger
 			crypto
 			ns
 			jderobotViewer
 			${PCL_LIBRARIES}
-	)
+			${CMAKE_THREAD_LIBS_INIT}
+
+			)
 ENDIF()

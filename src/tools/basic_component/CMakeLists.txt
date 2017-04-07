@@ -1,7 +1,7 @@
 if (${QT5_COMPILE})
     
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
-    set(CMAKE_AUTOMOC ON)
+#    set(CMAKE_AUTOMOC ON)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
 
@@ -19,6 +19,8 @@ if (${QT5_COMPILE})
         ${HEADERS}
     )
 
+	qt5_wrap_cpp(qt_SRC ${SOURCE})	
+
     SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" )
 
     include_directories(
@@ -33,26 +35,25 @@ if (${QT5_COMPILE})
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${easyiceconfig_INCLUDE_DIRS}
         ${ZLIB_INCLUDE_DIRS}
-
-
-        ${INTERFACES_CPP_DIR}
-    ${LIBS_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${gtkmm_INCLUDE_DIRS}
-    ${libglademm_INCLUDE_DIRS}
-    ${gtkglextmm_INCLUDE_DIRS}
-    ${ZLIB_INCLUDE_DIRS}
-    ${resourcelocator_INCLUDE_DIRS}
-    ${easyiceconfig_INCLUDE_DIRS}
+            ${INTERFACES_CPP_DIR}
+        ${LIBS_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${gtkmm_INCLUDE_DIRS}
+        ${libglademm_INCLUDE_DIRS}
+        ${gtkglextmm_INCLUDE_DIRS}
+        ${ZLIB_INCLUDE_DIRS}
+        ${resourcelocator_INCLUDE_DIRS}
+        ${easyiceconfig_INCLUDE_DIRS}
     )
 
-    link_directories(${JDE_LIBS}
-        ${easyiceconfig_LIBRARY_DIRS}
-    )
 
-    add_executable( basic_component ${SOURCE} ${INTERFACES_CPP_DIR})
+    add_executable( basic_component ${SOURCE} ${INTERFACES_CPP_DIR} ${qt_SRC})
                    
     target_link_libraries(basic_component
+        colorspacesmm
+        JderobotInterfaces
+        parallelIce
+        jderobotutil
         ${Qt5Widgets_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Gui_LIBRARIES}
@@ -64,25 +65,17 @@ if (${QT5_COMPILE})
         ${Ice_LIBRARIES}
         ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
         ${ZLIB_LIBRARIES}
-        colorspacesmm
-        JderobotInterfaces
-        jderobotutil
-        parallelIce
-
-
-        ${CMAKE_THREAD_LIBS_INIT} 
-    ${OpenCV_LIBRARIES}
-    ${OpenCVGUI_LIBRARIES}
-    ${gtkmm_LIBRARIES}
-    ${libglademm_LIBRARIES}
-    colorspacesmm
-    JderobotInterfaces
-    parallelIce
-    ${easyiceconfig_LIBRARIES} 
-    ${ZeroCIce_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-${CMAKE_THREAD_LIBS_INIT}
-    ${resourcelocator_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${OpenCV_LIBRARIES}
+        ${OpenCVGUI_LIBRARIES}
+        ${gtkmm_LIBRARIES}
+        ${libglademm_LIBRARIES}
+        ${easyiceconfig_LIBRARIES}
+        ${ZeroCIce_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${resourcelocator_LIBRARIES}
+        ${GLOG_LIBRARIES}
     )
 ENDIF()
 

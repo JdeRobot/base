@@ -1,4 +1,8 @@
 #include <jderobot/comm/motorsClient.hpp>
+#include <jderobot/comm/ice/motorsIceClient.hpp>
+#ifdef JDERROS
+#include <jderobot/comm/ros/publisherMotors.hpp>
+#endif
 
 namespace JdeRobotComm {
 
@@ -25,15 +29,18 @@ getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
 		}
 		case 2:
 		{
-		 	std::cout << "Sending Velocities by ROS messages" << std::endl;
-		 	std::string nodeName;
-		 	nodeName =  prop->getPropertyWithDefault(prefix+".Name","MotorsNode");
-		 	std::string topic;
-		 	topic = prop->getPropertyWithDefault(prefix+".Topic","");
-		 	PublisherMotors* pm;
-		 	pm = new PublisherMotors(0, nullptr, nodeName, topic);
-		 	pm->start();
-		 	client = (JdeRobotComm::MotorsClient*) pm;
+			#ifdef JDERROS
+				std::cout << "Sending Velocities by ROS messages" << std::endl;
+				std::string nodeName;
+				nodeName =  prop->getPropertyWithDefault(prefix+".Name","MotorsNode");
+				std::string topic;
+				topic = prop->getPropertyWithDefault(prefix+".Topic","");
+				PublisherMotors* pm;
+				pm = new PublisherMotors(0, nullptr, nodeName, topic);
+				pm->start();
+				client = (JdeRobotComm::MotorsClient*) pm;
+			#endif
+			throw "ERROR: ROS is not available";
 		 	break;
 		}
 		default:

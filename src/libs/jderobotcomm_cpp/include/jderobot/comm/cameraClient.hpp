@@ -24,8 +24,7 @@
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
-#include <jderobot/comm/ice/cameraIceClient.hpp>
-#include <jderobot/comm/ros/listenerCamera.hpp>
+
 
 
 
