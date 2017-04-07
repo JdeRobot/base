@@ -59,17 +59,23 @@ SET(OpenCVGUI_LIBRARIES ${OpenCV_GUI_LIBS})
 #TRY MANUAL IF AUTO FAILS
 IF (NOT DEFINED OpenCV_VERSION)
 	IF (NOT OpenCV_DIR)
-		SET(OpenCV_DIR /opt/ros/kinetic/)
+		IF (EXISTS /opt/ros/kinetic/)
+			SET(OpenCV_DIR /opt/ros/kinetic/)
+		ELSE()
+			MESSAGE(FATAL_ERROR "OpenCV not found, if you are using a custom opencv installation set if by -DOpenCV_DIR=<your_install_path>")
+		ENDIF()
 	ENDIF()
 	FIND_PATH( OpenCV_INCLUDE_DIR NAMES highgui.h PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES include/opencv/ )
 	IF (NOT OpenCV_INCLUDE_DIR)
 		#TRY ROS OPENCV PATH
 		FIND_PATH( OpenCV_INCLUDE_DIR NAMES opencv/highgui.h PATHS ${OpenCV_DIR} ENV C++LIB ENV PATH PATH_SUFFIXES include/opencv-3.2.0-dev)
-		SET(OPENCV_ROS ON)
+		set(OPENCV_ROS true CACHE BOOL "Using ROS opencv")
+
 	ENDIF()
 	IF (OpenCV_INCLUDE_DIR)
 		SET(OpenCV_VERSION ${OpenCV_DIR})
 		MESSAGE("OpenCV was found in: ${OpenCV_DIR}")
+		MESSAGE("OPENCV_ROS: ${OPENCV_ROS}")
 
 		IF (OPENCV_ROS)
 			INCLUDE_DIRECTORIES(
@@ -87,7 +93,7 @@ IF (NOT DEFINED OpenCV_VERSION)
 			SET(OPENCV_MODULE_SUFIX "")
 		ENDIF()
 
-		SET(OPENCV_MODULES opencv_core opencv_flann opencv_imgproc opencv_ml opencv_features2d opencv_video opencv_imgcodecs)
+		SET(OPENCV_MODULES opencv_core opencv_flann opencv_imgproc opencv_ml opencv_features2d opencv_video opencv_imgcodecs opencv_videoio)
 		SET(OPENCV_GUI_MODULES opencv_highgui opencv_calib3d opencv_objdetect)
 
 
