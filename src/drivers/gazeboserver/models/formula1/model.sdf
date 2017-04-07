@@ -189,7 +189,6 @@
               <far>15.000000</far>
             </clip>
           </camera>
-          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
         </sensor>
         <visual name='visual'>
           <geometry>
@@ -245,7 +244,6 @@
               <far>15.000000</far>
             </clip>
           </camera>
-          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
         </sensor>
         <visual name='visual'>
           <geometry>
@@ -317,7 +315,6 @@
             </range>
           </ray>
           <update_rate>20.000000</update_rate>
-          <plugin name='laser' filename='liblaserF1.so'/>
           <always_on>1</always_on>
           <visualize>1</visualize>
         </sensor>
