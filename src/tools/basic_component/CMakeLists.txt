@@ -54,7 +54,6 @@ if (${QT5_COMPILE})
         JderobotInterfaces
         parallelIce
         jderobotutil
-        ${easyiceconfig_LIBRARY_DIRS}
         ${Qt5Widgets_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Gui_LIBRARIES}
