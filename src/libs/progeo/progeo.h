@@ -22,6 +22,16 @@
 #ifndef PROGEO_H
 #define PROGEO_H
 
+
+#ifdef __GNUC__
+#define DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED(func) __declspec(deprecated) func
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED(func) func
+#endif
+
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_multifit.h>
 
@@ -85,26 +95,26 @@ typedef struct {
 
 #ifdef __cplusplus
 extern "C" {
-	TPinHoleCamera xmlReader(TPinHoleCamera* camera, const char *filename);
-	void xmlWriter(TPinHoleCamera camera, const char *filename);
-	void update_camera_matrix(TPinHoleCamera *camera);
-	void reverse_update_camera_matrix(TPinHoleCamera *camera);
-	void update_stereocamera_matrix(TPinHoleStereocamera *stereo);
-	int project(HPoint3D in, HPoint2D *out, TPinHoleCamera camera);
-	int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera);
-	int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera);
-	void display_camerainfo(TPinHoleCamera camera);
+	DEPRECATED(TPinHoleCamera xmlReader(TPinHoleCamera* camera, const char *filename));
+	DEPRECATED(void xmlWriter(TPinHoleCamera camera, const char *filename));
+	DEPRECATED(void update_camera_matrix(TPinHoleCamera *camera));
+	DEPRECATED(void reverse_update_camera_matrix(TPinHoleCamera *camera));
+	DEPRECATED(void update_stereocamera_matrix(TPinHoleStereocamera *stereo));
+	DEPRECATED(int project(HPoint3D in, HPoint2D *out, TPinHoleCamera camera));
+	DEPRECATED(int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera));
+	DEPRECATED(int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera));
+	DEPRECATED(void display_camerainfo(TPinHoleCamera camera));
 }
 #else
-TPinHoleCamera xmlReader(TPinHoleCamera* camera, const char *filename);
-void xmlWriter(TPinHoleCamera camera, const char *filename);
-void update_camera_matrix(TPinHoleCamera *camera);
-void reverse_update_camera_matrix(TPinHoleCamera *camera);
-void update_stereocamera_matrix(TPinHoleStereocamera *stereo);
-int project(HPoint3D in, HPoint2D *out, TPinHoleCamera camera);
-int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera);
-int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera);
-void display_camerainfo(TPinHoleCamera camera);
+DEPRECATED(TPinHoleCamera xmlReader(TPinHoleCamera* camera, const char *filename));
+DEPRECATED(void xmlWriter(TPinHoleCamera camera, const char *filename));
+DEPRECATED(void update_camera_matrix(TPinHoleCamera *camera));
+DEPRECATED(void reverse_update_camera_matrix(TPinHoleCamera *camera));
+DEPRECATED(void update_stereocamera_matrix(TPinHoleStereocamera *stereo));
+DEPRECATED(int project(HPoint3D in, HPoint2D *out, TPinHoleCamera camera));
+DEPRECATED(int backproject(HPoint3D *out, HPoint2D in, TPinHoleCamera camera));
+DEPRECATED(int displayline(HPoint2D p1, HPoint2D p2, HPoint2D *a, HPoint2D *b, TPinHoleCamera camera));
+DEPRECATED(void display_camerainfo(TPinHoleCamera camera));
 #endif
 
 #endif /*PROGEO_H*/
