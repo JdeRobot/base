@@ -17,7 +17,6 @@ link_directories(
  	${easyiceconfig_LIBRARY_DIRS}
 )
 
-#set( CMAKE_CXX_FLAGS "-Wall" )
 
 set(SOURCES src/turtlebotplugin.cc
         src/turtlebotice.cc

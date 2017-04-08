@@ -21,8 +21,6 @@ if (${QT5_COMPILE})
 
 	qt5_wrap_cpp(qt_SRC ${SOURCE})	
 
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" )
-
     include_directories(
         ${Qt5Widgets_INCLUDE_DIRS}
         ${Qt5Core_INCLUDE_DIRS}

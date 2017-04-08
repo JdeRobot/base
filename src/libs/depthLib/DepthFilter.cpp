@@ -34,26 +34,13 @@ DepthFilter::~DepthFilter() {
 void
 DepthFilter::filterDakkak(cv::Mat imageIn, cv::Mat& imageOut){
 
-	int M=50;
-	int MaxIter=100;
-	int K=40;
+	int d=20;
+	double sigmaColor=21;
+    double sigmaSpace=3;
 
-	/*for (int m=0; m<M; m++){
-		for (int x=0; x< imageIn.cols ; x++){//x++){
-			for (int y=0; y<imageIn.rows; y++){//y++){
-				int maxIter=0;
-				for (int k=1; k<K; k++){
-					if (maxIter > MaxIter)
-						break;
-					maxIter++;
-
-
-				}
-			}
-	}*/
 	std::vector<cv::Mat> layers;
 	cv::split(imageIn, layers);
-	cv::bilateralFilter(layers[0], imageOut, 20, 21, 3);
+	cv::bilateralFilter(layers[0], imageOut, d,sigmaColor,sigmaSpace);
 	cv::cvtColor(imageOut,imageOut,CV_GRAY2RGB);
 }
 
@@ -74,7 +61,7 @@ DepthFilter::filterMeanNonMotion3Channels(cv::Mat imageIn, cv::Mat& imageOut){
 	}*/
 
 	this->buffer.push_back(localSource);
-	while (this->buffer.size()>this->buffSize)
+	while ((int)this->buffer.size()>this->buffSize)
 		this->buffer.pop_front();
 	cv::Mat onesAcc; //acumulado de unos en al buffer
 	cv::Mat resultAcc; //resultado acumulado
@@ -164,9 +151,9 @@ void DepthFilter::filterMeanNonMotion1Channels(cv::Mat imageIn, cv::Mat& imageOu
 	this->m.lock();
 	this->buffer.push_back(localSource);
 	this->bufferGray.push_back(layers[0]);
-	while (this->buffer.size()>this->buffSize)
+	while ((int)this->buffer.size()>this->buffSize)
 		this->buffer.pop_front();
-	while (this->bufferGray.size()>this->buffSize)
+	while ((int)this->bufferGray.size()>this->buffSize)
 		this->bufferGray.pop_front();
 	cv::Mat onesAcc; //acumulado de unos en al buffer
 	cv::Mat resultAcc; //resultado acumulado
@@ -269,7 +256,7 @@ DepthFilter::filterMeanNonZero(cv::Mat imageIn, cv::Mat& imageOut){
 	}
 	//localSource.convertTo(localSource,CV_32FC3);
 	this->buffer.push_back(localSource);
-	while (this->buffer.size()>this->buffSize)
+	while ((int)this->buffer.size()>this->buffSize)
 		this->buffer.pop_front();
 	cv::Mat onesAcc; //acumulado de unos en al buffer
 	cv::Mat resultAcc; //resultado acumulado
