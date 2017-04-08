@@ -221,6 +221,9 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
   cb->ice_response(reply);
 }
 
+    void CameraTask::destroy() {
+      this->_done=true;
+    }
 
 
 } /* namespace jderobot */
