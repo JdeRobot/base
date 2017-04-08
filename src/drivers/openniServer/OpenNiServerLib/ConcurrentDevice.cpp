@@ -15,7 +15,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
     openni::Status nRetVal = openni::OpenNI::initialize();
     if (nRetVal != openni::STATUS_OK)
     {
-        jderobot::Logger::getInstance()->error("Cannot initialize openni");
+        LOG(ERROR) << "Cannot initialize openni";
         return;
     }
 
@@ -32,7 +32,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
 
     for (int i = 0; i < deviceList.getSize(); ++i)
     {
-        jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(i) + "]" + deviceList[i].getName() + " [" +  deviceList[i].getVendor() + "] " + "(" + deviceList[i].getUri() + ")");
+        LOG(INFO) << "[" + boost::lexical_cast<std::string>(i) + "]" + deviceList[i].getName() + " [" +  deviceList[i].getVendor() + "] " + "(" + deviceList[i].getUri() + ")";
     }
 
 
@@ -40,7 +40,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
     //checking the number off connected devices
     if (deviceList.getSize() < 1)
     {
-        jderobot::Logger::getInstance()->error( "Missing devices" );
+        LOG(ERROR) <<  "Missing devices";
         openni::OpenNI::shutdown();
     }
 
@@ -52,7 +52,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
     nRetVal = g_device.open(deviceUri);
     if (nRetVal != openni::STATUS_OK)
     {
-        jderobot::Logger::getInstance()->error("Error openning device");
+        LOG(ERROR) << "Error openning device";
         return;
     }
 
@@ -63,7 +63,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
 
     if (0 != openCommon())
     {
-        jderobot::Logger::getInstance()->error("Error openning streams");
+        LOG(ERROR) << "Error openning streams";
     }
 
 //    this->changeRegistration(1); image registered over rgb
@@ -72,7 +72,7 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
     cycle=(float)(1/(float)fps)*1000000;
 
 
-    jderobot::Logger::getInstance()->info("Device initialized");
+    LOG(INFO) << "Device initialized";
     return;
 
 
@@ -92,7 +92,7 @@ void ConcurrentDevice::run() {
         int process = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
 
         if (process > (int)cycle ){
-            jderobot::Logger::getInstance()->warning("-------- openniServer: RGB openni timeout-" );
+            DLOG(WARNING) << "-------- openniServer: RGB openni timeout-" ;
         }
         else{
             int delay = (int)cycle - process;
@@ -130,7 +130,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
     {
         if (openType == SENSOR_ON)
         {
-            jderobot::Logger::getInstance()->error("No "  + std::string(name) + " sensor available");
+            LOG(ERROR) << "No "  + std::string(name) + " sensor available";
             return -1;
         }
         else
@@ -144,7 +144,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
     {
         if (openType == SENSOR_ON)
         {
-            jderobot::Logger::getInstance()->error("Failed to create " + std::string(openni::OpenNI::getExtendedError()) + " " + std::string(name));
+            LOG(ERROR) << "Failed to create " + std::string(openni::OpenNI::getExtendedError()) + " " + std::string(name);
             return -2;
         }
         else
@@ -160,7 +160,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
 
         if (openType == SENSOR_ON)
         {
-            jderobot::Logger::getInstance()->error("Failed to start depth stream: " + std::string(openni::OpenNI::getExtendedError()));
+            LOG(ERROR) << "Failed to start depth stream: " + std::string(openni::OpenNI::getExtendedError());
             return -3;
         }
         else
@@ -171,7 +171,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
 
 
     if ((*ppSensorInfo)->getSupportedVideoModes().getSize()==1){
-        jderobot::Logger::getInstance()->warning("Only one mode is avialable image will be post processed is the mode does not match with the device output");
+        LOG(WARNING) << "Only one mode is avialable image will be post processed is the mode does not match with the device output";
         if (stream.getVideoMode().getResolutionX()== workingSize.width && stream.getVideoMode().getResolutionY() == workingSize.height) {
             this->videoMode = VideoMode(workingSize.width,workingSize.height);
             this->videoMode.setValid(true);
@@ -187,14 +187,14 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
         for(int i=0;i < (*ppSensorInfo)->getSupportedVideoModes().getSize();i++)
         {
             openni::VideoMode videoMode = (*ppSensorInfo)->getSupportedVideoModes()[i];
-            jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(i)  + "]: fps: " + boost::lexical_cast<std::string>(videoMode.getFps()) + "x: " + boost::lexical_cast<std::string>(videoMode.getResolutionX()) + " x " +  boost::lexical_cast<std::string>(videoMode.getResolutionY()));
+            LOG(INFO) << "[" + boost::lexical_cast<std::string>(i)  + "]: fps: " + boost::lexical_cast<std::string>(videoMode.getFps()) + "x: " + boost::lexical_cast<std::string>(videoMode.getResolutionX()) + " x " +  boost::lexical_cast<std::string>(videoMode.getResolutionY());
             if (workingSize.width == videoMode.getResolutionX() && workingSize.height == videoMode.getResolutionY()){
                 id_fpsbyWorkingResolution.push_back(std::make_pair(videoMode.getFps(),i));
             }
         }
 
         if (id_fpsbyWorkingResolution.size() ==0){
-            jderobot::Logger::getInstance()->error("No videomode supported with the selected configutation: " + boost::lexical_cast<std::string>(workingSize.width) + " x "  + boost::lexical_cast<std::string>(workingSize.height));
+            LOG(ERROR) << "No videomode supported with the selected configutation: " + boost::lexical_cast<std::string>(workingSize.width) + " x "  + boost::lexical_cast<std::string>(workingSize.height);
             exit(2);
         }
 
@@ -210,8 +210,8 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
             }
         }
 
-        jderobot::Logger::getInstance()->info("Setting video mode to:");
-        jderobot::Logger::getInstance()->info("[" + boost::lexical_cast<std::string>(bestId)  + "]: fps: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getFps()) + "x: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionX()) + " x " +  boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionY()));
+        LOG(INFO) << "Setting video mode to:";
+        LOG(INFO) << "[" + boost::lexical_cast<std::string>(bestId)  + "]: fps: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getFps()) + "x: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionX()) + " x " +  boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionY());
 
 
 
@@ -222,7 +222,7 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
 
             if (openType == SENSOR_ON)
             {
-                jderobot::Logger::getInstance()->error("Failed to change video mode: " + std::string(openni::OpenNI::getExtendedError()));
+                LOG(ERROR) << "Failed to change video mode: " + std::string(openni::OpenNI::getExtendedError());
                 return -3;
             }
             else
@@ -280,7 +280,7 @@ void ConcurrentDevice::readFrame()
                 case 2:
                     g_irStream.readFrame(&g_irFrame); break;
                 default:
-                    jderobot::Logger::getInstance()->error("Error in wait");
+                    LOG(ERROR) << "Error in wait";
 
             }
             mutex.unlock();
@@ -295,13 +295,13 @@ int ConcurrentDevice::openCommon()
 
     int ret;
 
-    jderobot::Logger::getInstance()->info("--------------------------   DEPTH    ------------------------");
+    LOG(INFO) << "--------------------------   DEPTH    ------------------------";
     ret = openStream( "depth", openni::SENSOR_DEPTH, config.openDepth, g_depthStream, &g_depthSensorInfo, &g_bIsDepthOn);
     if (ret != 0)
     {
         return ret;
     }
-    jderobot::Logger::getInstance()->info("--------------------------   COLOR    ------------------------");
+    LOG(INFO) << "--------------------------   COLOR    ------------------------";
     ret = openStream( "color", openni::SENSOR_COLOR, config.openColor, g_colorStream, &g_colorSensorInfo, &g_bIsColorOn);
     if (ret != 0)
     {
