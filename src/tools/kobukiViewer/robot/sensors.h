@@ -1,71 +1,47 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
-#include <QMutex>
-
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 
-#include <jderobot/pose3d.h>
-#include <jderobot/camera.h>
-#include <jderobot/laser.h>
-
-#include "types.h"
+#include <jderobot/types/laserData.h>
+#include <jderobot/types/image.h>
+#include <jderobot/types/pose3d.h>
 
 //Opencv
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <jderobot/comm/laserClient.hpp>
+#include <jderobot/comm/cameraClient.hpp>
+#include <jderobot/comm/pose3dClient.hpp>
+
 class Sensors
 {
 public:
     Sensors(Ice::CommunicatorPtr ic);
 
-    void update();
+    JdeRobotTypes::Pose3d getPose();
+    JdeRobotTypes::LaserData getLaserData();
 
-    float getRobotPoseX();
-    float getRobotPoseY();
-    float getRobotPoseTheta();
-    LaserD getLaserData();
-
-    cv::Mat getCamera2();
-    cv::Mat getCamera1();
+    JdeRobotTypes::Image getImage1();
+    JdeRobotTypes::Image getImage2();
 
 
 private:
 
-    QMutex mutex;
-
     Ice::CommunicatorPtr ic;
 
-    // ICE INTERFACES
-    jderobot::Pose3DPrx p3dprx;
-    jderobot::Pose3DDataPtr pose3ddata;
-    jderobot::CameraPrx camera2;
-    jderobot::CameraPrx camera1;
-
-    //ICE interfaces available for connection on demand
-    bool laserON;
-    bool pose3dON;
-    bool camera1ON;
-    bool camera2ON;
-
-    //ROBOT POSE
-    double robotx;
-    double roboty;
-    double robottheta;
-
     //LASER DATA
-    bool boolLaser;
-    jderobot::LaserPrx laserprx;
-    jderobot::LaserDataPtr ld;
-    LaserD laserData;
+    JdeRobotComm::LaserClient* laserClient;
 
-    //CAMERADATA7
+    JdeRobotComm::CameraClient* camera1;
+    JdeRobotComm::CameraClient* camera2;
 
-    cv::Mat image1;
-    cv::Mat image2;
+    JdeRobotComm::Pose3dClient* poseClient;
+
+
 
 
 };

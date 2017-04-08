@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python @CMAKE_INSTALL_PREFIX@/share/jderobot/python/uav_viewer_py/uav_viewer.py $*

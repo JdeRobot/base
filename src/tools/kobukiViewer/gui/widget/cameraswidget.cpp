@@ -22,8 +22,10 @@ CamerasWidget::CamerasWidget(Robot* robot)
 
 void CamerasWidget::update()
 {
-    cv::Mat frame1 = this->robot->getSensors()->getCamera1();
-    cv::Mat frame2 = this->robot->getSensors()->getCamera2();
+
+    cv::Mat frame1 = this->robot->getSensors()->getImage1().data;
+    cv::Mat frame2 = this->robot->getSensors()->getImage2().data;
+
 
     cv::resize(frame1, frame1, cv::Size(320, 240));
     cv::resize(frame2, frame2, cv::Size(320, 240));

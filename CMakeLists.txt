@@ -9,6 +9,12 @@ endif()
 include(buildpresets.cmake)
 
 
+# include Modules 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
+
+# include pythonAux Macros
+include(${PROJECT_SOURCE_DIR}/cmake/pythonAux.cmake)
+
 #check compiller
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	include(CheckCXXCompilerFlag)
@@ -88,7 +94,6 @@ endmacro()
 
 
 
-
 ###################
 #                 #
 #  CHECK SYSTEM   #
@@ -98,13 +103,6 @@ endmacro()
   # FIND & CHECK PRINCIPAL LIBRARIES
 
 include(FindPkgConfig)
-
-PKG_CHECK_MODULES(gsl REQUIRED gsl)
-include_directories(${gsl_INCLUDE_DIRS})
-link_directories(${gsl_LIBRARIES_DIRS})
-
-PKG_CHECK_MODULES(eigen REQUIRED eigen3)
-include_directories(${eigen_INCLUDE_DIRS})
 
 
 link_directories(${INTERFACES_CPP_DIR}/jderobot)
@@ -117,8 +115,7 @@ ENDFOREACH(LibFile)
 
 include(Deps/LoadJderobotDependencies.cmake)
 
-list(APPEND DEPS libgsl2 gsl-bin)
-list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libeigen3-dev libgsl-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
+list(APPEND DEPS_DEV git cmake make gcc-5 g++-5 gcc g++ pkg-config libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev)
 list(APPEND DEPS_DEV "${DEPS}")
 
 # list(APPEND uses ; separator. We need ,
@@ -276,8 +273,8 @@ SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 5)
-SET (CPACK_PACKAGE_VERSION_MINOR 4)
-SET (CPACK_PACKAGE_VERSION_PATCH 2)
+SET (CPACK_PACKAGE_VERSION_MINOR 5)
+SET (CPACK_PACKAGE_VERSION_PATCH 0)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 
 

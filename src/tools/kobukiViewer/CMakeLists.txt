@@ -1,4 +1,4 @@
-if (${QT5_COMPILE})
+if (${QT5_COMPILE} AND ${roscpp_FOUND})
 	
     set(GUI_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/gui)
     set(CMAKE_AUTOMOC ON)
@@ -13,14 +13,13 @@ if (${QT5_COMPILE})
     )
 
 
-    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h gui/widget/glwidget.h robot/types.h)
+    SET(HEADERS robot/robot.h gui/gui.h gui/widget/cameraswidget.h gui/widget/controlvw.h)
     SET(RESOURCES resources.qrc)
 
-	SET(SOURCE main.cpp depuratewindow.cpp 
-				    robot/actuators.cpp robot/robot.cpp robot/sensors.cpp robot/threadupdaterobot.cpp 
-			        pioneer/pioneer.c pioneer/pioneeropengl.c
-			        gui/gui.cpp gui/stategui.cpp gui/threadupdategui.cpp
-			        gui/widget/cameraswidget.cpp gui/widget/controlvw.cpp gui/widget/glwidget.cpp gui/widget/laserwidget.cpp
+	SET(SOURCE main.cpp  
+				    robot/actuators.cpp robot/robot.cpp robot/sensors.cpp  
+			        gui/gui.cpp gui/threadupdategui.cpp
+			        gui/widget/cameraswidget.cpp gui/widget/controlvw.cpp gui/widget/laserwidget.cpp
 			        ${HEADERS}
 			        ${RESOURCES}
     )
@@ -36,10 +35,14 @@ if (${QT5_COMPILE})
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${easyiceconfig_INCLUDE_DIRS}
+        ${jderobottypes_INCLUDE_DIRS}
+        ${jderobotcomm_INCLUDE_DIRS}
+        ${roscpp_INCLUDE_DIRS}
     )
 
     link_directories(${JDE_LIBS}
         ${easyiceconfig_LIBRARY_DIRS}
+        ${jderobotcomm_LIBRARY_DIRS}
     )
 
     add_executable( kobukiViewer ${SOURCE} ${INTERFACES_CPP_DIR})
@@ -52,11 +55,13 @@ if (${QT5_COMPILE})
         ${CMAKE_THREAD_LIBS_INIT}
         ${OpenCV_LIBRARIES}
         ${easyiceconfig_LIBRARIES}
+        ${jderobotcomm_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
         ${Ice_LIBRARIES}
 		${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
         JderobotInterfaces
         jderobotutil
+        ${catkin_LIBRARIES}
     )
 ENDIF()
 

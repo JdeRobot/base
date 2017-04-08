@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-### Install
+configure_module_python(parallelIce)
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/parallelIce
+add_custom_target(parallelIce_py ALL)
+copy_to_binary_python(parallelIce_py parallelIce)
 
-    DESTINATION ${PYTHON_MODULE_PATH}
-
-    COMPONENT core
-
-)
+install_python(parallelIce core)

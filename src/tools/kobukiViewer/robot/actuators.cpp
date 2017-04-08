@@ -4,141 +4,62 @@ Actuators::Actuators(Ice::CommunicatorPtr ic)
 {
     this->ic = ic;
 
-    // Contact to MOTORS interface
-    Ice::ObjectPrx baseMotors = ic->propertyToProxy("kobukiViewer.Motors.Proxy");
-    if (0 == baseMotors){
-        motorsON = false;
-		std::cout << "Motors configuration not specified" <<std::endl;
-
-        //throw "Could not create proxy with motors";
-	}else{
-		// Cast to motors
-		try{
-			mprx = jderobot::MotorsPrx::checkedCast(baseMotors);
-			if (0 == mprx)
-				throw "Invalid proxy kobukiViewer.Motors.Proxy";
-
-			motorsON = true;
-			std::cout << "Motors connected" << std::endl;
-		}catch (Ice::ConnectionRefusedException& e){
-			motorsON=false;
-			std::cout << "Motors inactive" << std::endl;
-		}
-	}
-    
-    motorVout= 0;
-    motorWout = 0;
-    motorLout= 0;
+    this->motorsClient = JdeRobotComm::getMotorsClient(ic, "kobukiViewer.Motors");
 
 }
 
-void Actuators::update()
-{
-    if (motorsON) {
-	    mutex.lock();
-
-	    motorVin = this->mprx->getV();
-	    motorWin = this->mprx->getW();
-	    motorLin = this->mprx->getL();
-
-	    mutex.unlock();
-    }
-}
-
-void Actuators::setActuators()
-{
-	if (motorsON) {
-		mutex.lock();
-
-		if (motorWout < 5 && motorWout>-5)
-		    this->mprx->setW(0.);
-
-		this->mprx->setW(motorWout);
-		this->mprx->setL(motorLout);
-		this->mprx->setV(motorVout);
-
-		mutex.unlock();
-	}
-}
 
 
 ///////////////// GETTER //////////////////
 float Actuators::getMotorV()
 {
-
-	float v;
-	mutex.lock();
-	if (motorsON)
-		v = motorVin;
-	else
-		v = 0;
-	mutex.unlock();
-
-    return v;
-	
+	return 0;
 }
 
 float Actuators::getMotorW()
 {
-	float w;
-	mutex.lock();
-	if (motorsON)
-		w = motorVin;
-	else
-		w = 0;
-	mutex.unlock();
-
-    return w;
+	return 0;
 }
 
 float Actuators::getMotorL()
 {
-    float l;
-	mutex.lock();
-	if (motorsON)
-		l = motorVin;
-	else
-		l = 0;
-	mutex.unlock();
-
-    return l;
+    return 0;
 }
 
 ///////////////// SETTER //////////////////
 void Actuators::setMotorSTOP()
 {
-	if (motorsON) {
+	JdeRobotTypes::CMDVel vel;
+	if (this->motorsClient) {
 		mutex.lock();
-		this->motorVout = 0;
-		this->motorWout = 0;
-		this->motorLout = 0;
+		this->motorsClient->sendVelocities(vel);
 		mutex.unlock();
 	}
 }
 
 void Actuators::setMotorV(float motorV)
 {
-	if (motorsON) {
+	if (this->motorsClient) {
 		mutex.lock();
-		this->motorVout = motorV;
+		this->motorsClient->sendVX(motorV);
 		mutex.unlock();
 	}
 }
 
 void Actuators::setMotorW(float motorW)
 {
-	if (motorsON) {
+	if (this->motorsClient) {
 		mutex.lock();
-		this->motorWout = motorW;
+		this->motorsClient->sendAZ(motorW);
 		mutex.unlock();
 	}
 }
 
 void Actuators::setMotorL(float motorL)
 {
-	if (motorsON) {
+	if (this->motorsClient) {
 		mutex.lock();
-		this->motorLout = motorL;
+		this->motorsClient->sendVY(motorL);
 		mutex.unlock();
 	}
 

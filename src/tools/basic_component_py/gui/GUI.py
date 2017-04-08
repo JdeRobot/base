@@ -21,10 +21,13 @@
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
-from gui.ui_gui import Ui_MainWindow
-from gui.teleopWidget import TeleopWidget
-from gui.cameraWidget import CameraWidget
-from gui.communicator import Communicator
+from .ui_gui import Ui_MainWindow
+from .teleopWidget import TeleopWidget
+from .cameraWidget import CameraWidget
+from .communicator import Communicator
+from .logoWidget import LogoWidget
+
+from jderobotTypes import CMDVel
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -37,6 +40,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.teleop = TeleopWidget(self)
         self.tlLayout.addWidget(self.teleop)
         self.teleop.setVisible(True)
+
+        self.logo = LogoWidget(self, self.logoLayout.parent().width(), self.logoLayout.parent().height())
+        self.logoLayout.addWidget(self.logo)
+        self.logo.setVisible(True)
 
         self.updGUI.connect(self.updateGUI)
 
@@ -64,9 +71,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def setXYValues(self, newX, newY):
         self.XValue.setText(str(newX))
         self.YValue.setText(str(newY))
-        myW=-newX*self.motors.getMaxW()
-        myV=-newY*self.motors.getMaxV()
-        self.motors.setV(myV)
-        self.motors.setW(myW)
-        self.motors.sendVelocities()
+        if (self.motors):
+            vel = CMDVel()
+            myW=-newX*self.motors.getMaxW()
+            myV=-newY*self.motors.getMaxV()
+            vel.vx = myV
+            vel.az = myW
+            self.motors.sendVelocities(vel)
 

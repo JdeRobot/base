@@ -17,10 +17,9 @@
       <collision name="base_collision">
         <pose>0 0 0.047800 0 0 0</pose>
         <geometry>
-          <cylinder>
-            <radius>0.016495</radius>
-            <length>0.061163</length>
-         </cylinder>
+          <mesh>
+            <uri>model://create/meshes/create_body.dae</uri>
+         </mesh>
        </geometry>
      </collision>
       <visual name="base_visual">
@@ -85,6 +84,11 @@
          </sphere>
        </geometry>
      </visual>
+      <sensor name="bumper" type='contact'>
+        <contact>
+          <collision>base_collision</collision>
+        </contact>
+      </sensor>
       <sensor name="left_cliff_sensor" type="ray">
         <pose>0.070000 0.140000 0.027000 0 1.570790 0</pose>
         <ray>
