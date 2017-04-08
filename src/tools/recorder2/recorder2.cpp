@@ -26,6 +26,7 @@
 #include <string.h>
 #include <buffer/RecorderInterface.h>
 #include <ns/ns.h>
+#include <pools/PoolsManager.h>
 #include "recordergui.h"
 #include "pools/PoolWriteImages.h"
 #include "pools/poolWritePose3dEncoders.h"
@@ -39,8 +40,8 @@ bool recording=false;
 struct timeval inicio;
 bool globalActive=true;
 Ice::CommunicatorPtr ic;
-pthread_t consumerThreads[100];
-pthread_t producerThreads[100];
+
+
 int nCameras=0;
 int nDepthSensors=0;
 int nLasers=0;
@@ -51,33 +52,7 @@ int totalConsumers=0;
 int totalProducers=0;
 bool killed=false;
 
-//how to include this threads under the class
-//cameras
-//thread for the camera consumer
-void* camera_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWriteImages* pool =static_cast<recorder::poolWriteImages*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
 
-	pthread_exit(NULL);
-	return NULL;
-}
-//thread for the camera producer
-void* camera_pool_producer_thread(void* foo_ptr){
-	recorder::poolWriteImages* pool =static_cast<recorder::poolWriteImages*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
 
 //lasers
 // thread for the laser consumer
@@ -206,17 +181,15 @@ void* encoders_pool_producer_thread(void* foo_ptr){
 	return NULL;
 }
 
+recorder::PoolsManagerPtr manager;
 
 void exitApplication(int s){
 	globalActive=false;
 	killed=true;
-	std::cout << totalConsumers << std::endl;
-	for (int i = 0; i < totalConsumers; i++) {
-		pthread_join(consumerThreads[i], NULL);
-	}
-	for (int i = 0; i < totalProducers; i++) {
-		pthread_join(producerThreads[i], NULL);
-	}
+
+    manager->releaseAll();
+
+
 	//odenamdos los ficheros.
 	for (int i=0; i< nCameras; i++){
 		std::stringstream instruction1;
@@ -315,8 +288,7 @@ int main(int argc, char** argv){
 
 	pthread_attr_t attr;
 	//images
-	std::vector<recorder::poolWriteImages*> poolImages;
-	int nConsumidores;
+	int nConsumers;
 	int poolSize;
 	//lasers
 	std::vector<recorder::poolWriteLasers*> poolLasers;
@@ -374,12 +346,6 @@ int main(int argc, char** argv){
 
 		nCameras = prop->getPropertyAsIntWithDefault("Recorder.nCameras",0);
 		if (nCameras > 0 ){
-			struct stat buf;
-			char dire[]="./data/images/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir ./data/images/");
-			}
             fileFormat=prop->getProperty("Recorder.FileFormat");
             if (fileFormat.compare(std::string("png"))==0){
 				pngCompressRatio=prop->getPropertyAsIntWithDefault("Recorder.PngCompression",3);
@@ -394,33 +360,25 @@ int main(int argc, char** argv){
 			else{
                 throw "File format is not valid";
 			}
-			nConsumidores=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
+			nConsumers=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
 			poolSize=prop->getPropertyAsIntWithDefault("Recorder.poolSize",10);
 
 
 		}
+        std::string baseLogPath="./data/";
+
+        manager= recorder::PoolsManagerPtr( new recorder::PoolsManager(attr,nConsumers,baseLogPath));
+
 
         int bufferEnabled = prop->getPropertyAsIntWithDefault("Recorder.Buffer.Enabled",0);
         int bufferSeconds = prop->getPropertyAsIntWithDefault("Recorder.Buffer.Seconds",0);
         std::string videoMode =  prop->getProperty("Recorder.Buffer.Mode");
 
+
 		for (int i=0; i< nCameras; i++){
-			struct stat buf;
-			std::stringstream cameraPath;
-			cameraPath << "./data/images/camera" << i+1;
-			if( stat( cameraPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << cameraPath.str();
-				system(instruction.str().c_str());
-			}
-
-
             std::stringstream sProxy;
-
 			// Get driver camera
 			sProxy << "Recorder.Camera" << i+1 << ".Proxy";
-
 			Ice::ObjectPrx camara = ic->propertyToProxy(sProxy.str());
 			if (0==camara)
 				throw "Could not create proxy to camera1 server";
@@ -430,26 +388,19 @@ int main(int argc, char** argv){
 				throw "Invalid proxy";
 			else
 				cprx.push_back(cprxAux);
-
             std::stringstream sFormat;
             std::string imageFormat;
-
             sFormat << "Recorder.Camera" << i+1 << ".Format";
-
             imageFormat = prop->getProperty(sFormat.str());
-
 			//pool
-            recorder::poolWriteImages *temp = new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,imageFormat ,fileFormat ,compression_params);
-			poolImages.push_back(temp);
-
-
-			for (int j=i*nConsumidores; j< i*nConsumidores+nConsumidores; j++){
-				pthread_create(&consumerThreads[j], &attr, camera_pool_consumer_thread,temp);
-				totalConsumers++;
-			}
-			pthread_create(&producerThreads[i], &attr, camera_pool_producer_thread,temp);
-			totalProducers++;
+			recorder::poolWriteImagesPtr temp = recorder::poolWriteImagesPtr( new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,imageFormat ,fileFormat ,compression_params));
+            manager->addPool(recorder::IMAGES,temp);
 		}
+
+        manager->createThreads();
+
+
+
 
         if (bufferEnabled)
         {
@@ -459,7 +410,8 @@ int main(int argc, char** argv){
             adapter =ic->createObjectAdapterWithEndpoints("Recorder", Endpoints);
             std::string name = prop->getProperty("Recorder.Name");
             LOG(INFO) << "Creating Recorder: " + name;
-            recorder::RecorderInterface* recorder_prx = new recorder::RecorderInterface(poolImages);
+            auto imagesPool=manager->getPoolsByType(recorder::IMAGES);
+            recorder::RecorderInterface* recorder_prx = new recorder::RecorderInterface(imagesPool);
             adapter->add(recorder_prx, ic->stringToIdentity(name));
 
             adapter->activate();
@@ -732,10 +684,7 @@ int main(int argc, char** argv){
 				if (iteration==0){
 					gettimeofday(&inicio,NULL);
                     //init the pools
-                    for (auto it = poolImages.begin(), end=poolImages.end(); it != end; ++it){
-                        (*it)->setInitialTime(inicio);
-                        (*it)->setRecording(true);
-                    }
+                    manager->startRecording(inicio);
 				}
 				iteration++;
 				gettimeofday(&b,NULL);

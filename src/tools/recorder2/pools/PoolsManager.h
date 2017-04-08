@@ -5,10 +5,39 @@
 #ifndef JDEROBOT_POOLSMANAGER_H
 #define JDEROBOT_POOLSMANAGER_H
 
+#include "RecorderPool.h"
 
-class PoolsManager {
+namespace recorder {
+    enum RECORDER_POOL_TYPE{LASERS, POSE3DENCODERS,POSE3D,ENCODERS,POINTCLOUD,IMAGES};
+    class PoolsManager {
+    public:
+        PoolsManager(pthread_attr_t& attr, int nConsumers, const std::string& baseLogPath);
+        void addPool(RECORDER_POOL_TYPE type, RecorderPoolPtr pool);
+        void createThreads();
+        void releaseAll();
+        std::vector<RecorderPoolPtr> getPoolsByType(RECORDER_POOL_TYPE type);
+        void startRecording(struct timeval& syncTime);
 
-};
+
+    private:
+        std::map<RECORDER_POOL_TYPE, std::vector<RecorderPoolPtr>> poolsByType;
+        std::map<RECORDER_POOL_TYPE, std::string> typesSufix;
+        std::map<RECORDER_POOL_TYPE, std::string> typesSufixIndependent;
+
+
+        pthread_attr_t& attr;
+        int nConsumers;
+        std::vector<pthread_t> consumerThreads;
+        std::vector<pthread_t> producerThreads;
+        std::string baseLogPath;
+
+
+        std::string getPathSeparator();
+        void testPathAndCreateIfNotExists(const std::string& path);
+    };
+
+    typedef boost::shared_ptr<PoolsManager> PoolsManagerPtr;
+}
 
 
 #endif //JDEROBOT_POOLSMANAGER_H

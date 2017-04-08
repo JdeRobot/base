@@ -31,5 +31,23 @@ namespace recorder {
         this->syncInitialTime=time;
     }
 
+    void *RecorderPool::main_pool_consumer_thread(void *foo_ptr) {
+        RecorderPoolPtr pool =(*static_cast<RecorderPoolPtr*>(foo_ptr));
+        return pool->consumer_thread_imp();
+    }
+
+    void *RecorderPool::main_pool_producer_thread(void *foo_ptr) {
+        RecorderPoolPtr pool =(*static_cast<RecorderPoolPtr*>(foo_ptr));
+        return pool->producer_thread_imp();
+    }
+
+    void RecorderPool::setActive(bool value) {
+        this->active=value;
+    }
+
+    bool RecorderPool::setLogFile(const std::string &logPath) {
+        this->logfile.open(logPath.c_str());
+    }
+
 
 }

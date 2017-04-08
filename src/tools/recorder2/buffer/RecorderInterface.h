@@ -12,7 +12,7 @@
 namespace recorder {
     class RecorderInterface : virtual public jderobot::recorder {
     public:
-        RecorderInterface(std::vector<poolWriteImages *> &poolImages);
+        RecorderInterface(std::vector<RecorderPoolPtr> &poolImages);
 
         virtual bool saveLog(const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic);
 
@@ -20,7 +20,7 @@ namespace recorder {
         saveVideo(const ::std::string &path, const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic);
 
     private:
-        std::vector<poolWriteImages *> &poolImages;
+        std::vector<RecorderPoolPtr> &poolImages;
     };
 
 }

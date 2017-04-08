@@ -20,15 +20,12 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
 	this->compression_params=compression_params;
 	this->imageFormat=imageFormat;
     this->fileFormat=fileFormat;
-	std::stringstream filePath;
-	filePath << "data/images/camera" << this->deviceID << "/cameraData.jde";
-	this->cycle = 1000.0/freq;
-	this->outfile.open(filePath.str().c_str());
+    this->cycle = 1000.0/freq;
 	gettimeofday(&lastTime,NULL);
 }
 
 poolWriteImages::~poolWriteImages() {
-	this->outfile.close();
+	this->logfile.close();
 	// TODO Auto-generated destructor stub
 }
 
@@ -63,7 +60,7 @@ poolWriteImages::~poolWriteImages() {
             {
 
                 cv::imwrite(buff.str(), img2Save,this->compression_params);
-                this->outfile << relative<< std::endl;
+                this->logfile << relative<< std::endl;
 
             }
             else
@@ -277,23 +274,20 @@ void poolWriteImages::producer_thread(){
 	}
 
 
-    void* poolWriteImages::pool_producer_thread(void*  foo_ptr){
-        recorder::poolWriteImages* pool =static_cast<recorder::poolWriteImages*>(foo_ptr);
-        while (pool->getActive()){
-            if (pool->getRecording())
-                pool->producer_thread();
+    void* poolWriteImages::producer_thread_imp(){
+        while (this->getActive()){
+            if (this->getRecording())
+                this->producer_thread();
             else
                 usleep(1000);
         }
         pthread_exit(NULL);
     }
 
-    void* poolWriteImages::pool_consumer_thread(void* foo_ptr){
-        recorder::poolWriteImages* pool =static_cast<recorder::poolWriteImages*>(foo_ptr);
-
-        while (pool->getActive()){
-            if (pool->getRecording())
-                pool->consumer_thread();
+    void* poolWriteImages::consumer_thread_imp(){
+        while (this->getActive()){
+            if (this->getRecording())
+                this->consumer_thread();
             else
                 usleep(1000);
         }
