@@ -23,6 +23,7 @@ class CameraTask: public IceUtil::Thread {
   void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format);
   void print_md5_sum(unsigned char* md);
   virtual void run();
+  void destroy();
 
   //to implement
   virtual void createCustomImage(cv::Mat& image) =0;
