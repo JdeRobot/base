@@ -24,6 +24,7 @@ namespace recorder {
         void setActive(bool value);
         void setInitialTime(struct timeval& time);
         bool setLogFile(const std::string& logPath);
+        std::string getLogFilePath();
 
         static void* main_pool_consumer_thread(void* foo_ptr);
 
@@ -45,6 +46,7 @@ namespace recorder {
         std::vector<long long int> its;
         struct timeval syncInitialTime;
         std::ofstream logfile;
+        std::string logFilePath;
 
 
 

@@ -11,7 +11,17 @@
 #include <logger/Logger.h>
 
 namespace recorder{
-poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID,  std::string imageFormat, std::string fileFormat, std::vector<int> compression_params):RecorderPool(freq,poolSize,cameraID) {
+poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID,  std::string imageFormat, std::string fileFormat,
+                                 std::vector<int> compression_params,const std::string& baseLogPath, MODE mode, int bufferSeconds, std::string videoMode):
+        RecorderPool(freq,poolSize,cameraID),
+        PoolPaths(baseLogPath),
+        mBufferSeconds(bufferSeconds),
+        mMode(mode),
+        mBuffer(NULL),
+        mLastSecondsLog(5)
+
+
+{
 	// TODO Auto-generated constructor stub
     this->cameraPrx = jderobot::CameraPrx::checkedCast(prx);
     if (0== this->cameraPrx) {
@@ -22,6 +32,19 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
     this->fileFormat=fileFormat;
     this->cycle = 1000.0/freq;
 	gettimeofday(&lastTime,NULL);
+
+    mNameLog = "alarm1";
+    mVideoMode = videoMode;
+    if (mMode == SAVE_BUFFER)
+    {
+        LOG(INFO) << "Recorder run as buffer mode, with a buffer = " + boost::lexical_cast<std::string>(mBufferSeconds) + " seconds.";
+        mBuffer = new RingBuffer(mBufferSeconds*1000);
+    }
+    else {
+        createDevicePath(IMAGES, cameraID);
+        this->setLogFile(getDeviceLogFilePath(IMAGES, cameraID));
+    }
+    mCamType = this->cameraPrx->getImageFormat().at(0);
 }
 
 poolWriteImages::~poolWriteImages() {
@@ -43,12 +66,8 @@ poolWriteImages::~poolWriteImages() {
             this->its.erase(this->its.begin());
             pthread_mutex_unlock(&(this->mutex));
 
-            std::stringstream buff;//create a stringstream
-            buff << "data/images/camera" << deviceID << "/" << relative << "." << fileFormat;
-
-
-            std::stringstream dataPath;
-            dataPath << "data-" << mNameLog << "/images/camera" << this->deviceID << "/";
+            std::stringstream imageFileName;//create a stringstream
+            imageFileName << getDeviceLogPath(IMAGES,this->deviceID) << relative << "." << fileFormat;
 
             MODE currentMode;
             pthread_mutex_lock(&(this->mModeMutex));
@@ -59,7 +78,7 @@ poolWriteImages::~poolWriteImages() {
             if (currentMode == WRITE_FRAME)
             {
 
-                cv::imwrite(buff.str(), img2Save,this->compression_params);
+                cv::imwrite(imageFileName.str(), img2Save,this->compression_params);
                 this->logfile << relative<< std::endl;
 
             }
@@ -105,14 +124,8 @@ poolWriteImages::~poolWriteImages() {
 
                 if (currentMode == WRITE_BUFFER)
                 {
-
-                    //Create dir
-                    boost::filesystem::path dir(dataPath.str());
-                    boost::filesystem::create_directories(dir);
-
-                    std::stringstream filePath;
-                    filePath << "data-" << mNameLog << "/images/camera" << this->deviceID << "/cameraData.jde";
-                    this->logfile.open(filePath.str().c_str());
+                    std::string fileLogPath = getCustomLogFilePath(IMAGES,this->deviceID,mNameLog);
+                    this->setLogFile(fileLogPath);
 
 
                     LOG(INFO) << "Init recording log: " + mNameLog + " (camera" + boost::lexical_cast<std::string>(this->deviceID) +  " ) with "
@@ -138,9 +151,9 @@ poolWriteImages::~poolWriteImages() {
                     if (total.seconds() > mLastSecondsLog)
                     {
                         std::vector<int> res;
-
+                        std::string dataPath = getCustomLogPath(IMAGES,this->deviceID,mNameLog);
                         boost::filesystem::directory_iterator end_itr;
-                        for ( boost::filesystem::directory_iterator itr( dataPath.str() ); itr != end_itr; ++itr )
+                        for ( boost::filesystem::directory_iterator itr( dataPath); itr != end_itr; ++itr )
                         {
                             if ( itr->path().generic_string().find("png") == std::string::npos )
                                 continue;
@@ -165,13 +178,14 @@ poolWriteImages::~poolWriteImages() {
                         this->logfile.close();
                         LOG(INFO) << "End recording log: " + mNameLog ;
 
-                        // Save the video
+                        // Save the videoa
                         if (mVideoMode.compare("Video")==0)
                         {
-                            std::stringstream basePath, fileData, fileImage, command, command_video, fileVideo, tmpFileVideo;
-                            basePath << "data-" << mNameLog << "/images/camera" << this->deviceID << "/";
-                            fileData << basePath.str() << "cameraData.jde";
-                            fileImage << basePath.str() << "list.txt";
+                            std::stringstream fileData, fileImage, command, command_video, fileVideo, tmpFileVideo;
+
+                            std::string basePath = getCustomLogPath(IMAGES,this->deviceID,mNameLog);
+                            fileData << basePath << "cameraData.jde";
+                            fileImage << basePath << "list.txt";
 
                             command << "cat " << fileData.str() << " | sed -e 's/$/.png/g' > " << fileImage.str();
 
@@ -180,7 +194,7 @@ poolWriteImages::~poolWriteImages() {
                             fileVideo << mNamePathVideo << "/" << mNameLog << "-" << this->deviceID << "-" << mCamType << ".avi";
                             tmpFileVideo << mNamePathVideo << "/" << mNameLog << "-" << this->deviceID << "-" << mCamType << ".mp4";
 
-                            command_video << "cd " << basePath.str() << ";" ;
+                            command_video << "cd " << basePath << ";" ;
                             command_video << "mencoder mf://@list.txt -mf w=320:h=240:fps=10:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o " << tmpFileVideo.str() << ";" ;
                             command_video << "ffmpeg -y -i " << tmpFileVideo.str() << " -vcodec libx264 " << fileVideo.str() << ";" ;
                             command_video << "rm -f " << tmpFileVideo.str() << ";" ;
@@ -197,8 +211,9 @@ poolWriteImages::~poolWriteImages() {
                     }
                     else
                     {
+                        std::string basePath = getCustomLogPath(IMAGES,this->deviceID,mNameLog);
                         std::stringstream path;
-                        path << "data-" << mNameLog << "/images/camera" << deviceID << "/" << relative << "." << fileFormat;
+                        path << basePath << relative << "." << fileFormat;
                         cv::imwrite(path.str(), saveImage ,this->compression_params);
                     }
                 }

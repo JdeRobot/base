@@ -34,12 +34,13 @@
 #include <fstream>
 #include <buffer/RingBuffer.h>
 #include "RecorderPool.h"
+#include "PoolPaths.h"
 
 
 namespace recorder{
 
 
-class poolWriteImages: public RecorderPool {
+class poolWriteImages: public RecorderPool, public PoolPaths {
 public:
 	enum MODE
 	{
@@ -50,7 +51,10 @@ public:
 	};
 
 
-    poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::string fileFormat, std::vector<int> compression_params);
+    poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,
+                    std::string fileFormat, std::vector<int> compression_params, const std::string& baseLogPath,
+                    MODE mode, int bufferSeconds, std::string videoMode
+    );
 	virtual ~poolWriteImages();
 	void consumer_thread();
 	void producer_thread();

@@ -11,6 +11,7 @@ SET(SOURCE_FILES
 		pools/RecorderPool
 		pools/PoolsManager
 		buffer/RecorderInterface
+        pools/PoolPaths
 		)
 
 add_definitions(-DGLADE_DIR="${gladedir}")

@@ -11,7 +11,8 @@ namespace recorder {
     enum RECORDER_POOL_TYPE{LASERS, POSE3DENCODERS,POSE3D,ENCODERS,POINTCLOUD,IMAGES};
     class PoolsManager {
     public:
-        PoolsManager(pthread_attr_t& attr, int nConsumers, const std::string& baseLogPath);
+        PoolsManager(pthread_attr_t& attr, int nConsumers);
+        ~PoolsManager();
         void addPool(RECORDER_POOL_TYPE type, RecorderPoolPtr pool);
         void createThreads();
         void releaseAll();
@@ -21,19 +22,14 @@ namespace recorder {
 
     private:
         std::map<RECORDER_POOL_TYPE, std::vector<RecorderPoolPtr>> poolsByType;
-        std::map<RECORDER_POOL_TYPE, std::string> typesSufix;
-        std::map<RECORDER_POOL_TYPE, std::string> typesSufixIndependent;
+
 
 
         pthread_attr_t& attr;
         int nConsumers;
         std::vector<pthread_t> consumerThreads;
         std::vector<pthread_t> producerThreads;
-        std::string baseLogPath;
 
-
-        std::string getPathSeparator();
-        void testPathAndCreateIfNotExists(const std::string& path);
     };
 
     typedef boost::shared_ptr<PoolsManager> PoolsManagerPtr;

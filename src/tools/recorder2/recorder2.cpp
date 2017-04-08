@@ -189,16 +189,6 @@ void exitApplication(int s){
 
     manager->releaseAll();
 
-
-	//odenamdos los ficheros.
-	for (int i=0; i< nCameras; i++){
-		std::stringstream instruction1;
-		instruction1 << "sort -n data/images/camera" << i+1 << "/cameraData.jde >tempSORT.temp";
-		system(instruction1.str().c_str());
-		std::stringstream instruction2;
-		instruction2 << "mv tempSORT.temp data/images/camera" << i+1 << "/cameraData.jde";
-		system(instruction2.str().c_str());
-	}
 	for (int i=0; i< nLasers; i++){
 			std::stringstream instruction1;
 			instruction1 << "sort -n data/lasers/laser" << i+1 << "/laserData.jde >tempSORT.temp";
@@ -322,13 +312,6 @@ int main(int argc, char** argv){
 	try{
         jderobot::Logger::initialize(argv[0]);
 		//creamos el directorio principal
-		struct stat buf;
-		char dire[]="./data/";
-		if( stat( dire, &buf ) == -1 )
-		{
-			system("mkdir data");
-		}
-   
 		Ice::PropertiesPtr prop;
 
 		ic = EasyIce::initialize(argc,argv);
@@ -367,7 +350,7 @@ int main(int argc, char** argv){
 		}
         std::string baseLogPath="./data/";
 
-        manager= recorder::PoolsManagerPtr( new recorder::PoolsManager(attr,nConsumers,baseLogPath));
+        manager= recorder::PoolsManagerPtr( new recorder::PoolsManager(attr,nConsumers));
 
 
         int bufferEnabled = prop->getPropertyAsIntWithDefault("Recorder.Buffer.Enabled",0);
@@ -393,7 +376,8 @@ int main(int argc, char** argv){
             sFormat << "Recorder.Camera" << i+1 << ".Format";
             imageFormat = prop->getProperty(sFormat.str());
 			//pool
-			recorder::poolWriteImagesPtr temp = recorder::poolWriteImagesPtr( new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,imageFormat ,fileFormat ,compression_params));
+			recorder::poolWriteImagesPtr temp = recorder::poolWriteImagesPtr( new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,
+                        imageFormat ,fileFormat ,compression_params,baseLogPath,(bufferEnabled == 0)? recorder::poolWriteImages::WRITE_FRAME : recorder::poolWriteImages::SAVE_BUFFER, bufferSeconds, videoMode));
             manager->addPool(recorder::IMAGES,temp);
 		}
 
@@ -667,7 +651,6 @@ int main(int argc, char** argv){
 		}
 		long long int iteration=0;
 		
-            
 		while(globalActive){
 			//gui activado
 			if (guiActive){
@@ -711,10 +694,7 @@ int main(int argc, char** argv){
 				usleep(diff*1000);
 				if(diff < 10)
 					usleep(10*1000);
-
-				// std::cout << cycle <<" ->" << diff  << " ->" << timeRelative<< std::endl;
-				timeRelative+= diff + (totalb-totala)/1000;
-				// std::cout << "->" << diff  << " ->" << timeRelative<< std::endl;
+                timeRelative+= diff + (totalb-totala)/1000;
 			}
 			else{
 				usleep(10*1000);

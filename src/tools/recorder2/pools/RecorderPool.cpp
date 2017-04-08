@@ -46,7 +46,12 @@ namespace recorder {
     }
 
     bool RecorderPool::setLogFile(const std::string &logPath) {
+        this->logFilePath=logPath;
         this->logfile.open(logPath.c_str());
+    }
+
+    std::string RecorderPool::getLogFilePath() {
+        return this->logFilePath;
     }
 
 
