@@ -46,3 +46,7 @@ if(GLOG_FOUND)
     mark_as_advanced(GLOG_ROOT_DIR GLOG_LIBRARY_RELEASE GLOG_LIBRARY_DEBUG
             GLOG_LIBRARY GLOG_INCLUDE_DIR)
 endif()
+
+
+
+list(APPEND DEPS libgoogle-glog-dev)

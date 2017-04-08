@@ -14,11 +14,11 @@ namespace openniServer{
         std::string fmtStr = prop->getPropertyWithDefault(prefix+"Format","YUY2");//default format YUY2
         imageFmt = colorspaces::Image::Format::searchFormat(fmtStr);
         if (!imageFmt)
-            jderobot::Logger::getInstance()->warning( "Format " + fmtStr + " unknown" );
+            LOG(WARNING) <<  "Format " + fmtStr + " unknown" ;
         imageDescription->size = imageDescription->width * imageDescription->height * CV_ELEM_SIZE(imageFmt->cvType);
         imageDescription->format = imageFmt->name;
 
-        jderobot::Logger::getInstance()->info( "Starting thread for camera: " + cameraDescription->name );
+        LOG(INFO) <<  "Starting thread for camera: " + cameraDescription->name ;
         replyTask = new ReplyTask(this, framerateN, device);
 
         this->control=replyTask->start();//my own thread
@@ -32,7 +32,7 @@ namespace openniServer{
     }
 
     RGBCamera::~RGBCamera() {
-        jderobot::Logger::getInstance()->info( "Stopping and joining thread for color camera" );
+        LOG(INFO) <<  "Stopping and joining thread for color camera" ;
         replyTask->destroy();
         this->control.join();
     }
