@@ -1,7 +1,5 @@
 SET(SOURCE_FILES rgbdViewer.cpp drawarea.cpp rgbdViewergui.cpp myprogeo.cpp)
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated" ) # Opciones para el compilador
-
 include_directories(
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}/

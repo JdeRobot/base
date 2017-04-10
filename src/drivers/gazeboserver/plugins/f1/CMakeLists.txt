@@ -10,8 +10,6 @@ link_directories(${GAZEBO_LIBRARY_DIRS}
     ${easyiceconfig_LIBRARY_DIRS}
 )
 
-#set( CMAKE_CXX_FLAGS "-Wall" )
-    
 add_library(motorsF1 SHARED motors.cc)
 target_link_libraries(motorsF1 
 	${GAZEBO_libraries} 

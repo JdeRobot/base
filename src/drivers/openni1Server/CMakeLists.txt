@@ -3,8 +3,6 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 	    SET( SOURCE_FILES openni1Server.cpp myprogeo.cpp )
 	    add_definitions(-DGLADE_DIR="${gladedir}")
 
-	    set( CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -Wno-deprecated" ) # Opciones para el compilador
-
 
 	    include_directories(
             ${INTERFACES_CPP_DIR}
