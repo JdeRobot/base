@@ -45,6 +45,8 @@ if(GLOG_FOUND)
     message(STATUS "Found glog    (include: ${GLOG_INCLUDE_DIR}, library: ${GLOG_LIBRARY})")
     mark_as_advanced(GLOG_ROOT_DIR GLOG_LIBRARY_RELEASE GLOG_LIBRARY_DEBUG
             GLOG_LIBRARY GLOG_INCLUDE_DIR)
+ELSE()
+    message(FATAL_ERROR "Google Logs is required (libgoogle-glog-dev)")
 endif()
 
 
