@@ -83,7 +83,6 @@ Line2D::getLine(Point2D &p1, Point2D &p2) {
 Line2D
 Line2D::getNormalLine(double px, double py) {
   Eigen::Vector3d vn;
-  double nA, nB, nC;
 
   /*Calc the normal*/
   vn(0) = this->v(1);

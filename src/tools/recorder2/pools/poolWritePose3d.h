@@ -29,7 +29,7 @@
 #include <time.h>
 #include <jderobot/pose3d.h>
 #include <fstream>
-
+#include "PoolPaths.h"
 
 
 namespace recorder{
@@ -46,32 +46,24 @@ struct pose3d{
 };
 
 
-class poolWritePose3d {
+class poolWritePose3d: public RecorderPool, public PoolPaths  {
 public:
-	poolWritePose3d(jderobot::Pose3DPrx prx, int freq, int poolSize, int pose3dID);
+	poolWritePose3d(Ice::ObjectPrx prx, int freq, size_t poolSize, int pose3dID, const std::string& baseLogPath);
 	virtual ~poolWritePose3d();
-	bool getActive();
-	//void produceImage(cv::Mat image, long long int it);
 	void consumer_thread();
-	void producer_thread(struct timeval inicio);
+	void producer_thread();
 
+	virtual void* consumer_thread_imp();
+	virtual void* producer_thread_imp();
 
 private:
-	pthread_mutex_t mutex;
 	std::vector<pose3d> pose3dVec;
-	std::vector<long long int> its;
-	int poolSize;
-	int pose3dID;
-	bool active;
-	struct timeval lastTime;
-	int freq;
-	float cycle;
-	jderobot::Pose3DPrx prx;
-	std::ofstream outfile;
+	jderobot::Pose3DPrx pose3DPrx;
 
 
 	//threads
 
 };
+	typedef boost::shared_ptr<poolWritePose3d> poolWritePose3dPtr;
 } //NAMESPACE
 #endif /* poolWritePose3d_H_ */

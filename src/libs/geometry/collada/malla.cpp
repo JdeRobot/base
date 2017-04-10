@@ -61,6 +61,7 @@ namespace Geometry {
         return this->submeshes[i];
       else
         std::cout << "Invalid index: " << i << " >= " << this->submeshes.size() << "\n";
+        return NULL;
     }
 
     //////////////////////////////////////////////////

@@ -8,7 +8,7 @@
 
 namespace recorder {
 
-    RecorderInterface::RecorderInterface(std::vector<poolWriteImages *> &poolImages):
+    RecorderInterface::RecorderInterface(std::vector<RecorderPoolPtr> &poolImages):
             poolImages(poolImages)
     {
 
@@ -17,9 +17,10 @@ namespace recorder {
     bool RecorderInterface::saveLog(const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic)
     {
         bool ret = true;
-        for (int i=0; i< poolImages.size(); i++)
+        for (size_t i=0; i< poolImages.size(); i++)
         {
-            bool log = poolImages[i]->startCustomLog(name, seconds);
+            poolWriteImagesPtr pool = boost::dynamic_pointer_cast<poolWriteImages> (poolImages[i]);
+            bool log = pool->startCustomLog(name, seconds);
             ret = ret && log;
         }
 
@@ -29,8 +30,11 @@ namespace recorder {
     bool RecorderInterface::saveVideo(const ::std::string &path, const ::std::string &name, ::Ice::Int seconds,
                                       const ::Ice::Current &ic) {
         bool ret = true;
-        for (int i = 0; i < poolImages.size(); i++) {
-            bool log = poolImages[i]->startCustomVideo(path, name, seconds);
+        for (size_t i = 0; i < poolImages.size(); i++) {
+            RecorderPoolPtr test;
+            poolWriteImagesPtr pool = boost::dynamic_pointer_cast<poolWriteImages> (poolImages[i]);
+
+            bool log = pool->startCustomVideo(path, name, seconds);
             ret = ret && log;
         }
 

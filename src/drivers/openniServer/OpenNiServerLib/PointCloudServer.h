@@ -36,16 +36,16 @@ namespace openniServer {
 
 
         private:
+            PointCloudServer *myCloud;
             ConcurrentDevicePtr device;
             myprogeo *mypro;
-            cv::Size cameraSize;
+            std::string calibration_filepath;
             int fps;
             jderobot::pointCloudDataPtr temporalData, stableData, returnData;
+            cv::Size cameraSize;
             jderobot::RGBPoint auxP;
-            std::string calibration_filepath;
-            PointCloudServer *myCloud;
-            bool _done;
             bool withExtraCalibration;
+            bool _done;
             IceUtil::Mutex mutex;
 
 

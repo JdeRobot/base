@@ -112,14 +112,14 @@ std::istream &operator>>(std::istream &in, jderobotutil::ParamDict& param){
     std::getline(in,line);
     //if data read check for comments
     if (line.length() > 0){
-      int commentpos = line.find_first_of('#');
+      auto commentpos = line.find_first_of('#');
       if (commentpos != std::string::npos)
 	line = line.erase(commentpos);
     }
 
     //split line by =
     if (line.length() > 0){
-      int delpos = line.find_first_of('=');
+      auto delpos = line.find_first_of('=');
       if (delpos != std::string::npos){
 	std::string key,value;
 	key = line.substr(0,delpos);

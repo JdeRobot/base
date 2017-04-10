@@ -34,12 +34,13 @@
 #include <fstream>
 #include <buffer/RingBuffer.h>
 #include "RecorderPool.h"
+#include "PoolPaths.h"
 
 
 namespace recorder{
 
 
-class poolWriteImages: public RecorderPool {
+class poolWriteImages: public RecorderPool, public PoolPaths {
 public:
 	enum MODE
 	{
@@ -50,7 +51,10 @@ public:
 	};
 
 
-    poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::string fileFormat, std::vector<int> compression_params);
+    poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,
+                    std::string fileFormat, std::vector<int> compression_params, const std::string& baseLogPath,
+                    MODE mode, int bufferSeconds, std::string videoMode
+    );
 	virtual ~poolWriteImages();
 	void consumer_thread();
 	void producer_thread();
@@ -58,9 +62,8 @@ public:
 	bool startCustomLog(std::string name, int seconds);
 	bool startCustomVideo(std::string path, std::string name, int seconds);
 
-    static void* pool_producer_thread(void*  pool);
-    static void* pool_consumer_thread(void* pool);
-
+	virtual void* consumer_thread_imp();
+	virtual void* producer_thread_imp();
 
 
 private:
@@ -69,7 +72,6 @@ private:
 	std::string imageFormat;
     std::string fileFormat;
 	jderobot::CameraPrx cameraPrx;
-	std::ofstream outfile;
 
 	// write log by demand
 	recorder::RingBuffer* mBuffer;
@@ -81,12 +83,12 @@ private:
 	MODE mMode;
 	std::string mNamePathVideo;
 	boost::posix_time::ptime mFinalInit, mFinalEnd;
-	std::ofstream logfile;
 	std::string mVideoMode;
 	std::string mCamType;
 	//threads
 
 };
+	typedef boost::shared_ptr<poolWriteImages> poolWriteImagesPtr;
 } //NAMESPACE
 
 #endif /* POOLWRITEIMAGES_H_ */
