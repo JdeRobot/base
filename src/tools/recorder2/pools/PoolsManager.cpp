@@ -5,7 +5,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include "PoolsManager.h"
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 
 
 namespace  recorder {
