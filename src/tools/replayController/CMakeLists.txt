@@ -41,4 +41,6 @@ TARGET_LINK_LIBRARIES(replayController
     ${ZeroCIce_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 	${resourcelocator_LIBRARIES}
-    )
+		${GLOG_LIBRARIES}
+
+		)

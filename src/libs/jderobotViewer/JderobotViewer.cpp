@@ -32,7 +32,7 @@ JderobotViewer::JderobotViewer(const std::string& nameWindow, const double scale
 		this->sem.wait();
 	}
 	else{
-		jderobot::Logger::getInstance()->info("This implementation may not work in all infrastructures, if the rendering is not updating please try with the dynamic one");
+        LOG(INFO) << "This implementation may not work in all infrastructures, if the rendering is not updating please try with the dynamic one";
 		//by callback update
 		this->viewer=boost::shared_ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer(this->title));
 	}
@@ -91,20 +91,16 @@ void JderobotViewer::refresh_thread(){
 int JderobotViewer::addWorldFromFile(const std::string& worldfile){
 	FILE *myfile;
 	int i;
+    myfile=fopen(worldfile.c_str(),"r");
 
-	if ((myfile=fopen(worldfile.c_str(),"r"))==NULL){
-		printf("JDEROBOT: cannot find config file\n");
-		return -1;
-	}
-
+    PCHECK(myfile!=NULL) << "JDEROBOT: cannot find config file";
 	do{
 		i=load_line(myfile);
 	} while(i!=EOF);
 
 	fclose(myfile);
 	std::stringstream ss;
-	ss << "Loaded: " << this->worldLines.size() << " lines from workFile";
-	jderobot::Logger::getInstance()->info(ss.str());
+	LOG(INFO) << "Loaded: " << this->worldLines.size() << " lines from workFile";
 
 	return 0;
 }
@@ -167,7 +163,7 @@ int JderobotViewer::load_line(FILE *myfile)
 				this->worldLines.push_back(line);
 			}
 			else{
-				jderobot::Logger::getInstance()->warning("Too much lines in the world file configuration!");
+                LOG(WARNING) << "Too much lines in the world file configuration!";
 			}
 		}
 	}

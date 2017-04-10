@@ -59,6 +59,8 @@ IF(QT5_COMPILE)
                             JderobotInterfaces
                             jderobotutil
                             qfi
-    )
+            ${GLOG_LIBRARIES}
+
+            )
 
 ENDIF()

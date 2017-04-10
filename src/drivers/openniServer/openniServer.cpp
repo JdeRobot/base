@@ -85,27 +85,7 @@ int main(int argc, char** argv){
 
 
 	// Analyze LOG section
-
-	std::string logFile = prop->getProperty(componentPrefix + ".Log.File.Name");
-	if (logFile.size()==0)
-		jderobot::Logger::getInstance()->warning("You didn't set log file!");
-	else
-		jderobot::Logger::getInstance()->setFileLog(logFile);
-
-	std::string logLevel = prop->getProperty(componentPrefix + ".Log.File.Level");
-	if (logLevel.size()==0)
-		jderobot::Logger::getInstance()->warning("You didn't set *.Log.File.Level key!");
-	else
-		jderobot::Logger::getInstance()->setFileLevel(jderobot::Levels(boost::lexical_cast<int>(logLevel)));
-
-	std::string screenLevel = prop->getProperty(componentPrefix + ".Log.Screen.Level");
-	if (screenLevel.size()==0)
-		jderobot::Logger::getInstance()->warning("You didn't set *.Log.Screen.Level key!");
-	else
-		jderobot::Logger::getInstance()->setScreenLevel(jderobot::Levels(boost::lexical_cast<int>(screenLevel)));
-
-	jderobot::Logger::getInstance()->info("Logger:: screenLevel=" + screenLevel + " logLevel=" + logLevel + " LogFile=" + logFile);
-
+    jderobot::Logger::initialize(argv[0],prop,componentPrefix);
 
 
 	bool cameraR = prop->getPropertyAsIntWithDefault(componentPrefix + ".CameraRGB",0);
@@ -124,7 +104,7 @@ int main(int argc, char** argv){
 	Ice::ObjectAdapterPtr adapter =ic->createObjectAdapterWithEndpoints(componentPrefix, Endpoints);
 
 	int cameraID = prop->getPropertyAsIntWithDefault(componentPrefix + ".deviceId",0);
-	jderobot::Logger::getInstance()->info( "OpenniServer: Selected device: " + cameraID );
+	LOG(INFO) <<  "OpenniServer: Selected device: " + cameraID;
 	int nCameras=0;
 
 
@@ -158,7 +138,7 @@ int main(int argc, char** argv){
 		}
 		catch (Ice::ConnectionRefusedException& ex)
 		{
-			jderobot::Logger::getInstance()->error("Impossible to connect with NameService!");
+			LOG(ERROR) << "Impossible to connect with NameService!";
 			exit(-1);
 		}
 	}
@@ -170,10 +150,10 @@ int main(int argc, char** argv){
 			cameraName = "cameraR";
 			prop->setProperty(objPrefix + "Name",cameraName);//set the value
 		}
-		jderobot::Logger::getInstance()->info("Creating camera " + cameraName );
+		LOG(INFO) << "Creating camera " + cameraName ;
 		camRGB = new openniServer::RGBCamera(objPrefix,ic,device);
 		adapter->add(camRGB, ic->stringToIdentity(cameraName));
-		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: CameraRGB created successfully(" + Endpoints + "@" + cameraName );
+		LOG(INFO) << "               -------- openniServer: Component: CameraRGB created successfully(" + Endpoints + "@" + cameraName ;
 
 
 		if (namingService)
@@ -190,11 +170,11 @@ int main(int argc, char** argv){
 			cameraName = "cameraD";
 			prop->setProperty(objPrefix + "Name",cameraName);//set the value
 		}
-		jderobot::Logger::getInstance()->info( "Creating camera " +  cameraName );
+		LOG(INFO) <<  "Creating camera " +  cameraName ;
 		camDEPTH = new openniServer::DepthCamera(objPrefix,ic,device);
 		adapter->add(camDEPTH, ic->stringToIdentity(cameraName));
 		//test camera ok
-		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: CameraDEPTH created successfully(" + Endpoints + "@" + cameraName );
+		LOG(INFO) << "              -------- openniServer: Component: CameraDEPTH created successfully(" + Endpoints + "@" + cameraName;
 
 		if (namingService)
 			namingService->bind(cameraName, Endpoints, camDEPTH->ice_staticId());
@@ -204,10 +184,10 @@ int main(int argc, char** argv){
 	if (pointCloud){
 		std::string objPrefix(componentPrefix + ".PointCloud.");
 		std::string Name = prop->getProperty(objPrefix + "Name");
-		jderobot::Logger::getInstance()->info( "Creating pointcloud1 " + Name );
+		LOG(INFO) <<  "Creating pointcloud1 " + Name ;
 		pc1 = new openniServer::PointCloudServer(objPrefix,prop,device);
 		adapter->add(pc1 , ic->stringToIdentity(Name));
-		jderobot::Logger::getInstance()->info("              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name );
+		LOG(INFO) << "              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name ;
 	}
 	adapter->activate();
 	ic->waitForShutdown();

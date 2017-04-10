@@ -112,14 +112,14 @@ void LaserIceClient::run(){
 			this->controlMutex.unlock();
 		}
 		catch(...){
-			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
+			LOG(WARNING) <<prefix +"error during request (connection error)";
 			usleep(5000);
 
 		}
 
 
 		if ((IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds()) > this->cycle ){
-			jderobot::Logger::getInstance()->warning(prefix + ": Laser adquisition timeout-");
+			DLOG(WARNING) <<prefix + ": Laser adquisition timeout-";
 		}
 		else{
 			usleep(this->cycle - (IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds()));

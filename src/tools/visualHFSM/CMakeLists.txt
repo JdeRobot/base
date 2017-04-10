@@ -49,8 +49,10 @@ TARGET_LINK_LIBRARIES ( visualHFSM
     ${goocanvasmm_LIBRARIES}
     ${gtk3_LIBRARIES}
     ${libxmlpp_LIBRARIES}
-    ${resourcelocator_LIBRARIES} 
-)
+    ${resourcelocator_LIBRARIES}
+		${GLOG_LIBRARIES}
+
+		)
 
 add_custom_command(TARGET visualHFSM POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualHFSM>/gui)

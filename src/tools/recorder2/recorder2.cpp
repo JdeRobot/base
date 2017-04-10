@@ -24,13 +24,15 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <buffer/RecorderInterface.h>
+#include <ns/ns.h>
 #include "recordergui.h"
-#include "poolWriteImages.h"
-#include "poolWritePose3dEncoders.h"
-#include "poolWritePose3d.h"
-#include "poolWriteLasers.h"
-#include "poolWritePointCloud.h"
-#include "poolWriteEncoders.h"
+#include "pools/PoolWriteImages.h"
+#include "pools/poolWritePose3dEncoders.h"
+#include "pools/poolWritePose3d.h"
+#include "pools/poolWriteLasers.h"
+#include "pools/poolWritePointCloud.h"
+#include "pools/poolWriteEncoders.h"
 #include "easyiceconfig/EasyIce.h" 
 
 bool recording=false;
@@ -69,7 +71,7 @@ void* camera_pool_producer_thread(void* foo_ptr){
 	recorder::poolWriteImages* pool =static_cast<recorder::poolWriteImages*>(foo_ptr);
 	while (globalActive){
 		if (recording)
-			pool->producer_thread(inicio);
+			pool->producer_thread();
 		else
 			usleep(1000);
 	}
@@ -299,8 +301,11 @@ int main(int argc, char** argv){
 	std::vector<jderobot::EncodersPrx> encoders;
 	std::vector <jderobot::pointCloudPrx> prx;
 
+    jderobot::ns* namingService = NULL;
 
-	//INTERFACE DATA
+
+
+    //INTERFACE DATA
 	jderobot::EncodersDataPtr ed;
 	jderobot::LaserDataPtr ld;
 	
@@ -343,6 +348,7 @@ int main(int argc, char** argv){
 	//---------------- INPUT ARGUMENTS -----------------//
 
 	try{
+        jderobot::Logger::initialize(argv[0]);
 		//creamos el directorio principal
 		struct stat buf;
 		char dire[]="./data/";
@@ -356,8 +362,10 @@ int main(int argc, char** argv){
 		ic = EasyIce::initialize(argc,argv);
 
 		prop = ic->getProperties();
+        Ice::ObjectAdapterPtr adapter;
 
-		Hz = prop->getPropertyAsInt("Recorder.Hz");
+
+        Hz = prop->getPropertyAsInt("Recorder.Hz");
 		cycle = 1000.0/Hz;
       
 		pthread_attr_init(&attr);
@@ -391,6 +399,10 @@ int main(int argc, char** argv){
 
 
 		}
+
+        int bufferEnabled = prop->getPropertyAsIntWithDefault("Recorder.Buffer.Enabled",0);
+        int bufferSeconds = prop->getPropertyAsIntWithDefault("Recorder.Buffer.Seconds",0);
+        std::string videoMode =  prop->getProperty("Recorder.Buffer.Mode");
 
 		for (int i=0; i< nCameras; i++){
 			struct stat buf;
@@ -439,8 +451,38 @@ int main(int argc, char** argv){
 			totalProducers++;
 		}
 
+        if (bufferEnabled)
+        {
+
+            // Analyze EndPoint
+            std::string Endpoints = prop->getProperty("Recorder.Endpoints");
+            adapter =ic->createObjectAdapterWithEndpoints("Recorder", Endpoints);
+            std::string name = prop->getProperty("Recorder.Name");
+            LOG(INFO) << "Creating Recorder: " + name;
+            recorder::RecorderInterface* recorder_prx = new recorder::RecorderInterface(poolImages);
+            adapter->add(recorder_prx, ic->stringToIdentity(name));
+
+            adapter->activate();
 
 
+            // Naming Service
+            int nsActive = prop->getPropertyAsIntWithDefault("NamingService.Enabled", 0);
+
+            if (nsActive) {
+                std::string ns_proxy = prop->getProperty("NamingService.Proxy");
+                try {
+                    namingService = new jderobot::ns(ic, ns_proxy);
+                }
+                catch (Ice::ConnectionRefusedException &ex) {
+                    LOG(ERROR) << "Impossible to connect with NameService!";
+                    exit(-1);
+                }
+                namingService->bind(name, Endpoints, recorder_prx->ice_staticId());
+            }
+        }
+
+
+/*
 		nLasers= prop->getPropertyAsInt("Recorder.nLasers");
 		if (nLasers > 0){
 			struct stat buf;
@@ -652,7 +694,7 @@ int main(int argc, char** argv){
 			pthread_create(&producerThreads[totalProducers], &attr, pointcloud_pool_producer_thread,temp);
 			totalProducers++;
 		}
-
+*/
 		//****************************** Processing the Control ******************************///
 
 
@@ -689,6 +731,11 @@ int main(int argc, char** argv){
 			if (recording){
 				if (iteration==0){
 					gettimeofday(&inicio,NULL);
+                    //init the pools
+                    for (auto it = poolImages.begin(), end=poolImages.end(); it != end; ++it){
+                        (*it)->setInitialTime(inicio);
+                        (*it)->setRecording(true);
+                    }
 				}
 				iteration++;
 				gettimeofday(&b,NULL);

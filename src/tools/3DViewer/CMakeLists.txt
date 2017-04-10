@@ -32,6 +32,6 @@ IF (with_pcl)
 			jderobotViewer
 			${PCL_LIBRARIES}
 			${CMAKE_THREAD_LIBS_INIT}
-
+			${GLOG_LIBRARIES}
 			)
 ENDIF()

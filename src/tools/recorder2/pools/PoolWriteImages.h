@@ -32,39 +32,58 @@
 #include <jderobot/camera.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <fstream>
-
+#include <buffer/RingBuffer.h>
+#include "RecorderPool.h"
 
 
 namespace recorder{
 
 
-class poolWriteImages {
+class poolWriteImages: public RecorderPool {
 public:
-    poolWriteImages(jderobot::CameraPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::string fileFormat, std::vector<int> compression_params);
+	enum MODE
+	{
+		WRITE_FRAME = 0,
+		SAVE_BUFFER,
+		WRITE_BUFFER,
+		WRITE_END_LOG
+	};
+
+
+    poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,  std::string fileFormat, std::vector<int> compression_params);
 	virtual ~poolWriteImages();
-	bool getActive();
-	//void produceImage(cv::Mat image, long long int it);
 	void consumer_thread();
-	void producer_thread( struct timeval inicio);
+	void producer_thread();
+
+	bool startCustomLog(std::string name, int seconds);
+	bool startCustomVideo(std::string path, std::string name, int seconds);
+
+    static void* pool_producer_thread(void*  pool);
+    static void* pool_consumer_thread(void* pool);
+
 
 
 private:
-	pthread_mutex_t mutex;
 	std::vector<cv::Mat> images;
-	std::vector<long long int> its;
-	int poolSize;
 	std::vector<int> compression_params;
-	int cameraID;
-	bool active;
 	std::string imageFormat;
     std::string fileFormat;
-	struct timeval lastTime;
-	int freq;
-	float cycle;
-	jderobot::CameraPrx prx;
+	jderobot::CameraPrx cameraPrx;
 	std::ofstream outfile;
 
+	// write log by demand
+	recorder::RingBuffer* mBuffer;
+	pthread_mutex_t mModeMutex;
+	std::string mNameLog;
+	int mLastSecondsLog;
+	int mBufferSeconds;
 
+	MODE mMode;
+	std::string mNamePathVideo;
+	boost::posix_time::ptime mFinalInit, mFinalEnd;
+	std::ofstream logfile;
+	std::string mVideoMode;
+	std::string mCamType;
 	//threads
 
 };

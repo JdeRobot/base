@@ -34,10 +34,12 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 	colorspacesmm
 	JderobotInterfaces
 	parallelIce
+	jderobotutil
 	${easyiceconfig_LIBRARIES} 
 	${ZeroCIce_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${resourcelocator_LIBRARIES}
+		${GLOG_LIBRARIES}
 )
 
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/glade/ COMPONENT core)

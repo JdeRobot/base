@@ -36,11 +36,13 @@ TARGET_LINK_LIBRARIES( rgbdManualCalibrator
  ${OpenCV_LIBRARIES}
  ${gsl_LIBRARIES}
  ${CMAKE_THREAD_LIBS_INIT}
+parallelIce
  jderobotutil
  colorspacesmm
  JderobotInterfaces
  progeo
- parallelIce
  ${ZLIB_LIBRARIES}    
 ${resourcelocator_LIBRARIES}
-)
+		${GLOG_LIBRARIES}
+
+		)

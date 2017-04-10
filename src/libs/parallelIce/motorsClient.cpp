@@ -53,7 +53,7 @@ motorsClient::motorsClient(Ice::CommunicatorPtr ic, std::string prefix, bool deb
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not motors provided");
+		LOG(ERROR) << prefix + " Not motors provided";
 	}
 }
 

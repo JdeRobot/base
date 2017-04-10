@@ -18,7 +18,7 @@ namespace openniServer {
     }
 
     PointCloudServer::~PointCloudServer() {
-        jderobot::Logger::getInstance()->info("Stopping and joining thread for pointCloud");
+        LOG(INFO) << "Stopping and joining thread for pointCloud";
         replyCloud->destroy();
         this->control.join();
 
@@ -134,7 +134,7 @@ namespace openniServer {
 
             int delay = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
             if (delay > cycle) {
-                jderobot::Logger::getInstance()->warning("-------- openniServer: POINTCLOUD openni timeout-");
+                LOG(WARNING) << "-------- openniServer: POINTCLOUD openni timeout-";
             } else {
                 if (delay < 1 || delay > cycle)
                     delay = 1;

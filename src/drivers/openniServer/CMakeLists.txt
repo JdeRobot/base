@@ -86,6 +86,7 @@ IF(OPENNI2_LIB)
 	        ${LIBXML2_LIBRARIES}
 	        ${ZLIB_LIBRARIES}
 	        ${OPENSSL_LIBRARIES}
+			${GLOG_LIBRARIES}
 		)
 	endif()
 ENDIF()

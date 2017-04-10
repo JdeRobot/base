@@ -57,7 +57,7 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not camera provided");
+		LOG(ERROR) <<prefix + " Not camera provided";
 	}
 
 	//check if default format is defined
@@ -100,7 +100,7 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
     this->mImageFormat = definedFormat;
   }
 
-	jderobot::Logger::getInstance()->info("Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+	LOG(INFO) << "Negotiated format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name;
 
 	jderobot::ImageDataPtr data = this->prx->getImageData(this->mImageFormat);
 
@@ -122,7 +122,7 @@ void CameraIceClient::setImageFormat (std::string format)
 {
 	mImageFormat = format;
 
-	jderobot::Logger::getInstance()->info("Changed format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name);
+	LOG(INFO) <<"Changed format " + this->mImageFormat + " for camera " + this->prx->getCameraDescription()->name;
 };
 
 
@@ -281,7 +281,7 @@ CameraIceClient::run(){
 
 		}
 		catch(...){
-			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
+			LOG(INFO) << prefix +"error during request (connection error)";
 			usleep(50000);
 
 		}
@@ -291,7 +291,7 @@ CameraIceClient::run(){
 
 
 		if (process > (int)cycle ){
-			jderobot::Logger::getInstance()->warning("--------" + prefix + " adquisition timeout-");
+			DLOG(WARNING) << "--------" + prefix + " adquisition timeout-";
 		}
 		else{
 			int delay = (int)cycle - process;
@@ -310,7 +310,7 @@ CameraIceClient::run(){
 		if (iterIndex == INT_MAX) 
 		{
 			iterIndex = 0;
-			jderobot::Logger::getInstance()->info( "*** Counter reset");
+			DLOG(INFO) << "*** Counter reset";
 		}
 
 		this->controlMutex.lock();

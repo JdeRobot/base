@@ -37,5 +37,7 @@ TARGET_LINK_LIBRARIES(rgbdCalibrator
     colorspaces
     cvblob
 	${resourcelocator_LIBRARIES}
-    
-)
+		${GLOG_LIBRARIES}
+
+
+		)

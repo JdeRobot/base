@@ -48,7 +48,7 @@ laserClient::laserClient(Ice::CommunicatorPtr ic, std::string prefix, bool debug
 	}
 	catch (const char* msg) {
 		std::cerr << msg << std::endl;
-		jderobot::Logger::getInstance()->error(prefix + " Not laser provided");
+		LOG(ERROR) << prefix + " Not laser provided";
 	}
 	_done=false;
 	this->pauseStatus=false;
@@ -93,14 +93,14 @@ void laserClient::run(){
 			this->controlMutex.unlock();
 		}
 		catch(...){
-			jderobot::Logger::getInstance()->warning(prefix +"error during request (connection error)");
+			LOG(WARNING) << prefix +"error during request (connection error)";
 			usleep(5000);
 
 		}
 
 
 		if ((IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds()) > this->cycle ){
-			jderobot::Logger::getInstance()->warning(prefix + ": pointCloud adquisition timeout-");
+			DLOG(WARNING) << prefix + ": pointCloud adquisition timeout-";
 		}
 		else{
 			usleep(this->cycle - (IceUtil::Time::now().toMicroSeconds() - last.toMicroSeconds()));
