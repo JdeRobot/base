@@ -1,4 +1,4 @@
-JdeRobot Oficial Image
+JdeRobot Official Image
 ========
 
 This is the official Docker image of [JdeRobot project](http://jderobot.org), a software framework for developing applications in robotics, computer vision.
