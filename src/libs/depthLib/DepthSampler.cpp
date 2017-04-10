@@ -42,7 +42,6 @@ void DepthSampler::calculateLayers(cv::Mat source, std::vector<cv::Mat>& layers)
 	cv::Mat unosc1(localSource.rows, localSource.cols, CV_8UC1, cv::Scalar(255));
 	cv::Mat zerosc1(localSource.rows, localSource.cols, CV_8UC1, cv::Scalar(0));
 
-	IceUtil::Time t=IceUtil::Time::now();
 	for (int i=0; i<nBins; i++){
 		cv::Mat localMask;
 		cv::threshold(dM,localMask,(maxDistance/nBins)*(i+1), 255, CV_THRESH_BINARY_INV);
@@ -60,7 +59,6 @@ void DepthSampler::evalSample(cv::Mat source, std::vector<cv::Mat> layers, int s
 
 	std::vector<int> normalSample;
 	int outlierNormal=0;
-	int ourlierSample=0;
 	std::vector<int> layerSample;
 
 	int nLayers=layers.size();
