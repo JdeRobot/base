@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <jderobot/encoders.h>
 #include <fstream>
+#include "PoolPaths.h"
 
 
 namespace recorder {
@@ -40,29 +41,22 @@ struct encoders{
 		float robotsin;
 	};
 
-class poolWriteEncoders {
+class poolWriteEncoders: public RecorderPool, public PoolPaths {
 public:
-	poolWriteEncoders(jderobot::EncodersPrx prx, int freq, int poolSize, int encoderID);
+	poolWriteEncoders(Ice::ObjectPrx prx, int freq, int poolSize, int encoderID,const std::string& baseLogPath);
 	virtual ~poolWriteEncoders();
-	bool getActive();
-	//void produceImage(cv::Mat image, long long int it);
 	void consumer_thread();
-	void producer_thread(struct timeval inicio);
+	void producer_thread();
 
+	virtual void* consumer_thread_imp();
+	virtual void* producer_thread_imp();
 
 private:
-	pthread_mutex_t mutex;
 	std::vector<recorder::encoders> encoders;
-	std::vector<long long int> its;
-	int poolSize;
-	int encoderID;
-	bool active;
-	struct timeval lastTime;
-	int freq;
-	float cycle;
-	jderobot::EncodersPrx prx;
-	std::ofstream outfile;
+	jderobot::EncodersPrx encodersPrx;
+
 
 };
+		typedef boost::shared_ptr<poolWriteEncoders> poolWriteEncodersPtr;
 } /* namespace recorder */
 #endif /* POOLWRITEENCODERS_H_ */

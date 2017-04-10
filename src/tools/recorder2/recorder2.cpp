@@ -40,146 +40,8 @@ bool recording=false;
 struct timeval inicio;
 bool globalActive=true;
 Ice::CommunicatorPtr ic;
-
-
-int nCameras=0;
-int nDepthSensors=0;
-int nLasers=0;
-int nPose3dEncoders=0;
-int nEncoders=0;
-int nPose3d=0;
-int totalConsumers=0;
-int totalProducers=0;
 bool killed=false;
 
-
-
-//lasers
-// thread for the laser consumer
-void* laser_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWriteLasers* pool =static_cast<recorder::poolWriteLasers*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the laser producer
-void* laser_pool_producer_thread(void* foo_ptr){
-	recorder::poolWriteLasers* pool =static_cast<recorder::poolWriteLasers*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread(inicio);
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-
-//lasers
-// thread for the pose3dencoders consumer
-void* pose3dencoders_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWritePose3dEncoders* pool =static_cast<recorder::poolWritePose3dEncoders*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the pose3dencoders producer
-void* pose3dencoders_pool_producer_thread(void* foo_ptr){
-	recorder::poolWritePose3dEncoders* pool =static_cast<recorder::poolWritePose3dEncoders*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread(inicio);
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the pose3d consumer
-void* pose3d_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWritePose3d* pool =static_cast<recorder::poolWritePose3d*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the pose3d producer
-void* pose3d_pool_producer_thread(void* foo_ptr){
-	recorder::poolWritePose3d* pool =static_cast<recorder::poolWritePose3d*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread(inicio);
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-//pointcloud
-// thread for the pointcloud consumer
-void* pointcloud_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWritePointCloud* pool =static_cast<recorder::poolWritePointCloud*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the pointcloud producer
-void* pointcloud_pool_producer_thread(void* foo_ptr){
-	recorder::poolWritePointCloud* pool =static_cast<recorder::poolWritePointCloud*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread(inicio);
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-
-
-// thread for the encoders consumer
-void* encoders_pool_consumer_thread(void* foo_ptr){
-	recorder::poolWriteEncoders* pool =static_cast<recorder::poolWriteEncoders*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->consumer_thread();
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
-// thread for the encoders producer
-void* encoders_pool_producer_thread(void* foo_ptr){
-	recorder::poolWriteEncoders* pool =static_cast<recorder::poolWriteEncoders*>(foo_ptr);
-	while (globalActive){
-		if (recording)
-			pool->producer_thread(inicio);
-		else
-			usleep(1000);
-	}
-	pthread_exit(NULL);
-	return NULL;
-}
 
 recorder::PoolsManagerPtr manager;
 
@@ -188,47 +50,6 @@ void exitApplication(int s){
 	killed=true;
 
     manager->releaseAll();
-
-	for (int i=0; i< nLasers; i++){
-			std::stringstream instruction1;
-			instruction1 << "sort -n data/lasers/laser" << i+1 << "/laserData.jde >tempSORT.temp";
-			system(instruction1.str().c_str());
-			std::stringstream instruction2;
-			instruction2 << "mv tempSORT.temp data/lasers/laser" << i+1 << "/laserData.jde";
-			system(instruction2.str().c_str());
-	}
-	for (int i=0; i< nPose3dEncoders; i++){
-			std::stringstream instruction1;
-			instruction1 << "sort -n data/pose3dencoders/pose3dencoder" << i+1 << "/pose3dencoderData.jde >tempSORT.temp";
-			system(instruction1.str().c_str());
-			std::stringstream instruction2;
-			instruction2 << "mv tempSORT.temp data/pose3dencoders/pose3dencoder" << i+1 << "/pose3dencoderData.jde";
-			system(instruction2.str().c_str());
-	}
-	for (int i=0; i< nDepthSensors; i++){
-			std::stringstream instruction1;
-			instruction1 << "sort -n data/pointClouds/pointCloud" << i+1 << "/pointCloudData.jde >tempSORT.temp";
-			system(instruction1.str().c_str());
-			std::stringstream instruction2;
-			instruction2 << "mv tempSORT.temp data/pointClouds/pointCloud" << i+1 << "/pointCloudData.jde";
-			system(instruction2.str().c_str());
-	}
-	for (int i=0; i< nEncoders; i++){
-			std::stringstream instruction1;
-			instruction1 << "sort -n data/encoders/encoder" << i+1 << "/encoderData.jde >tempSORT.temp";
-			system(instruction1.str().c_str());
-			std::stringstream instruction2;
-			instruction2 << "mv tempSORT.temp data/encoders/encoder" << i+1 << "/encoderData.jde";
-			system(instruction2.str().c_str());
-	}
-	for (int i=0; i< nPose3d; i++){
-			std::stringstream instruction1;
-			instruction1 << "sort -n data/pose3d/pose3d" << i+1 << "/pose3dData.jde >tempSORT.temp";
-			system(instruction1.str().c_str());
-			std::stringstream instruction2;
-			instruction2 << "mv tempSORT.temp data/pose3d/pose3d" << i+1 << "/pose3dData.jde";
-			system(instruction2.str().c_str());
-	}
    if (ic)
 	   ic->destroy();
 }
@@ -246,32 +67,17 @@ int main(int argc, char** argv){
 
    sigaction(SIGINT, &sigIntHandler, NULL);
 
-	int accion=0;
-	int sentido=10;
-
-	int status;
-
-	struct timeval a, b, t2;
+	struct timeval a, b;
 	int cycle = 100;
 	long totalb,totala;
 	long diff;
 
-	// INTERFACE
-	std::vector<jderobot::LaserPrx> lprx;
-	std::vector<jderobot::CameraPrx> cprx;
-	std::vector<jderobot::Pose3DEncodersPrx> pose3dencoders;
-	std::vector<jderobot::Pose3DPrx> pose3dprx;
-	std::vector<jderobot::EncodersPrx> encoders;
-	std::vector <jderobot::pointCloudPrx> prx;
-
     jderobot::ns* namingService = NULL;
-
 
 
     //INTERFACE DATA
 	jderobot::EncodersDataPtr ed;
 	jderobot::LaserDataPtr ld;
-	
 	jderobot::ImageDataPtr imageData;
 
 	//pools
@@ -279,22 +85,9 @@ int main(int argc, char** argv){
 	pthread_attr_t attr;
 	//images
 	int nConsumers;
-	int poolSize;
-	//lasers
-	std::vector<recorder::poolWriteLasers*> poolLasers;
-	//pose3dencoders
-	std::vector<recorder::poolWritePose3dEncoders*> poolPose3dEncoders;
-	//pose3d
-	std::vector<recorder::poolWritePose3d*> poolPose3d;
-	//encoders
-	std::vector<recorder::poolWriteEncoders*> poolEncoders;
-	//pointClouds
-	std::vector<recorder::poolWritePointCloud*> poolPointClouds;
-
-	//numero de lasers
-
+	size_t poolSize;
 	int Hz = 10;
-	int muestrasLaser = 180;
+    //numero de lasers
 	int pngCompressRatio;
 	int jpgQuality;
     std::string fileFormat;
@@ -327,7 +120,7 @@ int main(int argc, char** argv){
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
       
 
-		nCameras = prop->getPropertyAsIntWithDefault("Recorder.nCameras",0);
+		int nCameras = prop->getPropertyAsIntWithDefault("Recorder.nCameras",0);
 		if (nCameras > 0 ){
             fileFormat=prop->getProperty("Recorder.FileFormat");
             if (fileFormat.compare(std::string("png"))==0){
@@ -369,26 +162,22 @@ int main(int argc, char** argv){
 			jderobot::CameraPrx cprxAux = jderobot::CameraPrx::checkedCast(camara);
 			if (0== cprxAux)
 				throw "Invalid proxy";
-			else
-				cprx.push_back(cprxAux);
+
             std::stringstream sFormat;
             std::string imageFormat;
             sFormat << "Recorder.Camera" << i+1 << ".Format";
             imageFormat = prop->getProperty(sFormat.str());
-			//pool
 			recorder::poolWriteImagesPtr temp = recorder::poolWriteImagesPtr( new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,
                         imageFormat ,fileFormat ,compression_params,baseLogPath,(bufferEnabled == 0)? recorder::poolWriteImages::WRITE_FRAME : recorder::poolWriteImages::SAVE_BUFFER, bufferSeconds, videoMode));
             manager->addPool(recorder::IMAGES,temp);
 		}
 
-        manager->createThreads();
 
 
 
 
         if (bufferEnabled)
         {
-
             // Analyze EndPoint
             std::string Endpoints = prop->getProperty("Recorder.Endpoints");
             adapter =ic->createObjectAdapterWithEndpoints("Recorder", Endpoints);
@@ -418,28 +207,9 @@ int main(int argc, char** argv){
         }
 
 
-/*
-		nLasers= prop->getPropertyAsInt("Recorder.nLasers");
-		if (nLasers > 0){
-			struct stat buf;
-			char dire[]="./data/lasers/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir data/lasers/");
-			}
-		}
-		for (int i=0; i< nLasers; i++){
-			struct stat buf;
-			std::stringstream claserPath;
-			claserPath << "./data/lasers/laser" << i+1;
-			if( stat( claserPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << claserPath.str();
-				system(instruction.str().c_str());
-			}
 
-			// Contact to LASER interface
+		int nLasers= prop->getPropertyAsInt("Recorder.nLasers");
+		for (int i=0; i< nLasers; i++){
 			std::stringstream sProxy;
 			sProxy << "Recorder.Laser" << i+1 << ".Proxy";
 
@@ -447,84 +217,27 @@ int main(int argc, char** argv){
 			if (0==baseLaser)
 				throw "Could not create proxy with laser";
 
-			// Cast to laser
-			jderobot::LaserPrx laserPrx = jderobot::LaserPrx::checkedCast(baseLaser);
-			if (0== laserPrx)
-				throw "Invalid proxy Mycomponent.Laser.Proxy";
-			lprx.push_back(laserPrx);
-			recorder::poolWriteLasers *temp = new recorder::poolWriteLasers(laserPrx, Hz,poolSize,i+1);
+			recorder::poolWriteLasersPtr temp = recorder::poolWriteLasersPtr(new recorder::poolWriteLasers(baseLaser, Hz,poolSize,i+1,baseLogPath));
+            manager->addPool(recorder::LASERS,temp);
 
-			poolLasers.push_back(temp);
-			pthread_create(&consumerThreads[totalConsumers], &attr, laser_pool_consumer_thread,temp);
-			totalConsumers++;
-			pthread_create(&producerThreads[totalProducers], &attr, laser_pool_producer_thread,temp);
-			totalProducers++;
 		}
 
 
-		nPose3dEncoders= prop->getPropertyAsInt("Recorder.nPose3dEncoders");
-		if (nPose3dEncoders > 0){
-			struct stat buf;
-			char dire[]="./data/pose3dencoders/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir data/pose3dencoders/");
-			}
-		}
+		int nPose3dEncoders= prop->getPropertyAsInt("Recorder.nPose3dEncoders");
 		for (int i=0; i< nPose3dEncoders; i++){
-			struct stat buf;
-			std::stringstream claserPath;
-			claserPath << "./data/pose3dencoders/pose3dencoder" << i+1;
-			if( stat( claserPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << claserPath.str();
-				system(instruction.str().c_str());
-			}
-
-			// Contact to POSE3DENCODERS interface
 			std::stringstream sProxy;
 			sProxy << "Recorder.Pose3DEncoders" << i+1 << ".Proxy";
 
 			Ice::ObjectPrx base = ic->propertyToProxy(sProxy.str());
 			if (0==base)
 				throw "Could not create proxy with pose3dencoders";
+			recorder::poolWritePose3dEncodersPtr temp = recorder::poolWritePose3dEncodersPtr(new recorder::poolWritePose3dEncoders(base, Hz,poolSize,i+1,baseLogPath));
+			manager->addPool(recorder::POSE3DENCODERS,temp);
 
-			// Cast to Pose3DEncodersPrx
-			jderobot::Pose3DEncodersPrx prx = jderobot::Pose3DEncodersPrx::checkedCast(base);
-			if (0== prx)
-				throw "Invalid proxy Mycomponent.pose3dencoders.Proxy";
-			pose3dencoders.push_back(prx);
-			recorder::poolWritePose3dEncoders*temp = new recorder::poolWritePose3dEncoders(prx, Hz,poolSize,i+1);
-
-			poolPose3dEncoders.push_back(temp);
-			pthread_create(&consumerThreads[totalConsumers], &attr, pose3dencoders_pool_consumer_thread,temp);
-			totalConsumers++;
-			pthread_create(&producerThreads[totalProducers], &attr, pose3dencoders_pool_producer_thread,temp);
-			totalProducers++;
 		}
 
-		nPose3d= prop->getPropertyAsInt("Recorder.nPose3d");
-		if (nPose3d > 0){
-			struct stat buf;
-			char dire[]="./data/pose3d/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir data/pose3d/");
-			}
-		}
+		int nPose3d= prop->getPropertyAsInt("Recorder.nPose3d");
 		for (int i=0; i< nPose3d; i++){
-			struct stat buf;
-			std::stringstream claserPath;
-			claserPath << "./data/pose3d/pose3d" << i+1;
-			if( stat( claserPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << claserPath.str();
-				system(instruction.str().c_str());
-			}
-
-			// Contact to POSE3D interface
 			std::stringstream sProxy;
 			sProxy << "Recorder.Pose3D" << i+1 << ".Proxy";
 
@@ -532,40 +245,14 @@ int main(int argc, char** argv){
 			if (0==base)
 				throw "Could not create proxy with pose3d";
 
-			// Cast to Pose3DPrx
-			jderobot::Pose3DPrx prx = jderobot::Pose3DPrx::checkedCast(base);
-			if (0== prx)
-				throw "Invalid proxy Mycomponent.pose3d.Proxy";
-			pose3dprx.push_back(prx);
-			recorder::poolWritePose3d*temp = new recorder::poolWritePose3d(prx, Hz,poolSize,i+1);
+			recorder::poolWritePose3dPtr temp = recorder::poolWritePose3dPtr(new recorder::poolWritePose3d(base, Hz,poolSize,i+1,baseLogPath));
+			manager->addPool(recorder::POSE3D,temp);
 
-			poolPose3d.push_back(temp);
-			pthread_create(&consumerThreads[totalConsumers], &attr, pose3d_pool_consumer_thread,temp);
-			totalConsumers++;
-			pthread_create(&producerThreads[totalProducers], &attr, pose3d_pool_producer_thread,temp);
-			totalProducers++;
+
 		}
 
-		nEncoders= prop->getPropertyAsInt("Recorder.nEncoders");
-		if (nEncoders > 0){
-			struct stat buf;
-			char dire[]="./data/encoders/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir data/encoders/");
-			}
-		}
+		int nEncoders= prop->getPropertyAsInt("Recorder.nEncoders");
 		for (int i=0; i< nEncoders; i++){
-			struct stat buf;
-			std::stringstream claserPath;
-			claserPath << "./data/encoders/encoder" << i+1;
-			if( stat( claserPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << claserPath.str();
-				system(instruction.str().c_str());
-			}
-
 			// Contact to ENCODERS interface
 			std::stringstream sProxy;
 			sProxy << "Recorder.Encoders" << i+1 << ".Proxy";
@@ -574,29 +261,12 @@ int main(int argc, char** argv){
 			if (0==base)
 				throw "Could not create proxy with encoders";
 
-			// Cast to EncodersPrx
-			jderobot::EncodersPrx prx = jderobot::EncodersPrx::checkedCast(base);
-			if (0== prx)
-				throw "Invalid proxy Mycomponent.encoders.Proxy";
-			encoders.push_back(prx);
-			recorder::poolWriteEncoders*temp = new recorder::poolWriteEncoders(prx, Hz,poolSize,i+1);
+			recorder::poolWriteEncodersPtr temp = recorder::poolWriteEncodersPtr(new recorder::poolWriteEncoders(base, Hz,poolSize,i+1, baseLogPath));
+            manager->addPool(recorder::ENCODERS,temp);
 
-			poolEncoders.push_back(temp);
-			pthread_create(&consumerThreads[totalConsumers], &attr, encoders_pool_consumer_thread,temp);
-			totalConsumers++;
-			pthread_create(&producerThreads[totalProducers], &attr, encoders_pool_producer_thread,temp);
-			totalProducers++;
 		}
 
-		nDepthSensors = prop->getPropertyAsIntWithDefault("Recorder.nDethSensors",0);
-		if (nDepthSensors){
-			struct stat buf;
-			char dire[]="./data/pointClouds/";
-			if( stat( dire, &buf ) == -1 )
-			{
-				system("mkdir data/pointClouds/");
-			}
-		}
+		int nDepthSensors = prop->getPropertyAsIntWithDefault("Recorder.nDethSensors",0);
 		for (int i=0; i< nDepthSensors; i++){
 			struct stat buf;
 			std::stringstream claserPath;
@@ -617,26 +287,18 @@ int main(int argc, char** argv){
 			if (0==kinect){
 				throw "Could not create proxy with Kinect1";
 			}
-			// Cast to KINECT
-			jderobot::pointCloudPrx prxAux = jderobot::pointCloudPrx::checkedCast(kinect);
-			if (0== prxAux){
-				throw std::string("Invalid proxy Recorder.Kinect1.Proxy");
-			}
-			prx.push_back(prxAux);
-			recorder::poolWritePointCloud* temp = new recorder::poolWritePointCloud(prxAux, Hz,poolSize,i+1);
-			poolPointClouds.push_back(temp);
-			pthread_create(&consumerThreads[totalConsumers], &attr, pointcloud_pool_consumer_thread,temp);
-			totalConsumers++;
-			pthread_create(&producerThreads[totalProducers], &attr, pointcloud_pool_producer_thread,temp);
-			totalProducers++;
+			recorder::poolWritePointCloudPtr temp = recorder::poolWritePointCloudPtr(new recorder::poolWritePointCloud(kinect, Hz,poolSize,i+1,baseLogPath));
+            manager->addPool(recorder::POINTCLOUD,temp);
 		}
-*/
-		//****************************** Processing the Control ******************************///
+
+        manager->createThreads();
+
+
+        //****************************** Processing the Control ******************************///
 
 
 		//---------------- ITERATIONS CONTROL -----------//
 		//muestreo para el laser
-		muestrasLaser = prop->getPropertyAsInt("Recorder.Laser.Samples");
 		std::string robotName = prop->getPropertyWithDefault("Recorder.Hostname","localhost");
 		std::string robotPort = prop->getPropertyWithDefault("Recorder.Port","9999");
       
@@ -705,12 +367,10 @@ int main(int argc, char** argv){
 	//--------------ITERATIONS CONTROL-------------//
 	}
 	catch (const Ice::Exception& ex) {
-		std::cerr << ex << std::endl;
-		status = 1;
-   } 
+		LOG(ERROR) << ex ;
+   }
 	catch (const char* msg) {
-		std::cerr << msg << std::endl;
-		status = 1;
+		LOG(ERROR) << msg;
 	}
 
 	if (!killed)

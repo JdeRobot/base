@@ -21,7 +21,6 @@ namespace  recorder {
     PoolsManager::~PoolsManager() {
         for (auto itType = this->poolsByType.begin(), endType = this->poolsByType.end(); itType != endType; ++itType) {
             std::vector<RecorderPoolPtr> &pools = itType->second;
-            RECORDER_POOL_TYPE type = itType->first;
             for (auto itPool = pools.begin(), endPool = pools.end(); itPool != endPool; ++itPool) {
                 RecorderPoolPtr& pool = *itPool;
                 std::string logFilePath =pool->getLogFilePath();
@@ -74,10 +73,10 @@ namespace  recorder {
                 (*itPool)->setActive(false);
             }
         }
-        for (int i = 0; i < consumerThreads.size(); i++) {
+        for (size_t i = 0; i < consumerThreads.size(); i++) {
             pthread_join(consumerThreads[i], NULL);
         }
-        for (int i = 0; i < producerThreads.size(); i++) {
+        for (size_t i = 0; i < producerThreads.size(); i++) {
             pthread_join(producerThreads[i], NULL);
         }
     }

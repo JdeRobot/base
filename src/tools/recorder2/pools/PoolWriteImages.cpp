@@ -15,14 +15,11 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
                                  std::vector<int> compression_params,const std::string& baseLogPath, MODE mode, int bufferSeconds, std::string videoMode):
         RecorderPool(freq,poolSize,cameraID),
         PoolPaths(baseLogPath),
-        mBufferSeconds(bufferSeconds),
-        mMode(mode),
         mBuffer(NULL),
-        mLastSecondsLog(5)
-
-
+        mLastSecondsLog(5),
+        mBufferSeconds(bufferSeconds),
+        mMode(mode)
 {
-	// TODO Auto-generated constructor stub
     this->cameraPrx = jderobot::CameraPrx::checkedCast(prx);
     if (0== this->cameraPrx) {
         LOG(ERROR) << "Invalid proxy";
@@ -30,8 +27,7 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
 	this->compression_params=compression_params;
 	this->imageFormat=imageFormat;
     this->fileFormat=fileFormat;
-    this->cycle = 1000.0/freq;
-	gettimeofday(&lastTime,NULL);
+
 
     mNameLog = "alarm1";
     mVideoMode = videoMode;
@@ -49,11 +45,9 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
 
 poolWriteImages::~poolWriteImages() {
 	this->logfile.close();
-	// TODO Auto-generated destructor stub
 }
 
     void poolWriteImages::consumer_thread(){
-
         pthread_mutex_lock(&(this->mutex));
         if (this->images.size()>0){
             cv::Mat img2Save;

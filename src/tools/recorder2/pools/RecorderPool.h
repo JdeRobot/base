@@ -17,7 +17,7 @@ namespace recorder {
 
     class RecorderPool {
     public:
-        RecorderPool(int freq, int poolSize, int deviceID);
+        RecorderPool(int freq, size_t poolSize, int deviceID);
         bool getActive();
         bool getRecording();
         void setRecording(bool value);
@@ -38,9 +38,9 @@ namespace recorder {
 
     protected:
         int freq;
-        int poolSize;
+        size_t poolSize;
         int deviceID;
-        float cycle;
+        double cycle;
         struct timeval lastTime;
         pthread_mutex_t mutex;
         std::vector<long long int> its;

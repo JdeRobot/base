@@ -30,36 +30,27 @@
 #include <jderobot/pointcloud.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <fstream>
+#include "PoolPaths.h"
 
 namespace recorder {
 
-class poolWritePointCloud {
+class poolWritePointCloud: public RecorderPool, public PoolPaths  {
 public:
-	poolWritePointCloud(jderobot::pointCloudPrx prx, int freq, int poolSize, int pclID);
+	poolWritePointCloud(Ice::ObjectPrx prx, int freq, size_t poolSize, int pclID,const std::string& baseLogPath);
 	virtual ~poolWritePointCloud();
-	bool getActive();
-	//void produceImage(cv::Mat image, long long int it);
 	void consumer_thread();
-	void producer_thread(struct timeval inicio);
+	void producer_thread();
+
+	virtual void* consumer_thread_imp();
+	virtual void* producer_thread_imp();
 
 
 private:
-	pthread_mutex_t mutex;
 	std::vector<jderobot::RGBPointsPCL > pointCloud;
-	std::vector<long long int> its;
-	int poolSize;
-	int pclID;
-	bool active;
-	struct timeval lastTime;
-	int freq;
-	float cycle;
-	jderobot::pointCloudPrx prx;
-	std::ofstream outfile;
-
-
-	//threads
-
+	jderobot::pointCloudPrx pointCloudPrx;
 };
+
+	typedef boost::shared_ptr<poolWritePointCloud> poolWritePointCloudPtr;
 
 } /* namespace recorder */
 #endif /* POOLWRITEPOINTCLOUD_H_ */

@@ -63,7 +63,6 @@ public:
 	bool startCustomVideo(std::string path, std::string name, int seconds);
 
 	virtual void* consumer_thread_imp();
-
 	virtual void* producer_thread_imp();
 
 

@@ -30,7 +30,8 @@
 #include <jderobot/laser.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <fstream>
-
+#include "RecorderPool.h"
+#include "PoolPaths.h"
 
 
 namespace recorder{
@@ -47,33 +48,26 @@ public:
 
 
 
-class poolWriteLasers {
+class poolWriteLasers: public RecorderPool, public PoolPaths  {
 public:
-	poolWriteLasers(jderobot::LaserPrx prx, int freq, int poolSize, int laserID);
+	poolWriteLasers(Ice::ObjectPrx prx, int freq, size_t poolSize, int laserID, const std::string& baseLogPath);
 	virtual ~poolWriteLasers();
-	bool getActive();
-	//void produceImage(cv::Mat image, long long int it);
 	void consumer_thread();
-	void producer_thread(struct timeval inicio);
+	void producer_thread();
+
+    virtual void* consumer_thread_imp();
+    virtual void* producer_thread_imp();
 
 
 private:
-	pthread_mutex_t mutex;
-	std::vector<LaserD > lasers;
-	std::vector<long long int> its;
-	int poolSize;
-	int laserID;
-	bool active;
-	struct timeval lastTime;
-	int freq;
-	float cycle;
-	jderobot::LaserPrx prx;
-	std::ofstream outfile;
-
+	std::vector<LaserD> lasers;
+	jderobot::LaserPrx laserPrx;
 
 	//threads
 
 };
+
+    typedef boost::shared_ptr<poolWriteLasers> poolWriteLasersPtr;
 } //NAMESPACE
 
 #endif /* POOLWRITELASERS_H_ */

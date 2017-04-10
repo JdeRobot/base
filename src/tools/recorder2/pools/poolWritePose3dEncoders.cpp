@@ -6,33 +6,26 @@
  */
 
 #include "poolWritePose3dEncoders.h"
+#include <logger/Logger.h>
 
 namespace recorder{
 
 
-poolWritePose3dEncoders::poolWritePose3dEncoders(jderobot::Pose3DEncodersPrx prx, int freq, int poolSize, int encoderID) {
-	// TODO Auto-generated constructor stub
-	pthread_mutex_init(&(this->mutex), NULL);
-	this->poolSize=poolSize;
-	this->encoderID=encoderID;
-	this->active=true;
-	this->prx=prx;
-	this->freq=freq;
-	std::stringstream filePath;
-	filePath << "data/pose3dencoders/pose3dencoder" << this->encoderID << "/pose3dencoderData.jde";
-	this->cycle = 1000.0/freq;
-	this->outfile.open(filePath.str().c_str());
-	gettimeofday(&lastTime,NULL);
+poolWritePose3dEncoders::poolWritePose3dEncoders(Ice::ObjectPrx prx, int freq, int poolSize, int encoderID,const std::string& baseLogPath):
+		RecorderPool(freq,poolSize,encoderID),
+		PoolPaths(baseLogPath)
+{
+	this->pose3DEncodersPrx = jderobot::Pose3DEncodersPrx::checkedCast(prx);
+	if (0== this->pose3DEncodersPrx) {
+		LOG(ERROR) << "Invalid proxy";
+	}
+	createDevicePath(POSE3DENCODERS, deviceID);
+	this->setLogFile(getDeviceLogFilePath(POSE3DENCODERS, deviceID));
 }
 
 poolWritePose3dEncoders::~poolWritePose3dEncoders() {
-	this->outfile.close();
-	// TODO Auto-generated destructor stub
 }
 
-bool poolWritePose3dEncoders::getActive(){
-	return this->active;
-}
 
 void poolWritePose3dEncoders::consumer_thread(){
 //	while(this->active){
@@ -52,17 +45,16 @@ void poolWritePose3dEncoders::consumer_thread(){
 
 
 			std::stringstream idString;//create a stringstream
-			idString << this->encoderID;//add number to the stream
+			idString << this->deviceID;//add number to the stream
 			std::stringstream relativeString;//create a stringstream
 			relativeString << relative;//add number to the stream
 
-
-			std::string Path="data/pose3dencoders/pose3dencoder" + idString.str() + "/" + relativeString.str();
+			std::string Path= getDeviceLogPath(POSE3DENCODERS,deviceID) + relativeString.str();
 			std::ofstream outfileBinary(Path.c_str(), std::ios::out | std::ios::binary);
 			outfileBinary.write((const char *)&data2Save, sizeof(recorder::pose3dencoders));
 			outfileBinary.close();
 
-			this->outfile << relative <<   std::endl;
+			this->logfile << relative <<   std::endl;
 
 		}
 		else
@@ -73,10 +65,10 @@ void poolWritePose3dEncoders::consumer_thread(){
 //	}
 }
 
-void poolWritePose3dEncoders::producer_thread(struct timeval inicio){
+void poolWritePose3dEncoders::producer_thread(){
 	//std::cout << "productor entro" << std::endl;
 //	while(this->active){
-		jderobot::Pose3DEncodersDataPtr dataPtr=this->prx->getPose3DEncodersData();
+		jderobot::Pose3DEncodersDataPtr dataPtr=this->pose3DEncodersPrx->getPose3DEncodersData();
 		recorder::pose3dencoders data;
 		data.clock=dataPtr->clock;
 		data.maxPan=dataPtr->maxPan;
@@ -93,7 +85,7 @@ void poolWritePose3dEncoders::producer_thread(struct timeval inicio){
 		struct timeval now;
 		gettimeofday(&now,NULL);
 		long long int relative;
-		relative=((now.tv_sec*1000000+now.tv_usec) - (inicio.tv_sec*1000000+inicio.tv_usec))/1000;
+		relative=((now.tv_sec*1000000+now.tv_usec) - (syncInitialTime.tv_sec*1000000+syncInitialTime.tv_usec))/1000;
 		pthread_mutex_lock(&(this->mutex));
 		while (this->encoders.size() > this->poolSize){
 			pthread_mutex_unlock(&(this->mutex));
@@ -118,6 +110,29 @@ void poolWritePose3dEncoders::producer_thread(struct timeval inicio){
 		//std::cout << "productor salgo" << std::endl;
 //	}
 }
+
+
+	void* poolWritePose3dEncoders::producer_thread_imp(){
+		while (this->getActive()){
+			if (this->getRecording())
+				this->producer_thread();
+			else
+				usleep(1000);
+		}
+		pthread_exit(NULL);
+	}
+
+	void* poolWritePose3dEncoders::consumer_thread_imp(){
+		while (this->getActive()){
+			if (this->getRecording())
+				this->consumer_thread();
+			else
+				usleep(1000);
+		}
+
+		pthread_exit(NULL);
+		return NULL;
+	}
 
 
 } //namespace

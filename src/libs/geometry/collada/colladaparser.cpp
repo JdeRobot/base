@@ -61,7 +61,7 @@ namespace Geometry {
             this->ite++;
             std::vector<std::string> listaNombres;
             std::vector<unsigned int> listaTexturas;
-            for(int i = 0; i < this->mesh->getSubMeshCount();i++){
+            for(size_t i = 0; i < this->mesh->getSubMeshCount();i++){
                 SubMalla* submalla = this->mesh->getSubMesh(i);
 
                 int indiceMaterial = submalla->getMaterialIndex();
@@ -75,7 +75,7 @@ namespace Geometry {
                 std::string name = material->texImage;
                 bool encontrado =false;
                 int indiceEncontrado = 0;
-                for(int j = 0; j < listaNombres.size(); j++){
+                for(size_t j = 0; j < listaNombres.size(); j++){
                     if( listaNombres[j].compare(name)==0 ){
                         encontrado = true;
                         indiceEncontrado =j;
@@ -105,7 +105,7 @@ namespace Geometry {
             }
         }
 
-        for(int i = 0; i < this->mesh->getSubMeshCount();i++){
+        for(size_t i = 0; i < this->mesh->getSubMeshCount();i++){
 
             SubMalla* submalla = this->mesh->getSubMesh(i);
 
@@ -137,7 +137,7 @@ namespace Geometry {
 
             glPointSize(5.0);
             glBegin(GL_POLYGON);
-            for(int k = 0; k < submalla->getVertexCount(); k++){
+            for(size_t k = 0; k < submalla->getVertexCount(); k++){
 
                 if(k%3==0)
                     glBegin(GL_POLYGON);
@@ -1358,7 +1358,7 @@ namespace Geometry {
 
         std::vector<Segmento> listaSegmentos;
 
-        for(int i = 0; i < this->mesh->getSubMeshCount();i++){
+        for(size_t i = 0; i < this->mesh->getSubMeshCount();i++){
 
             SubMalla* submalla = this->mesh->getSubMesh(i);
 
@@ -1371,7 +1371,7 @@ namespace Geometry {
             int triangulo = 0;
             int indice_triangulo = 0;
 
-            for(int k = 0; k < submalla->getVertexCount()-1; k++){
+            for(size_t k = 0; k < submalla->getVertexCount()-1; k++){
                 unsigned int indice =submalla->getIndex(k);
 
                 triangulo++;
@@ -1464,7 +1464,7 @@ namespace Geometry {
         //FILE* fp;
         //fp = fopen("lineas.txt", "w");
 
-        for(int i = 0; i < listaSegmentos.size(); i++){
+        for(size_t i = 0; i < listaSegmentos.size(); i++){
             cv::line(image,
                      cv::Point2f((listaSegmentos[i].y1 - min(1)), (listaSegmentos[i].x1 - min(0))),
                      cv::Point2f((listaSegmentos[i].y2 - min(1)), (listaSegmentos[i].x2 - min(0))),

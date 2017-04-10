@@ -7,8 +7,11 @@
 
 namespace openniServer {
 
-    PointCloudServer::PointCloudServer(std::string &propertyPrefix, const Ice::PropertiesPtr propIn,ConcurrentDevicePtr device) : prefix(
-            propertyPrefix), data(new jderobot::pointCloudData()),device(device) {
+    PointCloudServer::PointCloudServer(std::string &propertyPrefix, const Ice::PropertiesPtr propIn,ConcurrentDevicePtr device) :
+            prefix(propertyPrefix),
+            data(new jderobot::pointCloudData()),
+            device(device)
+    {
         Ice::PropertiesPtr prop = propIn;
 
         int fps = prop->getPropertyAsIntWithDefault("openniServer.pointCloud.Fps", 10);
@@ -38,7 +41,6 @@ namespace openniServer {
             temporalData(new jderobot::pointCloudData()),
             stableData(new jderobot::pointCloudData()),
             returnData(new jderobot::pointCloudData()),
-
             withExtraCalibration(extra_calibration),
             _done(false)
     {
@@ -73,7 +75,7 @@ namespace openniServer {
 
 
             temporalData->p.clear();
-            for (unsigned int i = 0; (i < this->cameraSize.width * this->cameraSize.height) && (localDistance.size() > 0); i +=step) {
+            for (unsigned int i = 0; (i < (unsigned int) (this->cameraSize.width * this->cameraSize.height)) && (localDistance.size() > 0); i +=step) {
                 distance = (float) localDistance[i];
                 if (distance != 0) {
                     float xp, yp, zp, camx, camy, camz;
