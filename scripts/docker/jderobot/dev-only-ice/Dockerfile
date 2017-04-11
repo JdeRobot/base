@@ -155,6 +155,11 @@ RUN apt update && apt install -q -y \
     ardronelib \
     && rm -rf /var/lib/apt/lists/*
 
+# GLOGS
+RUN apt update && apt install -q -y \
+    libgoogle-glog-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 
 
 
