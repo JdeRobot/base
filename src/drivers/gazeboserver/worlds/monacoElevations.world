@@ -5,7 +5,7 @@
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://monacoelevations</uri>
+      <uri>model://monacoElevations</uri>
       <pose>0 0 0 0 0 0</pose>
     </include>
 

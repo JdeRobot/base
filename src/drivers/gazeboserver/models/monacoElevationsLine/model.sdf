@@ -1,8 +1,7 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
 <model name="monaco">
-  <pose>0 0 0 0 0 0</pose>
-  <static>false</static>
+  <static>true</static>
     <link name="monaco">
     	<pose>0 0 0 0 0 0</pose>
         <collision name="collision">
