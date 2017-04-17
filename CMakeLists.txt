@@ -39,13 +39,24 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" ) # Opciones para el compilador
 # ENV VARS
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
-
+# Folder with ICE cpp interfaces
+SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/)
+# Folder with ICE python interfaces
+SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/)
+# Folder with ICE java interfaces
+SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/)
 # Folder JdeRobot libraries 
 SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/libs) 
-
+# Folder ICE interface definitions
+SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice)
 # Main libraries
 SET( LIBS_NEEDED  jderobotutil colorspaces colorspacesmm easyiceconfig parallelIce depthLib geometry logger ns progeo pioneer fuzzylib  )
 SET( LIBS_EXTRA     jderobotHandlers jderobotViewer   resourcelocator xmlParser cvblob cvfast imgAnalyze JderobotInterfaces)
+
+# Create directories if necessary
+file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
+file(MAKE_DIRECTORY ${INTERFACES_JAVA_DIR})
+file(MAKE_DIRECTORY ${INTERFACES_CPP_DIR})
 
 
 # MACRO to get the list of subdirectories

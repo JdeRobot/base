@@ -1,18 +1,5 @@
-# Folder with ICE cpp interfaces
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/cpp/)
-# Folder with ICE python interfaces
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/python/)
-# Folder with ICE java interfaces
-SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/java/)
-
-# Folder ICE interface definitions
-SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/slice)
-
-# Create directories if necessary
-file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
-file(MAKE_DIRECTORY ${INTERFACES_JAVA_DIR})
-file(MAKE_DIRECTORY ${INTERFACES_CPP_DIR})
-
+cmake_minimum_required(VERSION 2.8)
+project(jderobotInterfaces)
 
 set(SLICE_NEW_STYLE "ON")
 if (NOT DEFINED SLICE_NEW_STYLE)
