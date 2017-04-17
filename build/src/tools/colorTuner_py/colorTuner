@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python /usr/local/share/jderobot/python/colorTuner_py/colorTuner.py $*

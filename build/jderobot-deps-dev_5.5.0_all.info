@@ -1,0 +1,17 @@
+Package: jderobot-deps-dev
+Version: 5.5.0
+Architecture: all
+Provides: jderobot-deps-dev
+Conflicts: jderobot-deps-dev
+Replaces: jderobot-deps-dev
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: libgazebo7-dev, ice35-slice, ice35-translators, libzeroc-ice35-dev, ice35-services, libogre-1.8-dev, libopencv-core-dev, libopencv-flann-dev, libopencv-imgproc-dev, libopencv-ml-dev, libopencv-features2d-dev, libopencv-video-dev, libopencv-objdetect-dev, libopencv-contrib-dev, libopencv-gpu-dev, libopencv-legacy-dev, libopencv-dev, libpcl-dev, python-matplotlib, python3-matplotlib, python-numpy, python3-numpy, python-opencv, python-qt4, python-qwt5-qt4, git, cmake, make, gcc-5, g++-5, gcc, g++, pkg-config, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, libboost-filesystem1.54.0, libboost-system1.54.0, libboost-thread1.54.0, gazebo7, libzeroc-ice35, libiceutil35, libicestorm35, libxml2, libogre-1.8.0, libopencv-core2.4, libopencv-flann2.4, libopencv-imgproc2.4, libopencv-ml2.4, libopencv-features2d2.4, libopencv-video2.4, libopencv-objdetect2.4, libopencv-contrib2.4, libopencv-gpu2.4, libopencv-legacy2.4, libpcl-common-1.7, libpcl-octree-1.7, libpcl-io-1.7, libpcl-kdtree-1.7, libpcl-search-1.7, libpcl-sample-consensus-1.7, libpcl-filters-1.7, libpcl-features-1.7, libpcl-keypoints-1.7, libpcl-segmentation-1.7, libpcl-visualization-1.7, libpcl-outofcore-1.7, libpcl-registration-1.7, libpcl-recognition-1.7, libpcl-surface-1.7, libpcl-people-1.7, libpcl-tracking-1.7, libpcl-apps-1.7, libpthread-stubs0-dev, python-zeroc-ice, python-matplotlib, python-numpy, python-opencv, python-qt4, python-qwt5-qt4, ros-indigo-rospy
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Private-Original-Maintainer: Victor Arribas <v.arribas.urjc@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that gathers all library headers required to compile JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/RoboticsURJC/JdeRobot

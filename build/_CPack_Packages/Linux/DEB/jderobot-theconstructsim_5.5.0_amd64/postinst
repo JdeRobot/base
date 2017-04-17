@@ -1,0 +1,8 @@
+#!/bin/sh
+# Extract CMake macros during configure 
+
+pip2 install --upgrade pip
+pip2 install zeroc-ice
+
+echo "/usr/local/lib/jderobot/" > /etc/ld.so.conf.d/jderobot.conf
+ldconfig
