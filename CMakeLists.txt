@@ -39,24 +39,14 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" ) # Opciones para el compilador
 # ENV VARS
 SET(gladedir ./)
 SET( DEPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Deps) # Directory where the dependencies are there
-# Folder with ICE cpp interfaces
-SET( INTERFACES_CPP_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/)
-# Folder with ICE python interfaces
-SET( INTERFACES_PYTHON_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/)
-# Folder with ICE java interfaces
-SET( INTERFACES_JAVA_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/jderobot ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/java/)
+
 # Folder JdeRobot libraries 
 SET( LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/libs) 
-# Folder ICE interface definitions
-SET( SLICE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice)
+
 # Main libraries
 SET( LIBS_NEEDED  jderobotutil colorspaces colorspacesmm easyiceconfig parallelIce depthLib geometry logger ns progeo pioneer fuzzylib  )
 SET( LIBS_EXTRA     jderobotHandlers jderobotViewer   resourcelocator xmlParser cvblob cvfast imgAnalyze JderobotInterfaces)
 
-# Create directories if necessary
-file(MAKE_DIRECTORY ${INTERFACES_PYTHON_DIR})
-file(MAKE_DIRECTORY ${INTERFACES_JAVA_DIR})
-file(MAKE_DIRECTORY ${INTERFACES_CPP_DIR})
 
 # MACRO to get the list of subdirectories
 macro(list_subdirectories retval curdir return_relative)
@@ -137,15 +127,6 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
-
-# Install python files
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/*py)
-FOREACH(header ${HEADERS_FILES})
-	INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/ COMPONENT core)
-ENDFOREACH(header)
-
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/python/jderobot/__init__.py DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
 
 # install all libraries 
 FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/libs/*/*.so*)
@@ -194,17 +175,6 @@ FOREACH (currentBin ${LIST_TOOLS})
 ENDFOREACH(currentBin)
 
 
-
-# Install interfaces headers
-INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/interfaces/cpp/jderobot/
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot
-	COMPONENT core
-    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-)
-
-# Install slice
-FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/slice/jderobot/*.ice)
-INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT core)
 
 # Install CONF
 FILE(GLOB_RECURSE CONF_DRIVER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/*.cfg)
