@@ -8,7 +8,7 @@
             <geometry>
                <mesh>
                   <scale>20 20 20</scale>
-                  <uri>model://monaco/meshes/MonacoElev.dae</uri>
+                  <uri>model://monacoElevations/meshes/CircuitoMonacoElev.dae</uri>
                </mesh>
             </geometry>
         </collision>
@@ -16,7 +16,7 @@
             <geometry>
                <mesh>
                   <scale>20 20 20</scale>
-                  <uri>model://monaco/meshes/MonacoElev.dae</uri>
+                  <uri>model://monacoElevations/meshes/CircuitoMonacoElev.dae</uri>
                </mesh>
             </geometry>
         </visual>
