@@ -67,3 +67,4 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
             )
 ENDIF()
 
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

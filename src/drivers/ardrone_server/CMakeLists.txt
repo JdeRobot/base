@@ -95,3 +95,4 @@ ELSE()
 	message(WARNING "ardrone_server marked to build, but required dependencies were not met.
 		You should install third party library: ardonelib")
 ENDIF()
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

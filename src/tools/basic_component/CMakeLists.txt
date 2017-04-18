@@ -77,3 +77,6 @@ if (${QT5_COMPILE})
     )
 ENDIF()
 
+
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

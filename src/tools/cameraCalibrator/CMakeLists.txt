@@ -32,3 +32,4 @@ add_executable (cameraCalibrator  ${SOURCE_FILES})
         ${CMAKE_THREAD_LIBS_INIT}
 			${GLOG_LIBRARIES}
 )
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

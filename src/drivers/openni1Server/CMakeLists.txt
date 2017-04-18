@@ -64,4 +64,6 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 				  progeo
 				)
 		ENDIF()
+		INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/openni1Server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
+

@@ -39,3 +39,5 @@ TARGET_LINK_LIBRARIES(giraffeClient
 		)
 
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/giraffeClient.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/giraffeClient.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

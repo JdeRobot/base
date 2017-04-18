@@ -64,3 +64,5 @@ IF(QT5_COMPILE)
             )
 
 ENDIF()
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/uav_viewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/uav_viewer_simulated.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

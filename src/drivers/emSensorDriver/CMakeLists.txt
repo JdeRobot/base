@@ -35,6 +35,8 @@ if(wiringPi_LIBRARY)
                 ${wiringPi_LIBRARY}
         )
 
+        INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/emSensorDriver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+
     else()
       message("Boost thread library is required to build emSensorDriver, skipping driver build.")
     endif()

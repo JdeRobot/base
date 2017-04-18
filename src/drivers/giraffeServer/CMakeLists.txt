@@ -23,4 +23,6 @@ TARGET_LINK_LIBRARIES(giraffeServer
     QtCore
     QtGui
 )
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/giraffeServer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 endif()
+
