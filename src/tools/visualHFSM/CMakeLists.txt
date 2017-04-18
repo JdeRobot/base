@@ -61,3 +61,9 @@ add_custom_command(TARGET visualHFSM POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh $<TARGET_FILE_DIR:visualHFSM>)
 
 ENDIF()
+
+
+# Install Glade
+FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
+
+INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)

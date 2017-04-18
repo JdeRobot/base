@@ -41,3 +41,6 @@ TARGET_LINK_LIBRARIES(rgbdCalibrator
 
 
 		)
+
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdCalibrator.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)

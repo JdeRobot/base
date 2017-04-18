@@ -43,3 +43,6 @@ TARGET_LINK_LIBRARIES(rgbdViewer
 		${GLOG_LIBRARIES}
 
 		)
+
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdViewergui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)

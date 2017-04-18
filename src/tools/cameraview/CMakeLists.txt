@@ -41,3 +41,6 @@ TARGET_LINK_LIBRARIES(cameraview
 		${GLOG_LIBRARIES}
 
 		)
+
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraview.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
