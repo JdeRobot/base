@@ -1,6 +1,6 @@
 Docker
 ========
-This directoy contents all Dockerfiles of IdeRobot oficial Docker images.
+This directory contains all Dockerfiles of JdeRobot official Docker images.
 
 # Run and download Docker Image
 
@@ -20,6 +20,4 @@ $ docker build --tag="jderobot:base" .
 
 # Edit Dockerfile
 
-Follow [this instrucctions](https://docs.docker.com/engine/reference/builder/)
-
-
+Follow [these instructions](https://docs.docker.com/engine/reference/builder/)
