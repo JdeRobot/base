@@ -139,18 +139,6 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 ###################
 
 
-# install all libraries 
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/libs/*/*.so*)
-FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
-ENDFOREACH(lib)
-
-FILE(GLOB LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/src/libs/visionlib/*/*.so*)
-FOREACH (lib ${LIB_FILES})
-	INSTALL (FILES ${lib} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
-ENDFOREACH(lib)
-
-
 # Install Executables
 list_subdirectories2( LIST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ 1)
 list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)

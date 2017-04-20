@@ -8,7 +8,7 @@ TARGET_LINK_LIBRARIES(progeoshare ${gsl_LIBRARIES} ${xerces_LIBRARIES} ${LIBXML2
 TARGET_LINK_LIBRARIES(progeo ${gsl_LIBRARIES} ${xerces_LIBRARIES} ${LIBXML2_LIBRARIES})
 
 ### Install
-install(TARGETS progeo
+install(TARGETS progeo progeoshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
