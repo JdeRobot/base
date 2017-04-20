@@ -151,20 +151,6 @@ FOREACH (lib ${LIB_FILES})
 ENDFOREACH(lib)
 
 
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/*.h)
-FOREACH(currentSourceFile ${HEADERS_FILES})
-    string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-		string(REGEX REPLACE  "${CMAKE_CURRENT_SOURCE_DIR}/src/libs" "" new_source2 ${new_source1})
-    INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source2} COMPONENT core)
-ENDFOREACH(currentSourceFile)
-
-# Install libraries headers
-FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/*.h)
-FOREACH(currentSourceFile ${HEADERS_FILES})
-	string(REGEX REPLACE ".*/(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
-	INSTALL (FILES ${currentSourceFile} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/${new_source1} COMPONENT core)
-ENDFOREACH(currentSourceFile)
-
 # Install Executables
 list_subdirectories2( LIST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ 1)
 list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)

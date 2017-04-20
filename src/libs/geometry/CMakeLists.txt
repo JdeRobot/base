@@ -25,3 +25,21 @@ install(TARGETS geometry
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+
+
+FILE(GLOB_RECURSE GEOMETRY_HEADERS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} */*.h)
+
+FOREACH(currentSourceFile ${GEOMETRY_HEADERS_FILES})
+string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
+	install( FILES ${currentSourceFile}
+    	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/geometry/${new_source1}
+    	COMPONENT core
+	)
+ENDFOREACH(currentSourceFile)
+
+install( FILES Dense.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/geometry/
+    COMPONENT core
+)
+

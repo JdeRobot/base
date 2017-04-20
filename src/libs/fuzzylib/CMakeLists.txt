@@ -11,3 +11,8 @@ install(TARGETS fuzzylib fuzzyshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+install( FILES fuzzylib.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/fuzzylib/
+    COMPONENT core
+)

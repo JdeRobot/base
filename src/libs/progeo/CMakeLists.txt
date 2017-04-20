@@ -12,3 +12,8 @@ install(TARGETS progeo
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+install( FILES progeo.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/progeo/
+    COMPONENT core
+)
