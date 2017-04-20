@@ -1,0 +1,28 @@
+configure_file(
+    setupMAVLinkServer.in
+    setupMAVLinkServer
+    @ONLY
+)
+
+configure_file(
+    mavLinkServer.in
+    mavLinkServer
+    @ONLY
+)
+## INSTALL ##
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/setupMAVLinkServer
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+    DESTINATION bin
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/mavLinkServer
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+    DESTINATION bin
+)
+
+INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/MAVProxy DESTINATION share/jderobot/python/MAVLinkServer COMPONENT drivers)
+
+INSTALL(FILES setup.py DESTINATION share/jderobot/python/MAVLinkServer/ COMPONENT tools)
