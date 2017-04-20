@@ -75,8 +75,14 @@ if (${QT5_COMPILE})
         ${resourcelocator_LIBRARIES}
         ${GLOG_LIBRARIES}
     )
+
+    install(TARGETS basic_component
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+    )
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
 
 
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+

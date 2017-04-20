@@ -31,6 +31,12 @@ if(pcl_openni)
       ${Boost_LIBRARIES}
       ${easyiceconfig_LIBRARIES}
     )
+
+    install(TARGETS pclRGBDServer
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+          COMPONENT drivers
+        )
+
     INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kinectServer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 
 endif()

@@ -27,4 +27,9 @@ TARGET_LINK_LIBRARIES(namingService
 	${GLOG_LIBRARIES}
 )
 
+install(TARGETS namingService
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+    )
+
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/namingService.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

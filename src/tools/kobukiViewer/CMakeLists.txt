@@ -65,6 +65,12 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
             ${GLOG_LIBRARIES}
 
             )
+    install(TARGETS kobukiViewer
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+    )
+
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+

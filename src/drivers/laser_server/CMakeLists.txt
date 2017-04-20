@@ -24,4 +24,10 @@ TARGET_LINK_LIBRARIES(${NAME}
     JderobotInterfaces
     ${easyiceconfig_LIBRARIES}
 )
+
+install(TARGETS ${NAME}
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+          COMPONENT drivers
+        )
+
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/laser_server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

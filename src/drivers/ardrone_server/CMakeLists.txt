@@ -89,10 +89,17 @@ if(ARDRONE_ALL_DEPS)
     		${easyiceconfig_LIBRARIES})
 
 
+
+    install(TARGETS ardrone_server ardrone_print_gps_data
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT drivers
+    )
+
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
     INSTALL(DIRECTORY config DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 
 ELSE()
 	message(WARNING "ardrone_server marked to build, but required dependencies were not met.
 		You should install third party library: ardonelib")
 ENDIF()
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/ardrone_interfaces.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+

@@ -40,6 +40,12 @@ link_directories(
         ${ZLIB_LIBRARIES}
         ${freenect2_LIBRARIES}
     )
+
+    install(TARGETS kinect2Server
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+          COMPONENT drivers
+        )
+        
     INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kinect2server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ELSE()
     message("Disabled")

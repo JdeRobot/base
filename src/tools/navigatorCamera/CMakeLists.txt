@@ -42,6 +42,11 @@ TARGET_LINK_LIBRARIES(navigatorCamera
 		${GLOG_LIBRARIES}
 )
 
+install(TARGETS navigatorCamera
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+    )
+
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/myimage.png DESTINATION /usr/local/share/jderobot/glade/ )
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/navigatorCamera.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade )
 INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/navigatorCamera.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
