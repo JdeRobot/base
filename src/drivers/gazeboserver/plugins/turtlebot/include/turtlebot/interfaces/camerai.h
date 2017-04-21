@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,8 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  REMIX of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/include/quadrotor/interfaces/camerai.h
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
+ *  Authors:
+ *       Francisco Perez Salgado <f.pererz475@gmai.com>
  */
 
 #ifndef CAMERAI_H
@@ -32,14 +36,15 @@ namespace interfaces{
 
 class CameraI: public turtlebot::interfaces::CameraIBase {
 public:
-    CameraI (const turtlebot::TurtlebotSensors *sensor);
+    CameraI (const turtlebot::TurtlebotSensors *sensor, int cam_id);
     virtual ~CameraI ();
 
-    const int cam_id = TurtlebotSensors::CAM_LEFT;
 
 private:
     cv::Mat imgCached;
     const turtlebot::TurtlebotSensors *sensor;
+    const int cam_id;
+
 
 /// Gazebo
 private:

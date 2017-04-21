@@ -13,8 +13,9 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  CLONE of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/include/quadrotor/interfaces/cameraibase.h
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
  */
 
 

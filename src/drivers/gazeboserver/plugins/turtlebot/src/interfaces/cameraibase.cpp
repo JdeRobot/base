@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,8 +13,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  CLONE of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/src/interfaces/cameraibase.cpp
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
  */
 
 #include <turtlebot/interfaces/cameraibase.h>

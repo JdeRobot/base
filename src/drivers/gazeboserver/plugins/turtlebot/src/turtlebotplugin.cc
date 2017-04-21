@@ -13,8 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  REMIX of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/src/quadrotorplugin.cc
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
+ *  Authors:
+ *       Francisco Perez Salgado <f.pererz475@gmai.com>
  */
 
 
@@ -79,11 +83,6 @@ TurtlebotPlugin::Init(){
     sensors.laser->SetActive(true);
     sensors.bumper->SetActive(true);
 
-    cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_LEFT]);
-    cameraproxy.registerCamera(sensors.cam[TurtlebotSensors::CAM_RIGHT]);
-    cameraproxy.setActive(0);
-    cameraproxy.setActive(1);
-
     control.Init(&sensors);
 
     icePlugin->start();
@@ -146,6 +145,6 @@ TurtlebotPlugin::InitializeIce(sdf::ElementPtr _sdf){
         id.properties->setProperty("Turtlebot.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
 
     std::cout << _log_prefix << "\tcreate Ice plugin..." << std::endl;
-    icePlugin = TurtlebotIcePtr(new TurtlebotIce(ic, &sensors, &control, &cameraproxy));
+    icePlugin = TurtlebotIcePtr(new TurtlebotIce(ic, &sensors, &control));
     icePlugin->_log_prefix = _log_prefix;
 }
