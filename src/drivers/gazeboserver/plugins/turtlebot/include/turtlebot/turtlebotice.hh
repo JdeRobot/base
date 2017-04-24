@@ -13,8 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  REMIX of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/include/quadrotor/quadrotorice.hh
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
+ *  Authors:
+ *       Francisco Perez Salgado <f.pererz475@gmai.com>
  */
 
 #ifndef TURTLEBOTICE_H
@@ -32,13 +36,12 @@
 #include <turtlebot/interfaces/kinectPlugini.h>
 #include <turtlebot/interfaces/motorsi.h>
 #include <turtlebot/interfaces/pose3di.h>
-#include <turtlebot/interfaces/pushcamerai.h>
+#include <turtlebot/interfaces/camerai.h>
 #include <turtlebot/interfaces/laseri.h>
 #include <turtlebot/interfaces/bumperi.h>
 
 #include <turtlebot/turtlebotsensors.hh>
 #include <turtlebot/turtlebotcontrol.hh>
-#include <turtlebot/cameraproxy.hh>
 
 #include <turtlebot/debugtools.h>
 
@@ -47,7 +50,7 @@ namespace turtlebot{
 class TurtlebotIce
 {
 public:
-    TurtlebotIce(Ice::CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control, CameraProxy *camproxy);
+    TurtlebotIce(Ice::CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control);
     virtual ~TurtlebotIce();
 
     void run();
@@ -67,7 +70,6 @@ private:
 private:
     const TurtlebotSensors *sensor;
     TurtlebotControl *control;
-    CameraProxy *camproxy;
     boost::mutex lock;
 
 };

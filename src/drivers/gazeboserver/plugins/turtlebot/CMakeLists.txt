@@ -24,7 +24,6 @@ set(SOURCES src/turtlebotplugin.cc
         src/turtlebotcontrol.cc
         src/turtlebotsensors.cc
 
-        src/cameraproxy.cc
 
         src/interfaces/motorsi.cpp
         src/interfaces/laseri.cpp
@@ -32,7 +31,6 @@ set(SOURCES src/turtlebotplugin.cc
         #src/interfaces/kinectPlugini.cpp
         src/interfaces/camerai.cpp
         src/interfaces/bumperi.cpp
-        src/interfaces/pushcamerai.cpp
         src/interfaces/cameraibase.cpp
 )
 

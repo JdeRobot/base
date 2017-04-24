@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,8 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *
+ *  REMIX of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/src/interfaces/camerai.cpp
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
+ *  Authors:
+ *       Francisco Perez Salgado <f.pererz475@gmai.com>
  */
 
 #include <turtlebot/interfaces/camerai.h>
@@ -23,8 +27,9 @@ using namespace turtlebot::interfaces;
 using namespace jderobot;
 
 
-CameraI::CameraI (const TurtlebotSensors *sensor):
-    sensor(sensor)
+CameraI::CameraI (const TurtlebotSensors *sensor, int cam_id):
+    sensor(sensor),
+    cam_id(cam_id)
 {
     cameraSensorConnection = sensor->cam[cam_id]->ConnectUpdated(
                 boost::bind(&CameraI::onCameraSensorBoostrap, this));

@@ -13,8 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *  Authors :
- *       Francisco Perez Salgado <f.perez475@gmai.com>
+ *
+ *  REMIX of https://github.com/jderobot-varribas/gazeboplugin-quadrotor2/blob/2.1.0/src/quadrotorice.cc
+ *  Victor Arribas Raigadas <v.arribas.urjc@gmai.com>
+ *  
+ *  Authors:
+ *       Francisco Perez Salgado <f.pererz475@gmai.com>
  */
 
 
@@ -24,11 +28,10 @@ using namespace turtlebot;
 using namespace turtlebot::interfaces;
 using namespace Ice;
 
-TurtlebotIce::TurtlebotIce(CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control, CameraProxy *camproxy):
+TurtlebotIce::TurtlebotIce(CommunicatorPtr ic, const TurtlebotSensors *sensors, TurtlebotControl *control):
     ic(ic),
     sensor(sensors),
-    control(control),
-    camproxy(camproxy)
+    control(control)
 {
     assert(ic != 0);
 }
@@ -108,22 +111,11 @@ void TurtlebotIce::bootstrap(){
     name = prop->getProperty("Turtlebot.Bumper.Name");
     adapter->add(bumperi, ic->stringToIdentity(name));
 
-    //ObjectPtr camerai = new CameraI(sensor);
-    ObjectPtr cameraiL;
-    {
-        PushCameraI *_cameraiL = new PushCameraI();
-        camproxy->registerConsumer(ICameraConsumerPtr(_cameraiL));
-        cameraiL = ObjectPtr(_cameraiL);
-    }
+    ObjectPtr cameraiL = new CameraI(sensor,0);
     name = prop->getProperty("Turtlebot.CameraL.Name");
     adapter->add(cameraiL, ic->stringToIdentity(name));
 
-    ObjectPtr cameraiR;
-    {
-        PushCameraI *_cameraiR = new PushCameraI();
-        camproxy->registerConsumer(ICameraConsumerPtr(_cameraiR));
-        cameraiR = ObjectPtr(_cameraiR);
-    }
+    ObjectPtr cameraiR = new CameraI(sensor,1);
     name = prop->getProperty("Turtlebot.CameraR.Name");
     adapter->add(cameraiR, ic->stringToIdentity(name));
 
