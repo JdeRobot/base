@@ -29,7 +29,7 @@
     </include>
 
 
-    <!-- A global light source -->
+   <!-- A global light source -->
     <include>
       <uri>model://ArDrone2</uri>
       <pose>0 0 0.1 0 0 0</pose>
@@ -64,14 +64,14 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population1">
+    <population name="tree_population2">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -80,14 +80,14 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population1">
+    <population name="tree_population3">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -96,14 +96,14 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population1">
+    <population name="tree_population4">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -112,7 +112,7 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
