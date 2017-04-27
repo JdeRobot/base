@@ -6,31 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>370</height>
+    <width>790</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>660</width>
-    <height>370</height>
+    <width>790</width>
+    <height>550</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>660</width>
-    <height>370</height>
+    <width>790</width>
+    <height>550</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>Introrob_py</string>
+   <string>UAV_Viewer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="takeoffButton">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>30</y>
+      <x>80</x>
+      <y>370</y>
       <width>161</width>
       <height>41</height>
      </rect>
@@ -39,30 +39,11 @@
      <string>Take off</string>
     </property>
    </widget>
-   <widget class="QSlider" name="altdSlider">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>30</y>
-      <width>19</width>
-      <height>311</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>100</number>
-    </property>
-    <property name="value">
-     <number>49</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
    <widget class="QPushButton" name="stopButton">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>80</y>
+      <x>80</x>
+      <y>420</y>
       <width>161</width>
       <height>41</height>
      </rect>
@@ -78,8 +59,8 @@
    <widget class="QLabel" name="windowsLabel">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>190</y>
+      <x>280</x>
+      <y>390</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -91,8 +72,8 @@
    <widget class="QCheckBox" name="cameraCheck">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>220</y>
+      <x>280</x>
+      <y>420</y>
       <width>94</width>
       <height>26</height>
      </rect>
@@ -104,8 +85,8 @@
    <widget class="QCheckBox" name="sensorsCheck">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>250</y>
+      <x>280</x>
+      <y>450</y>
       <width>94</width>
       <height>26</height>
      </rect>
@@ -117,14 +98,14 @@
    <widget class="QLabel" name="altdLabel">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>410</x>
       <y>340</y>
       <width>51</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Altitude</string>
+     <string>Altitude:</string>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -138,33 +119,17 @@
     </property>
     <layout class="QVBoxLayout" name="tlLayout"/>
    </widget>
-   <widget class="QDial" name="rotationDial">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>220</y>
-      <width>50</width>
-      <height>64</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>100</number>
-    </property>
-    <property name="value">
-     <number>49</number>
-    </property>
-   </widget>
    <widget class="QLabel" name="rotationLabel">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>280</y>
+      <x>540</x>
+      <y>340</y>
       <width>65</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Rotation</string>
+     <string>Rotation:</string>
     </property>
    </widget>
    <widget class="QLabel" name="XLabel">
@@ -228,24 +193,27 @@
    <widget class="QLabel" name="altdValue">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>10</y>
+      <x>460</x>
+      <y>340</y>
       <width>41</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
      <string>0</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="rotValue">
     <property name="geometry">
      <rect>
-      <x>445</x>
-      <y>200</y>
+      <x>590</x>
+      <y>340</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -254,14 +222,14 @@
      <string>0</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>130</y>
+      <x>80</x>
+      <y>470</y>
       <width>161</width>
       <height>41</height>
      </rect>
@@ -269,6 +237,17 @@
     <property name="text">
      <string>Reset</string>
     </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>30</y>
+      <width>361</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="tlLayout_1"/>
    </widget>
   </widget>
  </widget>
