@@ -1,3 +1,27 @@
+
+jderobot (5.5.2) unstable; urgency=low
+
+  * release 5.5.2
+  * [PR #721] Added the new MAVLink Server for generic drone control.
+  * [PR #722] Enhancement. Uav_viewer now hast two teleoperator canvas: speed and heading control.
+  * [PR #724] Gazebo. Added new circuits for car practices. Monaco circuit with and without elevations is now available for gazebo.
+  * [PR #726] Enhancement. Added new tags and materials to the aprilTags gazebo world.
+  * [PR #732] Enhancement. Added bumper sensor to simulated kobuki robot.
+  * [PR #737] Enhancement. ROS communications are now optional. Ice communications are the default.
+  * [PR #748 #751 #752] Added launcher file for python tools: colorTuner_py, uav_viewer_py and basic_component_py
+  * [PR #754] Changed from JdeRobot's logging system to Google logs.
+  * [PR #755] New feature. Added new robot: roomba. It has driver for gazebo and interfaces for: motors, laser, pose3d and bumper.
+  * [PR #760] Fix. OpenniServer works again with kinect1 devices.
+  * [PR #762] Integrated Google logs to openniServer.
+  * [PR #765] Deprecated. The C version of progeo API is now labeled as deprecated.
+  * [PR #768] Docker. Added docker images for demos and developing.
+  * [PR #769] Fix. Added support for ring buffer in recorder tool.
+  * [PR #784] Fix. Turtlebot cameras now offer different images. It was serving only the left camera images for both of the cams.
+  * [PR #787] Fix. reconstruccion3D world now loads the turtlebot model instead the deprecated pioneer robot.
+
+-- Francisco Perez <f.perez475@gmail.com>, Wed, 28 Apr 2017 19:30:00 +0100
+
+
 jderobot (5.5.0) unstable; urgency=low
 
   * release 5.5.0
