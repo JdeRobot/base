@@ -10,7 +10,7 @@
 
     <!-- Pioneer2dx model -->
     <include>
-      <uri>model://turtlebot</uri>
+      <uri>model://turtlebotJde2cam</uri>
       <pose>0 0 0 0 0 0</pose>
     </include>
     
