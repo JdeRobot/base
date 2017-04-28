@@ -2,5 +2,6 @@
   <qresource prefix="images">
     <file>ball.png</file>
     <file>stop.png</file>
+    <file>jderobot.png</file>
   </qresource>
 </RCC>
