@@ -28,14 +28,14 @@
 #include <libglademm.h>
 #include <IceUtil/Thread.h>
 #include <IceUtil/Time.h>
-#include "control.h"
+#include "utils/SyncController.h"
 #include <resourcelocator/gladelocator.hpp> 
 
 namespace replayer {
 
 class replayergui {
 public:
-	replayergui(control *c);
+	replayergui(SyncController *c);
 	virtual ~replayergui();
 	void update();
 
@@ -48,7 +48,7 @@ private:
 	Gtk::Button* w_step;
 	Gtk::ToggleButton* w_repeat;
 
-	control *controller;
+	SyncController *controller;
 
 	//gtk functions
 	void on_clicked_stop();
