@@ -253,11 +253,9 @@ namespace rgbdViewer {
 	}
 
 	void DrawArea::drawScene() {
-		int i,c,row,j,k;
+		int i;
 		float r,lati,longi,dx,dy,dz;
 		float matColors[4];
-		float  Xp_sensor, Yp_sensor;
-		float dpan=0.5,dtilt=0.5;
 
 		// Absolute Frame of Reference
 		// floor
@@ -659,6 +657,7 @@ DrawArea::read_world_file(char* worldfile){
 	} while(i!=EOF);
 
 	fclose(myfile);
+    return 0;
 }
 
 void

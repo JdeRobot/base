@@ -269,7 +269,6 @@ struct cameraData{
 
 int main(int argc, char** argv){
 
-	int status,i;
 	Ice::CommunicatorPtr ic;
 	Ice::PropertiesPtr prop;
 	cv::Size boardSize;

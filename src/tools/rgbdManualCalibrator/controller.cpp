@@ -395,8 +395,6 @@ namespace rgbdManualCalibrator {
 				if (d != 0 ){
 					float xp,yp,zp,camx,camy,camz;
 					float ux,uy,uz;
-					float x,y;
-					float k;
 					float c1x, c1y, c1z;
 					float fx,fy,fz;
 					float fmod;

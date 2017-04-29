@@ -28,6 +28,6 @@ TARGET_LINK_LIBRARIES(cameraserver
 	${ZLIB_LIBRARIES}
 	logger
     crypto
-ns
-		${GLOG_LIBRARIES}
-	)
+    ns
+    ${GLOG_LIBRARIES}
+)
