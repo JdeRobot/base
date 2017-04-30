@@ -198,7 +198,6 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
             exit(2);
         }
 
-        this->videoMode.setValid(true);
 
         int distance=99999999;
         int bestId=-1;
@@ -213,6 +212,10 @@ int ConcurrentDevice::openStream(const char* name, openni::SensorType sensorType
         LOG(INFO) << "Setting video mode to:";
         LOG(INFO) << "[" + boost::lexical_cast<std::string>(bestId)  + "]: fps: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getFps()) + "x: " + boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionX()) + " x " +  boost::lexical_cast<std::string>((*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionY());
 
+
+        this->videoMode.setValid(true);
+        this->videoMode.witdh=(*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionX();
+        this->videoMode.heigth=(*ppSensorInfo)->getSupportedVideoModes()[bestId].getResolutionY();
 
 
         nRetVal = stream.setVideoMode((*ppSensorInfo)->getSupportedVideoModes()[bestId]);

@@ -45,9 +45,20 @@ namespace openniServer {
             _done(false)
     {
         this->cameraSize=cv::Size(device->getVideoMode().witdh,device->getVideoMode().heigth);
+        LOG(INFO) << "Working with: " << device->getVideoMode().witdh << " x " <<device->getVideoMode().heigth;
+
     }
 
     void PointCloudServer::ReplyCloud::run() {
+
+        while (this->cameraSize == cv::Size(0,0)){
+            LOG(WARNING) << "Trying to get valid videoMode";
+
+            this->cameraSize=cv::Size(device->getVideoMode().witdh,device->getVideoMode().heigth);
+            sleep(1);
+        }
+
+
         mypro = new openniServer::myprogeo(1, this->cameraSize.width, this->cameraSize.height);
         mypro->load_cam((char *) this->calibration_filepath.c_str(), 0, this->cameraSize.width, this->cameraSize.height, withExtraCalibration);
 
@@ -136,7 +147,7 @@ namespace openniServer {
 
             int delay = IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds();
             if (delay > cycle) {
-                LOG(WARNING) << "-------- openniServer: POINTCLOUD openni timeout-";
+                DLOG(WARNING) << "-------- openniServer: POINTCLOUD openni timeout-";
             } else {
                 if (delay < 1 || delay > cycle)
                     delay = 1;
