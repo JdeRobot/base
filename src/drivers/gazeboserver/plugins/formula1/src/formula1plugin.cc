@@ -54,12 +54,9 @@ Formula1Plugin::Load(ModelPtr _model, sdf::ElementPtr _sdf){
     control._log_prefix = _log_prefix;
 
     model = _model;
-std::cout<< "A"<< std::endl;
+    
     sensors.Load(model);
-    std::cout<< "AI"<< std::endl;
-
     control.Load(model, _sdf);
-    std::cout<< "B"<< std::endl;
 
     // Listen to the update event. This event is broadcast every
     // simulation iteration.
@@ -133,13 +130,11 @@ Formula1Plugin::InitializeIce(sdf::ElementPtr _sdf){
 #endif
     Ice::CommunicatorPtr ic = Ice::initialize(id);
 #endif
-    std::cout<< "a"<< std::endl;
 
     std::string port;
     /// Get Adapter port from _sdf (static bad)
     if(_sdf->HasElement("iceAdapterPort"))
         port = _sdf->GetElement("iceAdapterPort")->Get<std::string>();
-    std::cout<< "b"<< std::endl;
 
     /// Get port from model <name> (wolrd file, good enough)
     std::string name = model->GetName();
@@ -150,7 +145,6 @@ Formula1Plugin::InitializeIce(sdf::ElementPtr _sdf){
     }
     if (!port.empty())
         id.properties->setProperty("Formula1.Adapter.Endpoints", "tcp -h localhost -p "+port); //ToDo: use regex replace instead hardcored text.
-    std::cout<< "c"<< std::endl;
 
     std::cout << _log_prefix << "\tcreate Ice plugin..." << std::endl;
     icePlugin = Formula1IcePtr(new Formula1Ice(ic, &sensors, &control, &cameraproxy));
