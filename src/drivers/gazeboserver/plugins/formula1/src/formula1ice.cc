@@ -85,7 +85,6 @@ void Formula1Ice::bootstrap(){
     if (ic->isShutdown()) return;
 
     prop = ic->getProperties();
-    std::cout<< "aa"<< std::endl;
 
     adapter = ic->createObjectAdapter("F1.Adapter");
     std::cout<<_log_prefix << "Ice adapter listening at " << std::endl;
