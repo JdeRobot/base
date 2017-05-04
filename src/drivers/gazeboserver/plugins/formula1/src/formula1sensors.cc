@@ -35,31 +35,24 @@ Formula1Sensors::~Formula1Sensors(){
 
 void
 Formula1Sensors::Load(ModelPtr model){
-    std::cout<< "I"<< std::endl;
 
     this->model = model;
-    std::cout<< "II"<< std::endl;
 
     this->base_link_id = model->GetChildLink("f1")->GetId();
-    std::cout<< "III"<< std::endl;
 
     SensorManager *sm = SensorManager::Instance();
-    std::cout<< "C"<< std::endl;
 
     for (SensorPtr s: sm->GetSensors()){
 //        if (s->GetParentId() != base_link_id) continue;
         std::string name = s->Name();
         if (name.find("laser") != std::string::npos)
             laser = std::static_pointer_cast<RaySensor>(s);
-        std::cout<< "D"<< std::endl;
 
         if (name.find("cam_formula1_left") != std::string::npos)
             cam[CAM_LEFT] = std::static_pointer_cast<CameraSensor>(s);
-        std::cout<< "E"<< std::endl;
 
         if (name.find("cam_formula1_right") != std::string::npos)
             cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
-        std::cout<< "F"<< std::endl;
 
         pose = model->GetWorldPose();
     }
