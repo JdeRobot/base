@@ -28,7 +28,7 @@ from MAVProxy.modules.lib import dumpstacks
 from MAVProxy.modules.lib import udp
 from MAVProxy.modules.lib import tcp
 
-import easyiceconfig as EasyIce
+#import easyiceconfig as EasyIce
 
 from Pose3D import Pose3DI
 from CMDVel import CMDVelI
@@ -52,6 +52,7 @@ try:
             import pyreadline as readline
 except Exception:
       pass
+
 
 if __name__ == '__main__':
       freeze_support()
@@ -484,6 +485,12 @@ def process_stdin(line):
     ######################################################################################################
     if cmd == 'velocity' and len(args) == 4:
         PH_CMDVel = CMDVelI(args[1],args[2],args[3],0,0,0) #1 to avoid indeterminations
+
+
+
+
+
+
     ######################################################################################################
     if not cmd in command_map:
         for (m,pm) in mpstate.modules:
@@ -732,140 +739,146 @@ def periodic_tasks():
         if m.needs_unloading:
             unload_module(m.name)
 
-def listener_loop():
-    while True:
-        main_loop()
-
 def main_loop():
-    '''main processing loop'''
+
     if not mpstate.status.setup_mode and not opts.nowait:
         for master in mpstate.mav_master:
             send_heartbeat(master)
-            #if master.linknum == 0:
-            #    print("Waiting for heartbeat from %s" % master.address)
-            #    master.wait_heartbeat()
+            if master.linknum == 0:
+                print("Waiting for heartbeat from %s" % master.address)
+                master.wait_heartbeat()
         set_stream_rates()
-    if mpstate is None or mpstate.status.exit:
-        return
-        #cmd
 
-    global on_air
-    global operation_takeoff
-    global time_init_operation_takeoff
-    global time_end_operation_takeoff
+    while True:
+        if mpstate is None or mpstate.status.exit:
+            return
 
-    time_now = int(round(time.time() * 1000))
+        global on_air
+        global operation_takeoff
+        global time_init_operation_takeoff
+        global time_end_operation_takeoff
 
-    if operation_takeoff  and time_now > time_end_operation_takeoff:
-        print("Taking off")
-        time_init_operation_takeoff = int(round(time.time() * 1000))
-        time_end_operation_takeoff = time_init_operation_takeoff + 7000
-        operation_takeoff = False
-        on_air = True
-        mpstate.input_queue.put("takeoff 1")
+        time_now = int(round(time.time() * 1000))
 
-    if on_air and time_now > time_end_operation_takeoff:
-        mpstate.input_queue.put("mode guided")
-        print("Mode guided on")
-        on_air = False
+        if operation_takeoff  and time_now > time_end_operation_takeoff:
+            print("Taking off")
+            time_init_operation_takeoff = int(round(time.time() * 1000))
+            time_end_operation_takeoff = time_init_operation_takeoff + 7000
+            operation_takeoff = False
+            on_air = True
+            mpstate.input_queue.put("takeoff 1")
 
-    while not mpstate.input_queue.empty():
-        line = mpstate.input_queue.get()
-        mpstate.input_count += 1
-        cmds = line.split(';')
-        if len(cmds) == 1 and cmds[0] == "":
-              mpstate.empty_input_count += 1
-        for c in cmds:
-            process_stdin(c)
+        if on_air and time_now > time_end_operation_takeoff:
+            mpstate.input_queue.put("mode guided")
+            print("Mode guided on")
+            on_air = False
 
-    for master in mpstate.mav_master:
-        if master.fd is None:
-            if master.port.inWaiting() > 0:
-                process_master(master)
-    periodic_tasks()
-    rin = []
-    for master in mpstate.mav_master:
-        if master.fd is not None and not master.portdead:
-            rin.append(master.fd)
-    for m in mpstate.mav_outputs:
-        rin.append(m.fd)
-    for sysid in mpstate.sysid_outputs:
-        m = mpstate.sysid_outputs[sysid]
-        rin.append(m.fd)
-    if rin == []:
-        time.sleep(0.0001)
-        return
-    for fd in mpstate.select_extra:
-        rin.append(fd)
-    try:
-        (rin, win, xin) = select.select(rin, [], [], mpstate.settings.select_timeout)
-    except select.error:
-        return
-    if mpstate is None:
-        return
-    for fd in rin:
-        if mpstate is None:
-              return
+        while not mpstate.input_queue.empty():
+            line = mpstate.input_queue.get()
+            mpstate.input_count += 1
+            cmds = line.split(';')
+            if len(cmds) == 1 and cmds[0] == "":
+                mpstate.empty_input_count += 1
+            for c in cmds:
+                #print(c)
+                process_stdin(c)
+
         for master in mpstate.mav_master:
-              if fd == master.fd:
+            if master.fd is None:
+                if master.port.inWaiting() > 0:
+                    process_master(master)
+
+        periodic_tasks()
+
+        rin = []
+        for master in mpstate.mav_master:
+            if master.fd is not None and not master.portdead:
+                rin.append(master.fd)
+        for m in mpstate.mav_outputs:
+            rin.append(m.fd)
+        for sysid in mpstate.sysid_outputs:
+            m = mpstate.sysid_outputs[sysid]
+            rin.append(m.fd)
+        if rin == []:
+            time.sleep(0.0001)
+            continue
+
+        for fd in mpstate.select_extra:
+            rin.append(fd)
+        try:
+            (rin, win, xin) = select.select(rin, [], [], mpstate.settings.select_timeout)
+        except select.error:
+            continue
+
+        if mpstate is None:
+            return
+
+        for fd in rin:
+            if mpstate is None:
+                return
+            for master in mpstate.mav_master:
+                if fd == master.fd:
                     process_master(master)
                     if mpstate is None:
                           return
-                    return
-        for m in mpstate.mav_outputs:
-            if fd == m.fd:
-                process_mavlink(m)
-                if mpstate is None:
-                      return
-                return
-        for sysid in mpstate.sysid_outputs:
-            m = mpstate.sysid_outputs[sysid]
-            if fd == m.fd:
-                process_mavlink(m)
-                if mpstate is None:
-                      return
-                return
+                    continue
+            for m in mpstate.mav_outputs:
+                if fd == m.fd:
+                    process_mavlink(m)
+                    if mpstate is None:
+                        return
+                    continue
+
+            for sysid in mpstate.sysid_outputs:
+                m = mpstate.sysid_outputs[sysid]
+                if fd == m.fd:
+                    process_mavlink(m)
+                    if mpstate is None:
+                        return
+                    continue
+
         # this allow modules to register their own file descriptors
         # for the main select loop
-        if fd in mpstate.select_extra:
-            try:
+            if fd in mpstate.select_extra:
+                try:
                 # call the registered read function
-                (fn, args) = mpstate.select_extra[fd]
-                fn(args)
-            except Exception as msg:
-                if mpstate.settings.moddebug == 1:
-                    print(msg)
+                    (fn, args) = mpstate.select_extra[fd]
+                    fn(args)
+                except Exception as msg:
+                    if mpstate.settings.moddebug == 1:
+                        print(msg)
                 # on an exception, remove it from the select list
-                mpstate.select_extra.pop(fd)
-            ########################## Jorge Cano CODE ##########################
+                    mpstate.select_extra.pop(fd)
 
-        Rollvalue = mpstate.status.msgs['ATTITUDE'].roll    #rad
-        Pitchvalue = mpstate.status.msgs['ATTITUDE'].pitch  #rad
-        Yawvalue = mpstate.status.msgs['ATTITUDE'].yaw      #rad
+        ########################## Jorge Cano CODE ##########################
+
+            Rollvalue = mpstate.status.msgs['ATTITUDE'].roll    #rad
+            Pitchvalue = mpstate.status.msgs['ATTITUDE'].pitch  #rad
+            Yawvalue = mpstate.status.msgs['ATTITUDE'].yaw      #rad
 
         # ESTIMATED: fused GPS and accelerometers
-        PoseLatLonHei = {}
-        PoseLatLonHei['lat'] = math.radians((mpstate.status.msgs['GLOBAL_POSITION_INT'].lat)/1E7)    #rad
-        PoseLatLonHei['lon'] = math.radians((mpstate.status.msgs['GLOBAL_POSITION_INT'].lon)/1E7)    #rad
-        PoseLatLonHei['hei'] = (mpstate.status.msgs['GLOBAL_POSITION_INT'].relative_alt)/1000   #meters
+            PoseLatLonHei = {}
+            PoseLatLonHei['lat'] = math.radians((mpstate.status.msgs['GLOBAL_POSITION_INT'].lat)/1E7)    #rad
+            PoseLatLonHei['lon'] = math.radians((mpstate.status.msgs['GLOBAL_POSITION_INT'].lon)/1E7)    #rad
+            PoseLatLonHei['hei'] = (mpstate.status.msgs['GLOBAL_POSITION_INT'].relative_alt)/1000   #meters
 
-        PH_quat = quaternion.Quaternion([Rollvalue, Pitchvalue, Yawvalue])
-        PH_xyz = global2cartesian(PoseLatLonHei)
+            PH_quat = quaternion.Quaternion([Rollvalue, Pitchvalue, Yawvalue])
+            PH_xyz = global2cartesian(PoseLatLonHei)
 
-        #print PH_quat
-        #print PH_xyz
+            #print (PH_quat)
+            #print (PH_xyz)
 
-        data = jderobot.Pose3DData()
-        data.x = PH_xyz['x']
-        data.y = PH_xyz['y']
-        data.z = PH_xyz['z']
-        data.h = 1
-        data.q0 = PH_quat.__getitem__(0)
-        data.q1 = PH_quat.__getitem__(1)
-        data.q2 = PH_quat.__getitem__(2)
-        data.q3 = PH_quat.__getitem__(3)
-
-        PH_Pose3D.setPose3DData(data)
+            data = jderobot.Pose3DData()
+            data.x = PH_xyz['x']
+            data.y = PH_xyz['y']
+            data.z = PH_xyz['z']
+            data.h = 1
+            data.q0 = PH_quat.__getitem__(0)
+            data.q1 = PH_quat.__getitem__(1)
+            data.q2 = PH_quat.__getitem__(2)
+            data.q3 = PH_quat.__getitem__(3)
+            #print(data)
+            PH_Pose3D.setPose3DData(data)
 
         #####################################################################
 
@@ -926,11 +939,11 @@ def openPose3DChannel(Pose3D):
     status = 0
     ic = None
     Pose2Tx = Pose3D #Pose3D.getPose3DData()
+    #print(Pose3D)
     try:
         ic = Ice.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("Pose3DAdapter", "default -p 9998")
         object = Pose2Tx
-        #print (object.getPose3DData())
         adapter.add(object, ic.stringToIdentity("Pose3D"))
         adapter.activate()
         ic.waitForShutdown()
@@ -957,7 +970,7 @@ def openPose3DChannelWP(Pose3D):
         ic = Ice.initialize(sys.argv)
         adapter = ic.createObjectAdapterWithEndpoints("Pose3DAdapter", "default -p 9994")
         object = Pose2Rx
-        #print object.getPose3DData()
+        #print (object.getPose3DData())
         adapter.add(object, ic.stringToIdentity("Pose3D"))
         adapter.activate()
         ic.waitForShutdown()
@@ -1067,16 +1080,24 @@ def sendCMDVel2Vehicle(CMDVel,Pose3D):
 
         CMDVel2send = CMDVel.getCMDVelData()
         Pose3D2send = Pose3D.getPose3DData()
-        print(Pose3D2send)
+        #print(Pose3D2send)
         NEDvel = body2NED(CMDVel2send, Pose3D2send) # [x,y,z]
         linearXstring = str(NEDvel[0])
         linearYstring = str(NEDvel[1])
         linearZstring = str(NEDvel[2])
-        angularZstring = str(CMDVel.angularZ*180/math.pi)
+
+        angular = Pose3D2send.q3 + CMDVel.angularZ
+        if angular > 1:
+            angular = angular - 2
+        elif angular < -1:
+            angular = angular + 2
+        angularZstring = str(angular*180)
+
         velocitystring = 'velocity '+ linearXstring + ' ' + linearYstring + ' ' + linearZstring
         angularString = 'setyaw ' + angularZstring + ' 1 0'
+
         process_stdin(velocitystring)  # SET_POSITION_TARGET_LOCAL_NED
-        #process_stdin(angularString)
+        process_stdin(angularString)
 
 def sendWayPoint2Vehicle(Pose3D):
 
@@ -1155,26 +1176,26 @@ def cartesian2global(poseXYZ):
 def body2NED(CMDVel, Pose3D):
 
 
-    q1 = [0, CMDVel.linearX, CMDVel.linearY, CMDVel.linearZ]
-    q2 = [Pose3D.q0, Pose3D.q1, Pose3D.q2, Pose3D.q3]
+    #q1 = [0, CMDVel.linearX, CMDVel.linearY, CMDVel.linearZ]
+    #q2 = [Pose3D.q0, Pose3D.q1, Pose3D.q2, Pose3D.q3]
 
-    q1 = qNormal(q1)
-    q2 = qNormal(q2)
+    #q1 = qNormal(q1)
+    #q2 = qNormal(q2)
 
-    #rotation = q2*q1*q2'
+    ##rotation = q2*q1*q2'
 
-    q2inverse = qInverse(q2)
-    qtempotal = qMultiply(q1,q2inverse)
-    q = qMultiply(q2,qtempotal)
+    #q2inverse = qInverse(q2)
+    #qtempotal = qMultiply(q1,q2inverse)
+    #q = qMultiply(q2,qtempotal)
 
-    rotatedVector = q[1:len(q)] #obtain [q1,q2,q3]
+    #rotatedVector = q[1:len(q)] #obtain [q1,q2,q3]
 
-    return rotatedVector
+    #return rotatedVector
 
-     #q0 = Pose3D.q0
-     #q1 = Pose3D.q1
-     #q2 = Pose3D.q2
-     #q3 = Pose3D.q3
+     q0 = Pose3D.q0
+     q1 = Pose3D.q1
+     q2 = Pose3D.q2
+     q3 = Pose3D.q3
 
      # obtain eulers from quaternion TO BE IMPROVED!!!!!!!!!!!
 
@@ -1184,21 +1205,21 @@ def body2NED(CMDVel, Pose3D):
 
      # Body velocity (x,y,z)
 
-     #bvx = CMDVel.linearX
-     #bvy = CMDVel.linearY
-     #bvz = CMDVel.linearZ
+     bvx = CMDVel.linearX
+     bvy = CMDVel.linearY
+     bvz = CMDVel.linearZ
 
-     #NEDvel = [0,0,0] #[x,y,z]
+     NEDvel = [0,0,0] #[x,y,z]
 
      #NEDvel[0] = bvx * math.cos(pitch)*math.cos(yaw)   + bvy * (math.sin(roll)*math.sin(pitch)*math.cos(yaw) - math.cos(roll)*math.sin(yaw))   + bvz * (math.cos(roll)*math.sin(pitch)*math.cos(yaw) + math.sin(roll)*math.sin(yaw))
      #NEDvel[1] = bvx * math.cos(pitch)*math.sin(yaw)   + bvy * (math.sin(roll)*math.sin(pitch)*math.sin(yaw) + math.cos(roll)*math.cos(yaw))   + bvz * (math.cos(roll)*math.sin(pitch)*math.sin(yaw) - math.sin(roll)*math.cos(yaw))
      #NEDvel[2] = -bvx * math.sin(pitch)                + bvy * (math.sin(roll)*math.cos(pitch))                                                + bvz * (math.cos(roll)*math.cos(pitch))
 
-     #NEDvel[0]=bvx
-     #NEDvel[1]=bvy
-     #NEDvel[2]=bvz
+     NEDvel[0]=bvx
+     NEDvel[1]=bvy
+     NEDvel[2]=bvz
 
-     #return NEDvel
+     return NEDvel
 
 def qMultiply (q1,q2):
 
@@ -1521,7 +1542,8 @@ if __name__ == '__main__':
     time_end_operation_takeoff = 10000000000000000000
     print("Variables a false")
     # run main loop as a thread
-    mpstate.status.thread = threading.Thread(target=listener_loop, name='listener_loop')
+
+    mpstate.status.thread = threading.Thread(target=main_loop, name='main_loop')
     mpstate.status.thread.daemon = True
     mpstate.status.thread.start()
 
