@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project(jderobotInterfaces)
+
 set(SLICE_NEW_STYLE "ON")
 if (NOT DEFINED SLICE_NEW_STYLE)
 
@@ -121,3 +124,31 @@ endif()
 set(ice_interfaces_INCLUDE_DIRS "${SLICE_CPP_DIR}" CACHE PATH "Find(ice_interfaces)")
 
 endif(NOT DEFINED SLICE_NEW_STYLE)
+
+
+###################
+#                 #
+#    INSTALL      #
+#                 #
+###################
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
+
+# Install python files
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_BINARY_DIR}/python/*py)
+FOREACH(header ${HEADERS_FILES})
+    INSTALL(FILES ${header} DESTINATION ${PYTHON_MODULE_PATH}/ COMPONENT core)
+ENDFOREACH(header)
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/python/jderobot/__init__.py DESTINATION ${PYTHON_MODULE_PATH}/jderobot/ COMPONENT core)
+
+# Install interfaces headers
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cpp/jderobot/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot
+    COMPONENT core
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
+
+# Install slice
+FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/slice/jderobot/*.ice)
+INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT core)

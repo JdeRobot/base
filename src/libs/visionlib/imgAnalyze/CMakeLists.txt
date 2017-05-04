@@ -8,3 +8,9 @@ install(TARGETS imgAnalyze
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+install( FILES ${HEADERS_FILES}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visionlib/imgAnalyze
+    COMPONENT core
+)
