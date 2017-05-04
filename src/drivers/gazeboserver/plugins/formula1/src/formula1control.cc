@@ -41,13 +41,9 @@ Formula1Control::~Formula1Control(){}
 void
 Formula1Control::Load(ModelPtr model, sdf::ElementPtr _sdf){
 
-    std::cout<< "1"<< std::endl;
-
     this->model = model;
     this->node = NodePtr(new Node());
     this->node->Init(this->model->GetWorld()->GetName());
-
-    std::cout<< "2"<< std::endl;
 
     if (!_sdf->HasElement("drive_right_joint"))
         gzerr << "motors plugin missing <drive_right_joint> element\n";
@@ -69,8 +65,6 @@ Formula1Control::Load(ModelPtr model, sdf::ElementPtr _sdf){
     this->steeringRightJoint = model->GetJoint(
         _sdf->GetElement("steering_right_joint")->Get<std::string>());
 
-    std::cout<< "4"<< std::endl;
-
     if (!this->driveLeftJoint)
         gzerr << "Unable to find drive left joint["
             << _sdf->GetElement("drive_left_joint")->Get<std::string>() << "]\n";
@@ -83,8 +77,6 @@ Formula1Control::Load(ModelPtr model, sdf::ElementPtr _sdf){
     if (!this->steeringRightJoint)
         gzerr << "Unable to find steering right joint["
             << _sdf->GetElement("steering_right_joint")->Get<std::string>() << "]\n";
-    std::cout<< "5"<< std::endl;
-
 }
 
 void
@@ -144,8 +136,6 @@ Formula1Control::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
             {
                 this->steeringLeftJoint->SetForce(0,robotMotors.targetLeftSteerPos);
                 this->steeringRightJoint->SetForce(0,robotMotors.targetRightSteerPos);
-                std::cout << "steering left " << robotMotors.targetLeftSteerPos << std::endl;
-                std::cout << "steering right " << robotMotors.targetRightSteerPos << std::endl;
             }
 
             pthread_mutex_unlock(&mutex);
