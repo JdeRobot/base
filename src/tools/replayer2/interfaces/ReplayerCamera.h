@@ -6,8 +6,8 @@
 #define JDEROBOT_REPLAYERCAMERA_H
 
 
-#include <jderobotutil/CameraHandler.h>
-#include <jderobotutil/CameraTask.h>
+#include <jderobotutil/interfaceHandlers/CameraHandler.h>
+#include <jderobotutil/interfaceHandlers/CameraTask.h>
 #include <jderobot/logger/Logger.h>
 #include <utils/SyncController.h>
 #include <opencv2/imgcodecs.hpp>

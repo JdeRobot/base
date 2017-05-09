@@ -44,8 +44,8 @@
 
 #include <zlib.h>
 #include <logger/Logger.h>
-#include <jderobotutil/CameraHandler.h>
-#include <jderobotutil/CameraTask.h>
+#include <jderobotutil/interfaceHandlers/CameraHandler.h>
+#include <jderobotutil/interfaceHandlers/CameraTask.h>
 #include <ns/ns.h>
 
 #include "easyiceconfig/EasyIce.h" 

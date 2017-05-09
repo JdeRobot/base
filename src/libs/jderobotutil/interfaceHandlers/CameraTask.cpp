@@ -11,8 +11,7 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <logger/Logger.h>
 #include <iomanip>
-
-
+#include <jderobotutil/utils/CameraUtils.h>
 
 
 namespace jderobot {
@@ -105,29 +104,18 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
         LOG(ERROR) << "Error, image with FORMAT_RGB8_Z must have 3 channels";
         return;
     }
-    unsigned long source_len = image.rows*image.cols*3;
-    unsigned long compress_len = compressBound(source_len);
-    reply->pixelData.resize(compress_len);
-    unsigned char* compress_buf = (unsigned char *) malloc(compress_len);
 
-    int r = compress((Bytef *) compress_buf, (uLongf *) &compress_len, (const Bytef *) &(image.data[0]), (uLong)source_len );
 
-    if(r != Z_OK) {
-      LOG(ERROR) << "Compression Error";
-      switch(r) {
-        case Z_MEM_ERROR:
-          LOG(ERROR) << "Compression Error: Not enough memory to compress";
-          break;
-        case Z_BUF_ERROR:
-          LOG(ERROR) << "Compression Error: Target buffer too small.";
-          break;
-        case Z_STREAM_ERROR:
-          LOG(ERROR) << "Compression Error: Invalid compression level.";
-          break;
-      }
+    unsigned char* compress_buf;
+    unsigned long compress_len;
+
+
+    if(CameraUtils::compressImage(image,compress_buf,compress_len)) {
+      LOG(ERROR) << "Error compressing image";
     }
     else
     {
+      reply->pixelData.resize(compress_len);
       reply->description->format = colorspaces::ImageRGB8::FORMAT_RGB8_Z.get()->name;
       memcpy(&(reply->pixelData[0]),  &(compress_buf[0]), compress_len);
 

@@ -153,3 +153,29 @@ std::string CameraUtils::negotiateDefaultFormat(jderobot::CameraPrx prx, const s
     LOG(INFO) << "Negotiated format " + format + " for camera " + prx->getCameraDescription()->name;
     return format;
 }
+
+bool CameraUtils::compressImage(const cv::Mat &image, unsigned char *compressed_data,unsigned long& compress_len) {
+    unsigned long source_len = image.rows*image.cols*3;
+    compress_len = compressBound(source_len);
+    compressed_data = (unsigned char *) malloc(compress_len);
+
+    int r = compress((Bytef *) compressed_data, (uLongf *) &compress_len, (const Bytef *) &(image.data[0]), (uLong)source_len );
+
+    if(r != Z_OK) {
+        LOG(WARNING) << "Compression Error";
+        switch(r) {
+            case Z_MEM_ERROR:
+                LOG(ERROR) << "Compression Error: Not enough memory to compress";
+                break;
+            case Z_BUF_ERROR:
+                LOG(ERROR) << "Compression Error: Target buffer too small.";
+                break;
+            case Z_STREAM_ERROR:
+                LOG(ERROR) << "Compression Error: Invalid compression level.";
+                break;
+        }
+        return false;
+    }
+    return true;
+}
+
