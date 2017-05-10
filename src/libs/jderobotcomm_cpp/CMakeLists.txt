@@ -29,7 +29,7 @@ include_directories(
     ${LIBS_DIR}
     ${catkin_INCLUDE_DIRS}
     ${roscpp_INCLUDE_DIRS}
-    ${ice_interfaces_INCLUDE_DIRS}
+    ${INTERFACES_CPP_DIR}
 )
 
 
@@ -84,12 +84,25 @@ ENDIF()
 
 ## Adding shared library for common usage
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} colorspacesmm JderobotInterfaces ${catkin_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} 
+    ${Ice_LIBRARIES} 
+    logger 
+    ${Boost_LIBRARIES} 
+    colorspacesmm 
+    ${catkin_LIBRARIES})
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
 add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME}-embedded ${Ice_LIBRARIES} logger ${Boost_LIBRARIES} colorspacesmm JderobotInterfaces)
+
+target_link_libraries(${PROJECT_NAME}-embedded 
+    ${Ice_LIBRARIES} 
+    logger 
+    ${Boost_LIBRARIES} 
+    colorspacesmm 
+    JderobotInterfaces
+    ${catkin_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 

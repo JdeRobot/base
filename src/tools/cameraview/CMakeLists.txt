@@ -39,7 +39,8 @@ TARGET_LINK_LIBRARIES(cameraview
     ${catkin_LIBRARIES}
     ${jderobotcomm_LIBRARIES}
 		${GLOG_LIBRARIES}
-
+    JderobotInterfaces
+        jderobotutil
 		)
 
 install(TARGETS cameraview
