@@ -5,6 +5,7 @@
 #include "RGBDServer.h"
 #include <jderobot/logger/Logger.h>
 #include <jderobotutil/utils/CameraUtils.h>
+#include <visionlib/colorspaces/imagecv.h>
 
 
 namespace openniServer {
@@ -71,6 +72,7 @@ namespace openniServer {
             jderobot::rgbData temporalData;
             temporalData.color = CameraUtils::convert(rgb);
             temporalData.depth = CameraUtils::convert(depth);
+
             this->stableData= temporalData;
             this->mutex.unlock();
 
