@@ -19,8 +19,9 @@ class ConcurrentDevice:public IceUtil::Thread {
 public:
     ConcurrentDevice(int fps,int cameraIdx, DeviceConfig config, const cv::Size& size);
     ~ConcurrentDevice();
-    cv::Mat getRGBImage();
-    cv::Mat getDepthImage();
+    cv::Mat getRGBImage(bool withlock=true);
+    cv::Mat getDepthImage(bool withlock=true);
+    void getSyncData(cv::Mat& rgb, cv::Mat& depth);
     void getDistances(std::vector<int>& distances);
     virtual void run();
     void stop();

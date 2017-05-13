@@ -72,6 +72,14 @@ ConcurrentDevice::ConcurrentDevice(int fps, int cameraIdx, DeviceConfig config, 
     cycle=(float)(1/(float)fps)*1000000;
 
 
+
+    openni::Status rc = g_device.setDepthColorSyncEnabled(true);
+    if (rc != openni::STATUS_OK)
+    {
+        LOG(ERROR) << "Can't frame sync";
+        return;
+    }
+
     LOG(INFO) << "Device initialized";
     return;
 
@@ -325,9 +333,10 @@ int ConcurrentDevice::openCommon()
     return 0;
 }
 
-cv::Mat ConcurrentDevice::getDepthImage() {
+cv::Mat ConcurrentDevice::getDepthImage(bool withlock) {
     openni::DepthPixel *depthPixels;
-    this->mutex.lock();
+    if (withlock)
+        this->mutex.lock();
     bool validFrame=false;
     if (g_depthFrame.isValid())
     {
@@ -336,7 +345,8 @@ cv::Mat ConcurrentDevice::getDepthImage() {
         memcpy(depthPixels, g_depthFrame.getData(),
                g_depthFrame.getHeight() * g_depthFrame.getWidth() * sizeof(openni::DepthPixel));
     }
-    this->mutex.unlock();
+    if (withlock)
+        this->mutex.unlock();
     if (validFrame) {
 
         cv::Mat depthImage = OpenCVConverter::convertDepthToCVMat((const openni::DepthPixel *) depthPixels,
@@ -358,17 +368,18 @@ cv::Mat ConcurrentDevice::getDepthImage() {
     }
 }
 
-cv::Mat ConcurrentDevice::getRGBImage() {
+cv::Mat ConcurrentDevice::getRGBImage(bool withlock) {
     openni::RGB888Pixel *rgbPixels;
     bool validFrame=false;
-    this->mutex.lock();
+    if (withlock)
+        this->mutex.lock();
     if (g_colorFrame.isValid()) {
         validFrame=true;
         rgbPixels = new openni::RGB888Pixel[g_colorFrame.getHeight() * g_colorFrame.getWidth()];
-        memcpy(rgbPixels, g_colorFrame.getData(),
-               g_colorFrame.getHeight() * g_colorFrame.getWidth() * sizeof(openni::RGB888Pixel));
+        memcpy(rgbPixels, g_colorFrame.getData(), g_colorFrame.getHeight() * g_colorFrame.getWidth() * sizeof(openni::RGB888Pixel));
     }
-    this->mutex.unlock();
+    if (withlock)
+        this->mutex.unlock();
 
     if (validFrame) {
         cv::Mat colorImage = OpenCVConverter::convertRGBToCVMat((const openni::RGB888Pixel *) rgbPixels,
@@ -440,5 +451,12 @@ DeviceConfig ConcurrentDevice::getConfig() {
 
 VideoMode ConcurrentDevice::getVideoMode() {
     return this->videoMode;
+}
+
+void ConcurrentDevice::getSyncData(cv::Mat &rgb, cv::Mat &depth) {
+    this->mutex.lock();
+    rgb=this->getRGBImage(false);
+    depth=this->getDepthImage(false);
+    this->mutex.unlock();
 }
 

@@ -110,7 +110,7 @@ void CameraTask::sendImage(jderobot::AMD_ImageProvider_getImageDataPtr cb, std::
     unsigned long compress_len;
 
 
-    if(CameraUtils::compressImage(image,compress_buf,compress_len)) {
+    if(!CameraUtils::compressImage(image,&compress_buf,compress_len)) {
       LOG(ERROR) << "Error compressing image";
     }
     else
