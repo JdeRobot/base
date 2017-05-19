@@ -844,6 +844,19 @@
                                 <property name="position">2</property>
                               </packing>
                             </child>
+                                                        <child>
+                                                          <widget class="GtkToggleButton" id="tg_RealDistance">
+                                                            <property name="label" translatable="yes">Real Distance</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                          </packing>
+                                                        </child>
                           </widget>
                           <packing>
                             <property name="expand">True</property>
