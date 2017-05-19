@@ -7,7 +7,7 @@
 
 
 #include <jderobot/pointcloud.h>
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include "SyncTask.h"
 #include <Ice/Ice.h>
 #include <utils/SyncController.h>

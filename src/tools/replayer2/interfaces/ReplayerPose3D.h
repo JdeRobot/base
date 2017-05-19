@@ -6,7 +6,7 @@
 #define JDEROBOT_REPLAYERPOSE3D_H
 
 
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include "SyncTask.h"
 #include <jderobot/pose3d.h>
 #include <Ice/Ice.h>

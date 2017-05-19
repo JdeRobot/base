@@ -8,7 +8,7 @@
 
 #include <jderobotutil/interfaceHandlers/CameraHandler.h>
 #include <jderobotutil/interfaceHandlers/CameraTask.h>
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include <utils/SyncController.h>
 #include <opencv2/imgcodecs.hpp>
 #include "SyncTask.h"

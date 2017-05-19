@@ -3,7 +3,6 @@
 //
 
 #include "RGBDServer.h"
-#include <jderobot/logger/Logger.h>
 #include <jderobotutil/utils/CameraUtils.h>
 #include <visionlib/colorspaces/imagecv.h>
 

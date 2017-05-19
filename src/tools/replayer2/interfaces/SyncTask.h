@@ -8,7 +8,7 @@
 
 #include <IceUtil/Thread.h>
 #include <fstream>
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 
 namespace  replayer {
 

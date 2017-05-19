@@ -5,7 +5,7 @@
 #ifndef JDEROBOT_REPLAYERPOSE3DENCODERS_H
 #define JDEROBOT_REPLAYERPOSE3DENCODERS_H
 
-#include <jderobot/logger/Logger.h>
+#include <logger/Logger.h>
 #include "SyncTask.h"
 #include <jderobot/pose3dencoders.h>
 #include <Ice/Ice.h>
