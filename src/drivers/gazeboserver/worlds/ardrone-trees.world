@@ -27,19 +27,20 @@
       <pose>-5 6 0.001 0 0 1.57</pose>
       <uri>model://logoURJC</uri>
     </include>
-
-
-    <!-- A global light source -->
+    
+       <!-- Black ArDrone -->
     <include>
+      <name>ardrone-black</name>
       <uri>model://ArDrone2</uri>
       <pose>0 0 0.1 0 0 0</pose>
     </include>
 
-    <!-- A global light source -->
+    <!-- Red ArDrone -->
     <include>
+      <name>ardrone-red</name>
       <uri>model://RedArDrone2</uri>
       <pose>2 0 0.1 0 0 0</pose>
-    </include>
+     </include>
 
     <!-- A ground plane -->
     <include>
