@@ -31,12 +31,14 @@
 
    <!-- A global light source -->
     <include>
+      <name>ardrone-black</name>
       <uri>model://ArDrone2</uri>
       <pose>0 0 0.1 0 0 0</pose>
     </include>
 
     <!-- A global light source -->
     <include>
+      <name>ardrone-red</name>
       <uri>model://RedArDrone2</uri>
       <pose>2 0 0.1 0 0 0</pose>
     </include>

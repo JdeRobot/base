@@ -113,6 +113,14 @@
    
 }
 
+.padding-left0{
+  padding-left: 0;
+}
+
+.padding-right0{
+  padding-right: 0;
+}
+
 @media (max-width: 767px) {
   
 }

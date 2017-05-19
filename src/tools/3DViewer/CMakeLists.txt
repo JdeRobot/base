@@ -34,4 +34,16 @@ IF (with_pcl)
 			${CMAKE_THREAD_LIBS_INIT}
 			${GLOG_LIBRARIES}
 			)
+
+	install(TARGETS 3DViewer
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+	)
+
+	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/3DViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
+
+
+
+
+

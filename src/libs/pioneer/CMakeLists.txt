@@ -9,3 +9,8 @@ install(TARGETS pioneer pioneershare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+install( FILES pioneer.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/pioneer/
+    COMPONENT core
+)

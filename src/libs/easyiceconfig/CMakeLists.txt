@@ -70,7 +70,7 @@ target_link_libraries(test_loader ${PROJECT_NAME} ${Ice_LIBRARIES})
 
 
 ### Install
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-embedded
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
