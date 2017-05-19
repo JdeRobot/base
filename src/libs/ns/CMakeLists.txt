@@ -22,3 +22,8 @@ install(TARGETS ns
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+install( FILES ns.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/ns/
+    COMPONENT core
+)

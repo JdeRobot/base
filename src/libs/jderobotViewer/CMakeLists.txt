@@ -20,5 +20,10 @@ if (with_pcl)
     install(TARGETS jderobotViewer jderobotViewerShare
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
         COMPONENT core
+        )
+
+    install( FILES JderobotViewer.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/jderobotViewer/
+    COMPONENT core
 )
 endif()

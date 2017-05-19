@@ -21,3 +21,16 @@ install(TARGETS jderobotHandlers jderobotHandlersshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+
+FILE(GLOB_RECURSE HANDLERS_HEADERS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h)
+
+install( FILES common/CommonHandler.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/jderobotHandlers/common/
+    COMPONENT core
+)
+
+install( FILES ReplayControlerClientHDL.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/jderobotHandlers/
+    COMPONENT core
+)
+
