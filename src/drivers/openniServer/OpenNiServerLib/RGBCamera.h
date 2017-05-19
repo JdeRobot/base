@@ -5,8 +5,8 @@
 #ifndef JDEROBOT_RGBCAMERA_DEVICE_H
 #define JDEROBOT_RGBCAMERA_DEVICE_H
 
-#include <jderobotutil/CameraHandler.h>
-#include <jderobotutil/CameraTask.h>
+#include <jderobotutil/interfaceHandlers/CameraHandler.h>
+#include <jderobotutil/interfaceHandlers/CameraTask.h>
 #include <opencv2/videoio.hpp>
 #include <opencv2/videoio/videoio_c.h>
 #include "ConcurrentDevice.h"

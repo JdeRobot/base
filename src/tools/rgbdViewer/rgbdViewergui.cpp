@@ -25,6 +25,7 @@
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <resourcelocator/gladelocator.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace rgbdViewer {
 rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
@@ -184,8 +185,8 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
         cv::split(imageDEPTH, layers);
 
         cv::cvtColor(layers[0],colorDepth,CV_GRAY2RGB);
-        /*cv::imshow("color", colorDepth);
-        cv::waitKey(1);*/
+//        cv::imshow("color", colorDepth);
+//        cv::waitKey(1);
 
         this->m_distance.lock();
         for (int x=0; x< layers[1].cols ; x++) {

@@ -5,7 +5,7 @@
  *      Author: frivas
  */
 
-#include <jderobotutil/CameraHandler.h>
+#include <jderobotutil/interfaceHandlers/CameraHandler.h>
 
 namespace jderobot {
 
@@ -25,7 +25,7 @@ CameraHandler::CameraHandler(std::string propertyPrefix, Ice::CommunicatorPtr ic
 
       //fill imageDescription
       imageDescription->width = prop->getPropertyAsIntWithDefault(prefix+"ImageWidth",340);
-      imageDescription->height = prop->getPropertyAsIntWithDefault(prefix+"ImageHeight",280);
+      imageDescription->height = prop->getPropertyAsIntWithDefault(prefix+"ImageHeight",240);
 
 
 }

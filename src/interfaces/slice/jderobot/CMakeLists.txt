@@ -32,6 +32,10 @@ FOREACH(currentSourceFile ${ICE_FILES})
 			WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../../cpp/jderobot/
 	)
 
+	message(COMMAND slice2cpp -I${CMAKE_CURRENT_LIST_DIR}/.. -I${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/${new_source}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../../cpp/jderobot/
+			)
+
   # Python
 	execute_process(COMMAND slice2py -I${CMAKE_CURRENT_LIST_DIR}/.. -I${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/${new_source} --output-dir ${CMAKE_CURRENT_LIST_DIR}/../../python/ INPUT_FILE ${currentSourceFile})
 
