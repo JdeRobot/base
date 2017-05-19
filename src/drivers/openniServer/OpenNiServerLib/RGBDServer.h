@@ -8,6 +8,7 @@
 #include <Ice/Ice.h>
 #include "ConcurrentDevice.h"
 #include <jderobot/rgbd.h>
+#include <logger/Logger.h>
 
 
 namespace openniServer {
