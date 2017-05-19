@@ -58,3 +58,7 @@ install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
     COMPONENT core
 )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/resourcelocator/gladelocator.hpp
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/resourcelocator/
+    COMPONENT core
+)

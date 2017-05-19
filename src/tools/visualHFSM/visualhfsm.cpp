@@ -956,6 +956,17 @@ void VisualHFSM::on_menubar_clicked_new () {
     this->clearTreeView();
     this->removeAllSubautomata();
     this->filepath = std::string("");
+
+    // create new subautomata and reset indexes
+    this->id = 1;
+    GuiSubautomata guisub(id, 0);
+    guisub.setTime(TIME_DEFAULT);
+    this->subautomataList.push_back(guisub);
+    this->currentSubautomata = this->getSubautomata(id);
+    this->id++;
+
+    this->idguinode = 1;
+    this->idguitransition = 1;
 }
 
 // Open an automata previously saved

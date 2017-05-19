@@ -38,6 +38,7 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${jderobottypes_INCLUDE_DIRS}
         ${jderobotcomm_INCLUDE_DIRS}
         ${roscpp_INCLUDE_DIRS}
+        ${ZLIB_INCLUDE_DIRS}
     )
 
     link_directories(${JDE_LIBS}
@@ -57,13 +58,19 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${easyiceconfig_LIBRARIES}
         ${jderobotcomm_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
-        ${Ice_LIBRARIES}
-		${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
         JderobotInterfaces
         jderobotutil
         ${catkin_LIBRARIES}
-            ${GLOG_LIBRARIES}
-
+        ${GLOG_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+        colorspacesmm
             )
+    install(TARGETS kobukiViewer
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT tools
+    )
+
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
+
 

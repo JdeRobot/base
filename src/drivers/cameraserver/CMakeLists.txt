@@ -17,9 +17,9 @@ link_directories(
 add_executable (cameraserver ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(cameraserver
-    jderobotutil
+    	jderobotutil
 	${OpenCV_LIBRARIES}       
-    ${OpenCVGUI_LIBRARIES} 
+    	${OpenCVGUI_LIBRARIES} 
 	colorspacesmm
 	JderobotInterfaces
 	${easyiceconfig_LIBRARIES} 
@@ -27,7 +27,14 @@ TARGET_LINK_LIBRARIES(cameraserver
 	${CMAKE_THREAD_LIBS_INIT} 
 	${ZLIB_LIBRARIES}
 	logger
-    crypto
-    ns
-    ${GLOG_LIBRARIES}
-)
+    	crypto
+	ns
+	${GLOG_LIBRARIES}
+	)
+
+install(TARGETS cameraserver
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT drivers
+    )
+    
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraserver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

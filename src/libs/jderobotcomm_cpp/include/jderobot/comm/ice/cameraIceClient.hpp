@@ -31,6 +31,7 @@
 #include <jderobot/types/image.h>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
 #include <zlib.h>
+#include <jderobotutil/CameraUtils.h>
 
 namespace JdeRobotComm {
 
