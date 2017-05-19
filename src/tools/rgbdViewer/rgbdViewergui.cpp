@@ -337,8 +337,6 @@ bool rgbdViewergui::on_clicked_event_rgb(GdkEventButton* event) {
 		//d=d*10;
 		float xp,yp,zp,camx,camy,camz;
 		float ux,uy,uz;
-		float x,y;
-		float k;
 		float c1x, c1y, c1z;
 		float fx,fy,fz;
 		float fmod;

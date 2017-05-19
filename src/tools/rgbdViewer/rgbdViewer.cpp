@@ -103,7 +103,7 @@ void *gui_thread(void* arg){
  */
 int main(int argc, char** argv){
 
-	int status,i;
+	int i;
 	Ice::CommunicatorPtr ic;
 	int n_components=0;
 	pthread_t threads[MAX_COMPONENTS];
@@ -116,8 +116,7 @@ int main(int argc, char** argv){
 	bool rgbCamSelected=false;
 	bool depthCamSelected=false;
 	bool pointCloudSelected=false;
-	int globalWidth;
-	int globalHeight;
+
 
 	
 
@@ -223,5 +222,5 @@ int main(int argc, char** argv){
 	std::cout << "final" << std::endl;
 	if (ic)
 		ic->destroy();
-	return status;
+	return 0;
 }

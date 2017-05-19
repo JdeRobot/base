@@ -12,7 +12,7 @@ namespace replayer {
 
 const std::string gladepath = resourcelocator::findGladeFile("replayergui.glade");
 
-replayergui::replayergui(control* c): gtkmain(0,0) {
+replayergui::replayergui(SyncController* c): gtkmain(0,0) {
 	// TODO Auto-generated constructor stub
 
 	this->controller=c;

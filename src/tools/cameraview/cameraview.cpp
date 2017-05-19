@@ -30,7 +30,6 @@
 
 int main(int argc, char** argv){
 
-	int status;
 	cameraview::Viewer viewer;
 	Ice::CommunicatorPtr ic;
 
@@ -50,5 +49,5 @@ int main(int argc, char** argv){
 		viewer.displayFrameRate(0);
 	}
 
-	return status;
+	return 0;
 }
