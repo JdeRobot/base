@@ -51,6 +51,6 @@ set_target_properties(roombaplugin PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
     
 INSTALL (TARGETS roombaplugin DESTINATION share/jderobot/gazebo/plugins/roomba/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/roomba/ COMPONENT core)
+INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
 
 #MIO endif()

@@ -134,6 +134,7 @@ class CmdlongModule(mp_module.MPModule):
             angular_speed = float(args[1])
             angle_mode = float(args[2])
             print("ANGLE %s" % (str(angle)))
+
             self.master.mav.command_long_send(
                 self.settings.target_system,  # target_system
                 mavutil.mavlink.MAV_COMP_ID_SYSTEM_CONTROL, # target_component
@@ -168,7 +169,15 @@ class CmdlongModule(mp_module.MPModule):
                 x_mps, y_mps, -z_mps, # x, y, z velocity in m/s
                 0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
                 0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
-
+            #self.master.mav.set_position_target_local_ned_send(
+            #        0,       # time_boot_ms (not used)
+            #        0, 0,    # target system, target component
+            #        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+            #        0b0000111111000111, # type_mask (only speeds enabled)
+            #        0, 0, 0, # x, y, z positions (not used)
+            #        x_mps, y_mps, -z_mps, # x, y, z velocity in m/s
+            #        0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+            #        0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
 
     def cmd_position(self, args):
         '''position x-m y-m z-m'''

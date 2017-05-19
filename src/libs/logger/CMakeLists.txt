@@ -29,4 +29,8 @@ install(TARGETS logger
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
     COMPONENT core
 )
+install( FILES Logger.h
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/logger/
+    COMPONENT core
+)
  

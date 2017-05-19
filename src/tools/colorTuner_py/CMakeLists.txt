@@ -22,3 +22,6 @@ INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/sensors DESTINATION share/jderobo
 
 # Install Filters
 INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/filters DESTINATION share/jderobot/python/colorTuner_py COMPONENT tools PATTERN .svn EXCLUDE)
+
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/colorTuner_py.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)

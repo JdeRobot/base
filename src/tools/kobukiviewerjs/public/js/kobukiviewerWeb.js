@@ -53,6 +53,8 @@ $(document).ready(function() {
       config.laserserv.dir= $('#dirlaser').val();
       config.laserserv.port= $('#portlaser').val();
       config.laserepname= $('#eplaser').val();
+      config.maxv= $('#maxv').val();
+      config.maxw= $('#maxw').val();
       localStorage["kobukiviewer"]=JSON.stringify(config);
 	});
    
@@ -77,6 +79,8 @@ function load(){
       $('#dirlaser').val(config.laserserv.dir);
       $('#portlaser').val(config.laserserv.port);
       $('#eplaser').val(config.laserepname);
+      $('#maxv').val(config.maxv);
+      $('#maxw').val(config.maxw);
      
     } else{
       config.camrightserv={};
@@ -99,5 +103,7 @@ function load(){
       config.laserserv.dir= $('#dirlaser').val();
       config.laserserv.port= $('#portlaser').val();
       config.laserepname= $('#eplaser').val();
+      config.maxv= $('#maxv').val();
+      config.maxw= $('#maxw').val();
     } 
 }

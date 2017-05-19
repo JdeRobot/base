@@ -39,6 +39,10 @@ function KobukiViewer (config){
    this.motorsepname = config.motorsepname || "Motors";
    this.pose3depname = config.pose3depname || "Pose3D";
    this.laserepname = config.laserepname || "Laser";
+
+   this.maxv=config.maxv;
+   this.maxw=config.maxw;
+
    
    
    
@@ -135,12 +139,12 @@ function KobukiViewer (config){
          var pos = control.position;
          
          if (calcDist(pos.x,lastW)>=distSend){
-            motors.setW(pos.x/3);
+            motors.setW(pos.x*this.maxw/control.WIDTH);
             lastW = pos.x;
          }
          
          if (calcDist(pos.z,lastV)>=distSend){
-            motors.setV(pos.z);
+            motors.setV(pos.z*this.maxv/control.HEIGHT);
             lastV = pos.z;
          } 
       };
@@ -249,17 +253,28 @@ function KobukiViewer (config){
     *************************/
    
    this.setConfig = function(conf){
+
+
       this.motorserv=conf.motorserv || this.motorserv;
       this.camleftserv=conf.camleftserv || this.camleftserv;
       this.camrightserv=conf.camrightserv || this.camrightserv;
+      this.pose3dserv=conf.pose3dserv || this.pose3dserv;
+      this.laserserv=conf.laserserv || this.laserserv;
    
       this.camleftid=conf.camleftid || this.camleftid;
       this.camrightid=conf.camrightid || this.camrightid;
       this.controlid=conf.controlid || this.controlid;
+      this.modelid=conf.modelid || this.modelid;
+      this.stopbtnid=conf.stopbtnid || this.stopbtnid;
    
       this.camleftepname=conf.camleftepname || this.camleftepname;
       this.camrightepname= conf.camrightepname || this.camrightepname;
       this.motorsepname = conf.motorsepname || this.motorsepname;
+      this.pose3depname = conf.pose3depname || this.pose3depname;
+      this.laserepname = conf.laserepname || this.laserepname;
+
+      this.maxv=conf.maxv || this.maxv;
+      this.maxw=conf.maxw || this.maxw;
    
    };
    
