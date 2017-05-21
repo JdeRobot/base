@@ -168,7 +168,7 @@ int main(int argc, char** argv){
             sFormat << "Recorder.Camera" << i+1 << ".Format";
             imageFormat = prop->getProperty(sFormat.str());
 			recorder::poolWriteImagesPtr temp = recorder::poolWriteImagesPtr( new recorder::poolWriteImages(cprxAux, Hz,poolSize,i+1,
-                        imageFormat ,fileFormat ,compression_params,baseLogPath,(bufferEnabled == 0)? recorder::poolWriteImages::WRITE_FRAME : recorder::poolWriteImages::SAVE_BUFFER, bufferSeconds, videoMode));
+                        imageFormat ,fileFormat ,compression_params,baseLogPath,(bufferEnabled == 0)? recorder::WRITE_FRAME : recorder::SAVE_BUFFER, bufferSeconds, videoMode));
             manager->addPool(recorder::IMAGES,temp);
 		}
 

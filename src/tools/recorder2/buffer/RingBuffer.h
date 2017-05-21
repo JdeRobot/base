@@ -29,30 +29,81 @@
 
 namespace recorder
 {
-
+    template<typename RingNode>
     class RingBuffer
     {
     public:
-
-        class RingNode
-        {
-        public:
-            long long int relativeTime;
-            cv::Mat frame;
-            int cameraId;
+        struct pthread_create_args{
+            std::vector<RingNode> buffer;
+            std::string logName;
         };
 
-        RingBuffer(long int maxTime);
-        ~RingBuffer();
 
-        bool addNode(RingNode node);
-        void write(std::string nameLog, std::vector<int> compression);
+        RingBuffer(long int maxTime){
+            mMaxBufferTime = maxTime;
+        }
+        ~RingBuffer(){
+            for (auto it = mBuffer.begin(); it < mBuffer.end(); it++ )
+            {
+                it->frame.release();
+            }
 
-        void write_th();
+            mBuffer.clear();
+        }
+
+        bool addNode(RingNode node){
+            mBuffer.push_back(node);
+            return checkBuffer();
+        }
+        void write(std::string nameLog, std::vector<int> compression){
+            mCompression = compression;
+            mNameLog = nameLog;
+
+            mWriteBuffer.resize(mBuffer.size());
+            std::copy( mBuffer.begin(), mBuffer.end(), mWriteBuffer.begin() );
+
+            //std::cout << &(mBuffer[0].frame) << std::endl;
+            //std::cout << &(mWriteBuffer[0].frame) << std::endl;
+
+            pthread_attr_init(&mAttr);
+            pthread_attr_setdetachstate(&mAttr, PTHREAD_CREATE_JOINABLE);
+
+            pthread_create_args args;
+            args.buffer= this->mWriteBuffer;
+            args.logName=nameLog;
+
+            pthread_create(&mThread, &mAttr, write_thread, &args);
+        }
+
 
     private:
 
-        bool checkBuffer();
+        bool checkBuffer(){
+
+            for (auto it = mBuffer.begin(); it < mBuffer.end(); it++ )
+            {
+                auto newer = mBuffer.end()-1;
+                //jderobot::Logger::getInstance()->info("Current: " + boost::lexical_cast<std::string>(it->relativeTime) +
+                //		"  -  Newer: " + boost::lexical_cast<std::string>(newer->relativeTime));
+
+
+                if ( ( newer->relativeTime - it->relativeTime) > mMaxBufferTime )
+                {
+                    it->frame.release();
+                    mBuffer.erase(it);
+                    return true;
+                }
+                else
+                {
+                    //jderobot::Logger::getInstance()->info("Older: " + boost::lexical_cast<std::string>(mBuffer.begin()->relativeTime) +
+                    //			"  -  Newer: " + boost::lexical_cast<std::string>((mBuffer.end()-1)->relativeTime));
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         long int mMaxBufferTime;
         std::vector<RingNode> mBuffer;
@@ -63,6 +114,14 @@ namespace recorder
         pthread_attr_t mAttr;
 
         std::string mNameLog;
+
+        static void *write_thread(void* context){
+            pthread_create_args *args = (struct pthread_create_args *)context;
+
+            RingNode::write(args->logName, args->buffer);
+            pthread_exit(NULL);
+            return NULL;
+        }
 
     };
 

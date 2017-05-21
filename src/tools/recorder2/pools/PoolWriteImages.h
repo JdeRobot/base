@@ -33,6 +33,7 @@
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include <fstream>
 #include <buffer/RingBuffer.h>
+#include <buffer/ImageRingNode.h>
 #include "RecorderPool.h"
 #include "PoolPaths.h"
 
@@ -42,13 +43,6 @@ namespace recorder{
 
 class poolWriteImages: public RecorderPool, public PoolPaths {
 public:
-	enum MODE
-	{
-		WRITE_FRAME = 0,
-		SAVE_BUFFER,
-		WRITE_BUFFER,
-		WRITE_END_LOG
-	};
 
 
     poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,
@@ -74,7 +68,7 @@ private:
 	jderobot::CameraPrx cameraPrx;
 
 	// write log by demand
-	recorder::RingBuffer* mBuffer;
+	recorder::RingBuffer<RingBufferNS::ImageRingNode>* mBuffer;
 	pthread_mutex_t mModeMutex;
 	std::string mNameLog;
 	int mLastSecondsLog;

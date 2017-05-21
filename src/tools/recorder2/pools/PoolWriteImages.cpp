@@ -34,7 +34,7 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
     if (mMode == SAVE_BUFFER)
     {
         LOG(INFO) << "Recorder run as buffer mode, with a buffer = " + boost::lexical_cast<std::string>(mBufferSeconds) + " seconds.";
-        mBuffer = new RingBuffer(mBufferSeconds*1000);
+        mBuffer = new RingBuffer<RingBufferNS::ImageRingNode>(mBufferSeconds*1000);
     }
     else {
         createDevicePath(IMAGES, cameraID);
@@ -109,7 +109,7 @@ poolWriteImages::~poolWriteImages() {
                 }
 
 
-                RingBuffer::RingNode node;
+                RingBufferNS::ImageRingNode node;
                 node.cameraId = deviceID;
                 node.relativeTime = relative;
 

@@ -12,7 +12,7 @@ SET(SOURCE_FILES
 		pools/PoolsManager
 		buffer/RecorderInterface
         pools/PoolPaths
-		)
+		pools/PoolWriteRGBD.cpp pools/PoolWriteRGBD.h pools/RecorderRGBD.cpp pools/RecorderRGBD.h buffer/ImageRingNode.cpp buffer/ImageRingNode.h)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -53,7 +53,8 @@ TARGET_LINK_LIBRARIES(recorder2
     JderobotInterfaces
     jderobotutil
 	ns
-    ${resourcelocator_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	${resourcelocator_LIBRARIES}
 	${GLOG_LIBRARIES}
 )
 
