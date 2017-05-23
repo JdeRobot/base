@@ -14,6 +14,8 @@ class CameraUtils {
 public:
     static cv::Mat getImageFromCameraProxy(jderobot::ImageDataPtr dataPtr);
     static std::string negotiateDefaultFormat(jderobot::CameraPrx prx,const std::string& definedFormat );
+    static bool compressImage(const cv::Mat& image, unsigned char** compressed_data,unsigned long& compress_len);
+    static jderobot::ImageDataPtr convert(const cv::Mat& image);
 };
 
 

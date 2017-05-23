@@ -19,6 +19,7 @@
 
  */
 
+#include <jderobotutil/utils/CameraUtils.h>
 #include "jderobot/comm/ice/cameraIceClient.hpp"
 
 

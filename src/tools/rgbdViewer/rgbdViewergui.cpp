@@ -25,6 +25,7 @@
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <resourcelocator/gladelocator.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace rgbdViewer {
 rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
@@ -184,8 +185,8 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
         cv::split(imageDEPTH, layers);
 
         cv::cvtColor(layers[0],colorDepth,CV_GRAY2RGB);
-        /*cv::imshow("color", colorDepth);
-        cv::waitKey(1);*/
+//        cv::imshow("color", colorDepth);
+//        cv::waitKey(1);
 
         this->m_distance.lock();
         for (int x=0; x< layers[1].cols ; x++) {
@@ -337,12 +338,9 @@ bool rgbdViewergui::on_clicked_event_rgb(GdkEventButton* event) {
 		//d=d*10;
 		float xp,yp,zp,camx,camy,camz;
 		float ux,uy,uz;
-		float x,y;
-		float k;
 		float c1x, c1y, c1z;
 		float fx,fy,fz;
 		float fmod;
-		float t;
 		float Fx,Fy,Fz;
 
 		mypro->mybackproject(x, y, &xp, &yp, &zp, &camx, &camy, &camz,0);
@@ -370,7 +368,7 @@ bool rgbdViewergui::on_clicked_event_rgb(GdkEventButton* event) {
 
 
 		/* calculamos el punto real */
-		t = (-(fx*camx) + (fx*Fx) - (fy*camy) + (fy*Fy) - (fz*camz) + (fz*Fz))/((fx*ux) + (fy*uy) + (fz*uz));
+		d = (-(fx*camx) + (fx*Fx) - (fy*camy) + (fy*Fy) - (fz*camz) + (fz*Fz))/((fx*ux) + (fy*uy) + (fz*uz));
 		//imprimos la información
 		std::stringstream ss;
 		ss << d;
@@ -410,12 +408,10 @@ bool rgbdViewergui::on_clicked_event_depth(GdkEventButton* event) {
 		//d=d*10;
 		float xp,yp,zp,camx,camy,camz;
 		float ux,uy,uz;
-		float x,y;
-		float k;
+		float x=0,y =0;
 		float c1x, c1y, c1z;
 		float fx,fy,fz;
 		float fmod;
-		float t;
 		float Fx,Fy,Fz;
 
 		mypro->mybackproject(x, y, &xp, &yp, &zp, &camx, &camy, &camz,0);
@@ -443,7 +439,7 @@ bool rgbdViewergui::on_clicked_event_depth(GdkEventButton* event) {
 
 
 		/* calculamos el punto real */
-		t = (-(fx*camx) + (fx*Fx) - (fy*camy) + (fy*Fy) - (fz*camz) + (fz*Fz))/((fx*ux) + (fy*uy) + (fz*uz));
+		d = (-(fx*camx) + (fx*Fx) - (fy*camy) + (fy*Fy) - (fz*camz) + (fz*Fz))/((fx*ux) + (fy*uy) + (fz*uz));
 		//imprimos la información
 		std::stringstream ss;
 		ss << d;
@@ -520,8 +516,6 @@ rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
                 //d=d*10;
                 float xp,yp,zp,camx,camy,camz;
                 float ux,uy,uz;
-                float x,y;
-                float k;
                 float c1x, c1y, c1z;
                 float fx,fy,fz;
                 float fmod;

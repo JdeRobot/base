@@ -7,7 +7,17 @@ IF(OPENNI2_LIB)
 	
 
 
-	SET( SOURCE_FILES openniServer.cpp OpenNiServerLib/myprogeo OpenNiServerLib/ConcurrentDevice OpenNiServerLib/OpenCVConverter OpenNiServerLib/OpenNIDeviceListener OpenNiServerLib/RGBCamera.cpp OpenNiServerLib/RGBCamera.h OpenNiServerLib/DepthCamera.cpp OpenNiServerLib/DepthCamera.h OpenNiServerLib/PointCloudServer.cpp OpenNiServerLib/PointCloudServer.h)
+	SET( SOURCE_FILES
+			openniServer.cpp
+			OpenNiServerLib/myprogeo
+			OpenNiServerLib/ConcurrentDevice
+			OpenNiServerLib/OpenCVConverter
+			OpenNiServerLib/OpenNIDeviceListener
+			OpenNiServerLib/RGBCamera
+			OpenNiServerLib/DepthCamera
+			OpenNiServerLib/PointCloudServer
+			OpenNiServerLib/RGBDServer
+			)
     add_definitions(-DGLADE_DIR="${gladedir}")
 
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath ./" ) # Opciones para el compilador

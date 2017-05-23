@@ -47,6 +47,7 @@
 #include <OpenNiServerLib/RGBCamera.h>
 #include <OpenNiServerLib/DepthCamera.h>
 #include <OpenNiServerLib/PointCloudServer.h>
+#include <OpenNiServerLib/RGBDServer.h>
 
 
 #include "easyiceconfig/EasyIce.h"
@@ -60,6 +61,8 @@ bool killed;
 openniServer::RGBCamera *camRGB;
 openniServer::DepthCamera *camDEPTH;
 openniServer::PointCloudServer *pc1;
+openniServer::RGBDServer *rgbdServer;
+
 jderobot::ns* namingService = NULL;
 ConcurrentDevicePtr device;
 
@@ -94,6 +97,7 @@ int main(int argc, char** argv){
 	int motors = prop->getPropertyAsIntWithDefault(componentPrefix + ".Pose3DMotorsActive",0);
 	int leds = prop->getPropertyAsIntWithDefault(componentPrefix + ".KinectLedsActive",0);
 	int pointCloud = prop->getPropertyAsIntWithDefault(componentPrefix + ".pointCloudActive",0);
+	bool sync_server = prop->getPropertyAsIntWithDefault(componentPrefix + ".rgbd",0);
 
     //todo
 //	mirrorDepth = prop->getPropertyAsIntWithDefault(componentPrefix + ".CameraDEPTH.Mirror",0);
@@ -189,6 +193,17 @@ int main(int argc, char** argv){
 		adapter->add(pc1 , ic->stringToIdentity(Name));
 		LOG(INFO) << "              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name ;
 	}
+
+
+	if (sync_server){
+		std::string objPrefix(componentPrefix + ".rgbd.");
+		std::string Name = prop->getProperty(objPrefix + "Name");
+		LOG(INFO) <<  "Creating rgbd " + Name ;
+		rgbdServer = new openniServer::RGBDServer(objPrefix,prop,device);
+		adapter->add(rgbdServer , ic->stringToIdentity(Name));
+		LOG(INFO) << "              -------- openniServer: Component: rgbd created successfully(" + Endpoints + "@" + Name ;
+	}
+
 	adapter->activate();
 	ic->waitForShutdown();
 	adapter->destroy();

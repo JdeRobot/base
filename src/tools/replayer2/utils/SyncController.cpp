@@ -5,11 +5,11 @@
  *      Author: frivas
  */
 
-#include "control.h"
+#include "SyncController.h"
 
 namespace replayer {
 
-control::control(long long int initState, bool play_in, bool repeat_in) {
+SyncController::SyncController(long long int initState, bool play_in, bool repeat_in) {
 	this->nProcFinished=0;
 	this->play=play_in;
 	this->paused=false;
@@ -25,19 +25,19 @@ control::control(long long int initState, bool play_in, bool repeat_in) {
 
 }
 
-control::~control() {
+SyncController::~SyncController() {
 	// TODO Auto-generated destructor stub
 }
 
-void control::lock(){
+void SyncController::lock(){
 	this->controlMutex.lock();
 }
 
-void control::unlock(){
+void SyncController::unlock(){
 	this->controlMutex.unlock();
 }
 
-bool control::getPlay(){
+bool SyncController::getPlay(){
 	bool localPlay;
 	this->controlMutex.lock();
 	localPlay=this->play;
@@ -45,7 +45,7 @@ bool control::getPlay(){
 	return localPlay;
 }
 
-long long int control::getSyncTime(){
+long long int SyncController::getSyncTime(){
 	long long int localTime;
 	this->controlMutex.lock();
 	localTime=this->newTime;
@@ -53,7 +53,7 @@ long long int control::getSyncTime(){
 	return localTime;
 }
 
-long long int control::getRelativeTime(){
+long long int SyncController::getRelativeTime(){
 	long long int localTime;
 	this->controlMutex.lock();
 	if (this->play)
@@ -64,7 +64,7 @@ long long int control::getRelativeTime(){
 	return localTime;
 }
 
-long long int control::wait(){
+long long int SyncController::wait(){
 	long long int localTime;
 	{
 		IceUtil::Mutex::Lock sync(this->controlMutex);
@@ -76,7 +76,7 @@ long long int control::wait(){
 	return localTime;
 }
 
-void control::checkStatus(){
+void SyncController::checkStatus(){
 	this->controlMutex.lock();
 	if (this->nProcFinished != this->nProcess){
 	}
@@ -96,7 +96,7 @@ void control::checkStatus(){
 	this->controlMutex.unlock();
 }
 
-void control::stop(){
+void SyncController::stop(){
 	this->controlMutex.lock();
 		this->play=false;
 		this->paused=true;
@@ -108,7 +108,7 @@ void control::stop(){
 	this->controlMutex.unlock();
 }
 
-void control::resume(){
+void SyncController::resume(){
 	this->controlMutex.lock();
 		this->play=true;
 		this->paused=false;
@@ -121,15 +121,15 @@ void control::resume(){
 	this->controlMutex.unlock();
 }
 
-void control::setRepeat(bool active){
+void SyncController::setRepeat(bool active){
 	this->repeat=active;
 }
 
-void control::setProcesses(int procs){
+void SyncController::setProcesses(int procs){
 	this->nProcess=procs;
 }
 
-void control::setStep(int step){
+void SyncController::setStep(int step){
 	this->controlMutex.lock();
 		IceUtil::Time n = IceUtil::Time::now();
 		long long int nowInt=(n.toMicroSeconds())/1000;
@@ -139,7 +139,7 @@ void control::setStep(int step){
 }
 
 
-jderobot::ReplayerStatus control::getstatus(){
+jderobot::ReplayerStatus SyncController::getstatus(){
 	if (status==jderobot::FINISHED){
 	}
 	else if (this->paused){

@@ -27,14 +27,15 @@
 #include <IceUtil/IceUtil.h>
 #include <logger/Logger.h>
 #include <jderobot/replayControl.h>
+#include <boost/shared_ptr.hpp>
 
 
 namespace replayer {
 
-class control {
+class SyncController {
 public:
-	control(long long int initState, bool play_in, bool repeat_in);
-	virtual ~control();
+	SyncController(long long int initState, bool play_in, bool repeat_in);
+	virtual ~SyncController();
 	void lock();
 	void unlock();
 	bool getPlay();
@@ -52,7 +53,7 @@ public:
 private:
 	//controladores de video
 	bool repeat;
-	//mutex de control de acceso a control
+	//mutex de SyncController de acceso a SyncController
 	IceUtil::Mutex controlMutex;
 	//condicional utilizado como un semaforo
 	IceUtil::Cond sem;
@@ -67,13 +68,15 @@ private:
 	//reproduccion
 	bool play;
 	//numero de repeticiones
-	bool nRepetitions;
+	int nRepetitions;
 	//replayer status
 	jderobot::ReplayerStatus status;
 	//paused
 	bool paused;
 
 };
+
+	typedef boost::shared_ptr<SyncController> SyncControllerPtr;
 
 } /* namespace replayer */
 #endif /* CONTROL_H_ */

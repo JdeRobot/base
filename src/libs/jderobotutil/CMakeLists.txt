@@ -9,12 +9,13 @@ SET(JDEROBOT_UTILS_SOURCES
         paramdict
         time
         uncopyable.h
-        CameraTask
-        CameraHandler
-        CameraUtils
+        interfaceHandlers/CameraTask
+        interfaceHandlers/CameraHandler
+        interfaceHandlers/RGBDHandler
+        utils/CameraUtils
         )
 
-add_library (jderobotutil STATIC ${JDEROBOT_UTILS_SOURCES})
+add_library (jderobotutil STATIC ${JDEROBOT_UTILS_SOURCES} )
 
 add_library (jderobotutilshare SHARED ${JDEROBOT_UTILS_SOURCES})
 

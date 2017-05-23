@@ -190,6 +190,7 @@ namespace rgbdManualCalibrator {
 	}
 
 	bool DrawArea::on_expose_event(GdkEventExpose* event) {
+		return true;
 	}
 
 	void DrawArea::my_expose_event(){
@@ -249,13 +250,10 @@ namespace rgbdManualCalibrator {
 	}
 
 	void DrawArea::drawScene() {
+        int i;
 
-
-		int i,c,row,j,k;
 		float r,lati,longi,dx,dy,dz;
 		float matColors[4];
-		float  Xp_sensor, Yp_sensor;
-		float dpan=0.5,dtilt=0.5;
 
 		// Absolute Frame of Reference
 		// floor
@@ -443,6 +441,7 @@ namespace rgbdManualCalibrator {
 
 		old_x=x;
 		old_y=y;
+        return true;
 	}
 
 	bool DrawArea::on_drawarea_scroll(GdkEventScroll * event) {
@@ -471,6 +470,7 @@ namespace rgbdManualCalibrator {
 			this->glcam_pos.Y = this->glcam_pos.Y - vy;
 			this->glcam_pos.Z = this->glcam_pos.Z - vz;
 		}
+        return true;
 	}
 
 int
@@ -655,6 +655,7 @@ DrawArea::read_world_file(char* worldfile){
 	} while(i!=EOF);
 
 	fclose(myfile);
+    return 0;
 }
 
 void

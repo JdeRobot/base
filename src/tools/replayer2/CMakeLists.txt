@@ -1,4 +1,9 @@
-	SET(SOURCE_FILES replayer.cpp replayergui.cpp control.cpp)
+	SET(SOURCE_FILES
+			replayer.cpp
+			replayergui.cpp
+			utils/SyncController
+			interfaces/ReplayerCamera
+            interfaces/SyncTask.cpp interfaces/SyncTask.h interfaces/ReplayerPointCloud.cpp interfaces/ReplayerPointCloud.h interfaces/ReplayerLaser.cpp interfaces/ReplayerLaser.h interfaces/ReplayerPose3DEncoders.cpp interfaces/ReplayerPose3DEncoders.h interfaces/ReplayerPose3D.cpp interfaces/ReplayerPose3D.h interfaces/ReplayerEncoders.cpp interfaces/ReplayerEncoders.h utils/ReplayControllerInterface.cpp utils/ReplayControllerInterface.h)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -25,21 +30,23 @@ add_executable (replayer2 ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(replayer2
     ns
     logger
-    ${CMAKE_THREAD_LIBS_INIT} 
     ${GLUT_LIBRARIES}
     ${OpenCV_LIBRARIES}
     ${OpenCVGUI_LIBRARIES}
     ${gtkmm_LIBRARIES}
     ${libglademm_LIBRARIES}
     ${gtkglextmm_LIBRARIES}
+	jderobotutil
     colorspacesmm
     JderobotInterfaces
-    jderobotutil
     ${gsl_LIBRARIES}
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
     ${resourcelocator_LIBRARIES}
-		${GLOG_LIBRARIES}
+	${GLOG_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	crypto
+	${CMAKE_THREAD_LIBS_INIT}
 
 		)
 

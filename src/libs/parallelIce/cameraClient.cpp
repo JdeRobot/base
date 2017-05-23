@@ -21,7 +21,7 @@
 
 #include "cameraClient.h"
 #include <zlib.h>
-#include <jderobotutil/CameraUtils.h>
+#include <jderobotutil/utils/CameraUtils.h>
 
 
 namespace jderobot {
