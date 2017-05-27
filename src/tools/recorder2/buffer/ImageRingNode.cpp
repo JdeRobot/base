@@ -11,7 +11,7 @@ namespace RingBufferNS {
         boost::posix_time::ptime init = boost::posix_time::microsec_clock::local_time();
         for (auto it = data2save.begin(); it < data2save.end(); it++) {
             std::stringstream path;
-            path << "data-" << nameLog << "/images/camera" << it->cameraId << "/" << it->relativeTime << ".png";
+            path << "pool-" << nameLog << "/" << it->relativeTime << ".png";
             cv::imwrite(path.str(), it->frame, it->mCompression);
         }
         boost::posix_time::ptime end = boost::posix_time::microsec_clock::local_time();

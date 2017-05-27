@@ -26,11 +26,12 @@
 #include <boost/lexical_cast.hpp>
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
+#include <pools/PoolPaths.h>
 
 namespace recorder
 {
     template<typename RingNode>
-    class RingBuffer
+    class RingBuffer: public PoolPaths
     {
     public:
         struct pthread_create_args{
@@ -39,8 +40,9 @@ namespace recorder
         };
 
 
-        RingBuffer(long int maxTime){
+        RingBuffer(long int maxTime,const std::string& rootLogPath, RECORDER_POOL_TYPE type):PoolPaths(rootLogPath){
             mMaxBufferTime = maxTime;
+            type=type;
         }
         ~RingBuffer(){
             for (auto it = mBuffer.begin(); it < mBuffer.end(); it++ )
@@ -70,7 +72,7 @@ namespace recorder
 
             pthread_create_args args;
             args.buffer= this->mWriteBuffer;
-            args.logName=nameLog;
+            args.logName= this->getDeviceLogPath(type,this->mWriteBuffer[0].cameraId);
 
             pthread_create(&mThread, &mAttr, write_thread, &args);
         }
@@ -114,6 +116,7 @@ namespace recorder
         pthread_attr_t mAttr;
 
         std::string mNameLog;
+        RECORDER_POOL_TYPE type;
 
         static void *write_thread(void* context){
             pthread_create_args *args = (struct pthread_create_args *)context;

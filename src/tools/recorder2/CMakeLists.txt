@@ -12,7 +12,7 @@ SET(SOURCE_FILES
 		pools/PoolsManager
 		buffer/RecorderInterface
         pools/PoolPaths
-		pools/PoolWriteRGBD.cpp pools/PoolWriteRGBD.h pools/RecorderRGBD.cpp pools/RecorderRGBD.h buffer/ImageRingNode.cpp buffer/ImageRingNode.h)
+		pools/PoolWriteRGBD.cpp pools/PoolWriteRGBD.h pools/RecorderRGBD.cpp pools/RecorderRGBD.h buffer/ImageRingNode.cpp buffer/ImageRingNode.h buffer/RGBDRingNode.cpp buffer/RGBDRingNode.h recorder/Common.cpp recorder/Common.h)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
