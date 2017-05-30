@@ -48,6 +48,8 @@ poolWriteImages::~poolWriteImages() {
 }
 
     void poolWriteImages::consumer_thread(){
+
+//        std::cout << "consumer: " << this->images.size() << std::endl;
         pthread_mutex_lock(&(this->mutex));
         if (this->images.size()>0){
             cv::Mat img2Save;
@@ -116,6 +118,7 @@ poolWriteImages::~poolWriteImages() {
                 saveImage.copyTo(node.frame);
                 mBuffer->addNode(node);
 
+
                 if (currentMode == WRITE_BUFFER)
                 {
                     std::string fileLogPath = getCustomLogFilePath(IMAGES,this->deviceID,mNameLog);
@@ -138,6 +141,7 @@ poolWriteImages::~poolWriteImages() {
                     // Save the final seconds of recording and save 'data' file
                 else if (currentMode == WRITE_END_LOG)
                 {
+
 
                     mFinalEnd = boost::posix_time::second_clock::local_time();
                     boost::posix_time::time_duration total = mFinalEnd - mFinalInit;

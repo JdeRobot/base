@@ -34,10 +34,17 @@ namespace recorder
     class RingBuffer: public PoolPaths
     {
     public:
-        struct pthread_create_args{
+
+        struct kkStruct{
+            int value;
+        };
+
+        struct Pthread_create_args{
             std::vector<RingNode> buffer;
             std::string logName;
         };
+
+        typedef boost::shared_ptr<Pthread_create_args> Pthread_create_argsPtr;
 
 
         RingBuffer(long int maxTime,const std::string& rootLogPath, RECORDER_POOL_TYPE type):PoolPaths(rootLogPath){
@@ -70,11 +77,15 @@ namespace recorder
             pthread_attr_init(&mAttr);
             pthread_attr_setdetachstate(&mAttr, PTHREAD_CREATE_JOINABLE);
 
-            pthread_create_args args;
-            args.buffer= this->mWriteBuffer;
-            args.logName= this->getDeviceLogPath(type,this->mWriteBuffer[0].cameraId);
+            Pthread_create_args *args= new Pthread_create_args();
 
-            pthread_create(&mThread, &mAttr, write_thread, &args);
+            std::cout << "writeBuffer: " <<  this->mWriteBuffer.size() << std::endl;
+            args->buffer.resize(this->mWriteBuffer.size());
+            std::copy(this->mWriteBuffer.begin(),this->mWriteBuffer.end(), args->buffer.begin());
+            args->buffer= this->mWriteBuffer;
+            args->logName=std::string(this->getDeviceLogPath(type,this->mWriteBuffer[0].cameraId).c_str());
+
+            pthread_create(&mThread, &mAttr, write_thread, args);
         }
 
 
@@ -119,9 +130,15 @@ namespace recorder
         RECORDER_POOL_TYPE type;
 
         static void *write_thread(void* context){
-            pthread_create_args *args = (struct pthread_create_args *)context;
 
+            Pthread_create_args* args = (Pthread_create_args *)context;
+            std::cout << "name: " << args->logName  << std::endl;
+            std::cout << "size: " << args->buffer.size()  << std::endl;
+//
             RingNode::write(args->logName, args->buffer);
+
+            args->buffer.clear();
+            delete args;
             pthread_exit(NULL);
             return NULL;
         }

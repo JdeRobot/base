@@ -20,7 +20,7 @@ namespace recorder {
         saveVideo(const ::std::string &path, const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic);
 
     private:
-        std::vector<RecorderPoolPtr> &poolImages;
+        std::vector<RecorderPoolPtr> poolImages;
     };
 
 }
