@@ -118,7 +118,7 @@ class GuiNode():
 				self.setWidth(PEN_NORMAL_WIDTH)
 				self.subautomata.automataGui.changeCurrentSubautomata(idNewSub)
 			else:
-				print "This node does not have any subautomata son"
+				print("This node does not have any subautomata son")
 
 
 	def draw(self, view):
