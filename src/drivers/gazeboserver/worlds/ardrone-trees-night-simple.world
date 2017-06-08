@@ -55,6 +55,7 @@
 
     <scene>
 	<sky>
+	    <time>24</time>
 	    <clouds>
 		<speed>12</speed>
 	    </clouds>
