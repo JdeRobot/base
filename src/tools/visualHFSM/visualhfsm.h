@@ -95,7 +95,10 @@ private:
     Gtk::ImageMenuItem *imagemenuitem_configfile, *imagemenuitem_generatecppcode;
     Gtk::ImageMenuItem *imagemenuitem_compile, *imagemenuitem_about;
     Gtk::ImageMenuItem *imagemenuitem_generatepythoncode;
-    
+
+    // jderobot logo
+    Gtk::Image *logo;
+
     // Main window
     Gtk::ScrolledWindow* scrolledwindow_schema;
     Goocanvas::Canvas* canvas;
