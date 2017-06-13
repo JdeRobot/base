@@ -10,8 +10,6 @@ project(jderobotcomm)
 
 usePython(2)
 
-list(APPEND Ice_LIBRARIES Ice IceUtil)
-
 
 IF (JDEROBOTCOM_ROS)
     catkin_package(
@@ -86,7 +84,7 @@ ENDIF()
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 
 target_link_libraries(${PROJECT_NAME} 
-    ${Ice_LIBRARIES} 
+    ${ZeroCIce_LIBRARIES} 
     logger 
     ${Boost_LIBRARIES} 
     colorspacesmm 
@@ -97,7 +95,7 @@ target_link_libraries(${PROJECT_NAME}
 add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
 
 target_link_libraries(${PROJECT_NAME}-embedded 
-    ${Ice_LIBRARIES} 
+    ${ZeroCIce_LIBRARIES} 
     logger 
     ${Boost_LIBRARIES} 
     colorspacesmm 

@@ -7,7 +7,7 @@ project(easyiceconfig)
 # be ommited. Only Ice_LIBRARIES must be defined, and
 # we can handle it just like pkg-config
 #find_package(Ice)
-list(APPEND Ice_LIBRARIES Ice IceUtil)
+
 
 
 ### Project config
@@ -41,12 +41,12 @@ set_property(SOURCE src/loader.cpp PROPERTY COMPILE_FLAGS "-std=c++0x")
 
 ## Adding shared library for common usage
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} ${Ice_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${ZeroCIce_LIBRARIES})
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
 add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME}-embedded ${Ice_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}-embedded ${ZeroCIce_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 ## Export library variables (like find_package)
@@ -58,7 +58,7 @@ set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NA
 
 ## demo
 add_executable(demo src/demo/demo.cpp)
-target_link_libraries(demo ${Ice_LIBRARIES})
+target_link_libraries(demo ${ZeroCIce_LIBRARIES})
 configure_file(src/demo/ice.cfg ice.cfg)
 
 ## tests
@@ -66,7 +66,7 @@ add_executable(test_stdutils src/tests/test_stdutils.cpp)
 set_target_properties(test_stdutils PROPERTIES COMPILE_FLAGS "-std=c++0x")
 
 add_executable(test_loader src/tests/test_loader.cpp)
-target_link_libraries(test_loader ${PROJECT_NAME} ${Ice_LIBRARIES})
+target_link_libraries(test_loader ${PROJECT_NAME} ${ZeroCIce_LIBRARIES})
 
 
 ### Install
