@@ -55,6 +55,11 @@ VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     //Get the backbutton
     refBuilder->get_widget("up_button", this->pUpButton);
 
+    // get the logo image
+    refBuilder->get_widget("jderobotlogo", this->logo);
+    //TODO: we assume a fixed installation path, we should get the installation path from CMAKE maybe
+    this->logo->set("/usr/local/share/jderobot/resources/jderobot.png");
+
     // ASSIGNING SIGNALS
     // Of the menu items
     this->imagemenuitem_new->signal_activate().connect(

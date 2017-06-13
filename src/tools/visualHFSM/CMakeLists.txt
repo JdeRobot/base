@@ -69,8 +69,10 @@ add_custom_command(TARGET visualHFSM POST_BUILD
 
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
-
 	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
+
+	# install resources (jderobot logo)
+	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/jderobot.png DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/resources)
 
 ENDIF()
 
