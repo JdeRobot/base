@@ -188,7 +188,7 @@ class AutomataGui(QtGui.QMainWindow, Ui_visualHFSM):
 			nodeFather = self.getNode(fatherId)
 			self.changeCurrentSubautomata(nodeFather.subautomata.id)
 		else:
-			print "This subautomata does not have any parent"
+			print("This subautomata does not have any parent")
 
 
 	def rowClicked(self, index):
