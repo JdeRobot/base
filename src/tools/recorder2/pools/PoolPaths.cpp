@@ -24,6 +24,8 @@ namespace recorder {
         this->typesSufix[ENCODERS] = "encoders";
         this->typesSufix[POINTCLOUD] = "pointClouds";
         this->typesSufix[IMAGES] = "images";
+        this->typesSufix[RGBD] = "rgbd";
+
 
         this->typesSufixIndependent[LASERS] = "laser";
         this->typesSufixIndependent[POSE3DENCODERS] = "pose3dencoder";
@@ -31,6 +33,8 @@ namespace recorder {
         this->typesSufixIndependent[ENCODERS] = "encoder";
         this->typesSufixIndependent[POINTCLOUD] = "pointCloud";
         this->typesSufixIndependent[IMAGES] = "camera";
+        this->typesSufixIndependent[RGBD] = "rgbd";
+
         testPathAndCreateIfNotExists(this->baseLogPath);
     }
 

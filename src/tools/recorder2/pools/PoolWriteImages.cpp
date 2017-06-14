@@ -34,7 +34,7 @@ poolWriteImages::poolWriteImages(Ice::ObjectPrx prx, int freq, int poolSize, int
     if (mMode == SAVE_BUFFER)
     {
         LOG(INFO) << "Recorder run as buffer mode, with a buffer = " + boost::lexical_cast<std::string>(mBufferSeconds) + " seconds.";
-        mBuffer = new RingBuffer(mBufferSeconds*1000);
+        mBuffer = new RingBuffer<RingBufferNS::ImageRingNode>(mBufferSeconds*1000,"./",IMAGES); //todo fix path
     }
     else {
         createDevicePath(IMAGES, cameraID);
@@ -48,6 +48,8 @@ poolWriteImages::~poolWriteImages() {
 }
 
     void poolWriteImages::consumer_thread(){
+
+//        std::cout << "consumer: " << this->images.size() << std::endl;
         pthread_mutex_lock(&(this->mutex));
         if (this->images.size()>0){
             cv::Mat img2Save;
@@ -109,12 +111,13 @@ poolWriteImages::~poolWriteImages() {
                 }
 
 
-                RingBuffer::RingNode node;
+                RingBufferNS::ImageRingNode node;
                 node.cameraId = deviceID;
                 node.relativeTime = relative;
 
                 saveImage.copyTo(node.frame);
                 mBuffer->addNode(node);
+
 
                 if (currentMode == WRITE_BUFFER)
                 {
@@ -138,6 +141,7 @@ poolWriteImages::~poolWriteImages() {
                     // Save the final seconds of recording and save 'data' file
                 else if (currentMode == WRITE_END_LOG)
                 {
+
 
                     mFinalEnd = boost::posix_time::second_clock::local_time();
                     boost::posix_time::time_duration total = mFinalEnd - mFinalInit;
@@ -252,7 +256,7 @@ void poolWriteImages::producer_thread(){
     gettimeofday(&lastTime,NULL);
 }
 
-	bool poolWriteImages::startCustomLog (std::string name, int seconds)
+	bool poolWriteImages::startCustomLog (const std::string& name, int seconds)
 	{
 		bool ret;
 
@@ -276,7 +280,7 @@ void poolWriteImages::producer_thread(){
 		return ret;
 	}
 
-	bool poolWriteImages::startCustomVideo(std::string path, std::string name, int seconds)
+	bool poolWriteImages::startCustomVideo(const std::string&  path, std::string name, int seconds)
 	{
 		mNamePathVideo = path;
 		return startCustomLog(name, seconds);

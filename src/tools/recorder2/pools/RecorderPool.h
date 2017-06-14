@@ -14,6 +14,14 @@ namespace recorder {
     class RecorderPool;
     typedef boost::shared_ptr<RecorderPool> RecorderPoolPtr;
 
+    enum MODE
+    {
+        WRITE_FRAME = 0,
+        SAVE_BUFFER,
+        WRITE_BUFFER,
+        WRITE_END_LOG
+    };
+
 
     class RecorderPool {
     public:
