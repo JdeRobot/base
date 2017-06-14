@@ -214,7 +214,7 @@ void Generate::generateVariables () {
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ )
-		this->fs << "jderobot::" << listInterfacesIterator->getInterface() << "Prx " << listInterfacesIterator->getName() << "prx;" << std::endl;
+		this->fs << "jderobot::" << listInterfacesIterator->getInterface() << "Prx " << listInterfacesIterator->getName() << ";" << std::endl;
 	this->fs << std::endl;
 	this->fs.flush();
 }
@@ -559,8 +559,8 @@ void Generate::generateMain () {
 		this->fs << "\t\tIce::ObjectPrx " << listInterfacesIterator->getName() << " = ic->propertyToProxy(\"automata." << listInterfacesIterator->getName() << ".Proxy\");" << std::endl;
 		this->fs << "\t\tif (" << listInterfacesIterator->getName() << " == 0)" << std::endl;
 		this->fs << "\t\t\tthrow \"Could not create proxy with " << listInterfacesIterator->getName() << "\";" << std::endl;
-		this->fs << "\t\t" << listInterfacesIterator->getName() << "prx = jderobot::" << listInterfacesIterator->getInterface() << "Prx::checkedCast(" << listInterfacesIterator->getName() << ");" << std::endl;
-		this->fs << "\t\tif (" << listInterfacesIterator->getName() << "prx == 0)" << std::endl;
+		this->fs << "\t\t" << listInterfacesIterator->getName() << " = jderobot::" << listInterfacesIterator->getInterface() << "Prx::checkedCast(" << listInterfacesIterator->getName() << ");" << std::endl;
+		this->fs << "\t\tif (" << listInterfacesIterator->getName() << " == 0)" << std::endl;
 		this->fs << "\t\t\tthrow \"Invalid proxy automata." << listInterfacesIterator->getName() << ".Proxy\";" << std::endl;
 		this->fs << "\t\tstd::cout << \"" << listInterfacesIterator->getName() << " connected\" << std::endl;" << std::endl;
 		this->fs << std::endl;
@@ -1208,10 +1208,10 @@ void Generate::generateConnectToProxys_py(){
 		%1% = self.ic.propertyToProxy('automata.%2%.Proxy')\n\
 		if(not %1%):\n\
 			raise Exception('could not create proxy with %1%')\n\
-		self.%1%Prx = %2%Prx.checkedCast(%1%)\n\
-		if(not self.%1%Prx):\n\
+		self.%1% = %2%Prx.checkedCast(%1%)\n\
+		if(not self.%1%):\n\
 			raise Exception('invalid proxy automata.%2%.Proxy')\n\
-		print '%1% connected'\n\n");
+		print('%1% connected')\n\n");
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
@@ -1262,10 +1262,10 @@ void Generate::generateReadArgs_py(){
 			if splitedArg[0] == '--displaygui':\n\
 				if splitedArg[1] == 'True' or splitedArg[1] == 'true':\n\
 					self.displayGui = True\n\
-					print 'runtime gui enabled'\n\
+					print('runtime gui enabled')\n\
 				else:\n\
 					self.displayGui = False\n\
-					print 'runtime gui disabled'\n\n" << std::endl;
+					print('runtime gui disabled')\n\n" << std::endl;
 	this->fs.flush();
 }
 
