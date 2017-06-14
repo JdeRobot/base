@@ -7,12 +7,12 @@
 
 
 #include <recorder.h>
-#include <pools/PoolWriteImages.h>
+#include <pools/PoolsManager.h>
 
 namespace recorder {
     class RecorderInterface : virtual public jderobot::recorder {
     public:
-        RecorderInterface(std::vector<RecorderPoolPtr> &poolImages);
+        RecorderInterface(PoolsManagerPtr& manager);
 
         virtual bool saveLog(const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic);
 
@@ -20,7 +20,9 @@ namespace recorder {
         saveVideo(const ::std::string &path, const ::std::string &name, ::Ice::Int seconds, const ::Ice::Current &ic);
 
     private:
-        std::vector<RecorderPoolPtr> poolImages;
+        PoolsManagerPtr manager;
+
+
     };
 
 }

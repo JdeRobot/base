@@ -8,17 +8,13 @@
 #include <opencv2/core/mat.hpp>
 
 namespace RingBufferNS{
-    class ImageRingNode {
-    public:
-        static void write(const std::string&  nameLog, std::vector<RingBufferNS::ImageRingNode> data2save);
+    struct ImageRingNode {
+        static void write(const std::string&  logPath, const std::string&  nameLog, std::vector<RingBufferNS::ImageRingNode> data2save);
 
-//    private:
         long long int relativeTime;
         cv::Mat frame;
         int cameraId;
         std::vector<int> mCompression;
-
-
     };
 }
 

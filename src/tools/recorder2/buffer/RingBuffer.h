@@ -17,6 +17,13 @@
  *  Authors : Roberto Calvo Palomino <rocapal [at] gsyc [dot] urjc [dot] es>
  *
  */
+
+
+
+#ifndef JDEROBOT_RGINBUFFER__
+#define JDEROBOT_RGINBUFFER__
+
+
 #include <boost/thread/thread.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -42,6 +49,7 @@ namespace recorder
         struct Pthread_create_args{
             std::vector<RingNode> buffer;
             std::string logName;
+            std::string logPath;
         };
 
         typedef boost::shared_ptr<Pthread_create_args> Pthread_create_argsPtr;
@@ -49,7 +57,7 @@ namespace recorder
 
         RingBuffer(long int maxTime,const std::string& rootLogPath, RECORDER_POOL_TYPE type):PoolPaths(rootLogPath){
             mMaxBufferTime = maxTime;
-            type=type;
+            this->type=type;
         }
         ~RingBuffer(){
             for (auto it = mBuffer.begin(); it < mBuffer.end(); it++ )
@@ -83,7 +91,9 @@ namespace recorder
             args->buffer.resize(this->mWriteBuffer.size());
             std::copy(this->mWriteBuffer.begin(),this->mWriteBuffer.end(), args->buffer.begin());
             args->buffer= this->mWriteBuffer;
-            args->logName=std::string(this->getDeviceLogPath(type,this->mWriteBuffer[0].cameraId).c_str());
+            args->logPath=std::string(this->getDeviceLogPath(type,this->mWriteBuffer[0].cameraId).c_str());
+            args->logName=mNameLog;
+
 
             pthread_create(&mThread, &mAttr, write_thread, args);
         }
@@ -102,7 +112,6 @@ namespace recorder
 
                 if ( ( newer->relativeTime - it->relativeTime) > mMaxBufferTime )
                 {
-                    it->frame.release();
                     mBuffer.erase(it);
                     return true;
                 }
@@ -133,9 +142,10 @@ namespace recorder
 
             Pthread_create_args* args = (Pthread_create_args *)context;
             std::cout << "name: " << args->logName  << std::endl;
+            std::cout << "path: " << args->logPath  << std::endl;
             std::cout << "size: " << args->buffer.size()  << std::endl;
 //
-            RingNode::write(args->logName, args->buffer);
+            RingNode::write(args->logPath, args->logName, args->buffer);
 
             args->buffer.clear();
             delete args;
@@ -147,3 +157,5 @@ namespace recorder
 
 
 }
+
+#endif

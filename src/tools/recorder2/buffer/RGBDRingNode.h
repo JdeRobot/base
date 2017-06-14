@@ -7,21 +7,16 @@
 
 #include <opencv2/core/mat.hpp>
 
-namespace RingBufferNS {
+namespace RingBufferNS{
+    struct RGBDRingNode {
+        static void write(const std::string&  logPath, const std::string&  nameLog, std::vector<RingBufferNS::RGBDRingNode> data2save);
 
-    class RGBDRingNode {
-        class ImageRingNode {
-        public:
-            static void write(const std::string &nameLog, std::vector<RingBufferNS::RGBDRingNode> data2save);
+        long long int relativeTime;
+        cv::Mat depth;
+        cv::Mat rgb;
 
-//    private:
-            long long int relativeTime;
-            cv::Mat frame;
-            int cameraId;
-            std::vector<int> mCompression;
-
-
-        };
+        int cameraId;
+        std::vector<int> mCompression;
     };
 }
 

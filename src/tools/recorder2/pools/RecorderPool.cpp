@@ -15,6 +15,8 @@ namespace recorder {
         this->recording=false;
         this->cycle = 1000.0/freq;
         gettimeofday(&lastTime,NULL);
+        pthread_mutex_init(&this->mutex,NULL);
+
     }
 
     bool RecorderPool::getActive() {

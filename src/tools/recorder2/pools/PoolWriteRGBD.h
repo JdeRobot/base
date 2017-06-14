@@ -23,6 +23,8 @@
 #define JDEROBOT_RGBDPOOL_H
 
 #include <rgbd.h>
+#include <buffer/RGBDRingNode.h>
+#include <buffer/RingBuffer.h>
 #include "RecorderPool.h"
 #include "PoolPaths.h"
 #include "RecorderRGBD.h"
@@ -30,12 +32,16 @@
 namespace recorder {
 
     class PoolWriteRGBD: public RecorderPool, public PoolPaths {
+    public:
         PoolWriteRGBD(Ice::ObjectPrx prx, int freq, int poolSize, int cameraID, std::string imageFormat,
                        std::string fileFormat, std::vector<int> compression_params, const std::string& baseLogPath,
                        MODE mode, int bufferSeconds, std::string videoMode);
         virtual ~PoolWriteRGBD();
         void consumer_thread();
         void producer_thread();
+
+        bool startCustomLog(const std::string& name, int seconds);
+//        bool startCustomVideo(const std::string&  path, std::string name, int seconds);
 
         virtual void* consumer_thread_imp();
         virtual void* producer_thread_imp();
@@ -45,6 +51,24 @@ namespace recorder {
         jderobot::rgbdPrx rgbdPrx;
         std::vector<RecorderRGBDPtr> data;
         MODE mMode;
+        int mLastSecondsLog;
+        int mBufferSeconds;
+        recorder::RingBuffer<RingBufferNS::RGBDRingNode>* mBuffer;
+        pthread_mutex_t mModeMutex;
+
+
+        std::vector<int> compression_params;
+        std::string mNameLog;
+
+        std::string mVideoMode;
+        std::string fileFormat;
+
+
+        boost::posix_time::ptime mFinalInit, mFinalEnd;
+
+
+
+
 
 
     };

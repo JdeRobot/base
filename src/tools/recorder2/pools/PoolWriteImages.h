@@ -53,8 +53,8 @@ public:
 	void consumer_thread();
 	void producer_thread();
 
-	bool startCustomLog(std::string name, int seconds);
-	bool startCustomVideo(std::string path, std::string name, int seconds);
+	bool startCustomLog(const std::string& name, int seconds);
+	bool startCustomVideo(const std::string&  path, std::string name, int seconds);
 
 	virtual void* consumer_thread_imp();
 	virtual void* producer_thread_imp();

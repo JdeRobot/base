@@ -27,6 +27,7 @@
 #include <buffer/RecorderInterface.h>
 #include <ns/ns.h>
 #include <pools/PoolsManager.h>
+#include <pools/PoolWriteRGBD.h>
 #include "recordergui.h"
 #include "pools/PoolWriteImages.h"
 #include "pools/poolWritePose3dEncoders.h"
@@ -121,26 +122,23 @@ int main(int argc, char** argv){
       
 
 		int nCameras = prop->getPropertyAsIntWithDefault("Recorder.nCameras",0);
-		if (nCameras > 0 ){
-            fileFormat=prop->getProperty("Recorder.FileFormat");
-            if (fileFormat.compare(std::string("png"))==0){
-				pngCompressRatio=prop->getPropertyAsIntWithDefault("Recorder.PngCompression",3);
-				compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-				compression_params.push_back(pngCompressRatio);
-			}
-            else if (fileFormat.compare(std::string("jpg"))==0){
-				jpgQuality=prop->getPropertyAsIntWithDefault("Recorder.JpgQuality",95);
-				compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
-				compression_params.push_back(jpgQuality);
-			}
-			else{
-                throw "File format is not valid";
-			}
-			nConsumers=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
-			poolSize=prop->getPropertyAsIntWithDefault("Recorder.poolSize",10);
-
-
+        nConsumers=prop->getPropertyAsIntWithDefault("Recorder.nConsumers",2);
+        poolSize=prop->getPropertyAsIntWithDefault("Recorder.poolSize",10);
+		fileFormat=prop->getProperty("Recorder.FileFormat");
+		if (fileFormat.compare(std::string("png"))==0){
+			pngCompressRatio=prop->getPropertyAsIntWithDefault("Recorder.PngCompression",3);
+			compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+			compression_params.push_back(pngCompressRatio);
 		}
+		else if (fileFormat.compare(std::string("jpg"))==0){
+			jpgQuality=prop->getPropertyAsIntWithDefault("Recorder.JpgQuality",95);
+			compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+			compression_params.push_back(jpgQuality);
+		}
+		else{
+			throw "File format is not valid";
+		}
+
         std::string baseLogPath="./data/";
 
         manager= recorder::PoolsManagerPtr( new recorder::PoolsManager(attr,nConsumers));
@@ -183,8 +181,10 @@ int main(int argc, char** argv){
             adapter =ic->createObjectAdapterWithEndpoints("Recorder", Endpoints);
             std::string name = prop->getProperty("Recorder.Name");
             LOG(INFO) << "Creating Recorder: " + name;
-            auto imagesPool=manager->getPoolsByType(recorder::IMAGES);
-            recorder::RecorderInterface* recorder_prx = new recorder::RecorderInterface(imagesPool);
+            recorder::RecorderInterface* recorder_prx = new recorder::RecorderInterface(manager);
+
+
+
             adapter->add(recorder_prx, ic->stringToIdentity(name));
 
             adapter->activate();
@@ -268,17 +268,6 @@ int main(int argc, char** argv){
 
 		int nDepthSensors = prop->getPropertyAsIntWithDefault("Recorder.nDethSensors",0);
 		for (int i=0; i< nDepthSensors; i++){
-			struct stat buf;
-			std::stringstream claserPath;
-			claserPath << "./data/pointClouds/pointCloud" << i+1;
-			if( stat( claserPath.str().c_str(), &buf ) == -1 )
-			{
-				std::stringstream instruction;
-				instruction << "mkdir " << claserPath.str();
-				system(instruction.str().c_str());
-			}
-
-
 			std::stringstream sProxy;
 			// Get driver camera
 			sProxy << "Recorder.DepthSensor" << i+1 << ".Proxy";
@@ -289,6 +278,30 @@ int main(int argc, char** argv){
 			}
 			recorder::poolWritePointCloudPtr temp = recorder::poolWritePointCloudPtr(new recorder::poolWritePointCloud(kinect, Hz,poolSize,i+1,baseLogPath));
             manager->addPool(recorder::POINTCLOUD,temp);
+		}
+
+
+		int nRGBDSensors = prop->getPropertyAsIntWithDefault("Recorder.nRGBDSensors",0);
+		for (int i=0; i< nRGBDSensors; i++){
+			std::stringstream sProxy;
+			// Get driver camera
+			sProxy << "Recorder.RGBD" << i+1 << ".Proxy";
+
+			Ice::ObjectPrx base = ic->propertyToProxy(sProxy.str());
+			if (0==base){
+				throw "Could not create proxy with RGBD";
+			}
+
+			std::stringstream sFormat;
+			std::string imageFormat;
+			sFormat << "Recorder.RGBD" << i+1 << ".Format";
+			imageFormat = prop->getProperty(sFormat.str());
+
+			recorder::PoolWriteRGBDPtr temp = recorder::PoolWriteRGBDPtr( new recorder::PoolWriteRGBD(base, Hz,poolSize,i+1,
+					imageFormat ,fileFormat ,compression_params,baseLogPath,(bufferEnabled == 0)? recorder::WRITE_FRAME : recorder::SAVE_BUFFER, bufferSeconds, videoMode));
+
+
+			manager->addPool(recorder::RGBD,temp);
 		}
 
         manager->createThreads();

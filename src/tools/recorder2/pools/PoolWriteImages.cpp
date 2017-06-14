@@ -256,7 +256,7 @@ void poolWriteImages::producer_thread(){
     gettimeofday(&lastTime,NULL);
 }
 
-	bool poolWriteImages::startCustomLog (std::string name, int seconds)
+	bool poolWriteImages::startCustomLog (const std::string& name, int seconds)
 	{
 		bool ret;
 
@@ -280,7 +280,7 @@ void poolWriteImages::producer_thread(){
 		return ret;
 	}
 
-	bool poolWriteImages::startCustomVideo(std::string path, std::string name, int seconds)
+	bool poolWriteImages::startCustomVideo(const std::string&  path, std::string name, int seconds)
 	{
 		mNamePathVideo = path;
 		return startCustomLog(name, seconds);

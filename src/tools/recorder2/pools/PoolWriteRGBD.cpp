@@ -21,6 +21,7 @@
 
 #include "PoolWriteRGBD.h"
 #include <logger/Logger.h>
+#include <boost/filesystem.hpp>
 
 
 namespace recorder {
@@ -29,31 +30,32 @@ namespace recorder {
                                      std::vector<int> compression_params,const std::string& baseLogPath, MODE mode, int bufferSeconds, std::string videoMode):
             RecorderPool(freq,poolSize,cameraID),
             PoolPaths(baseLogPath),
-//            mBuffer(NULL),
-//            mLastSecondsLog(5),
-//            mBufferSeconds(bufferSeconds),
-            mMode(mode)
-    {
-//        this->cameraPrx = jderobot::CameraPrx::checkedCast(prx);
-//        if (0== this->cameraPrx) {
-//            LOG(ERROR) << "Invalid proxy";
-//        }
-//        this->compression_params=compression_params;
-//        this->imageFormat=imageFormat;
-//        this->fileFormat=fileFormat;
-//
-//
-//        mNameLog = "alarm1";
-//        mVideoMode = videoMode;
-//        if (mMode == SAVE_BUFFER)
-//        {
-//            LOG(INFO) << "Recorder run as buffer mode, with a buffer = " + boost::lexical_cast<std::string>(mBufferSeconds) + " seconds.";
-//            mBuffer = new RingBuffer(mBufferSeconds*1000);
-//        }
-//        else {
-//            createDevicePath(IMAGES, cameraID);
-//            this->setLogFile(getDeviceLogFilePath(IMAGES, cameraID));
-//        }
+            mMode(mode),
+            mLastSecondsLog(5),
+            mBufferSeconds(bufferSeconds),
+            mBuffer(NULL),
+            fileFormat(fileFormat)
+
+{
+        this->rgbdPrx = jderobot::rgbdPrx::checkedCast(prx);
+        if (0== this->rgbdPrx) {
+            LOG(ERROR) << "Invalid proxy to RGBD";
+        }
+        this->compression_params=compression_params;
+
+
+
+        mNameLog = "alarm1";
+        mVideoMode = videoMode;
+        if (mMode == SAVE_BUFFER)
+        {
+            LOG(INFO) << "Recorder run as buffer mode, with a buffer = " + boost::lexical_cast<std::string>(mBufferSeconds) + " seconds.";
+            mBuffer = new RingBuffer<RingBufferNS::RGBDRingNode>(mBufferSeconds*1000,"./",RGBD);
+        }
+        else {
+            createDevicePath(RGBD, cameraID);
+            this->setLogFile(getDeviceLogFilePath(RGBD, cameraID));
+        }
 //        mCamType = this->cameraPrx->getImageFormat().at(0);
     }
 
@@ -64,34 +66,37 @@ namespace recorder {
     void PoolWriteRGBD::consumer_thread() {
         pthread_mutex_lock(&(this->mutex));
         if (this->data.size() > 0) {
-//            RecorderRGBDPtr data2Save;
-//
-//            data2Save=RecorderRGBDPtr(new RecorderRGBD(this->data[0]));
-//            this->data.erase(this->data.begin());
-//
-//            long long int relative;
-//            relative = *(this->its.begin());
-//            this->its.erase(this->its.begin());
-//            pthread_mutex_unlock(&(this->mutex));
-//
-//            std::stringstream imageFileName;//create a stringstream
-//            imageFileName << getDeviceLogPath(IMAGES, this->deviceID) << relative << "." << fileFormat;
-//
-//            MODE currentMode;
-//            pthread_mutex_lock(&(this->mModeMutex));
-//            currentMode = mMode;
-//            pthread_mutex_unlock(&(this->mModeMutex));
-//
-//            // Normal mode
-//            if (currentMode == WRITE_FRAME) {
-//
-//                cv::imwrite(imageFileName.str(), img2Save, this->compression_params);
-//                this->logfile << relative << std::endl;
-//
-//            } else {
-//                // Save buffer in memory mode == SAVE_BUFFER
-//                cv::Mat saveImage;
-//
+            RecorderRGBDPtr data2Save;
+
+            data2Save=RecorderRGBDPtr(new RecorderRGBD(*this->data[0]));
+            this->data.erase(this->data.begin());
+
+            long long int relative;
+            relative = *(this->its.begin());
+            this->its.erase(this->its.begin());
+            pthread_mutex_unlock(&(this->mutex));
+
+            std::stringstream imageFileName;//create a stringstream
+            imageFileName << getDeviceLogPath(RGBD, this->deviceID) << relative ; //<< "." << fileFormat;
+
+            MODE currentMode;
+            pthread_mutex_lock(&(this->mModeMutex));
+            currentMode = mMode;
+            pthread_mutex_unlock(&(this->mModeMutex));
+
+            // Normal mode
+            if (currentMode == WRITE_FRAME) {
+
+                cv::imwrite(imageFileName.str() + "-depth." + fileFormat, data2Save->depth, this->compression_params);
+                cv::imwrite(imageFileName.str() + "-rgb." + fileFormat, data2Save->rgb, this->compression_params);
+
+                this->logfile << relative << std::endl;
+
+            } else {
+                RingBufferNS::RGBDRingNode node;
+                // Save buffer in memory mode == SAVE_BUFFER
+                cv::Mat saveImage;
+
 //                if (mVideoMode.compare("Video") == 0) {
 //                    if (mCamType.compare("RGB8") == 0) {
 //                        saveImage.create(img2Save.size(), CV_8UC3);
@@ -106,76 +111,76 @@ namespace recorder {
 //
 //                        LOG(WARNING) << "mCamType not recognized " + mCamType;
 //                    }
-//                } else if (mVideoMode.compare("Log") == 0) {
-//                    saveImage.create(img2Save.size(), img2Save.type());
-//                    img2Save.copyTo(saveImage);
-//                }
-//
-//
-//                RingBuffer::RingNode node;
-//                node.cameraId = deviceID;
-//                node.relativeTime = relative;
-//
-//                saveImage.copyTo(node.frame);
-//                mBuffer->addNode(node);
-//
-//                if (currentMode == WRITE_BUFFER) {
-//                    std::string fileLogPath = getCustomLogFilePath(IMAGES, this->deviceID, mNameLog);
-//                    this->setLogFile(fileLogPath);
-//
-//
-//                    LOG(INFO) << "Init recording log: " + mNameLog + " (camera" +
-//                                 boost::lexical_cast<std::string>(this->deviceID) + " ) with "
-//                                 + boost::lexical_cast<std::string>(mBufferSeconds)
-//                                 + " buffer seconds and " + boost::lexical_cast<std::string>(mLastSecondsLog) +
-//                                 " at the end!";
-//
-//                    mBuffer->write(mNameLog, this->compression_params);
-//
-//                    pthread_mutex_lock(&(this->mModeMutex));
-//                    mMode = WRITE_END_LOG;
-//                    pthread_mutex_unlock(&(this->mModeMutex));
-//
-//                    mFinalInit = boost::posix_time::second_clock::local_time();
-//
-//                }
-//                    // Save the final seconds of recording and save 'data' file
-//                else if (currentMode == WRITE_END_LOG) {
-//
-//                    mFinalEnd = boost::posix_time::second_clock::local_time();
-//                    boost::posix_time::time_duration total = mFinalEnd - mFinalInit;
-//
-//                    if (total.seconds() > mLastSecondsLog) {
-//                        std::vector<int> res;
-//                        std::string dataPath = getCustomLogPath(IMAGES, this->deviceID, mNameLog);
-//                        boost::filesystem::directory_iterator end_itr;
-//                        for (boost::filesystem::directory_iterator itr(dataPath); itr != end_itr; ++itr) {
-//                            if (itr->path().generic_string().find("png") == std::string::npos)
-//                                continue;
-//
-//                            unsigned begin = itr->path().generic_string().find_last_of("/") + 1;
-//                            unsigned end = itr->path().generic_string().find_last_of(".");
-//                            if (begin == std::string::npos || end == std::string::npos) {
-//                                LOG(WARNING) << "Error while parsed file " + itr->path().generic_string();
-//                                continue;
-//                            }
-//
-//                            res.push_back(atoi(itr->path().generic_string().substr(begin, end - begin).c_str()));
-//                        }
-//
-//                        std::sort(res.begin(), res.end());
-//                        for (std::vector<int>::iterator it = res.begin(); it < res.end(); it++) {
-//                            this->logfile << *it << std::endl;
-//                        }
-//
-//                        this->logfile.close();
-//                        LOG(INFO) << "End recording log: " + mNameLog;
-//
-//                        // Save the videoa
+//                } else
+                if (mVideoMode.compare("Log") == 0) {
+                    node.rgb=data2Save->rgb.clone();
+                    node.depth=data2Save->depth.clone();
+                }
+
+
+
+                node.cameraId = deviceID;
+                node.relativeTime = relative;
+
+                mBuffer->addNode(node);
+
+                if (currentMode == WRITE_BUFFER) {
+                    std::string fileLogPath = getCustomLogFilePath(RGBD, this->deviceID, mNameLog);
+                    this->setLogFile(fileLogPath);
+
+
+                    LOG(INFO) << "Init recording log: " + mNameLog + " (camera" +
+                                 boost::lexical_cast<std::string>(this->deviceID) + " ) with "
+                                 + boost::lexical_cast<std::string>(mBufferSeconds)
+                                 + " buffer seconds and " + boost::lexical_cast<std::string>(mLastSecondsLog) +
+                                 " at the end!";
+
+                    mBuffer->write(mNameLog, this->compression_params);
+
+                    pthread_mutex_lock(&(this->mModeMutex));
+                    mMode = WRITE_END_LOG;
+                    pthread_mutex_unlock(&(this->mModeMutex));
+
+                    mFinalInit = boost::posix_time::second_clock::local_time();
+
+                }
+                    // Save the final seconds of recording and save 'data' file
+                else if (currentMode == WRITE_END_LOG) {
+
+                    mFinalEnd = boost::posix_time::second_clock::local_time();
+                    boost::posix_time::time_duration total = mFinalEnd - mFinalInit;
+
+                    if (total.seconds() > mLastSecondsLog) {
+                        std::vector<int> res;
+                        std::string dataPath = getCustomLogPath(IMAGES, this->deviceID, mNameLog);
+                        boost::filesystem::directory_iterator end_itr;
+                        for (boost::filesystem::directory_iterator itr(dataPath); itr != end_itr; ++itr) {
+                            if (itr->path().generic_string().find("png") == std::string::npos)
+                                continue;
+
+                            unsigned begin = itr->path().generic_string().find_last_of("/") + 1;
+                            unsigned end = itr->path().generic_string().find_last_of(".");
+                            if (begin == std::string::npos || end == std::string::npos) {
+                                LOG(WARNING) << "Error while parsed file " + itr->path().generic_string();
+                                continue;
+                            }
+
+                            res.push_back(atoi(itr->path().generic_string().substr(begin, end - begin).c_str()));
+                        }
+
+                        std::sort(res.begin(), res.end());
+                        for (std::vector<int>::iterator it = res.begin(); it < res.end(); it++) {
+                            this->logfile << *it << std::endl;
+                        }
+
+                        this->logfile.close();
+                        LOG(INFO) << "End recording log: " + mNameLog;
+
+                        // Save the videoa
 //                        if (mVideoMode.compare("Video") == 0) {
 //                            std::stringstream fileData, fileImage, command, command_video, fileVideo, tmpFileVideo;
 //
-//                            std::string basePath = getCustomLogPath(IMAGES, this->deviceID, mNameLog);
+//                            std::string basePath = getCustomLogPath(RGBD, this->deviceID, mNameLog);
 //                            fileData << basePath << "cameraData.jde";
 //                            fileImage << basePath << "list.txt";
 //
@@ -201,18 +206,19 @@ namespace recorder {
 //
 //                            system(command_video.str().c_str());
 //                        }
-//
-//                        pthread_mutex_lock(&(this->mModeMutex));
-//                        mMode = SAVE_BUFFER;
-//                        pthread_mutex_unlock(&(this->mModeMutex));
-//                    } else {
-//                        std::string basePath = getCustomLogPath(IMAGES, this->deviceID, mNameLog);
-//                        std::stringstream path;
-//                        path << basePath << relative << "." << fileFormat;
-//                        cv::imwrite(path.str(), saveImage, this->compression_params);
-//                    }
-//                }
-//            }
+
+                        pthread_mutex_lock(&(this->mModeMutex));
+                        mMode = SAVE_BUFFER;
+                        pthread_mutex_unlock(&(this->mModeMutex));
+                    } else {
+                        std::string basePath = getCustomLogPath(RGBD, this->deviceID, mNameLog);
+                        std::stringstream path;
+                        path << basePath << relative;
+                        cv::imwrite(path.str() + "-depth." + fileFormat, data2Save->depth, this->compression_params);
+                        cv::imwrite(path.str() + "-rgb." + fileFormat, data2Save->rgb, this->compression_params);
+                    }
+                }
+            }
 
         } else
             pthread_mutex_unlock(&(this->mutex));
@@ -221,15 +227,80 @@ namespace recorder {
     }
 
     void PoolWriteRGBD::producer_thread() {
+        jderobot::rgbData dataInput = this->rgbdPrx->getData();
+
+
+        RecorderRGBDPtr dataPtr = RecorderRGBDPtr ( new RecorderRGBD(dataInput));
+        struct timeval now;
+        gettimeofday(&now,NULL);
+        long long int relative;
+        relative=((now.tv_sec*1000000+now.tv_usec) - (syncInitialTime.tv_sec*1000000+syncInitialTime.tv_usec))/1000;
+        pthread_mutex_lock(&(this->mutex));
+        while (this->data.size() > this->poolSize){
+            pthread_mutex_unlock(&(this->mutex));
+            usleep(100);
+            pthread_mutex_lock(&(this->mutex));
+        }
+        this->data.push_back(dataPtr);
+        this->its.push_back(relative);
+        pthread_mutex_unlock(&(this->mutex));
+        gettimeofday(&now,NULL);
+
+        long long int totalNow=now.tv_sec*1000000+now.tv_usec;
+        long long int totalLast=lastTime.tv_sec*1000000+lastTime.tv_usec;
+
+        float sleepTime =this->cycle - (totalNow-totalLast)/1000.;
+
+        if(sleepTime < 0 )
+            sleepTime = 0;
+        usleep(sleepTime*1000);
+        gettimeofday(&lastTime,NULL);
 
     }
 
     void *PoolWriteRGBD::consumer_thread_imp() {
-        return nullptr;
-    }
+        while (this->getActive()){
+            if (this->getRecording())
+                this->consumer_thread();
+            else
+                usleep(1000);
+        }
+
+        pthread_exit(NULL);
+        return NULL;    }
 
     void *PoolWriteRGBD::producer_thread_imp() {
-        return nullptr;
+
+        while (this->getActive()){
+            if (this->getRecording())
+                this->producer_thread();
+            else
+                usleep(1000);
+        }
+        pthread_exit(NULL);    }
+
+    bool PoolWriteRGBD::startCustomLog (const std::string& name, int seconds)
+    {
+        bool ret;
+
+        pthread_mutex_lock(&(this->mModeMutex));
+
+        if (mMode != SAVE_BUFFER)
+        {
+            LOG(WARNING) << "Can't handle recording '" + name + "' because there is a recording active!" ;
+            ret = false;
+        }
+        else
+        {
+            mNameLog = name;
+            mLastSecondsLog = seconds;
+            mMode = WRITE_BUFFER;
+
+            ret = true;
+        }
+        pthread_mutex_unlock(&(this->mModeMutex));
+
+        return ret;
     }
 
 }
