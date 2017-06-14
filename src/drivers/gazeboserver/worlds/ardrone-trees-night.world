@@ -29,24 +29,23 @@
     </include>
 
     <include>
-      <pose>10 -5 0.001 0 0 1.57</pose>
+      <pose>-10 -5 0.001 0 0 1.57</pose>
       <uri>model://logoDeloitte</uri>
     </include>
-
-
-   <!-- A global light source -->
+    
+       <!-- Black ArDrone -->
     <include>
       <name>ardrone-black</name>
       <uri>model://ArDrone2</uri>
       <pose>0 0 0.1 0 0 0</pose>
     </include>
 
-    <!-- A global light source -->
+    <!-- Red ArDrone -->
     <include>
       <name>ardrone-red</name>
       <uri>model://RedArDrone2</uri>
       <pose>2 0 0.1 0 0 0</pose>
-    </include>
+     </include>
 
     <!-- A ground plane -->
     <include>
@@ -55,6 +54,7 @@
 
     <scene>
 	<sky>
+	    <time>24</time>
 	    <clouds>
 		<speed>12</speed>
 	    </clouds>
@@ -71,14 +71,14 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>10</model_count>
+      <model_count>60</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population2">
+    <population name="tree_population1">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -87,14 +87,14 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>10</model_count>
+      <model_count>60</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population3">
+    <population name="tree_population1">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -103,14 +103,14 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>10</model_count>
+      <model_count>60</model_count>
       <distribution>
         <type>random</type>
       </distribution>
     </population>
 
 <!-- Testing the automatic population of objects -->
-    <population name="tree_population4">
+    <population name="tree_population1">
        <include>
           <static>true</static>
           <uri>model://tree</uri>
@@ -119,7 +119,7 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>10</model_count>
+      <model_count>60</model_count>
       <distribution>
         <type>random</type>
       </distribution>
