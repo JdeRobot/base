@@ -31,7 +31,7 @@
         </geometry>
       </visual>
     </link>
-    <plugin name="carmotors" filename="libcarMotors.so"/>
-    <plugin name="carpose" filename="libcarPose3D.so"/>
+    <plugin name="holocarmotors" filename="libholoCarMotors.so"/>
+    <plugin name="holocarpose" filename="libholoCarPose3D.so"/>
   </model>
 </sdf>
