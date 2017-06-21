@@ -72,7 +72,7 @@ class Laser:
 
             #laserD.values = laser.distanceData
             for i in range (data.numLaser):
-                values.append(data.distanceData[i] / 1000) 
+                values.append(data.distanceData[i] / 1000.0) 
 
             laserD.maxAngle = data.maxAngle
             laserD.minAngle = data.minAngle
