@@ -36,6 +36,6 @@ target_link_libraries(holoCarPose3D
 INSTALL (TARGETS holoCarMotors DESTINATION share/jderobot/gazebo/plugins/holo_car/ COMPONENT core)
 INSTALL (TARGETS holoCarPose3D DESTINATION share/jderobot/gazebo/plugins/holo_car/ COMPONENT core)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/gazebo/plugins/holo_car/ COMPONENT core)
+INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/conf/ COMPONENT core)
 
 
