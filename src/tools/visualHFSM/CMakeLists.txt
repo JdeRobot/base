@@ -27,6 +27,23 @@ SET( SOURCE_FILES_VISUALHFSM
 	main.cpp
 )
 
+
+SET( SOURCE_FILES_RUNTIMEGUI
+		automatagui.cpp
+		point.cpp
+		node.cpp
+		transition.cpp
+		subautomata.cpp
+		guinode.cpp
+		guitransition.cpp
+		guisubautomata.cpp
+		popups/editnodedialog.cpp
+		popups/edittransitiondialog.cpp
+		popups/edittransitioncodedialog.cpp
+		popups/renamedialog.cpp
+		popups/renametransitiondialog.cpp
+)
+
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
 )
@@ -42,7 +59,10 @@ include_directories (
     ${resourcelocator_INCLUDE_DIRS}
 )
 
+message("visualHFSM FLAGS:${CMAKE_CXX_FLAGS}")
+
 add_executable (visualHFSM ${SOURCE_FILES_VISUALHFSM})
+add_library(visualHFSMlib ${SOURCE_FILES_RUNTIMEGUI})
 
 TARGET_LINK_LIBRARIES ( visualHFSM 
     ${gtkmm3_LIBRARIES}
@@ -52,6 +72,15 @@ TARGET_LINK_LIBRARIES ( visualHFSM
     ${resourcelocator_LIBRARIES}
 		${GLOG_LIBRARIES}
 
+		)
+
+TARGET_LINK_LIBRARIES ( visualHFSMlib
+		${gtkmm3_LIBRARIES}
+		${goocanvasmm_LIBRARIES}
+		${gtk3_LIBRARIES}
+		${libxmlpp_LIBRARIES}
+		${resourcelocator_LIBRARIES}
+		${GLOG_LIBRARIES}
 		)
 
 add_custom_command(TARGET visualHFSM POST_BUILD
@@ -66,6 +95,8 @@ add_custom_command(TARGET visualHFSM POST_BUILD
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
     COMPONENT tools
     )
+
+	install(TARGETS visualHFSMlib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot/ COMPONENT tools)
 
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
