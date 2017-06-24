@@ -59,8 +59,6 @@ include_directories (
     ${resourcelocator_INCLUDE_DIRS}
 )
 
-message("visualHFSM FLAGS:${CMAKE_CXX_FLAGS}")
-
 add_executable (visualHFSM ${SOURCE_FILES_VISUALHFSM})
 add_library(visualHFSMlib ${SOURCE_FILES_RUNTIMEGUI})
 
