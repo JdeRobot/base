@@ -31,10 +31,10 @@ module jderobot{
    */
 	class PTMotorsData
 	{
-		float latitude;
-		float latitudeSpeed;
-		float longitude;
-		float longitudeSpeed;
+		float pan;
+		float panSpeed;
+		float tilt;
+		float tiltSpeed;
 	};
 
 	/** 
@@ -42,12 +42,12 @@ module jderobot{
    */
 	class PTMotorsParams
 	{
-		float maxLongitude;
-		float minLongitude;
-		float maxLatitude;
-		float minLatitude;
-		float maxLongitudeSpeed;
-		float maxLatitudeSpeed;
+		float maxPan;
+		float minPan;
+		float maxTilt;
+		float minTilt;
+		float maxPanSpeed;
+		float maxTiltSpeed;
 	};
 
 
@@ -57,7 +57,6 @@ module jderobot{
 	interface PTMotors
 	{
 		int setPTMotorsData(PTMotorsData data);
-		idempotent PTMotorsData getPTMotorsData();
 		idempotent PTMotorsParams getPTMotorsParams();
 	};
 

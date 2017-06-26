@@ -23,7 +23,7 @@
 #include <iostream>
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
-#include <jderobot/pantilt.h>
+#include <jderobot/ptmotors.h>
 
 #include "easyiceconfig/EasyIce.h" 
 
@@ -45,28 +45,28 @@ int main(int argc, char** argv){
 			throw "Could not create proxy to Pan Tilt";
 
 		/*cast to JointMotorPrx*/
-		jderobot::PanTiltPrx ptprx = jderobot::PanTiltPrx::checkedCast(base1);
+		jderobot::PTMotorsPrx ptprx = jderobot::PTMotorsPrx::checkedCast(base1);
 		if (0==ptprx)
 			throw "Invalid proxy";
 
 		
 		while(true){
-			jderobot::PanTiltDataPtr data=new jderobot::PanTiltData();
+			jderobot::PTMotorsDataPtr data=new jderobot::PTMotorsData();
 			data->panSpeed = 10;
-			data->panPos = 100;
+			data->pan = 100;
 			data->tiltSpeed = 10;
-			data->tiltPos= 30 ;
+			data->tilt= 30 ;
 
-			ptprx->setPanTiltData(data);
+			ptprx->setPTMotorsData(data);
 			
 			usleep(1000000);
 
 			data->panSpeed = 10;
-			data->panPos = -100;
+			data->pan = -100;
 			data->tiltSpeed = 10;
-			data->tiltPos= -30 ;
+			data->tilt = -30 ;
 
-			ptprx->setPanTiltData(data);
+			ptprx->setPTMotorsData(data);
 			
 			usleep(10000000);
 		}
