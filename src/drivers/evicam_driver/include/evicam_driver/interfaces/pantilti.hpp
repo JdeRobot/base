@@ -20,18 +20,19 @@
 #ifndef _EVI_PANTILTI_H_
 #define _EVI_PANTILTI_H_
 
-#include <jderobot/pantilt.h>
+#include <jderobot/ptmotors.h>
 #include <Ice/Ice.h>
 #include <EVI-D100P.h>
 
 namespace pantilt
 {
-	class PanTiltI: virtual public jderobot::PanTilt
+	class PanTiltI: virtual public jderobot::PTMotors
 	{
 		public:
 			PanTiltI(EVI_D100P* cam);
 			virtual ~PanTiltI();
-			virtual Ice::Int setPanTiltData(jderobot::PanTiltDataPtr const & data, Ice::Current const & c);
+			virtual Ice::Int setPTMotorsData(const jderobot::PTMotorsDataPtr& data, const Ice::Current& c);
+			virtual jderobot::PTMotorsParamsPtr getPTMotorsParams(Ice::Current const&);
 		private:
 			EVI_D100P* cam;
 
