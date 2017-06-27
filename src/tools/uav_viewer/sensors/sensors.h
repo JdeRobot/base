@@ -70,6 +70,13 @@ class Sensors
         bool pose3dON;
         bool extraON;
 
+        float maxLinX;
+        float maxLinY;
+        float maxLinZ;
+        float maxAngZ;
+        float maxAngY;
+        float maxAngX;
+
 };
 
 #endif // SENSORS_H

@@ -62,8 +62,25 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
         try{
             /*cast to CMDVelPrx*/
             cmdprx = jderobot::CMDVelPrx::checkedCast(basecmd);
+            std::string temp;
+
             if (0==cmdprx)
                 throw "CMDVel -> Invalid proxy";
+
+            temp = prop->getPropertyWithDefault("UAVViewer.CMDVel.Xmax", "1");
+            this->maxLinX = std::stof(temp);
+
+            temp = prop->getPropertyWithDefault("UAVViewer.CMDVel.Ymax", "1");
+            this->maxLinY = std::stof(temp);
+
+            temp = prop->getPropertyWithDefault("UAVViewer.CMDVel.Zmax", "1");
+            this->maxLinZ = std::stof(temp);
+
+            temp = prop->getPropertyWithDefault("UAVViewer.CMDVel.Ymax", "0.5");
+            this->maxAngZ = std::stof(temp);
+
+            this->maxAngX = 1;
+            this->maxAngY = 1;
 
             cmdVelON = true;
         }catch(Ice::ConnectionRefusedException& e){
@@ -126,12 +143,41 @@ void Sensors::sendVelocitiesToUAV(float vx,float vy,float vz,float roll,float pi
 {
 	mutexDrone.lock();
         jderobot::CMDVelDataPtr vel=new jderobot::CMDVelData();
-        vel->linearX=vx;
-        vel->linearY=vy;
-        vel->linearZ=vz;
-        vel->angularZ=yaw;
-        vel->angularX=roll;
-        vel->angularY=pitch;
+        if (vx < this->maxLinX){
+            vel->linearX=maxLinX;
+        }else{
+            vel->linearX=vx;
+        }
+
+        if (vy < this->maxLinY){
+            vel->linearY=maxLinY;
+        }else{
+            vel->linearY=vy;
+        }
+
+        if (vz < this->maxLinZ){
+            vel->linearZ=maxLinZ;
+        }else{
+            vel->linearZ=vz;
+        }
+
+        if (yaw < this->maxAngZ){
+            vel->angularZ=maxAngZ;
+        }else{
+            vel->angularZ=yaw;
+        }
+
+        if (roll < this->maxAngX){
+            vel->angularX=maxAngX;
+        }else{
+            vel->angularX=roll;
+        }
+
+        if (pitch < this->maxAngY){
+            vel->angularY=maxAngY;
+        }else{
+            vel->angularY=pitch;
+        }
 		
         if(cmdVelON)
             cmdprx->setCMDVelData(vel);
