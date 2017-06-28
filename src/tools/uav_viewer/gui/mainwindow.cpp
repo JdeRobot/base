@@ -24,10 +24,10 @@ void MainWindow::setSpeeds(Ice::CommunicatorPtr ic){
 
  	Ice::PropertiesPtr prop = ic->getProperties();
 
-	this->max_x = std::atof( prop->getPropertyWithDefault("UAVViewer.Xmax", "0.3").c_str() );
-	this->max_y = std::atof( prop->getPropertyWithDefault("UAVViewer.Ymax", "0.3").c_str() );
-	this->max_z = std::atof( prop->getPropertyWithDefault("UAVViewer.Zmax", "0.3").c_str() );
-	this->max_yaw = std::atof( prop->getPropertyWithDefault("UAVViewer.Yawmax", "0.3").c_str() );
+	this->max_x = std::atof( prop->getPropertyWithDefault("UAVViewer.Xmax", "3").c_str() )/10;
+	this->max_y = std::atof( prop->getPropertyWithDefault("UAVViewer.Ymax", "3").c_str() )/10;
+	this->max_z = std::atof( prop->getPropertyWithDefault("UAVViewer.Zmax", "3").c_str() )/10;
+	this->max_yaw = std::atof( prop->getPropertyWithDefault("UAVViewer.Yawmax", "3").c_str() )/10;
 }
 
 void MainWindow::initButtons(){
