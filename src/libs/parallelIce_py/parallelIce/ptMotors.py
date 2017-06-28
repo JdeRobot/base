@@ -46,11 +46,11 @@ class PTMotors:
                 self.params = self.proxy.getPTMotorsParams()
 
                 print ("+++ MAX/MIN Pan/Tilt Values +++")
-                print ("+    Min Pan: " + str(self.params.minPan) + "º        +")
-                print ("+    Max Pan: " + str(self.params.maxPan) + "º         +")
+                print ("+    Min Pan: " + str(self.params.minPan) + "         +")
+                print ("+    Max Pan: " + str(self.params.maxPan) + "          +")
                 print ("+    Max Pan speed: " + str(self.params.maxPanSpeed) + "     +")
-                print ("+    Min Tilt: " + str(self.params.minTilt) + "º        +")
-                print ("+    Max Tilt: " + str(self.params.maxTilt) + "º         +")
+                print ("+    Min Tilt: " + str(self.params.minTilt) + "         +")
+                print ("+    Max Tilt: " + str(self.params.maxTilt) + "          +")
                 print ("+    Max Tilt speed: " + str(self.params.maxTiltSpeed) + "    +")
                 print ("++++++++++++++++++++++++++++++")
 
