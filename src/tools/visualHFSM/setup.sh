@@ -11,7 +11,7 @@ sudo mkdir /usr/local/include/jderobot/visualHFSM/popups
 sudo cp popups/*.h /usr/local/include/jderobot/visualHFSM/popups/
 sudo mkdir /usr/local/share/jderobot/glade/visualHFSM
 sudo cp gui/* /usr/local/share/jderobot/glade/visualHFSM/
-sudo cp getinterfaces.sh /usr/local/bin
+sudo cp getinterfaces_new.sh /usr/local/bin
 
 #Python Dependencies
 sudo mkdir /usr/local/share/jderobot/python/visualHFSM_py
