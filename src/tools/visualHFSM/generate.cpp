@@ -48,7 +48,6 @@ Generate::Generate ( std::list<SubAutomata> subautomataList, std::string cpppath
 	this->mapTab[T_FIVE] = std::string("\t\t\t\t\t");
 	this->mapTab[T_SIX] = std::string("\t\t\t\t\t\t");
 	this->mapTab[T_SEVEN] = std::string("\t\t\t\t\t\t\t");
-    this->serverType = 1; // by default using ICE interfaces
 }
 
 /*************************************************************
@@ -622,8 +621,9 @@ void Generate::generateCfg () {
 		if(proxyName.compare("") == 0){
 			proxyName = interfaceName;
 		}
-        this->fs << "automata." << listInterfacesIterator->getName() << ".Server=" << serverType << std::endl;
+        this->fs << "automata." << listInterfacesIterator->getName() << ".Server=" << listInterfacesIterator->getServerType() << std::endl;
 		this->fs << "automata." << listInterfacesIterator->getName() << ".Proxy=" << proxyName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
+        this->fs << "automata." << listInterfacesIterator->getName() << ".Topic=" << listInterfacesIterator->getRosTopic() << std::endl;
         this->fs << "automata." << listInterfacesIterator->getName() << ".Name=" << listInterfacesIterator->getName() << std::endl;
         this->fs << std::endl;
 	}
@@ -721,12 +721,14 @@ from automatagui import AutomataGui, QtGui, GuiSubautomata\n\n";
 }
 
 void Generate::generateSpecificHeaders_py() {
+    /*
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ )
 		this->fs << "from jderobot import " << listInterfacesIterator->getInterface() << "Prx" << std::endl;
 	if (this->listInterfaces->begin() != this->listInterfaces->end())
 		this->fs << std::endl;
 	this->fs.flush();
+     */
 }
 
 void Generate::generateAutomataClass_py(){

@@ -59,7 +59,9 @@ typedef enum Element {
     E_PROXYNAME,
     E_INTERFACEIP,
     E_INTERFACEPORT,
-    E_INTERFACEINTERFACE
+    E_INTERFACEINTERFACE,
+    E_SERVERTYPE,
+    E_TOPIC
 } Element;
 
 // Definition of this class

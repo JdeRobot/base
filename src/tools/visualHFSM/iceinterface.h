@@ -25,36 +25,47 @@
 #include <iostream>
 #include <stdio.h>
 
+typedef enum ServerType {
+	INACTIVE = 0,
+	ICE = 1,
+	ROS = 2
+} ServerType;
+
 class IceInterface {
 public:
 	// Constructor
 	IceInterface ();
-	IceInterface ( std::string name, std::string proxyName, std::string ip, std::string port, std::string interface );
+	IceInterface ( ServerType serverType, std::string name, std::string proxyName, std::string rosTopic, std::string ip, std::string port, std::string interface );
 
 	// Destructor
 	virtual ~IceInterface ();
 
 	// Setters
-	void setAll ( std::string name, std::string ip, std::string port, std::string interface );
+	void setAll ( ServerType serverType, std::string name, std::string proxyName, std::string rosTopic, std::string ip, std::string port, std::string interface );
+	void setServerType(ServerType serverType);
 	void setName ( std::string name );
 	void setProxyName ( std::string name );
+	void setRosTopic(std::string topic);
 	void setIp ( std::string ip );
 	void setPort ( std::string port );
 	void setInterface ( std::string interface );
 
 	// Getters
+	ServerType getServerType();
 	std::string getName ();
 	std::string getProxyName ();
+	std::string getRosTopic();
 	std::string getIp ();
 	std::string getPort ();
 	std::string getInterface ();
 
 	// Another functions
 	bool equals ( IceInterface* iceinterface );
-	bool equals ( std::string name, std::string proxyName, std::string ip, std::string port, std::string interface );
+	bool equals ( std::string serverType, std::string name, std::string proxyName, std::string rosTopic, std::string ip, std::string port, std::string interface );
 
 private:
-	std::string name, proxyName, ip, port, interface;
+	std::string name, rosTopic, proxyName, ip, port, interface;
+	ServerType serverType;
 };
 
 #endif // ICEINTERFACE_H

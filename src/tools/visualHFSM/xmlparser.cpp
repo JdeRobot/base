@@ -50,6 +50,8 @@ MySaxParser::MySaxParser () : xmlpp::SaxParser() {
     this->mapStringValues["ip"] = E_INTERFACEIP;
     this->mapStringValues["port"] = E_INTERFACEPORT;
     this->mapStringValues["interface"] = E_INTERFACEINTERFACE;
+    this->mapStringValues["servertype"] = E_SERVERTYPE;
+    this->mapStringValues["topic"] = E_TOPIC;
 }
 
 /*************************************************************
@@ -209,6 +211,12 @@ void MySaxParser::on_start_element ( const Glib::ustring& name,
         case E_PROXYNAME:
             this->option = E_PROXYNAME;
             break;
+        case E_SERVERTYPE:
+            this->option = E_SERVERTYPE;
+            break;
+        case E_TOPIC:
+            this->option = E_TOPIC;
+            break;
         case E_INTERFACEIP:
             this->option = E_INTERFACEIP;
             break;
@@ -342,6 +350,16 @@ void MySaxParser::on_characters ( const Glib::ustring& text ) {
         }
         case E_PROXYNAME: {
             this->iceinterface->setProxyName(text);
+            break;
+        }
+        case E_SERVERTYPE: {
+            std::string::size_type sz;   // alias of size_t
+            int sType = std::stoi (text,&sz);
+            this->iceinterface->setServerType((ServerType)sType);
+            break;
+        }
+        case E_TOPIC: {
+            this->iceinterface->setRosTopic(text);
             break;
         }
         case E_INTERFACEIP: {
