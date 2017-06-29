@@ -6,7 +6,7 @@
 #define JDEROBOT_CAMERAUTILS_H
 
 
-#include <opencv2/core/mat.hpp>
+#include <opencv2/core/core.hpp>
 #include <jderobot/image.h>
 #include <camera.h>
 

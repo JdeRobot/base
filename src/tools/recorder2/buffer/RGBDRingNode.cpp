@@ -4,7 +4,7 @@
 
 #include "RGBDRingNode.h"
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
 #include <logger/Logger.h>
 #include <boost/algorithm/string/replace.hpp>
 

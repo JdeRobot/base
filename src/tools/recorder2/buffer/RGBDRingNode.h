@@ -5,7 +5,7 @@
 #ifndef JDEROBOT_RGBDRINGNODE_H
 #define JDEROBOT_RGBDRINGNODE_H
 
-#include <opencv2/core/mat.hpp>
+#include <opencv2/core/core.hpp>
 
 namespace RingBufferNS{
     struct RGBDRingNode {
