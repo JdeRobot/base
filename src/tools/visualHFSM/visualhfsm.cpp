@@ -147,10 +147,20 @@ VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     this->idguinode = 1;
     this->idguitransition = 1;
 
+    //getInterfaces();
+    getJdeRobotCommInterfaces();
+}
+
+/*************************************************************
+ * DESTRUCTOR
+ *************************************************************/
+VisualHFSM::~VisualHFSM () {}
+
+void VisualHFSM::getInterfaces() {
     system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/slice > /tmp/allinterfaces.txt");
     std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
-    while ( std::getline(infile, line) ) {
+    while (std::getline(infile, line)) {
         std::string buff;
         std::string interface;
         std::stringstream ss(line);
@@ -166,10 +176,25 @@ VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     }
 }
 
-/*************************************************************
- * DESTRUCTOR
- *************************************************************/
-VisualHFSM::~VisualHFSM () {}
+void VisualHFSM::getJdeRobotCommInterfaces() {
+    system("/usr/local/bin/getinterfaces_new.sh /usr/local/include/jderobot/comm/interfaces > /tmp/allinterfaces_new.txt");
+    std::ifstream infile("/tmp/allinterfaces_new.txt");
+    std::string line;
+    while (std::getline(infile, line)) {
+        std::string buff;
+        std::string interface;
+        std::stringstream ss(line);
+        int i = 0;
+        while (ss >> buff) {
+            if (i == 0) {   // getting the interface
+                interface = std::string(buff);
+            } else { // getting the file header
+                this->mapInterfacesHeader[interface] = buff;
+            }
+            i++;
+        }
+    }
+}
 
 /*************************************************************
  * METHODS FOR SIGNALS

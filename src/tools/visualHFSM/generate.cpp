@@ -48,6 +48,7 @@ Generate::Generate ( std::list<SubAutomata> subautomataList, std::string cpppath
 	this->mapTab[T_FIVE] = std::string("\t\t\t\t\t");
 	this->mapTab[T_SIX] = std::string("\t\t\t\t\t\t");
 	this->mapTab[T_SEVEN] = std::string("\t\t\t\t\t\t\t");
+    this->serverType = 1; // by default using ICE interfaces
 }
 
 /*************************************************************
@@ -609,6 +610,7 @@ void Generate::generateMain () {
 void Generate::generateCfg () {
 	std::string interfaceName;
 	std::string proxyName;
+    this->fs << "# 0 -> Deactivate, 1 -> Ice , 2 -> ROS" <<std::endl;
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ){
 		if(listInterfacesIterator->getInterface().compare("ArDroneExtra") == 0){
@@ -620,7 +622,10 @@ void Generate::generateCfg () {
 		if(proxyName.compare("") == 0){
 			proxyName = interfaceName;
 		}
+        this->fs << "automata." << listInterfacesIterator->getName() << ".Server=" << serverType << std::endl;
 		this->fs << "automata." << listInterfacesIterator->getName() << ".Proxy=" << proxyName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
+        this->fs << "automata." << listInterfacesIterator->getName() << ".Name=" << listInterfacesIterator->getName() << std::endl;
+        this->fs << std::endl;
 	}
 	this->fs.flush();
 }
@@ -700,8 +705,8 @@ void Generate::generateGenericHeaders_py(){
 	this-> fs << 
 "#!/usr/bin/python\n\
 # -*- coding: utf-8 -*-\n\n\
-import Ice\n\
 import easyiceconfig as EasyIce\n\
+import jderobotComm as comm\n\
 import sys, signal\n\
 sys.path.append('/usr/local/share/jderobot/python/visualHFSM_py')\n\
 import traceback, threading, time\n\
@@ -1192,16 +1197,14 @@ void Generate::generateSubautomatas_py(){
 void Generate::generateConnectToProxys_py(){
 	this->fs << 
 "	def connectToProxys(self):\n\
-		self.ic = EasyIce.initialize(sys.argv)\n\n";
+		self.ic = EasyIce.initialize(sys.argv)\n";
+    this->fs << "\t\tself.ic,self.node = comm.init(self.ic)\n\n";
 
 	boost::format fmt_iConnect( /* %1%: getName() %2%: getInterface() */
 "		# Contact to %1%\n\
-		%1% = self.ic.propertyToProxy('automata.%1%.Proxy')\n\
-		if(not %1%):\n\
-			raise Exception('could not create proxy with %1%')\n\
-		self.%1% = %2%Prx.checkedCast(%1%)\n\
+		self.%1% = comm.get%2%Client(self.ic, 'automata.%1%')\n\
 		if(not self.%1%):\n\
-			raise Exception('invalid proxy automata.%1%.Proxy')\n\
+			raise Exception('could not create client with %1%')\n\
 		print('%1% connected')\n\n");
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
@@ -1215,8 +1218,14 @@ void Generate::generateConnectToProxys_py(){
 
 void Generate::generateDestroyIc_py(){
 	this->fs << this->mapTab[T_ONE] << "def destroyIc(self):" << std::endl;
-	this->fs << this->mapTab[T_TWO] << "if(self.ic):" << std::endl;
-	this->fs << this->mapTab[T_THREE] << "self.ic.destroy()" << std::endl;
+    boost::format fmt_Client("\t\tself.%1%.stop()\n");
+    for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
+          listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
+        std::string iName = listInterfacesIterator->getName();
+        std::string iInterface = listInterfacesIterator->getInterface();
+        this->fs << boost::str(fmt_Client % iName);
+    }
+    this->fs << "\t\tcomm.destroy(self.ic, self.node)";
 	this->fs << std::endl << std::endl;
 }
 

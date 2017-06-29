@@ -277,6 +277,8 @@ private:
     bool replaceFile ( std::string& str, const std::string& character, std::string to );
 
     bool checkAll ();
+    void getInterfaces();
+    void getJdeRobotCommInterfaces();
 }; // Class VisualHFSM
 
 #endif // VISUALHFSM_H

@@ -108,6 +108,8 @@ private:
 	std::string getCppName ();
 	int getIdNodeFather(int subId, int subFatherId);
 
+    int serverType;
+
 }; // Class Generate
 
 #endif // GENERATE_H
