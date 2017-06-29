@@ -2,7 +2,7 @@
 // Created by frivas on 21/05/17.
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
 #include "ImageRingNode.h"
 #include <logger/Logger.h>
 
