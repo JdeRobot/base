@@ -33,16 +33,16 @@ namespace pantilt
 	
 	}
 	
-	Ice::Int PanTiltI::setPanTiltData(jderobot::PanTiltDataPtr const & data, Ice::Current const & c)
+	Ice::Int PanTiltI::setPTMotorsData(const jderobot::PTMotorsDataPtr& data, const Ice::Current& c)
 	{
-		int pp = data->panPos;
+		int pp = data->pan;
 		if (pp< EVILIB_minpan){
 			pp = EVILIB_minpan;
 		}
 		if (pp > EVILIB_maxpan){
 			pp = EVILIB_maxpan;
 		}
-		int tp = data->tiltPos;
+		int tp = data->tilt;
 		if (tp< EVILIB_mintilt){
 			tp = EVILIB_mintilt;
 		}
@@ -54,5 +54,22 @@ namespace pantilt
 		this->cam->Pan_TiltDrive(EVILIB_ABSOLUTE, EVILIB_max_pspeed, EVILIB_max_tspeed, pp, tp, EVILIB_NO_WAIT_COMP);
 
 		return 0;
+	}
+
+	jderobot::PTMotorsParamsPtr PanTiltI::getPTMotorsParams(Ice::Current const&){
+		jderobot::PTMotorsParams * data = new jderobot::PTMotorsParams();
+		data->maxPan = EVILIB_maxpan;
+		data->minPan = EVILIB_minpan;
+		data->maxTilt = EVILIB_maxtilt;
+		data->minTilt = EVILIB_mintilt;
+		data->maxPanSpeed = EVILIB_max_pspeed;
+		data->maxTiltSpeed = EVILIB_max_tspeed;
+
+		jderobot::PTMotorsParamsPtr dataptr (data);
+
+		return dataptr;
+
+
+
 	}
 }

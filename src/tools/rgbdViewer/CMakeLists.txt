@@ -40,9 +40,8 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     ${ZeroCIce_LIBRARIES}
     ${ZLIB_LIBRARIES}
 	${resourcelocator_LIBRARIES}
-		${GLOG_LIBRARIES}
-
-		)
+	${GLOG_LIBRARIES}
+	)
 
 install(TARGETS rgbdViewer
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/

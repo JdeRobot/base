@@ -7,8 +7,7 @@
 
 #include <jderobotutil/interfaceHandlers/CameraHandler.h>
 #include <jderobotutil/interfaceHandlers/CameraTask.h>
-#include <opencv2/videoio.hpp>
-#include <opencv2/videoio/videoio_c.h>
+#include <opencv2/opencv.hpp>
 #include "ConcurrentDevice.h"
 
 namespace openniServer {

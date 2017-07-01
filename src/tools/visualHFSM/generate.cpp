@@ -556,10 +556,10 @@ void Generate::generateMain () {
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
 		this->fs << "\t\t// Contact to " << listInterfacesIterator->getName() << std::endl;
-		this->fs << "\t\tIce::ObjectPrx " << listInterfacesIterator->getName() << " = ic->propertyToProxy(\"automata." << listInterfacesIterator->getName() << ".Proxy\");" << std::endl;
-		this->fs << "\t\tif (" << listInterfacesIterator->getName() << " == 0)" << std::endl;
+		this->fs << "\t\tIce::ObjectPrx temp_" << listInterfacesIterator->getName() << " = ic->propertyToProxy(\"automata." << listInterfacesIterator->getName() << ".Proxy\");" << std::endl;
+		this->fs << "\t\tif (temp_" << listInterfacesIterator->getName() << " == 0)" << std::endl;
 		this->fs << "\t\t\tthrow \"Could not create proxy with " << listInterfacesIterator->getName() << "\";" << std::endl;
-		this->fs << "\t\t" << listInterfacesIterator->getName() << " = jderobot::" << listInterfacesIterator->getInterface() << "Prx::checkedCast(" << listInterfacesIterator->getName() << ");" << std::endl;
+		this->fs << "\t\t" << listInterfacesIterator->getName() << " = jderobot::" << listInterfacesIterator->getInterface() << "Prx::checkedCast(temp_" << listInterfacesIterator->getName() << ");" << std::endl;
 		this->fs << "\t\tif (" << listInterfacesIterator->getName() << " == 0)" << std::endl;
 		this->fs << "\t\t\tthrow \"Invalid proxy automata." << listInterfacesIterator->getName() << ".Proxy\";" << std::endl;
 		this->fs << "\t\tstd::cout << \"" << listInterfacesIterator->getName() << " connected\" << std::endl;" << std::endl;
@@ -620,7 +620,7 @@ void Generate::generateCfg () {
 		if(proxyName.compare("") == 0){
 			proxyName = interfaceName;
 		}
-		this->fs << "automata." << listInterfacesIterator->getInterface() << ".Proxy=" << proxyName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
+		this->fs << "automata." << listInterfacesIterator->getName() << ".Proxy=" << proxyName << ":default -h " << listInterfacesIterator->getIp() << " -p " << listInterfacesIterator->getPort() << std::endl;
 	}
 	this->fs.flush();
 }
@@ -633,25 +633,13 @@ void Generate::generateCmake () {
 	this->fs << std::endl;
 	this->fs << "SET( SOURCE_FILES_AUTOMATA " << std::endl;
 	this->fs << "\t" << this->getCppName() << std::endl;
-	this->fs << "\t../visualHFSM/automatagui.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/point.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/node.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/transition.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/subautomata.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/guinode.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/guitransition.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/guisubautomata.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/popups/editnodedialog.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/popups/edittransitiondialog.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/popups/edittransitioncodedialog.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/popups/renamedialog.cpp" << std::endl;
-	this->fs << "\t../visualHFSM/popups/renametransitiondialog.cpp" << std::endl;
 	this->fs << ")" << std::endl;
 	this->fs << std::endl;
 	this->fs << "pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)" << std::endl;
 	this->fs << std::endl;
 	this->fs << "SET( INTERFACES_CPP_DIR /usr/local/include )" << std::endl;
 	this->fs << "SET( LIBS_DIR /usr/local/lib )" << std::endl;
+	this->fs << "SET( easyiceconfig_LIBRARIES ${LIBS_DIR}/jderobot/libeasyiceconfig.so)" << std::endl;
 	this->fs << std::endl;
 	this->fs << "SET( CMAKE_CXX_FLAGS \"-pthread\" ) # Opciones para el compilador" << std::endl;
 	this->fs << std::endl;
@@ -673,6 +661,8 @@ void Generate::generateCmake () {
 	this->fs << "\t${goocanvasmm_INCLUDE_DIRS}" << std::endl;
 	this->fs << ")" << std::endl;
 	this->fs << std::endl;
+    this->fs << "SET(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -Wall -std=c++11\")" << std::endl;
+    this->fs << std::endl;
 	this->fs << "link_directories(${GTKMM_LIBRARY_DIRS} ${easyiceconfig_LIBRARY_DIRS})" << std::endl;
 	this->fs << std::endl;
 	this->fs << "add_executable ("<< this->execpath << " ${SOURCE_FILES_AUTOMATA})" << std::endl;
@@ -683,6 +673,7 @@ void Generate::generateCmake () {
 	this->fs << "\t${GTKMM_LIBRARIES}" << std::endl;
 	this->fs << "\t${easyiceconfig_LIBRARIES}" << std::endl;
 	this->fs << "\t${goocanvasmm_LIBRARIES}" <<std::endl;
+    this->fs << "\t${LIBS_DIR}/jderobot/libvisualHFSMlib.so" << std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
 	this->fs << "\tIce" << std::endl;
@@ -1205,12 +1196,12 @@ void Generate::generateConnectToProxys_py(){
 
 	boost::format fmt_iConnect( /* %1%: getName() %2%: getInterface() */
 "		# Contact to %1%\n\
-		%1% = self.ic.propertyToProxy('automata.%2%.Proxy')\n\
+		%1% = self.ic.propertyToProxy('automata.%1%.Proxy')\n\
 		if(not %1%):\n\
 			raise Exception('could not create proxy with %1%')\n\
 		self.%1% = %2%Prx.checkedCast(%1%)\n\
 		if(not self.%1%):\n\
-			raise Exception('invalid proxy automata.%2%.Proxy')\n\
+			raise Exception('invalid proxy automata.%1%.Proxy')\n\
 		print('%1% connected')\n\n");
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();

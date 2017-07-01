@@ -62,6 +62,8 @@ Sensors::Sensors(Ice::CommunicatorPtr ic)
         try{
             /*cast to CMDVelPrx*/
             cmdprx = jderobot::CMDVelPrx::checkedCast(basecmd);
+            std::string temp;
+
             if (0==cmdprx)
                 throw "CMDVel -> Invalid proxy";
 
@@ -126,6 +128,7 @@ void Sensors::sendVelocitiesToUAV(float vx,float vy,float vz,float roll,float pi
 {
 	mutexDrone.lock();
         jderobot::CMDVelDataPtr vel=new jderobot::CMDVelData();
+
         vel->linearX=vx;
         vel->linearY=vy;
         vel->linearZ=vz;

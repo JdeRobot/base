@@ -41,17 +41,13 @@ macro(configure_file_python input output)
 endmacro()
 
 
-#macro configure al filoes of a module for python2 and python3
-macro(configure_module_python module)
-  file(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${ModuleName}/ *.in)
-
+#macro configure al files of a module for python2 and python3
+macro(configure_module_python ModuleName)
+  file(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/ ${ModuleName}/*.in)
   foreach(file ${files})
     string(REGEX REPLACE "\\.in$" "" f "${file}")
-
     configure_file_python(${file} ${f})
-
   endforeach(file ${files})
-  
 endmacro()
 
 

@@ -111,8 +111,8 @@ class TeleopWidget(QWidget):
         w_normalized = float("{0:.2f}".format(w_normalized))
 
         #print "v: %f w: %f" % (v_normalized,w_normalized)
-        if self.id == 0:
+        if self.id == 1:
             self.winParent.setZYawValues(v_normalized,w_normalized*math.pi)
-        elif self.id == 1:
+        elif self.id == 0:
             self.winParent.setXYValues(w_normalized,v_normalized)
         painter.drawImage(self.line.x()-self.qimage.width()/2, self.line.y()-self.qimage.height()/2, self.qimage);

@@ -1,4 +1,12 @@
-project (jderobot)
+IF(NOT DEFINED ENABLE_ROS)
+  SET(ENABLE_ROS ON)
+ENDIF(NOT DEFINED ENABLE_ROS)
+
+if(ENABLE_ROS)
+  project (jderobot)
+else()
+  project (jderobot-only-ice)
+endif()
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -260,10 +268,10 @@ include(scripts/metapackages/FindMetapackages.cmake)
 
 SET (PACKAGE_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
 set(PACKAGE_DEPENDS "${DEPS}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/jderobot-deps_${PACKAGE_VERSION}_all.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-deps_${PACKAGE_VERSION}_all.info)
 
 set(PACKAGE_DEPENDS "${DEPS_DEV}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev_${PACKAGE_VERSION}_all.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-deps-dev_${PACKAGE_VERSION}_all.info)
 
 execute_process(
     COMMAND ${MAKE_PACKAGE_EXECUTABLE}

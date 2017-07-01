@@ -36,11 +36,11 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
     ic = EasyIce.initialize(sys.argv)
-    camera = CameraClient(ic, "UavViewer.Camera", True)
-    navdata = NavDataClient(ic, "UavViewer.Navdata", True)
-    pose = Pose3DClient(ic, "UavViewer.Pose3D", True)
-    cmdvel = CMDVel(ic, "UavViewer.CMDVel")
-    extra = Extra(ic, "UavViewer.Extra")
+    camera = CameraClient(ic, "UAVViewer.Camera", True)
+    navdata = NavDataClient(ic, "UAVViewer.Navdata", True)
+    pose = Pose3DClient(ic, "UAVViewer.Pose3D", True)
+    cmdvel = CMDVel(ic, "UAVViewer.CMDVel")
+    extra = Extra(ic, "UAVViewer.Extra")
 
 
     app = QApplication(sys.argv)

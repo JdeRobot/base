@@ -10,7 +10,7 @@
 #include <jderobotutil/interfaceHandlers/CameraTask.h>
 #include <logger/Logger.h>
 #include <utils/SyncController.h>
-#include <opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
 #include "SyncTask.h"
 
 namespace replayer {
