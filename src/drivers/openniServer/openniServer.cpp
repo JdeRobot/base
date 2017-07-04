@@ -192,6 +192,8 @@ int main(int argc, char** argv){
 		pc1 = new openniServer::PointCloudServer(objPrefix,prop,device);
 		adapter->add(pc1 , ic->stringToIdentity(Name));
 		LOG(INFO) << "              -------- openniServer: Component: PointCloud created successfully(" + Endpoints + "@" + Name ;
+		if (namingService)
+			namingService->bind(Name, Endpoints, pc1->ice_staticId());
 	}
 
 
@@ -202,6 +204,8 @@ int main(int argc, char** argv){
 		rgbdServer = new openniServer::RGBDServer(objPrefix,prop,device);
 		adapter->add(rgbdServer , ic->stringToIdentity(Name));
 		LOG(INFO) << "              -------- openniServer: Component: rgbd created successfully(" + Endpoints + "@" + Name ;
+		if (namingService)
+			namingService->bind(Name, Endpoints, rgbdServer->ice_staticId());
 	}
 
 	adapter->activate();
