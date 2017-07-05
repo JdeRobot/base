@@ -39,8 +39,9 @@ getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
 				pm = new PublisherMotors(0, nullptr, nodeName, topic);
 				pm->start();
 				client = (JdeRobotComm::MotorsClient*) pm;
+            #else
+				throw "ERROR: ROS is not available";
 			#endif
-			throw "ERROR: ROS is not available";
 		 	break;
 		}
 		default:
