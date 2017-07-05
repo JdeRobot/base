@@ -14,8 +14,6 @@ macro(configure_jderobotcomm_py in)
   
 endmacro()
 
-set (roscpp_FOUND FALSE)
-
 if(roscpp_FOUND)
     configure_jderobotcomm_py(ros.in)
 ELSE()
