@@ -107,7 +107,7 @@
     </joint>
 
 <plugin name="carMotors" filename="libcarMotors.so"/>
-<plugin name="pose3d" filename="libcarPose3D.so"/>
+<!--<plugin name="pose3d" filename="libcarPose3D.so"/>-->
             
   </model>
 </sdf>
