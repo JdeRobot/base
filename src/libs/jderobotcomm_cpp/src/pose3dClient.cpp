@@ -40,8 +40,9 @@ getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix){
 				lc = new ListenerPose(0, nullptr, nodeName, topic);
 				lc->start();
 				client = (JdeRobotComm::Pose3dClient*) lc;
+            #else
+				throw "ERROR: ROS is not available";
 			#endif
-			throw "ERROR: ROS is not available";
 		 	break;
 		}
 		default:

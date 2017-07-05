@@ -58,8 +58,10 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 				lc = new ListenerCamera(0, nullptr, nodeName, topic);
 				lc->start();
 				client = (JdeRobotComm::CameraClient*) lc;
+            #else
+				throw "ERROR: ROS is not available";
 			#endif
-			throw "ERROR: ROS is not available";
+
 		 	break;
 		}
 		default:
