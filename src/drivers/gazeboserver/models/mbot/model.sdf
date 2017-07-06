@@ -106,7 +106,7 @@
       </axis>
     </joint>
 
-<!--<plugin name="carMotors" filename="libcarMotors.so"/>-->
+<plugin name="carMotors" filename="libholoCarMotors.so"/>
 <!--<plugin name="pose3d" filename="libcarPose3D.so"/>-->
             
   </model>
