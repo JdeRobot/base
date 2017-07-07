@@ -85,7 +85,7 @@ add_custom_command(TARGET visualHFSM POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualHFSM>/gui)
 
 add_custom_command(TARGET visualHFSM POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces_new.sh $<TARGET_FILE_DIR:visualHFSM>)
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh $<TARGET_FILE_DIR:visualHFSM>)
 
     
 

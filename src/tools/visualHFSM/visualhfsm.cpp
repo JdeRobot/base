@@ -177,8 +177,8 @@ void VisualHFSM::getInterfaces() {
 }
 
 void VisualHFSM::getJdeRobotCommInterfaces() {
-    system("/usr/local/bin/getinterfaces_new.sh /usr/local/include/jderobot/comm/interfaces > /tmp/allinterfaces_new.txt");
-    std::ifstream infile("/tmp/allinterfaces_new.txt");
+    system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/comm/interfaces > /tmp/allinterfaces.txt");
+    std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
     while (std::getline(infile, line)) {
         std::string buff;

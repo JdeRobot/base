@@ -120,7 +120,6 @@ void Generate::generateHeaders () {
 
 void Generate::generateGenericHeaders () {
 	this->fs << "#include <Ice/Ice.h>" << std::endl;
-	this->fs << "#include <IceUtil/IceUtil.h>" << std::endl;
 	this->fs << "#include <easyiceconfig/EasyIce.h>" << std::endl;
 	this->fs << "#include <jderobot/visualHFSM/automatagui.h>" << std::endl;
 	this->fs << std::endl;
@@ -135,7 +134,7 @@ void Generate::generateGenericHeaders () {
 void Generate::generateSpecificHeaders () {
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ )
-		this->fs << "#include <jderobot/" << this->mapInterfacesHeader[listInterfacesIterator->getInterface()] << ".h>" << std::endl;
+		this->fs << "#include <jderobot/comm/" << this->mapInterfacesHeader[listInterfacesIterator->getInterface()] << ".hpp>" << std::endl;
 	if (this->listInterfaces->begin() != this->listInterfaces->end())
 		this->fs << std::endl;
 	this->fs.flush();
@@ -214,7 +213,7 @@ void Generate::generateVariables () {
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ )
-		this->fs << "jderobot::" << listInterfacesIterator->getInterface() << "Prx " << listInterfacesIterator->getName() << ";" << std::endl;
+		this->fs << "JdeRobotComm::" << listInterfacesIterator->getInterface() << "Client* " << listInterfacesIterator->getName() << ";" << std::endl;
 	this->fs << std::endl;
 	this->fs.flush();
 }
@@ -555,14 +554,14 @@ void Generate::generateMain () {
 
 	for ( std::list<IceInterface>::iterator listInterfacesIterator = this->listInterfaces->begin();
 			listInterfacesIterator != this->listInterfaces->end(); listInterfacesIterator++ ) {
-		this->fs << "\t\t// Contact to " << listInterfacesIterator->getName() << std::endl;
-		this->fs << "\t\tIce::ObjectPrx temp_" << listInterfacesIterator->getName() << " = ic->propertyToProxy(\"automata." << listInterfacesIterator->getName() << ".Proxy\");" << std::endl;
-		this->fs << "\t\tif (temp_" << listInterfacesIterator->getName() << " == 0)" << std::endl;
-		this->fs << "\t\t\tthrow \"Could not create proxy with " << listInterfacesIterator->getName() << "\";" << std::endl;
-		this->fs << "\t\t" << listInterfacesIterator->getName() << " = jderobot::" << listInterfacesIterator->getInterface() << "Prx::checkedCast(temp_" << listInterfacesIterator->getName() << ");" << std::endl;
-		this->fs << "\t\tif (" << listInterfacesIterator->getName() << " == 0)" << std::endl;
-		this->fs << "\t\t\tthrow \"Invalid proxy automata." << listInterfacesIterator->getName() << ".Proxy\";" << std::endl;
-		this->fs << "\t\tstd::cout << \"" << listInterfacesIterator->getName() << " connected\" << std::endl;" << std::endl;
+		this->fs << "\t\t// Connect to " << listInterfacesIterator->getName() << std::endl;
+        this->fs << "\t\t" << listInterfacesIterator->getName() << " = JdeRobotComm::get" << listInterfacesIterator->getInterface()
+                 << "Client(ic, \"automata." << listInterfacesIterator->getName() << "\");" << std::endl;
+        this->fs << "\t\t" << "if (" << listInterfacesIterator->getName() << " == NULL) {" << std::endl;
+        this->fs << "\t\t\t" << "throw \"Could not create client with name " << listInterfacesIterator->getName() << "\";"<< std::endl;
+        this->fs << "\t\t" << "} else {" << std::endl;
+        this->fs << "\t\t\tstd::cout << \"" <<  listInterfacesIterator->getName() << " connected\" << std::endl;" << std::endl;
+        this->fs << "\t\t" << "}" << std::endl;
 		this->fs << std::endl;
 	}
 	this->fs <<
@@ -642,9 +641,18 @@ void Generate::generateCmake () {
 	this->fs << std::endl;
 	this->fs << "pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)" << std::endl;
 	this->fs << std::endl;
+    this->fs << "find_package(roscpp QUIET)" << std::endl;
+    this->fs << "if (roscpp_FOUND)" << std::endl;
+    this->fs << "\tfind_package(catkin REQUIRED COMPONENTS" << std::endl;
+    this->fs << "\t\troscpp" << std::endl << "\t\tstd_msgs" << std::endl << "\t\tcv_bridge" << std::endl;
+    this->fs << "\t\timage_transport" << std::endl << "\t\tnav_msgs" << std::endl << "\t\tgeometry_msgs" << std::endl;
+    this->fs << "\t)" << std::endl << "endif()" << std::endl;
 	this->fs << "SET( INTERFACES_CPP_DIR /usr/local/include )" << std::endl;
 	this->fs << "SET( LIBS_DIR /usr/local/lib )" << std::endl;
-	this->fs << "SET( easyiceconfig_LIBRARIES ${LIBS_DIR}/jderobot/libeasyiceconfig.so)" << std::endl;
+	this->fs << "SET( easyiceconfig_LIBRARIES easyiceconfig)" << std::endl;
+    this->fs << "SET(jderobotcomm_LIBRARY_DIRS ${LIBS_DIR}/jderobot)" << std::endl <<
+            "SET(jderobotcomm_LIBRARIES jderobotcomm)" << std::endl;
+
 	this->fs << std::endl;
 	this->fs << "SET( CMAKE_CXX_FLAGS \"-pthread\" ) # Opciones para el compilador" << std::endl;
 	this->fs << std::endl;
@@ -660,29 +668,34 @@ void Generate::generateCmake () {
 	this->fs << "\t/usr/local/include/jderobot" << std::endl;
 	this->fs << "\t${INTERFACES_CPP_DIR}" << std::endl;
 	this->fs << "\t${easyiceconfig_INCLUDE_DIRS}" << std::endl;
-	this->fs << "\t${LIBS_DIR}" << std::endl;
 	this->fs << "\t${CMAKE_CURRENT_SOURCE_DIR}" << std::endl;
 	this->fs << "\t${GTKMM_INCLUDE_DIRS}" << std::endl;
 	this->fs << "\t${goocanvasmm_INCLUDE_DIRS}" << std::endl;
+    this->fs << "\t${roscpp_INCLUDE_DIRS}" << std::endl;
 	this->fs << ")" << std::endl;
 	this->fs << std::endl;
     this->fs << "SET(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -Wall -std=c++11\")" << std::endl;
     this->fs << std::endl;
-	this->fs << "link_directories(${GTKMM_LIBRARY_DIRS} ${easyiceconfig_LIBRARY_DIRS})" << std::endl;
+	this->fs << "link_directories(${GTKMM_LIBRARY_DIRS} ${easyiceconfig_LIBRARY_DIRS} ${jderobotcomm_LIBRARY_DIRS})" << std::endl;
 	this->fs << std::endl;
 	this->fs << "add_executable ("<< this->execpath << " ${SOURCE_FILES_AUTOMATA})" << std::endl;
 	this->fs << std::endl;
 	this->fs << "SET(goocanvasmm_LIBRARIES goocanvasmm-2.0 goocanvas-2.0)" << std::endl;
 	this->fs << std::endl;
 	this->fs << "TARGET_LINK_LIBRARIES (" << this->execpath << std::endl;
+    this->fs << "\t${jderobotcomm_LIBRARIES}" << std::endl;
 	this->fs << "\t${GTKMM_LIBRARIES}" << std::endl;
 	this->fs << "\t${easyiceconfig_LIBRARIES}" << std::endl;
 	this->fs << "\t${goocanvasmm_LIBRARIES}" <<std::endl;
-    this->fs << "\t${LIBS_DIR}/jderobot/libvisualHFSMlib.so" << std::endl;
-	this->fs << "\t${LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
-	this->fs << "\t${LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
+    this->fs << "\tvisualHFSMlib" << std::endl;
+	this->fs << "\tJderobotInterfaces" << std::endl;
+	this->fs << "\tjderobotutil" << std::endl;
+    this->fs << "\t${catkin_LIBRARIES}" << std::endl;
+    this->fs << "\tcolorspacesmm" << std::endl;
 	this->fs << "\tIce" << std::endl;
 	this->fs << "\tIceUtil" << std::endl;
+    this->fs << "\tIceStorm" << std::endl;
+    this->fs << "\tglog" << std::endl;
 	this->fs << ")" << std::endl;
 	
 	this->fs.flush();
