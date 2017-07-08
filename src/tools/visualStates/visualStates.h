@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef VISUALHFSM_H
-#define VISUALHFSM_H
+#ifndef VISUALSTATES_H
+#define VISUALSTATES_H
 
 #include <iostream>
 #include <stdio.h>
@@ -69,13 +69,13 @@ typedef enum TypeInitial {
 } TypeInitial;
 
 // Definition of this class
-class VisualHFSM : public Gtk::Dialog {
+class VisualStates : public Gtk::Dialog {
 public:
     // Constructor
-    VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade );
+    VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade );
         
     // Destructor
-    virtual ~VisualHFSM ();
+    virtual ~VisualStates ();
 
     // Methods for signals from save and load files
     void on_save_file ( std::string path );
@@ -277,6 +277,6 @@ private:
     bool replaceFile ( std::string& str, const std::string& character, std::string to );
 
     bool checkAll ();
-}; // Class VisualHFSM
+}; // Class VisualStates
 
-#endif // VISUALHFSM_H
+#endif // VISUALSTATES_H
