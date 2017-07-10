@@ -25,7 +25,7 @@ namespace openniServer {
     private:
         class ReplyCloud : public IceUtil::Thread {
         public:
-            ReplyCloud(RGBDServer *server, ConcurrentDevicePtr device, int fpsIn);
+            ReplyCloud(RGBDServer *server, ConcurrentDevicePtr device, int fpsIn,bool mirror);
 
             void run();
 
@@ -43,6 +43,7 @@ namespace openniServer {
             cv::Size cameraSize;
             bool _done;
             IceUtil::Mutex mutex;
+            bool mirror;
         };
 
         typedef IceUtil::Handle <ReplyCloud> ReplyCloudPtr;
@@ -51,6 +52,8 @@ namespace openniServer {
         jderobot::rgbData data;
         IceUtil::ThreadControl control;
         ConcurrentDevicePtr device;
+        bool mirror;
+
 
     };
 

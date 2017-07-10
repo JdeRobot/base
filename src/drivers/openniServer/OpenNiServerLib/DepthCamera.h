@@ -23,12 +23,13 @@ namespace openniServer {
      private:
         class ReplyTask: public jderobot::CameraTask {
         public:
-            ReplyTask(const jderobot::Camera* camera, int fps,ConcurrentDevicePtr device);
+            ReplyTask(const jderobot::Camera* camera, int fps,ConcurrentDevicePtr device,bool mirror);
 
             virtual void createCustomImage(cv::Mat& image);
 
         private:
             ConcurrentDevicePtr device;
+            bool mirror;
         };
 
 
@@ -38,6 +39,8 @@ namespace openniServer {
         ConcurrentDevicePtr device;
         int framerateN;
         IceUtil::ThreadControl control;
+        bool mirror;
+
 
     };
 }

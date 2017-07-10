@@ -7,7 +7,13 @@
     <include>
         <uri>model://sun</uri>
     </include>
-
+    <light name='point_light1' type='point'>
+      <pose frame=''>2.3 -0.25 1 0 0 0</pose>
+    </light>
+    <light name='point_light2' type='point'>
+      <pose frame=''>2.3 0.25 1 0 0 0</pose>
+    </light>
+    
     <!-- Pioneer2dx model -->
     <include>
       <uri>model://turtlebotJde2cam</uri>
