@@ -24,7 +24,7 @@
  * CONSTRUCTOR
  *************************************************************/
 AutomataGui::AutomataGui(int argc, char** argv) : dispatcher(){
-	this->app = Gtk::Application::create("jderobot.visualHFSM.automatagui");
+	this->app = Gtk::Application::create("jderobot.visualStates.automatagui");
 }
 
 /*************************************************************

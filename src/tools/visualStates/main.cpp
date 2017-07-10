@@ -24,7 +24,7 @@
 #include <resourcelocator/gladelocator.hpp> 
 
 int main (int argc, char **argv) {
-    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "jderobot.visualhfsm");
+    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "jderobot.visualstates");
 
 
     //Load the Glade file and instiate its widgets:

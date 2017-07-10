@@ -49,7 +49,7 @@ void SaveFile::init () {
 	#endif //LIBXMLCPP_EXCEPTIONS_ENABLED
 
 		xmlpp::Document document;
-		xmlpp::Element* nodeRoot = document.create_root_node("VisualHFSM", "", "");
+		xmlpp::Element* nodeRoot = document.create_root_node("VisualStates", "", "");
 
 		for ( std::list<GuiSubautomata>::iterator subListIterator = this->subautomataList->begin();
 			  subListIterator != this->subautomataList->end(); subListIterator++ ) { // for every subautomata

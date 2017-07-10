@@ -67,7 +67,7 @@ void LoadFileDialog::init () {
                                                 &LoadFileDialog::on_button_cancel));
 
         Glib::RefPtr<Gtk::FileFilter> filter_xml = Gtk::FileFilter::create();
-        filter_xml->set_name("VisualHFSM files");
+        filter_xml->set_name("VisualStates files");
         filter_xml->add_mime_type("text/xml");
         this->filechooserdialog->add_filter(filter_xml);
 

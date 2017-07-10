@@ -122,7 +122,7 @@ void Generate::generateGenericHeaders () {
 	this->fs << "#include <Ice/Ice.h>" << std::endl;
 	this->fs << "#include <IceUtil/IceUtil.h>" << std::endl;
 	this->fs << "#include <easyiceconfig/EasyIce.h>" << std::endl;
-	this->fs << "#include <jderobot/visualHFSM/automatagui.h>" << std::endl;
+	this->fs << "#include <jderobot/visualStates/automatagui.h>" << std::endl;
 	this->fs << std::endl;
 	for ( std::list<std::string>::iterator listLibsIterator = this->listLibraries.begin();
 			listLibsIterator != this->listLibraries.end(); listLibsIterator++ )
@@ -673,7 +673,7 @@ void Generate::generateCmake () {
 	this->fs << "\t${GTKMM_LIBRARIES}" << std::endl;
 	this->fs << "\t${easyiceconfig_LIBRARIES}" << std::endl;
 	this->fs << "\t${goocanvasmm_LIBRARIES}" <<std::endl;
-    this->fs << "\t${LIBS_DIR}/jderobot/libvisualHFSMlib.so" << std::endl;
+    this->fs << "\t${LIBS_DIR}/jderobot/libvisualStateslib.so" << std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
 	this->fs << "\t${LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
 	this->fs << "\tIce" << std::endl;
@@ -703,7 +703,7 @@ void Generate::generateGenericHeaders_py(){
 import Ice\n\
 import easyiceconfig as EasyIce\n\
 import sys, signal\n\
-sys.path.append('/usr/local/share/jderobot/python/visualHFSM_py')\n\
+sys.path.append('/usr/local/share/jderobot/python/visualStates_py')\n\
 import traceback, threading, time\n\
 from automatagui import AutomataGui, QtGui, GuiSubautomata\n\n";
 
