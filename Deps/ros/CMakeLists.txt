@@ -19,9 +19,10 @@ if (ENABLE_ROS)
 	      image_transport
 	      nav_msgs
 	      geometry_msgs
+	      kobuki_gazebo
 	    )
 	
-		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs)
+		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-kobuki-gazebo ros-kinetic-turtlebot-gazebo)
 
 	#	list(APPEND DEPS_DEV )
 	else()
