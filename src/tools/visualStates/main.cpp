@@ -20,11 +20,11 @@
  */
 
 #include <unistd.h>
-#include "visualhfsm.h"
+#include "visualStates.h"
 #include <resourcelocator/gladelocator.hpp> 
 
 int main (int argc, char **argv) {
-    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "jderobot.visualhfsm");
+    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "jderobot.visualstates");
 
 
     //Load the Glade file and instiate its widgets:
@@ -44,12 +44,12 @@ int main (int argc, char **argv) {
     }
 
     //Get the GtkBuilder-instantiated dialog:
-    VisualHFSM* visualhfsm = 0;
-    refBuilder->get_widget_derived("DialogDerived", visualhfsm);
-    if (visualhfsm) //Start:
-        app->run(*visualhfsm);
+    VisualStates* visualStates = 0;
+    refBuilder->get_widget_derived("DialogDerived", visualStates);
+    if (visualStates) //Start:
+        app->run(*visualStates);
 
-    delete visualhfsm;
+    delete visualStates;
 
     return 0;
 }

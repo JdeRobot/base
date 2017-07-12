@@ -19,28 +19,28 @@
  *
  */
 
-#include "loadfiledialog.h"
+#include "savefiledialog.h"
 
 /*************************************************************
  * CONSTRUCTOR
  *************************************************************/
-LoadFileDialog::LoadFileDialog () {}
+SaveFileDialog::SaveFileDialog () {}
 
 /*************************************************************
  * DESTRUCTOR
  *************************************************************/
-LoadFileDialog::~LoadFileDialog () {
+SaveFileDialog::~SaveFileDialog () {
 
 }
 
 /*************************************************************
  * POPUP INITIALIZER
  *************************************************************/
-void LoadFileDialog::init () {
+void SaveFileDialog::init () {
     bool fine = true;
     // Load the GtkBuilder file and instantiate its widgets:
     Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
-    const std::string gladepath = resourcelocator::findGladeFile("open.glade");
+    const std::string gladepath = resourcelocator::findGladeFile("save.glade");
     try{
         refBuilder->add_from_file(gladepath);
     } catch ( const Glib::FileError& ex ) {
@@ -57,17 +57,17 @@ void LoadFileDialog::init () {
     if (fine) {
         refBuilder->get_widget("filechooserdialog", this->filechooserdialog);
 
-        refBuilder->get_widget("button_open", this->button_accept);
+        refBuilder->get_widget("button_save", this->button_accept);
         refBuilder->get_widget("button_cancel", this->button_cancel);
 
         this->button_accept->signal_clicked().connect(sigc::mem_fun(this,
-                                                &LoadFileDialog::on_button_accept));
+                                                &SaveFileDialog::on_button_accept));
 
         this->button_cancel->signal_clicked().connect(sigc::mem_fun(this,
-                                                &LoadFileDialog::on_button_cancel));
+                                                &SaveFileDialog::on_button_cancel));
 
         Glib::RefPtr<Gtk::FileFilter> filter_xml = Gtk::FileFilter::create();
-        filter_xml->set_name("VisualHFSM files");
+        filter_xml->set_name("VisualStates files");
         filter_xml->add_mime_type("text/xml");
         this->filechooserdialog->add_filter(filter_xml);
 
@@ -81,25 +81,28 @@ void LoadFileDialog::init () {
 }
 
 /*************************************************************
+ * SIGNAL ACCESSOR
+ *************************************************************/
+SaveFileDialog::type_signal SaveFileDialog::signal_path () {
+    return m_signal;
+}
+
+/*************************************************************
  * PRIVATE METHODS
  *************************************************************/
-void LoadFileDialog::on_button_accept () {
+void SaveFileDialog::on_button_accept () {
     this->filepath = this->filechooserdialog->get_filename();
     delete this->filechooserdialog;
     this->m_signal.emit(this->filepath);
 }
 
-void LoadFileDialog::on_button_cancel () {
+void SaveFileDialog::on_button_cancel () {
     delete this->filechooserdialog;
 }
 
-bool LoadFileDialog::on_key_released ( GdkEventKey* event ) {
+bool SaveFileDialog::on_key_released ( GdkEventKey* event ) {
     if (event->keyval == GDK_KEY_Return)
         this->on_button_accept();
 
     return true;
-}
-
-LoadFileDialog::type_signal LoadFileDialog::signal_path() {
-    return m_signal;
 }

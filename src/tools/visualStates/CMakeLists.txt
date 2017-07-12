@@ -1,6 +1,6 @@
 IF (goocanvasmm_INCLUDE_DIRS)
 
-SET( SOURCE_FILES_VISUALHFSM
+SET( SOURCE_FILES_VISUALSTATES
 	iceinterface.cpp
 	point.cpp
 	node.cpp
@@ -23,7 +23,7 @@ SET( SOURCE_FILES_VISUALHFSM
 	popups/timerdialog.cpp
 	savefile.cpp
 	xmlparser.cpp
-	visualhfsm.cpp
+	visualStates.cpp
 	main.cpp
 )
 
@@ -59,10 +59,10 @@ include_directories (
     ${resourcelocator_INCLUDE_DIRS}
 )
 
-add_executable (visualHFSM ${SOURCE_FILES_VISUALHFSM})
-add_library(visualHFSMlib ${SOURCE_FILES_RUNTIMEGUI})
+add_executable (visualStates ${SOURCE_FILES_VISUALSTATES})
+add_library(visualStateslib ${SOURCE_FILES_RUNTIMEGUI})
 
-TARGET_LINK_LIBRARIES ( visualHFSM 
+TARGET_LINK_LIBRARIES ( visualStates
     ${gtkmm3_LIBRARIES}
     ${goocanvasmm_LIBRARIES}
     ${gtk3_LIBRARIES}
@@ -72,7 +72,7 @@ TARGET_LINK_LIBRARIES ( visualHFSM
 
 		)
 
-TARGET_LINK_LIBRARIES ( visualHFSMlib
+TARGET_LINK_LIBRARIES ( visualStateslib
 		${gtkmm3_LIBRARIES}
 		${goocanvasmm_LIBRARIES}
 		${gtk3_LIBRARIES}
@@ -81,20 +81,20 @@ TARGET_LINK_LIBRARIES ( visualHFSMlib
 		${GLOG_LIBRARIES}
 		)
 
-add_custom_command(TARGET visualHFSM POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualHFSM>/gui)
+add_custom_command(TARGET visualStates POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualStates>/gui)
 
-add_custom_command(TARGET visualHFSM POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh $<TARGET_FILE_DIR:visualHFSM>)
+add_custom_command(TARGET visualStates POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh $<TARGET_FILE_DIR:visualStates>)
 
     
 
-    install(TARGETS visualHFSM
+    install(TARGETS visualStates
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
     COMPONENT tools
     )
 
-	install(TARGETS visualHFSMlib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot/ COMPONENT tools)
+	install(TARGETS visualStateslib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot/ COMPONENT tools)
 
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)

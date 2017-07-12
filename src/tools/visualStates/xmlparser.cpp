@@ -25,7 +25,7 @@
  * CONSTRUCTOR
  *************************************************************/
 MySaxParser::MySaxParser () : xmlpp::SaxParser() {
-    this->mapStringValues["VisualHFSM"] = E_VISUALHFSM;
+    this->mapStringValues["VisualStates"] = E_VISUALSTATES;
     this->mapStringValues["SubAutomata"] = E_SUBAUTOMATA;
     this->mapStringValues["state"] = E_STATE;
     this->mapStringValues["posx"] = E_POSX;
@@ -86,8 +86,8 @@ void MySaxParser::on_end_document () {
 void MySaxParser::on_start_element ( const Glib::ustring& name,
                                      const AttributeList& attributes ) {
     switch (this->mapStringValues[name.c_str()]) {
-        case E_VISUALHFSM :
-            this->option = E_VISUALHFSM;
+        case E_VISUALSTATES :
+            this->option = E_VISUALSTATES;
             break;
         case E_SUBAUTOMATA: {
             int idSubautomata, idFather;
@@ -260,7 +260,7 @@ void MySaxParser::on_end_element ( const Glib::ustring& name ) {
 
 void MySaxParser::on_characters ( const Glib::ustring& text ) {
     switch (this->option) {
-        case E_VISUALHFSM:
+        case E_VISUALSTATES:
             break;
         case E_SUBAUTOMATA:
             break;

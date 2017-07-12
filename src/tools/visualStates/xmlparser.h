@@ -35,7 +35,7 @@
 #include "iceinterface.h"
 
 typedef enum Element {
-    E_VISUALHFSM,
+    E_VISUALSTATES,
     E_SUBAUTOMATA,
     E_STATE,
     E_POSX,

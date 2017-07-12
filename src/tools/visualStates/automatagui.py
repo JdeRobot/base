@@ -25,7 +25,7 @@ from PyQt4 import QtGui, QtCore
 from treeModel import TreeModel
 import sys, signal, math
 from guisubautomata import GuiSubautomata
-from gui.runtimeGui import Ui_visualHFSM
+from gui.runtimeGui import Ui_visualStates
 from gui.additionalSubautWind import Ui_SubautomataWindow
 
 
@@ -44,7 +44,7 @@ class AdditionalWindow(QtGui.QWidget, Ui_SubautomataWindow):
 		self.close()
 
 
-class AutomataGui(QtGui.QMainWindow, Ui_visualHFSM):
+class AutomataGui(QtGui.QMainWindow, Ui_visualStates):
 
 	activeNodeSignal = QtCore.pyqtSignal(str)
 

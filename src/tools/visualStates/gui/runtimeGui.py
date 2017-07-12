@@ -23,11 +23,11 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_visualHFSM(object):
-    def setupUi(self, visualHFSM):
-        visualHFSM.setObjectName(_fromUtf8("visualHFSM"))
-        visualHFSM.resize(761, 553)
-        self.centralwidget = QtGui.QWidget(visualHFSM)
+class Ui_visualStates(object):
+    def setupUi(self, visualStates):
+        visualStates.setObjectName(_fromUtf8("visualStates"))
+        visualStates.resize(761, 553)
+        self.centralwidget = QtGui.QWidget(visualStates)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
@@ -69,25 +69,25 @@ class Ui_visualHFSM(object):
         self.schemaView.setObjectName(_fromUtf8("schemaView"))
         self.verticalLayout_9.addWidget(self.schemaView)
         self.horizontalLayout.addWidget(self.frameSchema)
-        visualHFSM.setCentralWidget(self.centralwidget)
+        visualStates.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(visualHFSM)
-        QtCore.QMetaObject.connectSlotsByName(visualHFSM)
+        self.retranslateUi(visualStates)
+        QtCore.QMetaObject.connectSlotsByName(visualStates)
 
-    def retranslateUi(self, visualHFSM):
-        visualHFSM.setWindowTitle(_translate("visualHFSM", "visualHFSM - runtimeGUI", None))
-        self.TreeViewLabel.setText(_translate("visualHFSM", "Tree VIew", None))
-        self.autofocus.setText(_translate("visualHFSM", "Autofocus", None))
-        self.upButton.setText(_translate("visualHFSM", "Up", None))
-        self.SchemaLabel.setText(_translate("visualHFSM", "Schema", None))
+    def retranslateUi(self, visualStates):
+        visualStates.setWindowTitle(_translate("visualStates", "visualStates - runtimeGUI", None))
+        self.TreeViewLabel.setText(_translate("visualStates", "Tree VIew", None))
+        self.autofocus.setText(_translate("visualStates", "Autofocus", None))
+        self.upButton.setText(_translate("visualStates", "Up", None))
+        self.SchemaLabel.setText(_translate("visualStates", "Schema", None))
 
 
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    visualHFSM = QtGui.QMainWindow()
-    ui = Ui_visualHFSM()
-    ui.setupUi(visualHFSM)
-    visualHFSM.show()
+    visualStates = QtGui.QMainWindow()
+    ui = Ui_visualStates()
+    ui.setupUi(visualStates)
+    visualStates.show()
     sys.exit(app.exec_())
 
