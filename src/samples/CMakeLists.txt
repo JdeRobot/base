@@ -1,0 +1,15 @@
+list_subdirectories( LIST_SAMPLES ${CMAKE_CURRENT_SOURCE_DIR} 1)
+
+IF(NOT DEFINED build-default)
+	SET(build-default ON)
+ENDIF(NOT DEFINED build-default)
+
+FOREACH (sample ${LIST_SAMPLES})
+	if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${sample}/CMakeLists.txt)
+		option(build_${sample} "Build sample ${sample}" ${build-default})
+		IF(build_${sample})
+			MESSAGE(STATUS "Processing sample ${sample}")
+			ADD_SUBDIRECTORY (${sample})
+		ENDIF(build_${sample})
+	endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${sample}/CMakeLists.txt)
+ENDFOREACH()
