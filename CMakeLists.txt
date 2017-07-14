@@ -154,6 +154,9 @@ list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)
 # Install Deps cmake's tree
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
 
+# Install ROS Launch files
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+
 
 
 
