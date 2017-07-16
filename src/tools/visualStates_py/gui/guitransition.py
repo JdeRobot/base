@@ -193,6 +193,7 @@ class TransitionGraphicsItem(QGraphicsLineItem):
 	def createIdTextBox(self):
 		if self.textGraphics == None:
 			self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.name, self)
+			self.textGraphics.textChanged.connect(self.nameChanged)
 		else:
 			self.textGraphics.setPlainText(self.name)
 		textWidth = self.textGraphics.boundingRect().width()
@@ -206,3 +207,9 @@ class TransitionGraphicsItem(QGraphicsLineItem):
 		self.createDestinationLine()
 		self.createArrow()
 		self.createIdTextBox()
+
+
+	def nameChanged(self, name):
+		self.name = name
+		self.createIdTextBox()
+

@@ -174,3 +174,10 @@ class TreeModel(QAbstractItemModel):
 
 	def getChildren(self):
 		return self.rootNode.childItems
+
+
+	def getByDataId(self, id):
+		for item in self.getChildren():
+			if item.id == id:
+				return item
+		return None

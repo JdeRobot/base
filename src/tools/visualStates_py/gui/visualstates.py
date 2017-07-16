@@ -2,7 +2,8 @@
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor
-from . import automatascene, treemodel
+from gui.automatascene import AutomataScene, OpType
+from gui.treemodel import TreeModel
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
@@ -159,11 +160,11 @@ class VisualStates(QMainWindow):
 
 
     def stateAction(self):
-        self.automataScene.setOperationType(automatascene.OpType.ADDSTATE)
+        self.automataScene.setOperationType(OpType.ADDSTATE)
 
 
     def transitionAction(self):
-        self.automataScene.setOperationType(automatascene.OpType.ADDTRANSITION)
+        self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
 
     def timerAction(self):
@@ -208,7 +209,7 @@ class VisualStates(QMainWindow):
         dockWidget.setFeatures(QDockWidget.NoDockWidgetFeatures)
         dockWidget.setTitleBarWidget(QWidget())
         self.treeView = QTreeView()
-        self.treeModel = treemodel.TreeModel()
+        self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
         self.treeView.setColumnWidth(0, 50)
         dockWidget.setWidget(self.treeView)
@@ -217,10 +218,11 @@ class VisualStates(QMainWindow):
 
     def createStateCanvas(self):
         self.stateCanvas = QGraphicsView()
-        self.automataScene = automatascene.AutomataScene()
+        self.automataScene = AutomataScene()
         self.automataScene.setSceneRect(0,0, 2000, 2000)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
+        self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.stateCanvas.setScene(self.automataScene)
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)
@@ -234,4 +236,12 @@ class VisualStates(QMainWindow):
 
     def transitionInserted(self, tran):
         print('transition inserted:' + tran.name)
+
+
+    def stateNameChanged(self, state):
+        dataItem = self.treeModel.getByDataId(state.id)
+        if dataItem != None:
+            dataItem.name = state.name
+            self.treeModel.layoutChanged.emit()
+
 

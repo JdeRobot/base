@@ -34,6 +34,10 @@ PEN_FOCUS_WIDTH = 3
 class StateGraphicsItem(QGraphicsObject):
 
 	posChanged = pyqtSignal('QGraphicsItem')
+	stateNameChanged = pyqtSignal('QGraphicsItem')
+
+	stateTextEditStarted = pyqtSignal()
+	stateTextEditFinished = pyqtSignal()
 
 	def __init__(self, id, idSubSon, subAutomata, x, y, isInit, name='state'):
 		super().__init__()
@@ -62,6 +66,9 @@ class StateGraphicsItem(QGraphicsObject):
 		self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.name, self)
 		textWidth = self.textGraphics.boundingRect().width()
 		self.textGraphics.setPos(-textWidth/2,NODE_WIDTH-(NODE_WIDTH/2)+5)
+		self.textGraphics.textChanged.connect(self.nameChanged)
+		self.textGraphics.textEditStarted.connect(self.textEditStarted)
+		self.textGraphics.textEditFinished.connect(self.textEditFinished)
 
 		if self.isInit:
 			self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH/2, -INIT_WIDTH/2, INIT_WIDTH, INIT_WIDTH, self)
@@ -101,8 +108,6 @@ class StateGraphicsItem(QGraphicsObject):
 	def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
 		if self.dragging:
 			self.posChanged.emit(self)
-
-		print('state is moving pos:' + str(self.scenePos()))
 		super().mouseMoveEvent(qGraphicsSceneMouseEvent)
 
 
@@ -113,6 +118,21 @@ class StateGraphicsItem(QGraphicsObject):
 	def paint(self, qPainter, qStyleOptionGraphicsItem, qWidget_widget=None):
 		pass
 
+
+	def nameChanged(self, newName):
+		self.name = newName
+		textWidth = self.textGraphics.boundingRect().width()
+		# reposition to center the text
+		self.textGraphics.setPos(-textWidth / 2, NODE_WIDTH - (NODE_WIDTH / 2) + 5)
+		self.stateNameChanged.emit(self)
+
+
+	def textEditStarted(self):
+		self.stateTextEditStarted.emit()
+
+
+	def textEditFinished(self):
+		self.stateTextEditFinished.emit()
 
 
 	# def mouseDoubleClickEvent(self, event):
