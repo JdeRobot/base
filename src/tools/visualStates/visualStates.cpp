@@ -58,7 +58,7 @@ VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
     // get the logo image
     refBuilder->get_widget("jderobotlogo", this->logo);
     //TODO: we assume a fixed installation path, we should get the installation path from CMAKE maybe
-    this->logo->set("/usr/local/share/jderobot/resources/jderobot.png");
+    this->logo->set("/opt/jderobot/share/jderobot/resources/jderobot.png");
 
     // ASSIGNING SIGNALS
     // Of the menu items

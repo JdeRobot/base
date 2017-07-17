@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export PATH=$PATH:@CMAKE_INSTALL_PREFIX@/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:@CMAKE_INSTALL_PREFIX@/lib
+export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:@CMAKE_INSTALL_PREFIX@
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:@CMAKE_INSTALL_PREFIX@/lib/pkgconfig
+export PYTHONPATH=$PYTHONPATH:@CMAKE_INSTALL_PREFIX@/lib/python2.7
+
+
+FILE=@CMAKE_INSTALL_PREFIX@/share/jderobot/gazebo/gazebo-setup.sh
+if [ -f $FILE ]; then
+   source $FILE
+fi
+

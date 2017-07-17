@@ -8,6 +8,8 @@ else()
   project (jderobot-only-ice)
 endif()
 
+set(CMAKE_INSTALL_PREFIX /opt/jderobot)
+
 cmake_minimum_required(VERSION 2.8)
 
 # build presents
@@ -138,6 +140,12 @@ STRING(REGEX REPLACE ";" ", " DEPS_DEV "${DEPS_DEV}")
 # START RECURSIVE
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+configure_file(
+      setup.bash.in
+      setup.bash
+      @ONLY
+  )
+
 
 
 ###################
@@ -156,6 +164,9 @@ INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_P
 
 # Install ROS Launch files
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+
+# Install setup.bash
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.bash DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
 
 
 
@@ -204,7 +215,7 @@ SET (CPACK_SOURCE_GENERATOR TGZ)
 SET (CPACK_SET_DESTDIR ON)
 SET (CPACK_DEB_COMPONENT_INSTALL OFF)
 SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
+SET (CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
 
 # CPack version numbers for release tarball name.

@@ -13,6 +13,12 @@ if(ARDRONE_ALL_DEPS)
 
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -lIce -lIceUtil")
 
+	configure_file(
+    include/ardrone_server/ardrone_driver.h.in
+    include/ardrone_server/ardrone_driver.h
+    @ONLY
+)
+
 	include_directories(
 		${INTERFACES_CPP_DIR}
 		${OpenCV_INCLUDE_DIR}
@@ -28,7 +34,9 @@ if(ARDRONE_ALL_DEPS)
 		${ardronelib_LIBRARY_DIRS}
 		${easyiceconfig_LIBRARY_DIRS})
 
-	include_directories(include)
+	include_directories(include
+	${CMAKE_CURRENT_BINARY_DIR}/include
+	)
 
 
 	add_executable(ardrone_server src/ardrone_driver.cpp 

@@ -23,15 +23,15 @@
 class ARDroneDriver;
 
 
-#include "ardrone_sdk.h"
-#include "ardrone_parser.h"
+#include <ardrone_server/ardrone_sdk.h>
+#include <ardrone_server/ardrone_parser.h>
 #include <iostream>
 #include <vector>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Geometry>
 #include <Ice/Ice.h>
 
-#include "boost/date_time/posix_time/posix_time.hpp" 
+#include <boost/date_time/posix_time/posix_time.hpp> 
 
 #define _DEG2RAD 0.01745331111
 #define _RAD2DEG 57.2957184819
@@ -40,7 +40,7 @@ class ARDroneDriver;
 #define DRIVER_APPNAME "ardrone_server"
 #define CAMERA_QUEUE_SIZE (10)
 #define NAVDATA_QUEUE_SIZE (25)
-#define CONFIG_FILE_PATH "/usr/local/share/jderobot/conf/config/config.xml"
+#define CONFIG_FILE_PATH "@CMAKE_INSTALL_PREFIX@/share/jderobot/conf/config/config.xml"
 #define CONFIG_FILE_TMP "/tmp"
 #define LOOPRATE 30
 

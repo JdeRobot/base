@@ -637,9 +637,10 @@ void Generate::generateCmake () {
 	this->fs << std::endl;
 	this->fs << "pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)" << std::endl;
 	this->fs << std::endl;
-	this->fs << "SET( INTERFACES_CPP_DIR /usr/local/include )" << std::endl;
+	this->fs << "SET( INTERFACES_CPP_DIR /opt/jderobot/include )" << std::endl;
 	this->fs << "SET( LIBS_DIR /usr/local/lib )" << std::endl;
-	this->fs << "SET( easyiceconfig_LIBRARIES ${LIBS_DIR}/jderobot/libeasyiceconfig.so)" << std::endl;
+	this->fs << "SET( JDEROBOT_LIBS_DIR /opt/jderobot/lib )" << std::endl;
+	this->fs << "SET( easyiceconfig_LIBRARIES ${JDEROBOT_LIBS_DIR}/jderobot/libeasyiceconfig.so)" << std::endl;
 	this->fs << std::endl;
 	this->fs << "SET( CMAKE_CXX_FLAGS \"-pthread\" ) # Opciones para el compilador" << std::endl;
 	this->fs << std::endl;
@@ -652,10 +653,11 @@ void Generate::generateCmake () {
 	this->fs << ")" << std::endl;
 	this->fs << std::endl;
 	this->fs << "include_directories (" << std::endl;
-	this->fs << "\t/usr/local/include/jderobot" << std::endl;
+	this->fs << "\t/opt/jderobot/include/jderobot" << std::endl;
 	this->fs << "\t${INTERFACES_CPP_DIR}" << std::endl;
 	this->fs << "\t${easyiceconfig_INCLUDE_DIRS}" << std::endl;
 	this->fs << "\t${LIBS_DIR}" << std::endl;
+	this->fs << "\t${JDEROBOT_LIBS_DIR}" << std::endl;
 	this->fs << "\t${CMAKE_CURRENT_SOURCE_DIR}" << std::endl;
 	this->fs << "\t${GTKMM_INCLUDE_DIRS}" << std::endl;
 	this->fs << "\t${goocanvasmm_INCLUDE_DIRS}" << std::endl;
@@ -673,9 +675,9 @@ void Generate::generateCmake () {
 	this->fs << "\t${GTKMM_LIBRARIES}" << std::endl;
 	this->fs << "\t${easyiceconfig_LIBRARIES}" << std::endl;
 	this->fs << "\t${goocanvasmm_LIBRARIES}" <<std::endl;
-    this->fs << "\t${LIBS_DIR}/jderobot/libvisualStateslib.so" << std::endl;
-	this->fs << "\t${LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
-	this->fs << "\t${LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
+    this->fs << "\t${JDEROBOT_LIBS_DIR}/jderobot/libvisualStateslib.so" << std::endl;
+	this->fs << "\t${JDEROBOT_LIBS_DIR}/jderobot/libJderobotInterfaces.so" << std::endl;
+	this->fs << "\t${JDEROBOT_LIBS_DIR}/jderobot/libjderobotutil.so" << std::endl;
 	this->fs << "\tIce" << std::endl;
 	this->fs << "\tIceUtil" << std::endl;
 	this->fs << ")" << std::endl;
@@ -703,7 +705,7 @@ void Generate::generateGenericHeaders_py(){
 import Ice\n\
 import easyiceconfig as EasyIce\n\
 import sys, signal\n\
-sys.path.append('/usr/local/share/jderobot/python/visualStates_py')\n\
+sys.path.append('/opt/jderobot/share/jderobot/python/visualStates_py')\n\
 import traceback, threading, time\n\
 from automatagui import AutomataGui, QtGui, GuiSubautomata\n\n";
 
