@@ -40,6 +40,19 @@ class AutomataScene(QGraphicsScene):
     #             if selectedItems[0].dragging:
     #                 self.origin = None
 
+    def addTransitionItem(self, tranItem):
+        self.addItem(tranItem)
+        self.transitionInserted.emit(tranItem)
+
+
+    def addStateItem(self, stateItem):
+        stateItem.stateNameChanged.connect(self.stateNameChanged)
+        stateItem.stateTextEditStarted.connect(self.stateTextEditStarted)
+        stateItem.stateTextEditFinished.connect(self.stateTextEditFinished)
+
+        self.addItem(stateItem)
+        self.activeState.addChild(stateItem)
+        self.stateInserted.emit(stateItem)
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
 
@@ -58,13 +71,8 @@ class AutomataScene(QGraphicsScene):
                 stateItem = guistate.StateGraphicsItem(sIndex, qGraphicsSceneMouseEvent.scenePos().x(),
                                                        qGraphicsSceneMouseEvent.scenePos().y(), False,
                                                        'state ' + str(sIndex))
-                stateItem.stateNameChanged.connect(self.stateNameChanged)
-                stateItem.stateTextEditStarted.connect(self.stateTextEditStarted)
-                stateItem.stateTextEditFinished.connect(self.stateTextEditFinished)
+                self.addStateItem(stateItem)
 
-                self.addItem(stateItem)
-                self.activeState.addChild(stateItem)
-                self.stateInserted.emit(stateItem)
             self.origin = None
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             print('now add transition')
@@ -79,11 +87,7 @@ class AutomataScene(QGraphicsScene):
                         tIndex = self.getTransitionIndex()
                         tranItem = guitransition.TransitionGraphicsItem(self.origin, self.destination, tIndex,
                                                                         'transition ' + str(tIndex))
-                        self.addItem(tranItem)
-                        self.origin = None
-                        self.destination = None
-                        self.transitionInserted.emit(tranItem)
-                        print('a new transition is added.')
+                        self.addTransitionItem(tranItem)
                     else:
                         self.origin = item
                 else:

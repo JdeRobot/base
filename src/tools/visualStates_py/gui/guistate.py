@@ -135,8 +135,9 @@ class StateGraphicsItem(QGraphicsObject):
     def getChildren(self):
         return self.childStates
 
-    def addChild(self, childState):
-        self.childStates.append(childState)
+    def addChild(self, child):
+        if child not in self.childStates:
+            self.childStates.append(child)
 
 
 

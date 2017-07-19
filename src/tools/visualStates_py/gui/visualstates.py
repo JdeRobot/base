@@ -145,16 +145,36 @@ class VisualStates(QMainWindow):
         helpMenu.addAction(aboutAction)
 
     def newAction(self):
-        self.automataScene.removeAllItems()
-        self.treeModel.removeAll()
+        self.clearScene()
         # create new root state
         self.rootState = StateGraphicsItem(0, 0, 0, True, "root")
         self.automataScene.setActiveState(self.rootState)
         self.automataScene.resetIndexes()
 
+    def clearScene(self):
+        self.automataScene.removeAllItems()
+        self.treeModel.removeAll()
+
     def openAction(self):
-        print('Open Action')
-        pass
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Open VisualStates File")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setNameFilters(['VisualStates Files (*.xml)'])
+        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+        if fileDialog.exec_():
+            self.rootState = self.fileManager.open(fileDialog.selectedFiles()[0])
+            # add to scene
+            self.clearScene()
+            for state in self.rootState.getChildren():
+                self.automataScene.addStateItem(state)
+                transitionItems = state.getTransitions()
+                for t in transitionItems:
+                    self.automataScene.addTransitionItem(t)
+        else:
+            print('open is canceled')
+
+
 
     def saveAction(self):
         if len(self.fileManager.getFileName()) == 0:

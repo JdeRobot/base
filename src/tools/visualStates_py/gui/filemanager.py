@@ -1,5 +1,8 @@
 
 from xml.dom import minidom
+from .guistate import StateGraphicsItem
+from .guitransition import TransitionGraphicsItem
+from PyQt5.QtCore import QPointF
 
 class FileManager():
     def __init__(self):
@@ -66,6 +69,58 @@ class FileManager():
             stateElement.appendChild(self.createDocFromState(child, doc))
 
         return stateElement
+
+    def open(self, fileName):
+        self.setFileName(fileName)
+        allTransitionNodes = []
+        doc = minidom.parse(self.fileName)
+        rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
+        rootState = StateGraphicsItem(0, 0, 0, True, 'root')
+        self.parseStateNode(rootNode, rootState)
+
+        return rootState
+
+    def parseStateNode(self, node, rootState):
+        allTransitionNodes = []
+        stateNodes = node.getElementsByTagName('state')
+        statesById = {}
+        for sNode in stateNodes:
+            id = 0
+            initial = False
+            for (name, value) in sNode.attributes.items():
+                if name == 'id':
+                    id = int(value)
+                elif name == 'initial':
+                    initial = (value == 'True')
+            name = sNode.getElementsByTagName('name')[0].childNodes[0].nodeValue
+            print('read name:' + name)
+            posx = float(sNode.getElementsByTagName('posx')[0].childNodes[0].nodeValue)
+            posy = float(sNode.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
+            state = StateGraphicsItem(id, posx, posy, initial, name)
+            statesById[state.id] = state
+            rootState.addChild(state)
+            self.parseStateNode(sNode, state)
+
+            transitionNodes = sNode.getElementsByTagName('transition')
+            for tNode in transitionNodes:
+                allTransitionNodes.append(tNode)
+
+        # create transitions
+        for tNode in allTransitionNodes:
+            id = 0
+            for (name, value) in tNode.attributes.items():
+                if name == 'id':
+                    id = int(value)
+            name = tNode.getElementsByTagName('name')[0].childNodes[0].nodeValue
+            posx = float(tNode.getElementsByTagName('posx')[0].childNodes[0].nodeValue)
+            posy = float(tNode.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
+            originId = int(tNode.getElementsByTagName('origin')[0].childNodes[0].nodeValue)
+            destinationId = int(tNode.getElementsByTagName('destination')[0].childNodes[0].nodeValue)
+            tran = TransitionGraphicsItem(statesById[originId], statesById[destinationId], id, name)
+            tran.updateMiddlePoints(QPointF(posx, posy))
+
+
+
 
 
 
