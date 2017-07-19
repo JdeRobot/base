@@ -69,6 +69,9 @@ class TreeNode(QTreeWidgetItem):
     def setColor(self, color):
         self.color = color
 
+    def removeChildren(self):
+        self.childItems.clear()
+
 
 class TreeModel(QAbstractItemModel):
     def __init__(self, parent=None):
@@ -174,3 +177,7 @@ class TreeModel(QAbstractItemModel):
             if item.id == id:
                 return item
         return None
+
+    def removeAll(self):
+        self.rootNode.removeChildren()
+        self.layoutChanged.emit()

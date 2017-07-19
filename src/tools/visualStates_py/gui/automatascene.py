@@ -25,8 +25,21 @@ class AutomataScene(QGraphicsScene):
         self.prevOperationType = None
         self.stateTextEditingStarted = False
 
+        # the active state whose children will be drawn on the graphicsview
+        self.activeState = None
+
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         super().mousePressEvent(qGraphicsSceneMouseEvent)
+
+
+    # def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
+    #     super().mouseMoveEvent(qGraphicsSceneMouseEvent)
+    #     selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
+    #     if len(selectedItems) > 0:
+    #         if isinstance(selectedItems[0], guistate.StateGraphicsItem):
+    #             if selectedItems[0].dragging:
+    #                 self.origin = None
+
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
 
@@ -42,7 +55,7 @@ class AutomataScene(QGraphicsScene):
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
-                stateItem = guistate.StateGraphicsItem(sIndex, 0, None, qGraphicsSceneMouseEvent.scenePos().x(),
+                stateItem = guistate.StateGraphicsItem(sIndex, qGraphicsSceneMouseEvent.scenePos().x(),
                                                        qGraphicsSceneMouseEvent.scenePos().y(), False,
                                                        'state ' + str(sIndex))
                 stateItem.stateNameChanged.connect(self.stateNameChanged)
@@ -50,6 +63,7 @@ class AutomataScene(QGraphicsScene):
                 stateItem.stateTextEditFinished.connect(self.stateTextEditFinished)
 
                 self.addItem(stateItem)
+                self.activeState.addChild(stateItem)
                 self.stateInserted.emit(stateItem)
             self.origin = None
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
@@ -90,14 +104,8 @@ class AutomataScene(QGraphicsScene):
         self.transitionIndex += 1
         return self.transitionIndex
 
-    def dragEnterEvent(self, QGraphicsSceneDragDropEvent):
-        print('scene drag enter event')
-
-    def dragMoveEvent(self, QGraphicsSceneDragDropEvent):
-        print('scene drag move event')
-
     def getParentItem(self, item):
-        while item.parentItem() != None:
+        while item.parentItem() is not None:
             item = item.parentItem()
         return item
 
@@ -116,6 +124,24 @@ class AutomataScene(QGraphicsScene):
         self.operationType = self.prevOperationType
         self.prevOperationType = None
         self.stateTextEditingStarted = True
+
+    def removeAllItems(self):
+        if self.activeState is not None:
+            for s in self.activeState.getChildren():
+                for t in s.getTransitions():
+                    if t in self.items():
+                        self.removeItem(t)
+                if s in self.items():
+                    self.removeItem(s)
+
+    def setActiveState(self, state):
+        if state != self.activeState:
+            self.removeAllItems()
+            self.activeState = state
+
+    def resetIndexes(self):
+        self.stateIndex = -1
+        self.transitionIndex = -1
 
 
 class OpType(Enum):

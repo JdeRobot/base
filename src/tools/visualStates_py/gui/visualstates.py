@@ -1,8 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor
+from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog
+
 from gui.automatascene import AutomataScene, OpType
+from gui.filemanager import FileManager
 from gui.treemodel import TreeModel
+from .guistate import StateGraphicsItem
 
 
 class VisualStates(QMainWindow):
@@ -10,6 +13,9 @@ class VisualStates(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("VisualStates")
+
+        # root state
+        self.rootState = StateGraphicsItem(0, 0, 0, True, "root")
 
         # create status bar
         self.statusBar()
@@ -20,6 +26,8 @@ class VisualStates(QMainWindow):
 
         self.setGeometry(0, 0, 800, 600)
         self.show()
+
+        self.fileManager = FileManager()
 
     def createMenu(self):
         # create actions
@@ -110,7 +118,7 @@ class VisualStates(QMainWindow):
 
         # create main menu
         menubar = self.menuBar()
-        archieveMenu = menubar.addMenu('&Archieve')
+        archieveMenu = menubar.addMenu('&File')
         archieveMenu.addAction(newAction)
         archieveMenu.addAction(openAction)
         archieveMenu.addAction(saveAction)
@@ -137,19 +145,36 @@ class VisualStates(QMainWindow):
         helpMenu.addAction(aboutAction)
 
     def newAction(self):
-        print('New Action')
-        pass
+        self.automataScene.removeAllItems()
+        self.treeModel.removeAll()
+        # create new root state
+        self.rootState = StateGraphicsItem(0, 0, 0, True, "root")
+        self.automataScene.setActiveState(self.rootState)
+        self.automataScene.resetIndexes()
 
     def openAction(self):
         print('Open Action')
         pass
 
     def saveAction(self):
-        print('Save Action')
-        pass
+        if len(self.fileManager.getFileName()) == 0:
+            self.saveAsAction()
+        else:
+            self.fileManager.save(self.rootState)
 
     def saveAsAction(self):
-        print('Save As Action')
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Save As VisualStates File")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setNameFilters(['VisualStates Files (*.xml)'])
+        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setAcceptMode(QFileDialog.AcceptSave)
+        if fileDialog.exec_():
+            self.fileManager.setFileName(fileDialog.selectedFiles()[0])
+            self.fileManager.save(self.rootState)
+        else:
+            print('file dialog canceled')
+
 
     def quitAction(self):
         print('Quit')
@@ -207,6 +232,7 @@ class VisualStates(QMainWindow):
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
+        self.automataScene.setActiveState(self.rootState)
         self.stateCanvas.setScene(self.automataScene)
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)

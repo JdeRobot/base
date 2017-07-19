@@ -37,13 +37,11 @@ class StateGraphicsItem(QGraphicsObject):
     stateTextEditStarted = pyqtSignal()
     stateTextEditFinished = pyqtSignal()
 
-    def __init__(self, id, idSubSon, subAutomata, x, y, isInit, name='state'):
+    def __init__(self, id, x, y, initial, name='state'):
         super().__init__()
 
         self.id = id
-        self.idSubAutomataSon = idSubSon
-        self.subAutomata = subAutomata
-        self.isInit = isInit
+        self.initial = initial
         self.name = name
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable)
@@ -68,8 +66,18 @@ class StateGraphicsItem(QGraphicsObject):
         self.textGraphics.textEditStarted.connect(self.textEditStarted)
         self.textGraphics.textEditFinished.connect(self.textEditFinished)
 
-        if self.isInit:
+        if self.initial:
             self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH / 2, -INIT_WIDTH / 2, INIT_WIDTH, INIT_WIDTH, self)
+
+        # the list of transition that state is the origin for
+        self.transitions = []
+
+        # states that is the container for them
+        self.childStates = []
+
+
+    def isInitial(self):
+        return self.initial
 
     def hoverEnterEvent(self, event):
         myPen = QPen(Qt.SolidLine)
@@ -84,7 +92,6 @@ class StateGraphicsItem(QGraphicsObject):
         super().hoverLeaveEvent(event)
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
-        print('mouse press event')
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = True
         super().mousePressEvent(qGraphicsSceneMouseEvent)
@@ -118,6 +125,20 @@ class StateGraphicsItem(QGraphicsObject):
 
     def textEditFinished(self):
         self.stateTextEditFinished.emit()
+
+    def addTransition(self, transition):
+        self.transitions.append(transition)
+
+    def getTransitions(self):
+        return self.transitions
+
+    def getChildren(self):
+        return self.childStates
+
+    def addChild(self, childState):
+        self.childStates.append(childState)
+
+
 
     # def mouseDoubleClickEvent(self, event):
     # 	# self.state.notifyChangeCurrentSubautomata(self.state.idSubautSon)
