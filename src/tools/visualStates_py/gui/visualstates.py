@@ -1,9 +1,9 @@
-
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor
 from gui.automatascene import AutomataScene, OpType
 from gui.treemodel import TreeModel
+
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
@@ -22,7 +22,6 @@ class VisualStates(QMainWindow):
         self.show()
 
     def createMenu(self):
-
         # create actions
         # archieve menu
         newAction = QAction('&New', self)
@@ -52,12 +51,12 @@ class VisualStates(QMainWindow):
 
         # figures menu
         stateAction = QAction('&State', self)
-        #stateAction.setShortcut('Ctrl+N')
+        # stateAction.setShortcut('Ctrl+N')
         stateAction.setStatusTip('Create a state')
         stateAction.triggered.connect(self.stateAction)
 
         transitionAction = QAction('&Transition', self)
-        #transitionAction.setShortcut('Ctrl+T')
+        # transitionAction.setShortcut('Ctrl+T')
         transitionAction.setStatusTip('Create a transition')
         transitionAction.triggered.connect(self.transitionAction)
 
@@ -77,7 +76,7 @@ class VisualStates(QMainWindow):
         functionsAction.setStatusTip('Define functions')
         functionsAction.triggered.connect(self.functionsAction)
 
-        #actions menu
+        # actions menu
         librariesAction = QAction('&Libraries', self)
         librariesAction.setShortcut('Ctrl+L')
         librariesAction.setStatusTip('Add additional libraries')
@@ -149,59 +148,45 @@ class VisualStates(QMainWindow):
         print('Save Action')
         pass
 
-
     def saveAsAction(self):
         print('Save As Action')
-
 
     def quitAction(self):
         print('Quit')
         self.close()
 
-
     def stateAction(self):
         self.automataScene.setOperationType(OpType.ADDSTATE)
-
 
     def transitionAction(self):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
-
     def timerAction(self):
         print('Timer Action')
-
 
     def variablesAction(self):
         print('Variables Action')
 
-
     def functionsAction(self):
         print('Functions Action')
-
 
     def librariesAction(self):
         print('libraries Action')
 
-
     def configFileAction(self):
         print('config file action')
-
 
     def generateCppAction(self):
         print('generate cpp action')
 
-
     def compileCppAction(self):
         print('compile cpp action')
-
 
     def generatePythonAction(self):
         print('generate python action')
 
-
     def aboutAction(self):
         print('about action')
-
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -215,11 +200,10 @@ class VisualStates(QMainWindow):
         dockWidget.setWidget(self.treeView)
         self.addDockWidget(Qt.LeftDockWidgetArea, dockWidget)
 
-
     def createStateCanvas(self):
         self.stateCanvas = QGraphicsView()
         self.automataScene = AutomataScene()
-        self.automataScene.setSceneRect(0,0, 2000, 2000)
+        self.automataScene.setSceneRect(0, 0, 2000, 2000)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
@@ -228,20 +212,15 @@ class VisualStates(QMainWindow):
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)
         self.stateCanvas.setAcceptDrops(True)
 
-
     def stateInserted(self, state):
-        print('state inserted:'+ state.name)
+        print('state inserted:' + state.name)
         self.treeModel.insertState(state, QColor(Qt.white))
-
 
     def transitionInserted(self, tran):
         print('transition inserted:' + tran.name)
-
 
     def stateNameChanged(self, state):
         dataItem = self.treeModel.getByDataId(state.id)
         if dataItem != None:
             dataItem.name = state.name
             self.treeModel.layoutChanged.emit()
-
-
