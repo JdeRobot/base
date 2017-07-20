@@ -18,7 +18,7 @@ if (with_pcl)
 
     ### Install
     install(TARGETS jderobotViewer jderobotViewerShare
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
         COMPONENT core
         )
 

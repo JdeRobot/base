@@ -8,7 +8,7 @@ set_target_properties(fuzzyshare PROPERTIES OUTPUT_NAME fuzzylib)
 
 ### Install
 install(TARGETS fuzzylib fuzzyshare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

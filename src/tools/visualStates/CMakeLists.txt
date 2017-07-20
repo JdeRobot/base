@@ -1,7 +1,5 @@
 IF (goocanvasmm_INCLUDE_DIRS)
 
-message("-----------------VisualStates---------------------")
-
 SET( SOURCE_FILES_VISUALSTATES
 	iceinterface.cpp
 	point.cpp

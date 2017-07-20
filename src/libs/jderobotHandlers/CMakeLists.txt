@@ -18,7 +18,7 @@ set_target_properties(jderobotHandlersshare PROPERTIES OUTPUT_NAME jderobotHandl
 
 ### Install
 install(TARGETS jderobotHandlers jderobotHandlersshare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

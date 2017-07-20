@@ -23,7 +23,7 @@ set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)
 
 ### Install
 install(TARGETS jderobotutil jderobotutilshare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

@@ -5,7 +5,7 @@ TARGET_LINK_LIBRARIES(cvfast ${OPENGL_LIBRARIES})
 
 ### Install
 install(TARGETS cvfast
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

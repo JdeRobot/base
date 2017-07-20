@@ -15,7 +15,7 @@ set_target_properties(colorspacesshare PROPERTIES OUTPUT_NAME colorspaces)
 
 ### Install
 install(TARGETS colorspaces colorspacesmm
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 
