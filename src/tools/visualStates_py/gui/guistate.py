@@ -41,7 +41,6 @@ class StateGraphicsItem(QGraphicsObject):
         super().__init__()
 
         self.id = id
-        self.initial = initial
         self.name = name
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable)
@@ -66,8 +65,9 @@ class StateGraphicsItem(QGraphicsObject):
         self.textGraphics.textEditStarted.connect(self.textEditStarted)
         self.textGraphics.textEditFinished.connect(self.textEditFinished)
 
-        if self.initial:
-            self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH / 2, -INIT_WIDTH / 2, INIT_WIDTH, INIT_WIDTH, self)
+        self.initGraphics = None
+        # this should run just after other visuals to make sure that it is on the top of other visuals
+        self.setInitial(initial)
 
         # the list of transition that state is the origin for
         self.transitions = []
@@ -75,9 +75,20 @@ class StateGraphicsItem(QGraphicsObject):
         # states that is the container for them
         self.childStates = []
 
+        self.code = ""
+
 
     def isInitial(self):
         return self.initial
+
+    def setInitial(self, initial):
+        self.initial = initial
+        if self.initial:
+            if self.initGraphics is None:
+                self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH / 2, -INIT_WIDTH / 2, INIT_WIDTH, INIT_WIDTH, self)
+        else:
+            if self.initGraphics is not None:
+                self.initGraphics.setParentItem(None)
 
     def hoverEnterEvent(self, event):
         myPen = QPen(Qt.SolidLine)
@@ -114,6 +125,7 @@ class StateGraphicsItem(QGraphicsObject):
         pass
 
     def nameChanged(self, newName):
+        print('text changed')
         self.name = newName
         textWidth = self.textGraphics.boundingRect().width()
         # reposition to center the text

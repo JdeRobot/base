@@ -253,8 +253,8 @@ class VisualStates(QMainWindow):
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
-        self.stateCanvas.setScene(self.automataScene)
         self.setCentralWidget(self.stateCanvas)
+        self.stateCanvas.setScene(self.automataScene)
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)
         self.stateCanvas.setAcceptDrops(True)
 

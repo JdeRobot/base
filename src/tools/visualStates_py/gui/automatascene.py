@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem
-from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
+from PyQt5.QtCore import Qt, pyqtSignal, QObject, QPoint
 from enum import Enum
 from . import guistate, guitransition
+from .renamediaolog import RenameDialog
+from .codedialog import CodeDialog
 
 
 class AutomataScene(QGraphicsScene):
@@ -27,6 +29,56 @@ class AutomataScene(QGraphicsScene):
 
         # the active state whose children will be drawn on the graphicsview
         self.activeState = None
+
+        self.createActions()
+
+        self.selectedState = None
+        self.contextPosition = None
+
+    def createActions(self):
+
+        self.renameStateAction = QAction('Rename', self)
+        self.renameStateAction.triggered.connect(self.renameState)
+
+        self.stateCodeAction = QAction('Code', self)
+        self.stateCodeAction.triggered.connect(self.editStateCode)
+
+        self.makeInitialAction = QAction('Make Initial', self)
+        self.makeInitialAction.triggered.connect(self.makeInitial)
+
+        self.copyStateAction = QAction('Copy', self)
+        self.copyStateAction.triggered.connect(self.copyState)
+
+        self.removeStateAction = QAction('Remove', self)
+        self.removeStateAction.triggered.connect(self.removeState)
+
+
+    def renameState(self):
+        dialog = RenameDialog('Rename', self.selectedState.name)
+        dialog.move(self.contextPosition)
+        dialog.nameChanged.connect(self.externalStateNameChanged)
+        dialog.exec_()
+
+    def editStateCode(self, state):
+        dialog = CodeDialog('State Code', self.selectedState.code)
+        dialog.move(self.contextPosition)
+        dialog.codeChanged.connect(self.codeChanged)
+        dialog.exec_()
+
+    def makeInitial(self):
+        # there could be only one initial state
+        for child in self.activeState.getChildren():
+            child.setInitial(False)
+
+        self.selectedState.setInitial(True)
+
+
+    def copyState(self, state):
+        pass
+
+    def removeState(self, state):
+        pass
+
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         super().mousePressEvent(qGraphicsSceneMouseEvent)
@@ -97,6 +149,37 @@ class AutomataScene(QGraphicsScene):
 
         super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
+    def contextMenuEvent(self, qGraphicsSceneContextMenuEvent):
+        super().contextMenuEvent(qGraphicsSceneContextMenuEvent)
+        selectedItems = self.items(qGraphicsSceneContextMenuEvent.scenePos())
+        if len(selectedItems) > 0:
+            item = self.getParentItem(selectedItems[0])
+            if isinstance(item, guistate.StateGraphicsItem):
+                self.showStateContextMenu(item, qGraphicsSceneContextMenuEvent)
+            elif isinstance(item, guitransition.TransitionGraphicsItem):
+                self.showTransitionContextMenu(item, qGraphicsSceneContextMenuEvent)
+        elif len(selectedItems) == 0:
+            self.showSceneContextMenu(qGraphicsSceneContextMenuEvent)
+
+    def showStateContextMenu(self, stateItem, qEvent):
+        cMenu = QMenu()
+        cMenu.addAction(self.renameStateAction)
+        cMenu.addAction(self.stateCodeAction)
+        cMenu.addAction(self.makeInitialAction)
+        cMenu.addAction(self.copyStateAction)
+        cMenu.addAction(self.removeStateAction)
+        self.selectedState = stateItem
+        self.contextPosition = qEvent.screenPos()
+        action = cMenu.exec_(qEvent.screenPos())
+
+
+
+    def showTransitionContextMenu(self, tranItem, qEvent):
+        pass
+
+    def showSceneContextMenu(self, qEvent):
+        pass
+
     def setOperationType(self, type):
         self.operationType = type
 
@@ -112,6 +195,14 @@ class AutomataScene(QGraphicsScene):
         while item.parentItem() is not None:
             item = item.parentItem()
         return item
+
+
+    def externalStateNameChanged(self, newName):
+        self.selectedState.textGraphics.setPlainText(newName)
+        self.selectedState.textGraphics.textChanged.emit(newName)
+
+    def codeChanged(self, newCode):
+        self.selectedState.code = newCode
 
     def stateNameChanged(self, state):
         self.stateNameChangedSignal.emit(state)

@@ -82,6 +82,7 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.destination = dest
         self.id = id
         self.name = name
+        self.code = ""
 
         self.originLine = None
         self.destinationLine = None
