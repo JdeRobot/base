@@ -178,8 +178,7 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         if self.middleHandle == None:
             self.middleHandle = RectHandleGraphicsItem(SQUARE_SIDE, self)
             self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable)
-        else:
-            self.middleHandle.setRect(QRectF(SQUARE_SIDE))
+
         self.middleHandle.setPos(self.midPointX, self.midPointY)
 
     def createIdTextBox(self):

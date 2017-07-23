@@ -99,11 +99,12 @@ class FileManager():
             state = StateGraphicsItem(id, posx, posy, initial, name)
             statesById[state.id] = state
             rootState.addChild(state)
-            self.parseStateNode(sNode, state)
-
             transitionNodes = sNode.getElementsByTagName('transition')
             for tNode in transitionNodes:
                 allTransitionNodes.append(tNode)
+
+            self.parseStateNode(sNode, state)
+
 
         # create transitions
         for tNode in allTransitionNodes:
@@ -118,6 +119,7 @@ class FileManager():
             destinationId = int(tNode.getElementsByTagName('destination')[0].childNodes[0].nodeValue)
             tran = TransitionGraphicsItem(statesById[originId], statesById[destinationId], id, name)
             tran.updateMiddlePoints(QPointF(posx, posy))
+            tran.createMiddleHandle()
 
 
 
