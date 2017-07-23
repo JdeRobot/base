@@ -151,6 +151,10 @@ class StateGraphicsItem(QGraphicsObject):
         if child not in self.childStates:
             self.childStates.append(child)
 
+    def removeChild(self, child):
+        if child in self.childStates:
+            self.childStates.remove(child)
+
 
 
     # def mouseDoubleClickEvent(self, event):

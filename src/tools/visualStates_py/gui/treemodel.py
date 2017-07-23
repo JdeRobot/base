@@ -40,6 +40,9 @@ class TreeNode(QTreeWidgetItem):
     def appendChild(self, item):
         self.childItems.append(item)
 
+    def removeChild(self, item):
+        self.childItems.remove(item)
+
     def child(self, row):
         return self.childItems[row]
 
@@ -168,6 +171,20 @@ class TreeModel(QAbstractItemModel):
         parent.appendChild(newNode)
         # TODO: this redraws whole tree, just update according to the insertion
         self.layoutChanged.emit()
+
+    def removeState(self, state, parent=None):
+        if parent is None:
+            parent = self.rootNode
+        childToBeRemoved = None
+        for s in parent.getChildren():
+            if s.id == state.id:
+                childToBeRemoved = s
+                break
+
+        if childToBeRemoved != None:
+            print('remove child.id:' + str(childToBeRemoved.id))
+            parent.removeChild(childToBeRemoved)
+            self.layoutChanged.emit()
 
     def getChildren(self):
         return self.rootNode.childItems

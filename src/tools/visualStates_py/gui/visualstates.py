@@ -250,6 +250,7 @@ class VisualStates(QMainWindow):
         self.automataScene = AutomataScene()
         self.automataScene.setSceneRect(0, 0, 2000, 2000)
         self.automataScene.stateInserted.connect(self.stateInserted)
+        self.automataScene.stateRemoved.connect(self.stateRemoved)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
@@ -259,8 +260,10 @@ class VisualStates(QMainWindow):
         self.stateCanvas.setAcceptDrops(True)
 
     def stateInserted(self, state):
-        print('state inserted:' + state.name)
         self.treeModel.insertState(state, QColor(Qt.white))
+
+    def stateRemoved(self, state):
+        self.treeModel.removeState(state)
 
     def transitionInserted(self, tran):
         print('transition inserted:' + tran.name)

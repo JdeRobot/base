@@ -9,6 +9,7 @@ from .codedialog import CodeDialog
 class AutomataScene(QGraphicsScene):
     # slots
     stateInserted = pyqtSignal('QGraphicsItem')
+    stateRemoved = pyqtSignal('QGraphicsItem')
     transitionInserted = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
 
@@ -35,6 +36,8 @@ class AutomataScene(QGraphicsScene):
         self.selectedState = None
         self.contextPosition = None
 
+        self.copiedState = None
+
     def createActions(self):
 
         self.renameStateAction = QAction('Rename', self)
@@ -51,6 +54,9 @@ class AutomataScene(QGraphicsScene):
 
         self.removeStateAction = QAction('Remove', self)
         self.removeStateAction.triggered.connect(self.removeState)
+
+        self.pasteStateAction = QAction('Paste', self)
+        self.pasteStateAction.triggered.connect(self.pasteState)
 
 
     def renameState(self):
@@ -73,11 +79,20 @@ class AutomataScene(QGraphicsScene):
         self.selectedState.setInitial(True)
 
 
-    def copyState(self, state):
-        pass
+    def copyState(self):
+        #TODO: also copy the children of the, but not the transitions
+        state = self.selectedState
+        self.copiedState = guistate.StateGraphicsItem(state.id, state.pos().x(), state.pos().y(), state.isInitial(), state.name)
+        self.copiedState.code = state.code
 
-    def removeState(self, state):
-        pass
+    def pasteState(self):
+        self.copiedState.id = self.getStateIndex()
+        self.copiedState.setPos(self.currentScenePos)
+        self.addStateItem(self.copiedState)
+        self.copyState()
+
+    def removeState(self):
+        self.removeStateItem(self.selectedState)
 
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
@@ -105,6 +120,15 @@ class AutomataScene(QGraphicsScene):
         self.addItem(stateItem)
         self.activeState.addChild(stateItem)
         self.stateInserted.emit(stateItem)
+
+    def removeStateItem(self, stateItem):
+        stateItem.stateNameChanged.disconnect(self.stateNameChanged)
+        stateItem.stateTextEditStarted.disconnect(self.stateTextEditStarted)
+        stateItem.stateTextEditFinished.disconnect(self.stateTextEditFinished)
+
+        self.removeItem(stateItem)
+        self.activeState.removeChild(stateItem)
+        self.stateRemoved.emit(stateItem)
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
 
@@ -178,7 +202,10 @@ class AutomataScene(QGraphicsScene):
         pass
 
     def showSceneContextMenu(self, qEvent):
-        pass
+        cMenu = QMenu()
+        cMenu.addAction(self.pasteStateAction)
+        self.currentScenePos = qEvent.scenePos()
+        action = cMenu.exec_(qEvent.screenPos())
 
     def setOperationType(self, type):
         self.operationType = type
