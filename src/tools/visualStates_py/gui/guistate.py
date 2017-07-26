@@ -155,6 +155,17 @@ class StateGraphicsItem(QGraphicsObject):
         if child in self.childStates:
             self.childStates.remove(child)
 
+    def getNewCopy(self):
+        self.newCopy = StateGraphicsItem(self.id, self.pos().x(), self.pos().y(), self.isInitial(), self.name)
+        self.newCopy.code = self.code
+        for child in self.getChildren():
+            self.newCopy.addChild(child.getNewCopy())
+
+        return self.newCopy
+
+    # implement this method to be able to
+    def getNewCopyWithTransitions(self):
+        pass
 
 
     # def mouseDoubleClickEvent(self, event):

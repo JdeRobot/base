@@ -79,11 +79,9 @@ class AutomataScene(QGraphicsScene):
         self.selectedState.setInitial(True)
 
 
+    #TODO: do i need to copy also transitions?
     def copyState(self):
-        #TODO: also copy the children of the, but not the transitions
-        state = self.selectedState
-        self.copiedState = guistate.StateGraphicsItem(state.id, state.pos().x(), state.pos().y(), state.isInitial(), state.name)
-        self.copiedState.code = state.code
+        self.copiedState = self.selectedState.getNewCopy()
 
     def pasteState(self):
         self.copiedState.id = self.getStateIndex()

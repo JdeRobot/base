@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QColor
-from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog
+from PyQt5.QtGui import QPainter, QColor, QPixmap
+from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog, QLabel, QVBoxLayout
 
 from gui.automatascene import AutomataScene, OpType
 from gui.filemanager import FileManager
@@ -242,7 +242,18 @@ class VisualStates(QMainWindow):
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
         self.treeView.setColumnWidth(0, 50)
-        dockWidget.setWidget(self.treeView)
+
+        self.logo = QLabel()
+        logoPixmap = QPixmap('/usr/local/share/jderobot/resources/jderobot.png')
+        self.logo.setPixmap(logoPixmap)
+
+        leftContainer = QWidget()
+        leftLayout = QVBoxLayout()
+        leftLayout.addWidget(self.treeView)
+        leftLayout.addWidget(self.logo)
+        leftContainer.setLayout(leftLayout)
+
+        dockWidget.setWidget(leftContainer)
         self.addDockWidget(Qt.LeftDockWidgetArea, dockWidget)
 
     def createStateCanvas(self):
