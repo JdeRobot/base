@@ -94,7 +94,7 @@ add_custom_command(TARGET visualStates POST_BUILD
     COMPONENT tools
     )
 
-	install(TARGETS visualStateslib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot/ COMPONENT tools)
+	install(TARGETS visualStateslib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/ COMPONENT tools)
 
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)

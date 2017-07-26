@@ -132,7 +132,7 @@ endif(NOT DEFINED SLICE_NEW_STYLE)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib COMPONENT core)
 
 # Install python files
 file(GLOB HEADERS_FILES ${SLICE_PY_DIR}/*)
