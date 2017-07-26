@@ -161,8 +161,10 @@ RUN apt update && apt install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 
+COPY ./testPR /bin/
 
 
+WORKDIR /root
 
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc 
 
