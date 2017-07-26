@@ -147,7 +147,7 @@ VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
     this->idguinode = 1;
     this->idguitransition = 1;
 
-    system("/usr/local/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt");
+    system("/opt/jderobot/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt");
     std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
     while ( std::getline(infile, line) ) {
