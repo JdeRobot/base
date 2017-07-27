@@ -163,6 +163,8 @@ RUN apt update && apt install -q -y \
 
 COPY ./testPR /bin/
 
+RUN git config --global user.name "JdeRobot" && git config --global user.email johndoe@example.com
+
 
 WORKDIR /root
 
