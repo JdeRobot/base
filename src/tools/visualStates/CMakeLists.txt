@@ -83,10 +83,6 @@ TARGET_LINK_LIBRARIES ( visualStateslib
 
 add_custom_command(TARGET visualStates POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualStates>/gui)
-
-add_custom_command(TARGET visualStates POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh $<TARGET_FILE_DIR:visualStates>)
-
     
 
     install(TARGETS visualStates
@@ -94,7 +90,11 @@ add_custom_command(TARGET visualStates POST_BUILD
     COMPONENT tools
     )
 
-	install(TARGETS visualStateslib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/ COMPONENT tools)
+	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh 
+      PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+	  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade/visualStates)
 
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
