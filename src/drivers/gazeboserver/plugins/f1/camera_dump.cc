@@ -302,5 +302,6 @@ void *myMain(void* v)
             std::cerr << e << std::endl;
         }
     }
-    
+
+    return NULL;    
 }
