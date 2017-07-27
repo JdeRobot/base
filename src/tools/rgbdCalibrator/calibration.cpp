@@ -432,7 +432,7 @@ bool Calibration::addPatternPixel (Eigen::Vector3d pixel, std::vector<colorspace
 
 		colorspaces::Image depthData;
 
-		for (int i=0; i<mPixelPoints.size(); i++)
+		for (unsigned int i = 0; i < mPixelPoints.size(); i++)
 		{
 
 			std::cout << "P" << i << "\t("
@@ -541,11 +541,11 @@ bool Calibration::addPatternPixel (Eigen::Vector3d pixel, std::vector<colorspace
 		mPairPoints.clear();
 
 		//Build pairs
-		for (int i = 0; i< mPatternPoints.size(); i++)
+		for (unsigned int i = 0; i < mPatternPoints.size(); i++)
 			mPairPoints.push_back(std::make_pair(mPatternPoints[i] ,mCameraPoints[i]));
 
 
-		for (int i = 0; i< mPatternPoints.size(); i++)
+		for (unsigned int i = 0; i< mPatternPoints.size(); i++)
 		{
 			std::cout << "(" << mPairPoints[i].first(0)
 				  << "," << mPairPoints[i].first(1)
@@ -690,7 +690,7 @@ void Calibration::LSO()
 {
 
 
-	gsl_matrix *ertm=gsl_matrix_alloc(4,4);
+	//gsl_matrix *ertm=gsl_matrix_alloc(4,4);
 	double chisq;
 	gsl_matrix *x,*cov;
 	gsl_vector *y,*c;
@@ -704,7 +704,7 @@ void Calibration::LSO()
 	double x1,y1,z1,x2,y2,z2;
 
 
-	for (int i=0; i<mPairPoints.size(); i++){
+	for (unsigned int i = 0; i < mPairPoints.size(); i++){
 		x1=mPairPoints[i].first(0);
 		y1=mPairPoints[i].first(1);
 		z1=mPairPoints[i].first(2);
