@@ -148,7 +148,7 @@ namespace gazebo {
                 std::cerr << e << std::endl;
             }
         }
-
+        return NULL;
     }
 
 }
