@@ -16,7 +16,7 @@ set_target_properties(parallelIceshare PROPERTIES OUTPUT_NAME parallelIce)
 
 ### Install
 install(TARGETS parallelIce parallelIceshare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

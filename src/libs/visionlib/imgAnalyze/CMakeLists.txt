@@ -5,7 +5,7 @@ TARGET_LINK_LIBRARIES(imgAnalyze progeo cvfast)
 
 ### Install
 install(TARGETS imgAnalyze
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

@@ -71,7 +71,7 @@ target_link_libraries(test_loader ${PROJECT_NAME} ${ZeroCIce_LIBRARIES})
 
 ### Install
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-embedded
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 install(DIRECTORY include/

@@ -15,7 +15,7 @@ set_target_properties(xmlParsershare PROPERTIES OUTPUT_NAME xmlParser)
 
 ### Install
 install(TARGETS xmlParser xmlParsershare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 
