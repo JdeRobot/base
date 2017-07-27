@@ -8,7 +8,10 @@ else()
   project (jderobot-only-ice)
 endif()
 
-set(CMAKE_INSTALL_PREFIX /opt/jderobot)
+# Change default install path
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX /opt/jderobot CACHE PATH "default install path" FORCE)
+endif()
 
 cmake_minimum_required(VERSION 2.8)
 
