@@ -236,5 +236,6 @@ std::cout << argv[0] << " loaded" << std::endl;
             }
         }
 
+        return NULL;
     }
 }

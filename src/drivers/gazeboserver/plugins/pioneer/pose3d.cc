@@ -149,6 +149,8 @@ namespace gazebo {
             }
         }
 
+        return NULL;
+
     }
 
 }
