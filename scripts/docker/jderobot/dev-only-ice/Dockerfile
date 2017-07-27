@@ -161,8 +161,12 @@ RUN apt update && apt install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 
+COPY ./testPR /bin/
+
+RUN git config --global user.name "JdeRobot" && git config --global user.email johndoe@example.com
 
 
+WORKDIR /root
 
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc 
 
