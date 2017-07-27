@@ -64,8 +64,8 @@ namespace cvb
       unsigned int imgIn_width = img->width;
       unsigned int imgIn_height = img->height;
       unsigned int imgIn_offset = 0;
-      unsigned int imgOut_width = imgOut->width;
-      unsigned int imgOut_height = imgOut->height;
+      // unsigned int imgOut_width = imgOut->width; // Unused but set
+      // unsigned int imgOut_height = imgOut->height; // Unused but set
       unsigned int imgOut_offset = 0;
       if(img->roi)
       {
@@ -75,8 +75,8 @@ namespace cvb
       }
       if(imgOut->roi)
       {
-	imgOut_width = imgOut->roi->width;
-	imgOut_height = imgOut->roi->height;
+	// imgOut_width = imgOut->roi->width;  // Unused but set
+	// imgOut_height = imgOut->roi->height;  // Unused but set
 	imgOut_offset = imgOut->roi->xOffset + (imgOut->roi->yOffset * stepOut);
       }
 
@@ -143,9 +143,9 @@ namespace cvb
 
 		  for (unsigned char i=0; i<3; i++)
 		  {
-		    int nx = xx+movesE[direction][i][0];
-		    int ny = yy+movesE[direction][i][1];
-		    if ((nx<imgIn_width)&&(nx>=0)&&(ny<imgIn_height)&&(ny>=0))
+		    unsigned int nx = xx + movesE[direction][i][0];
+		    unsigned int ny = yy + movesE[direction][i][1];
+		    if ((nx < imgIn_width) && (nx >= 0) && (ny < imgIn_height) && (ny >= 0))
 		    {
 		      if (imageIn(nx, ny))
 		      {
@@ -153,10 +153,10 @@ namespace cvb
 
 			blob->contour.chainCode.push_back(movesE[direction][i][3]);
 
-			xx=nx;
-			yy=ny;
+			xx = nx;
+			yy = ny;
 
-			direction=movesE[direction][i][2];
+			direction = movesE[direction][i][2];
 			break;
 		      }
 		      else
@@ -167,7 +167,7 @@ namespace cvb
 		  }
 
 		  if (!found)
-		    direction=(direction+1)%4;
+		    direction = (direction + 1) % 4;
 		  else
 		  {
 		    if (imageOut(xx, yy) != label)
@@ -175,21 +175,21 @@ namespace cvb
 		      imageOut(xx, yy) = label;
 		      numPixels++;
 
-		      if (xx<blob->minx) blob->minx = xx;
-		      else if (xx>blob->maxx) blob->maxx = xx;
-		      if (yy<blob->miny) blob->miny = yy;
-		      else if (yy>blob->maxy) blob->maxy = yy;
+		      if (xx < blob->minx) blob->minx = xx;
+		      else if (xx > blob->maxx) blob->maxx = xx;
+		      if (yy < blob->miny) blob->miny = yy;
+		      else if (yy > blob->maxy) blob->maxy = yy;
 
 		      blob->area++;
-		      blob->m10+=xx; blob->m01+=yy;
-		      blob->m11+=xx*yy;
-		      blob->m20+=xx*xx; blob->m02+=yy*yy;
+		      blob->m10 += xx; blob->m01 += yy;
+		      blob->m11 += xx*yy;
+		      blob->m20 += xx*xx; blob->m02 += yy * yy;
 		    }
 
 		    break;
 		  }
 		  
-		  if (contourEnd = ((xx==x) && (yy==y) && (direction==1)))
+		  if ( (contourEnd = ((xx == x) && (yy == y) && (direction == 1))) )
 		    break;
 		}
 	      }
@@ -197,7 +197,7 @@ namespace cvb
 
 	    }
 
-	    if ((y+1<imgIn_height)&&(!imageIn(x, y+1))&&(!imageOut(x, y+1)))
+	    if ((y + 1 < imgIn_height) && (!imageIn(x, y + 1)) && (!imageOut(x, y + 1)))
 	    {
 	      labeled = true;
 
@@ -213,7 +213,7 @@ namespace cvb
 		  continue;
 		}*/
 
-		l = imageOut(x-1, y);
+		l = imageOut(x - 1, y);
 
 		imageOut(x, y) = l;
 		numPixels++;
@@ -227,9 +227,9 @@ namespace cvb
                   lastBlob = blob;
                 }
 		blob->area++;
-		blob->m10+=x; blob->m01+=y;
-		blob->m11+=x*y;
-		blob->m20+=x*x; blob->m02+=y*y;
+		blob->m10 += x; blob->m01 += y;
+		blob->m11 += x*y;
+		blob->m20 += x*x; blob->m02 += y*y;
 	      }
 	      else
 	      {
@@ -246,7 +246,7 @@ namespace cvb
 	      }
 
 	      // XXX This is not necessary (I believe). I only do this for consistency.
-	      imageOut(x, y+1) = CV_BLOB_MAX_LABEL;
+	      imageOut(x, y + 1) = CV_BLOB_MAX_LABEL;
 
 	      CvContourChainCode *contour = new CvContourChainCode;
 	      contour->startingPoint = cvPoint(x, y);
@@ -263,8 +263,8 @@ namespace cvb
 
 		  for (unsigned char i=0; i<3; i++)
 		  {
-		    int nx = xx+movesI[direction][i][0];
-		    int ny = yy+movesI[direction][i][1];
+		    unsigned int nx = xx + movesI[direction][i][0];
+		    unsigned int ny = yy + movesI[direction][i][1];
 		    if (imageIn(nx, ny))
 		    {
 		      found = true;
@@ -293,9 +293,9 @@ namespace cvb
 		      numPixels++;
 
 		      blob->area++;
-		      blob->m10+=xx; blob->m01+=yy;
-		      blob->m11+=xx*yy;
-		      blob->m20+=xx*xx; blob->m02+=yy*yy;
+		      blob->m10 += xx; blob->m01 += yy;
+		      blob->m11 += xx*yy;
+		      blob->m20 += xx*xx; blob->m02 += yy*yy;
 		    }
 
 		    break;
@@ -326,9 +326,9 @@ namespace cvb
                 lastBlob = blob;
               }
 	      blob->area++;
-	      blob->m10+=x; blob->m01+=y;
-	      blob->m11+=x*y;
-	      blob->m20+=x*x; blob->m02+=y*y;
+	      blob->m10 += x; blob->m01 += y;
+	      blob->m11 += x*y;
+	      blob->m20 += x*x; blob->m02 += y*y;
 	    }
 	  }
 	}
@@ -358,6 +358,8 @@ namespace cvb
 
     }
     __CV_END__;
+    
+    return 0; // Remove return warning
   }
 
   void cvFilterLabels(IplImage *imgIn, IplImage *imgOut, const CvBlobs &blobs)
@@ -373,8 +375,8 @@ namespace cvb
       int imgIn_width = imgIn->width;
       int imgIn_height = imgIn->height;
       int imgIn_offset = 0;
-      int imgOut_width = imgOut->width;
-      int imgOut_height = imgOut->height;
+      //int imgOut_width = imgOut->width;       // Set but unused
+      //int imgOut_height = imgOut->height;     // Set but unused
       int imgOut_offset = 0;
       if(imgIn->roi)
       {
@@ -384,8 +386,8 @@ namespace cvb
       }
       if(imgOut->roi)
       {
-	imgOut_width = imgOut->roi->width;
-	imgOut_height = imgOut->roi->height;
+	//imgOut_width = imgOut->roi->width;    // Set but unused
+	//imgOut_height = imgOut->roi->height;  // Set but unused
 	imgOut_offset = imgOut->roi->xOffset + (imgOut->roi->yOffset * stepOut);
       }
 
@@ -419,9 +421,9 @@ namespace cvb
       CV_ASSERT(img&&(img->depth==IPL_DEPTH_LABEL)&&(img->nChannels==1));
 
       int step = img->widthStep / (img->depth / 8);
-      int img_width = 0;
-      int img_height= 0;
-      int img_offset = 0;
+      unsigned int img_width = 0;
+      unsigned int img_height= 0;
+      unsigned int img_offset = 0;
       if(img->roi)
       {
 	img_width = img->roi->width;
@@ -434,7 +436,7 @@ namespace cvb
 	img_height= img->height;
       }
 
-      CV_ASSERT((x>=0)&&(x<img_width)&&(y>=0)&&(y<img_height));
+      CV_ASSERT((x >= 0) && (x < img_width) && (y >= 0)&&(y < img_height));
 
       return ((CvLabel *)(img->imageData + img_offset))[x + y*step];
     }
