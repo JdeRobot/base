@@ -146,7 +146,7 @@ class CameraI: virtual public jderobot::Camera {
 		}
 
 		virtual std::string startCameraStreaming(const Ice::Current&){
-
+            return "";  // Remove return warning
 		}
 
 		virtual void stopCameraStreaming(const Ice::Current&) {
