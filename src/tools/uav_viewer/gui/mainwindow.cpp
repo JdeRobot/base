@@ -94,7 +94,7 @@ void MainWindow::updateGUI_recieved()
 		    QImage::Format_RGB888);
 		    
 		    
-	int camera=0;
+	//int camera=0;
     	//640x360 ArDrone2
     	//320x240 ArDrone1 frontal
     	//174x144 ArDrone 1 ventral
@@ -134,7 +134,7 @@ void MainWindow::updateGUI_recieved()
 	ui->imageLLabel->setPixmap(QPixmap::fromImage(imageQt));
 
     jderobot::NavdataDataPtr navdata=this->sensors->getNavdata();
-    int batteryPer=navdata->batteryPercent;
+    //int batteryPer=navdata->batteryPercent;
     //ui->battery->setValue(batteryPer);
 	this->setDroneStatus(navdata->state);
 
@@ -167,34 +167,34 @@ void MainWindow::printNavdata(jderobot::NavdataDataPtr data)
 	std::cout << "WindCompAngle:\t"<< data->windCompAngle << "\n" << std::endl;
 	std::cout << "\t--Tag Detection--" << std::endl;
 	std::cout << "\tTagCount: "<< data->tagsCount << std::endl;
-	if(data->tagsCount!=0){
-		for(int i=0;i<data->tagsType.size();i++)
+	if(data->tagsCount != 0){
+		for(unsigned int i = 0; i < data->tagsType.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsType[i] << std::endl;
+			std::cout << "\t"<< data->tagsType[i] << std::endl;
 		}
-		for(int i=0;i<data->tagsXc.size();i++)
+		for(unsigned int i = 0; i < data->tagsXc.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsXc[i] << std::endl;
+			std::cout << "\t"<< data->tagsXc[i] << std::endl;
 		}
-		for(int i=0;i<data->tagsYc.size();i++)
+		for(unsigned int i = 0; i < data->tagsYc.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsYc[i] << std::endl;
+			std::cout << "\t"<< data->tagsYc[i] << std::endl;
 		}	
-		for(int i=0;i<data->tagsWidth.size();i++)
+		for(unsigned int i = 0; i < data->tagsWidth.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsWidth[i] << std::endl;
+			std::cout << "\t"<< data->tagsWidth[i] << std::endl;
 		}	
-		for(int i=0;i<data->tagsHeight.size();i++)
+		for(unsigned int i = 0; i < data->tagsHeight.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsHeight[i] << std::endl;
+			std::cout << "\t"<< data->tagsHeight[i] << std::endl;
 		}
-		for(int i=0;i<data->tagsOrientation.size();i++)
+		for(unsigned int i = 0; i < data->tagsOrientation.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsOrientation[i] << std::endl;
+			std::cout << "\t"<< data->tagsOrientation[i] << std::endl;
 		}
-		for(int i=0;i<data->tagsDistance.size();i++)
+		for(unsigned int i = 0; i < data->tagsDistance.size(); i++)
 		{
-			std::cout << "\t"<<data->tagsDistance[i] << std::endl;
+			std::cout << "\t"<< data->tagsDistance[i] << std::endl;
 		}				
 	}
 	std::cout << "---------------------------------------" << std::endl;
