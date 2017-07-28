@@ -213,6 +213,8 @@ namespace navigatorCamera {
 		//api->setYawValue(yaw_normalized);
 		//api->setPitchValue(pitch_normalized);
 		//pthread_mutex_unlock(&api->controlGui);*/
+
+		return true;
 	    }
 
 	void Gui::teleoperateTrl() {
@@ -294,6 +296,8 @@ namespace navigatorCamera {
 		//api->setYawValue(yaw_normalized);
 		//api->setPitchValue(pitch_normalized);
 		//pthread_mutex_unlock(&api->controlGui);
+
+        return true;
 	}
 
     	void Gui::teleoperateRtt() {
