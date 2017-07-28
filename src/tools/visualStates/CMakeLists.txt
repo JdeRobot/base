@@ -116,13 +116,6 @@ add_custom_command(TARGET visualStates POST_BUILD
 	FILE(GLOB p_files "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 	INSTALL(FILES ${p_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/visualStates_py)
 
-
-    install(FILES getinterfaces.sh
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    )
-
-
-
 ENDIF()
 
 
