@@ -26,7 +26,7 @@ GUI::GUI(Robot* robot, Ice::CommunicatorPtr ic)
     laserWidget =new LaserWidget();
 
 
-    int indiceFilaGui = 0;
+    //int indiceFilaGui = 0;
     layoutControl->addWidget(canvasVW, 0, 0);
 
     layoutButtons->addWidget(InfoCurrentV, 0);

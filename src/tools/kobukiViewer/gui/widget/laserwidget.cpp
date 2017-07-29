@@ -58,10 +58,10 @@ void LaserWidget::paintEvent(QPaintEvent *)
 
         ang = this->laserData.minAngle;
 
-        for (int i = 0; i < this->laserData.values.size(); i++) {
+        for (unsigned int i = 0; i < this->laserData.values.size(); i++) {
 
         
-            ang = this->laserData.minAngle + i*step;
+            ang = this->laserData.minAngle + i * step;
             x1 = cx + (this->laserData.values[i] / d) * cos(ang);
             y1 = cy - ((this->laserData.values[i] / d) * sin(ang));
 
