@@ -93,7 +93,7 @@ namespace visionLibrary {
 			i = 0;
 			first = true;
 
-			while ((i < (vecContours[contour].size() - (i_jump - 1)))) {
+			while ((static_cast<unsigned int>(i) < (vecContours[contour].size() - (i_jump - 1)))) {
 
 				counter++;
 
