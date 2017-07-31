@@ -21,6 +21,7 @@ if __name__ == "__main__":
         image = np.zeros((imageData_h, imageData_w, 3), np.uint8)
         image = np.frombuffer(imageData.pixelData, dtype=np.uint8)
         image.shape = imageData_h, imageData_w, 3
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         cv2.imshow("Image", image)
         key=cv2.waitKey(30)
 
