@@ -25,4 +25,4 @@ INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gui DESTINATION share/jderobot/py
 
 # Install resources
 #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION share/jderobot/python/basic_component_py COMPONENT tools PATTERN .svn EXCLUDE)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component_py.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component_py.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
