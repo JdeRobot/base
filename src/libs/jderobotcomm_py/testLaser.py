@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-import easyiceconfig as EasyIce
+#!/usr/bin/env python2
+import jderobotconfig as config
 import jderobotComm as comm
 import sys
 import time
@@ -12,11 +12,11 @@ from jderobotTypes import LaserData
 
 if __name__ == '__main__':
 
-    ic = EasyIce.initialize(sys.argv)
-    ic, node = comm.init(ic)
+    cfg = config.load(sys.argv[1])
+    jdrc= comm.init(cfg["test"])
 
-    client = comm.getLaserClient(ic, "kobukiViewer.Laser")
-    client2 = comm.getLaserClient(ic, "kobukiViewer.Laser")
+    client = jdrc.getLaserClient(ic, "Laser")
+    client2 = jdrc.getLaserClient(ic, "Laser")
 
     for i in range (10):
         #print("client1", end=":")
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         print(laser)
         time.sleep(1)
 
-    comm.destroy(ic, node)
+    jdrc.destroy()
 
 
 

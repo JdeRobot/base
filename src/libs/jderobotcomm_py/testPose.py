@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import easyiceconfig as EasyIce
+import jderobotconfig as config
 import jderobotComm as comm
 import sys
 import time
@@ -12,10 +12,10 @@ from jderobotTypes import Pose3d
 
 if __name__ == '__main__':
 
-    ic = EasyIce.initialize(sys.argv)
-    ic, node = comm.init(ic)
+    cfg = config.load(sys.argv[1])
+    jdrc= comm.init(cfg["test"])
 
-    client = comm.getPose3dClient(ic, "kobukiViewer.Pose3D")
+    client = jdrc.getPose3dClient(ic, "kobukiViewer.Pose3D")
 
     for i in range (10):
         #print("client1", end=":")
@@ -23,4 +23,4 @@ if __name__ == '__main__':
         print(laser)
         time.sleep(1)
 
-    comm.destroy(ic, node)
+    jdrc.destroy()

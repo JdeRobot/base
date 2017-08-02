@@ -1,51 +1,17 @@
-import Ice
-import rospy
-
-from .laserClient import getLaserClient
-from .cameraClient import getCameraClient
-from .pose3dClient import getPose3dClient
-from .motorsClient import getMotorsClient
+from .communicator import Communicator
 
 
-def init (ic):
+
+
+def init (config):
 	'''
-    Starts ROS Node if it is necessary.
+    Starts JdeRobotComm
 
-    @param ic: Ice Communicator
+    @param config: configuration of client
 
-    @type ic: Ice Communicator
+    @type config: dict
     '''
-	node = None
-	rosserver = False
-
-	prop = ic.getProperties()
-	nodeName = prop.getPropertyWithDefault("NodeName", "JdeRobot")
-	
-	l = prop.getPropertiesForPrefix("")
-	keys = l.keys()
-	for i in keys:
-		if (i.endswith(".Server") and l[i] == "2"):
-			rosserver = True
-
-	if (rosserver):
-		node = rospy.init_node(nodeName, anonymous=True)
-
-	return ic,node
-
-def destroy(ic=None, node=None):
-	'''
-    Destroys ROS Node and Ice Communicator if it is necessary.
-
-    @param ic: Ice Communicator
-    @param node: ROS Node
-
-    @type ic: Ice Communicator
-    @type node: ROS Node
-    '''
-	if node:
-		rospy.signal_shutdown("Node Closed")
-	if ic:
-		ic.destroy()
+	return Communicator(config)
 
 
 

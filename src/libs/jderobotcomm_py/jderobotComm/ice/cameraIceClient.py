@@ -31,15 +31,15 @@ class Camera:
         Camera Connector. Recives image from Ice interface when you run update method.
     '''
 
-    def __init__(self, ic, prefix):
+    def __init__(self, jdrc, prefix):
         '''
         Camera Contructor.
         Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
 
-        @param ic: Ice Communicator
-        @param prefix: prefix name of client in config file
+        @param jdrc: JdeRobotComm Communicator
+        @param prefix: Name of client in config file
 
-        @type ic: Ice Communicator
+        @type jdrc: JdeRobotComm Communicator
         @type prefix: String
         '''
 
@@ -47,10 +47,12 @@ class Camera:
         self.image = Image()
 
         try:
-            basecamera = ic.propertyToProxy(prefix+".Proxy")
+
+            cfg = jdrc.getConfig(prefix)
+            ic = jdrc.getIc()
+            basecamera = ic.stringToProxy(cfg["Proxy"])
             self.proxy = jderobot.CameraPrx.checkedCast(basecamera)
-            prop = ic.getProperties()
-            self.imgFormat = prop.getProperty(prefix+".Format")
+            self.imgFormat = cfg["Format"]
             if not self.imgFormat:
                 self.imgFormat = "RGB8"
 
@@ -117,19 +119,19 @@ class CameraIceClient:
     '''
         Camera Ice Client. Recives image from Ice interface running camera update method in a thread.
     '''
-    def __init__(self,ic,prefix, start = False):
+    def __init__(self,jdrc,prefix, start = False):
         '''
         CameraIceClient Contructor.
 
-        @param ic: Ice Communicator
-        @param prefix: prefix name of client in config file
+        @param jdrc: JdeRobotComm Communicator
+        @param prefix: Name of client in config file
         @param start: indicates if start automatically the client
 
-        @type ic: Ice Communicator
+        @type jdrc: JdeRobotComm Communicator
         @type prefix: String
         @type start: Boolean
         '''
-        self.camera = Camera(ic,prefix)
+        self.camera = Camera(jdrc,prefix)
 
         self.kill_event = threading.Event()
         self.thread = ThreadSensor(self.camera, self.kill_event)

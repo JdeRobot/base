@@ -95,4 +95,13 @@ class ListenerCamera:
         
         return image
 
+    def hasproxy (self):
+        '''
+        Returns if Subscriber has ben created or not. 
+
+        @return if Subscriber has ben created or not (Boolean)
+
+        '''
+        return hasattr(self,"sub") and self.sub
+
 

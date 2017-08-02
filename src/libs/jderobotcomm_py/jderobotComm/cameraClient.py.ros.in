@@ -6,12 +6,12 @@ from .ice.cameraIceClient import CameraIceClient
 if (sys.version_info[0] == 2):
     from .ros.listenerCamera import ListenerCamera
 
-def __getCameraIceClient(ic, prefix):
+def __getCameraIceClient(jdrc, prefix):
     '''
     Returns a Camera Ice Client. This function should never be used. Use getCameraClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
     @type ic: Ice Communicator
     @type prefix: String
@@ -20,16 +20,16 @@ def __getCameraIceClient(ic, prefix):
 
     '''
     print("Receiving " + prefix + " Image from ICE interfaces")
-    client = CameraIceClient(ic, prefix)
+    client = CameraIceClient(jdrc, prefix)
     client.start()
     return client
 
-def __getListenerCamera(ic, prefix):
+def __getListenerCamera(jdrc, prefix):
     '''
     Returns a Camera ROS Subscriber. This function should never be used. Use getCameraClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
     @type ic: Ice Communicator
     @type prefix: String
@@ -39,20 +39,20 @@ def __getListenerCamera(ic, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Receiving " + prefix + " Image from ROS messages")
-        prop = prop = ic.getProperties()
-        topic = prop.getPropertyWithDefault(prefix+".Topic","");
+        cfg = jdrc.getConfig(prefix)
+        topic = cfg["Topic"]
         client = ListenerCamera(topic)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
         return None
 
-def __Cameradisabled(ic, prefix):
+def __Cameradisabled(jdrc, prefix):
     '''
     Prints a warning that the client is disabled. This function should never be used. Use getCameraClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
     @type ic: Ice Communicator
     @type prefix: String
@@ -63,24 +63,24 @@ def __Cameradisabled(ic, prefix):
     print( prefix + " Disabled")
     return None
 
-def getCameraClient (ic, prefix, node=None):
+def getCameraClient (jdrc, name):
     '''
     Returns a Camera Client.
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
-    @param node: ROS node
+    @param jdrc: JdeRobotComm Communicator
+    @param name: name of client in config file
 
-    @type ic: Ice Communicator
-    @type prefix: String
-    @type node: ROS node
+    @type jdrc: JdeRobotComm Communicator
+    @type name: String
 
     @return None if Camera is disabled
 
     '''
-    prop = prop = ic.getProperties()
-    server = prop.getPropertyAsIntWithDefault(prefix+".Server",0)
+    cfg = jdrc.getConfig(name)
+    server = cfg["Server"]
+    if not server:
+        server=0
 
     cons = [__Cameradisabled, __getCameraIceClient, __getListenerCamera]
 
-    return cons[server](ic, prefix)
+    return cons[server](jdrc, cfg)

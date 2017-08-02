@@ -6,32 +6,32 @@ from .ice.laserIceClient import LaserIceClient
 if (sys.version_info[0] == 2):
     from .ros.listenerLaser import ListenerLaser
 
-def __getLaserIceClient(ic, prefix):
+def __getLaserIceClient(jdrc, prefix):
     '''
     Returns a Laser Ice Client. This function should never be used. Use getLaserClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Laser Ice Client
 
     '''
     print("Receiving " + prefix + " LaserData from ICE interfaces")
-    client = LaserIceClient(ic, prefix)
+    client = LaserIceClient(jdrc, prefix)
     client.start()
     return client
 
-def __getListenerLaser(ic, prefix):
+def __getListenerLaser(jdrc, prefix):
     '''
     Returns a Laser ROS Subscriber. This function should never be used. Use getLaserClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Laser ROS Subscriber
@@ -39,22 +39,22 @@ def __getListenerLaser(ic, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Receiving " + prefix + "  LaserData from ROS messages")
-        prop = prop = ic.getProperties()
-        topic = prop.getPropertyWithDefault(prefix+".Topic","");
+        cfg = jdrc.getConfig(prefix)
+        topic = cfg["Topic"]
         client = ListenerLaser(topic)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
         return None
 
-def __Laserdisabled(ic, prefix):
+def __Laserdisabled(jdrc, prefix):
     '''
     Prints a warning that the client is disabled. This function should never be used. Use getLaserClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return None
@@ -63,24 +63,24 @@ def __Laserdisabled(ic, prefix):
     print( prefix + " Disabled")
     return None
 
-def getLaserClient (ic, prefix, node=None):
+def getLaserClient (jdrc, name):
     '''
     Returns a Laser Client.
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
-    @param node: ROS node
+    @param jdrc: JdeRobotComm Communicator
+    @param name: name of client in config file
 
-    @type ic: Ice Communicator
-    @type prefix: String
-    @type node: ROS node
+    @type jdrc: JdeRobotComm Communicator
+    @type name: String
 
     @return None if Laser is disabled
 
     '''
-    prop = prop = ic.getProperties()
-    server = prop.getPropertyAsIntWithDefault(prefix+".Server",0)
+    cfg = jdrc.getConfig(name)
+    server = cfg["Server"]
+    if not server:
+        server=0
 
     cons = [__Laserdisabled, __getLaserIceClient, __getListenerLaser]
 
-    return cons[server](ic, prefix)
+    return cons[server](jdrc, prefix)

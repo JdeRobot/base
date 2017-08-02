@@ -8,32 +8,32 @@ if (sys.version_info[0] == 2):
 
 
 
-def __getPoseIceClient(ic, prefix):
+def __getPoseIceClient(jdrc, prefix):
     '''
     Returns a Pose3D Ice Client. This function should never be used. Use getPose3dClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @@param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Pose3D Ice Client
 
     '''
     print("Receiving " + prefix + " from ICE interfaces")
-    client = Pose3dIceClient(ic, prefix)
+    client = Pose3dIceClient(jdrc, prefix)
     client.start()
     return client
 
-def __getListenerPose(ic, prefix):
+def __getListenerPose(jdrc, prefix):
     '''
     Returns a Pose3D ROS Subscriber. This function should never be used. Use getPose3dClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Pose3D ROS Subscriber
@@ -41,8 +41,8 @@ def __getListenerPose(ic, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Receiving " + prefix + " from ROS messages")
-        prop = prop = ic.getProperties()
-        topic = prop.getPropertyWithDefault(prefix+".Topic","");
+        cfg = jdrc.getConfig(prefix)
+        topic = cfg["Topic"]
         client = ListenerPose3d(topic)
         return client
     else:
@@ -50,14 +50,14 @@ def __getListenerPose(ic, prefix):
         return None
 
 
-def __Posedisabled(ic, prefix):
+def __Posedisabled(jdrc, prefix):
     '''
     Prints a warning that the client is disabled. This function should never be used. Use getPose3dClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return None
@@ -66,24 +66,24 @@ def __Posedisabled(ic, prefix):
     print(prefix + " Disabled")
     return None
 
-def getPose3dClient (ic, prefix, node=None):
+def getPose3dClient (jdrc, prefix):
     '''
     Returns a Pose3D Client.
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
-    @param node: ROS node
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
-    @type node: ROS node
 
     @return None if pose3d is disabled
 
     '''
-    prop = prop = ic.getProperties()
-    server = prop.getPropertyAsIntWithDefault(prefix+".Server",0)
+    cfg = jdrc.getConfig(name)
+    server = cfg["Server"]
+    if not server:
+        server=0
 
     cons = [__Posedisabled, __getPoseIceClient, __getListenerPose]
 
-    return cons[server](ic, prefix)
+    return cons[server](jdrc, prefix)

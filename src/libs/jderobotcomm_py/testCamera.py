@@ -1,21 +1,21 @@
-#!/usr/bin/env python3
-import easyiceconfig as EasyIce
+#!/usr/bin/env python2
+import jderobotconfig as config
 import jderobotComm as comm
 import sys
 import time
 import signal
 
-from jderobotTypes import LaserData
+from jderobotTypes import Image
 
 
 
 
 if __name__ == '__main__':
 
-    ic = EasyIce.initialize(sys.argv)
-    ic, node = comm.init(ic)
+    cfg = config.load(sys.argv[1])
+    jdrc= comm.init(cfg["test"])
 
-    client = comm.getCameraClient(ic, "kobukiViewer.Camera1")
+    client = jdrc.getCameraClient("Camera1")
 
     for i in range (10):
         #print("client1", end=":")
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     client.stop()
 
 
-    comm.destroy(ic, node)
+    jdrc.destroy()
 
 
 

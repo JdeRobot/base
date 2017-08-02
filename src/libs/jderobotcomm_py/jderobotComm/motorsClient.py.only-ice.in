@@ -4,32 +4,32 @@ from .ice.motorsIceClient import MotorsIceClient
 
 
 
-def __getMotorsIceClient(ic, prefix):
+def __getMotorsIceClient(jdrc, prefix):
     '''
     Returns a Motors Ice Client. This function should never be used. Use getMotorsClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: Name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Motors Ice Client
 
     '''
-    print("Publishing Motors with ICE interfaces")
-    client = MotorsIceClient(ic, prefix)
+    print("Publishing "+ prefix +" with ICE interfaces")
+    client = MotorsIceClient(jdrc, prefix)
     client.start()
     return client
 
-def __getPublisherMotors(ic, prefix):
+def __getPublisherMotors(jdrc, prefix):
     '''
     Returns a Motors ROS Publisher. This function should never be used. Use getMotorsClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: Name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return Motors ROS Publisher
@@ -39,14 +39,14 @@ def __getPublisherMotors(ic, prefix):
     print(prefix + ": ROS msg are diabled")
     return None
 
-def __Motorsdisabled(ic, prefix):
+def __Motorsdisabled(jdrc, prefix):
     '''
     Prints a warning that the client is disabled. This function should never be used. Use getMotorsClient instead of this
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: Name of client in config file
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
 
     @return None
@@ -55,24 +55,26 @@ def __Motorsdisabled(ic, prefix):
     print(prefix + " Disabled")
     return None
 
-def getMotorsClient (ic, prefix, node=None):
+def getMotorsClient (jdrc, name):
     '''
     Returns a Motors Client.
 
-    @param ic: Ice Communicator
-    @param prefix: prefix name of client in config file
+    @param jdrc: JdeRobotComm Communicator
+    @param prefix: Name of client in config file
     @param node: ROS node
 
-    @type ic: Ice Communicator
+    @type jdrc: JdeRobotComm Communicator
     @type prefix: String
     @type node: ROS node
 
     @return None if Motors is disabled
 
     '''
-    prop = prop = ic.getProperties()
-    server = prop.getPropertyAsIntWithDefault(prefix+".Server",0)
+    cfg = jdrc.getConfig(name)
+    server = cfg["Server"]
+    if not server:
+        server=0
 
     cons = [__Motorsdisabled, __getMotorsIceClient, __getPublisherMotors]
 
-    return cons[server](ic, prefix)
+    return cons[server](jdrc, name)
