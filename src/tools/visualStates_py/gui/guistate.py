@@ -42,6 +42,7 @@ class StateGraphicsItem(QGraphicsObject):
 
         self.id = id
         self.name = name
+        self.initial = False
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable)
         # self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -70,7 +71,8 @@ class StateGraphicsItem(QGraphicsObject):
         self.setInitial(initial)
 
         # the list of transition that state is the origin for
-        self.transitions = []
+        self.originTransitions = []
+        self.targetTransitions = []
 
         # states that is the container for them
         self.childStates = []
@@ -86,6 +88,8 @@ class StateGraphicsItem(QGraphicsObject):
         if self.initial:
             if self.initGraphics is None:
                 self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH / 2, -INIT_WIDTH / 2, INIT_WIDTH, INIT_WIDTH, self)
+            else:
+                self.initGraphics.setParentItem(self)
         else:
             if self.initGraphics is not None:
                 self.initGraphics.setParentItem(None)
@@ -138,11 +142,31 @@ class StateGraphicsItem(QGraphicsObject):
     def textEditFinished(self):
         self.stateTextEditFinished.emit()
 
-    def addTransition(self, transition):
-        self.transitions.append(transition)
+    def addOriginTransition(self, transition):
+        print('add origin transition:' + transition.name)
+        self.originTransitions.append(transition)
 
-    def getTransitions(self):
-        return self.transitions
+    def removeOriginTransition(self, tran):
+        if tran in self.originTransitions:
+            self.originTransitions.remove(tran)
+
+    def addTargetTransition(self, transition):
+        print('add target transition:' + transition.name + ' to:' + self.name)
+        self.targetTransitions.append(transition)
+
+    def removeTargetTransition(self, tran):
+        if tran in self.targetTransitions:
+            self.targetTransitions.remove(tran)
+
+    def removeTransitions(self):
+        self.targetTransitions.clear()
+        self.originTransitions.clear()
+
+    def getOriginTransitions(self):
+        return self.originTransitions
+
+    def getTargetTransitions(self):
+        return self.targetTransitions
 
     def getChildren(self):
         return self.childStates

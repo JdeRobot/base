@@ -77,12 +77,16 @@ class RectHandleGraphicsItem(QGraphicsRectItem):
 class TransitionGraphicsItem(QGraphicsLineItem):
     def __init__(self, orig, dest, id, name='transition'):
         super().__init__()
-        self.origin = orig
-        self.origin.addTransition(self)
-        self.destination = dest
+
         self.id = id
         self.name = name
         self.code = ""
+
+        self.origin = orig
+        self.origin.addOriginTransition(self)
+        self.destination = dest
+        self.destination.addTargetTransition(self)
+
 
         self.originLine = None
         self.destinationLine = None

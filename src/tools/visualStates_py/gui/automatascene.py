@@ -11,6 +11,7 @@ class AutomataScene(QGraphicsScene):
     stateInserted = pyqtSignal('QGraphicsItem')
     stateRemoved = pyqtSignal('QGraphicsItem')
     transitionInserted = pyqtSignal('QGraphicsItem')
+    transitionRemoved = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
 
     def __init__(self, parent=None):
@@ -124,9 +125,34 @@ class AutomataScene(QGraphicsScene):
         stateItem.stateTextEditStarted.disconnect(self.stateTextEditStarted)
         stateItem.stateTextEditFinished.disconnect(self.stateTextEditFinished)
 
+        for tran in stateItem.getOriginTransitions():
+            print('removing origin:' + tran.name)
+            tran.destination.removeTargetTransition(tran)
+            self.removeItem(tran)
+            self.transitionRemoved.emit(tran)
+
+        for tran in stateItem.getTargetTransitions():
+            print('removing destination:' + tran.name)
+            tran.origin.removeOriginTransition(tran)
+            self.removeItem(tran)
+            self.transitionRemoved.emit(tran)
+
+        stateItem.removeTransitions()
+
+        if self.origin == stateItem:
+            self.origin = None
+
         self.removeItem(stateItem)
         self.activeState.removeChild(stateItem)
+
         self.stateRemoved.emit(stateItem)
+
+    def removeTransitionItem(self, tranItem):
+        tranItem.origin.removeOriginTransition(tranItem)
+        tranItem.destination.removeTargetTransition(tranItem)
+        print('removing tran:' + tranItem.name)
+
+
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
 
@@ -134,11 +160,9 @@ class AutomataScene(QGraphicsScene):
         if self.stateTextEditingStarted:
             self.stateTextEditingStarted = False
             super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
-            print('state text editing ended')
             return
 
         if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
-            print('now add state')
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
@@ -149,9 +173,7 @@ class AutomataScene(QGraphicsScene):
 
             self.origin = None
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
-            print('now add transition')
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
-            print('selectedItems.len=' + str(len(selectedItems)))
             if len(selectedItems) > 0:
                 # get the parent
                 item = self.getParentItem(selectedItems[0])
@@ -183,6 +205,17 @@ class AutomataScene(QGraphicsScene):
         elif len(selectedItems) == 0:
             self.showSceneContextMenu(qGraphicsSceneContextMenuEvent)
 
+    def mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent):
+        super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+        selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
+        if len(selectedItems) == 1:
+            item = self.getParentItem(selectedItems[0])
+            if isinstance(item, guistate.StateGraphicsItem):
+                #TODO: now change the active state
+                pass
+
+
+
     def showStateContextMenu(self, stateItem, qEvent):
         cMenu = QMenu()
         cMenu.addAction(self.renameStateAction)
@@ -193,8 +226,6 @@ class AutomataScene(QGraphicsScene):
         self.selectedState = stateItem
         self.contextPosition = qEvent.screenPos()
         action = cMenu.exec_(qEvent.screenPos())
-
-
 
     def showTransitionContextMenu(self, tranItem, qEvent):
         pass
