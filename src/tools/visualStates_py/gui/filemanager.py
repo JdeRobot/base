@@ -6,10 +6,7 @@ from PyQt5.QtCore import QPointF
 
 class FileManager():
     def __init__(self):
-        print('file manager')
-
         self.fileName = ""
-
 
     def getFileName(self):
         return self.fileName

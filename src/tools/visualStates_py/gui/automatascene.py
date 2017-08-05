@@ -4,6 +4,8 @@ from enum import Enum
 from . import guistate, guitransition
 from .renamediaolog import RenameDialog
 from .codedialog import CodeDialog
+from .transitioncodedialog import TransitionCodeDialog
+from .transitiontype import TransitionType
 
 
 class AutomataScene(QGraphicsScene):
@@ -35,12 +37,14 @@ class AutomataScene(QGraphicsScene):
         self.createActions()
 
         self.selectedState = None
+        self.selectedTransition = None
         self.contextPosition = None
 
         self.copiedState = None
 
     def createActions(self):
 
+        # state actions
         self.renameStateAction = QAction('Rename', self)
         self.renameStateAction.triggered.connect(self.renameState)
 
@@ -59,6 +63,16 @@ class AutomataScene(QGraphicsScene):
         self.pasteStateAction = QAction('Paste', self)
         self.pasteStateAction.triggered.connect(self.pasteState)
 
+        # transition actions
+        self.renameTransitionAction = QAction('Rename', self)
+        self.renameTransitionAction.triggered.connect(self.renameTransition)
+
+        self.transitionCodeAction = QAction('Code', self)
+        self.transitionCodeAction.triggered.connect(self.editTransitionCode)
+
+        self.removeTransitionAction = QAction('Remove', self)
+        self.removeTransitionAction.triggered.connect(self.removeTransition)
+
 
     def renameState(self):
         dialog = RenameDialog('Rename', self.selectedState.name)
@@ -69,7 +83,7 @@ class AutomataScene(QGraphicsScene):
     def editStateCode(self, state):
         dialog = CodeDialog('State Code', self.selectedState.code)
         dialog.move(self.contextPosition)
-        dialog.codeChanged.connect(self.codeChanged)
+        dialog.codeChanged.connect(self.stateCodeChanged)
         dialog.exec_()
 
     def makeInitial(self):
@@ -93,6 +107,24 @@ class AutomataScene(QGraphicsScene):
     def removeState(self):
         self.removeStateItem(self.selectedState)
 
+
+    def renameTransition(self):
+        dialog = RenameDialog('Rename', self.selectedTransition.name)
+        dialog.move(self.contextPosition)
+        dialog.nameChanged.connect(self.externalTransitionNameChanged)
+        dialog.exec_()
+
+    def editTransitionCode(self):
+        dialog = TransitionCodeDialog('Transition Code', self.selectedTransition)
+        dialog.move(self.contextPosition)
+        dialog.codeChanged.connect(self.transitionCodeChanged)
+        dialog.exec_()
+
+    def removeTransition(self):
+        self.removeItem(self.selectedTransition)
+        self.selectedTransition.origin.removeOriginTransition(self.selectedTransition)
+        self.selectedTransition.destination.removeTargetTransition(self.selectedTransition)
+        self.selectedTransition.removeEventConnections()
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         super().mousePressEvent(qGraphicsSceneMouseEvent)
@@ -129,12 +161,14 @@ class AutomataScene(QGraphicsScene):
             print('removing origin:' + tran.name)
             tran.destination.removeTargetTransition(tran)
             self.removeItem(tran)
+            tran.removeEventConnections()
             self.transitionRemoved.emit(tran)
 
         for tran in stateItem.getTargetTransitions():
             print('removing destination:' + tran.name)
             tran.origin.removeOriginTransition(tran)
             self.removeItem(tran)
+            tran.removeEventConnections()
             self.transitionRemoved.emit(tran)
 
         stateItem.removeTransitions()
@@ -147,11 +181,10 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
-    def removeTransitionItem(self, tranItem):
-        tranItem.origin.removeOriginTransition(tranItem)
-        tranItem.destination.removeTargetTransition(tranItem)
-        print('removing tran:' + tranItem.name)
-
+    # def removeTransitionItem(self, tranItem):
+    #     tranItem.origin.removeOriginTransition(tranItem)
+    #     tranItem.destination.removeTargetTransition(tranItem)
+    #     print('removing tran:' + tranItem.name)
 
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
@@ -228,7 +261,13 @@ class AutomataScene(QGraphicsScene):
         action = cMenu.exec_(qEvent.screenPos())
 
     def showTransitionContextMenu(self, tranItem, qEvent):
-        pass
+        cMenu = QMenu()
+        cMenu.addAction(self.renameTransitionAction)
+        cMenu.addAction(self.transitionCodeAction)
+        cMenu.addAction(self.removeTransitionAction)
+        self.selectedTransition = tranItem
+        self.contextPosition = qEvent.screenPos()
+        action = cMenu.exec_(qEvent.screenPos())
 
     def showSceneContextMenu(self, qEvent):
         cMenu = QMenu()
@@ -257,8 +296,22 @@ class AutomataScene(QGraphicsScene):
         self.selectedState.textGraphics.setPlainText(newName)
         self.selectedState.textGraphics.textChanged.emit(newName)
 
-    def codeChanged(self, newCode):
+    def externalTransitionNameChanged(self, newName):
+        self.selectedTransition.textGraphics.setPlainText(newName)
+        self.selectedTransition.textGraphics.textChanged.emit(newName)
+
+    def stateCodeChanged(self, newCode):
         self.selectedState.code = newCode
+
+    def transitionCodeChanged(self, type, typeValue, code):
+        self.selectedTransition.setType(type)
+        if type == TransitionType.TEMPORAL:
+            self.selectedTransition.setTemporalTime(typeValue)
+        elif type == TransitionType.CONDITIONAL:
+            self.selectedTransition.setCondition(typeValue)
+
+        self.selectedTransition.setCode(code)
+
 
     def stateNameChanged(self, state):
         self.stateNameChangedSignal.emit(state)

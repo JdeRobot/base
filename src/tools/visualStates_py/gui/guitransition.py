@@ -22,6 +22,8 @@ from PyQt5.QtWidgets import QGraphicsLineItem, QGraphicsRectItem, QGraphicsPolyg
 from PyQt5.QtGui import QPen, QBrush, QPolygonF
 from PyQt5.QtCore import Qt, QPointF, QLineF, QRectF
 from . import guistate, idtextboxgraphicsitem
+from . import recthandlegraphicsitem
+from . import transitiontype
 import math
 
 # CONST
@@ -30,50 +32,6 @@ ARROW_SIZE = 12
 PEN_NORMAL_WIDTH = 1
 PEN_FOCUS_WIDTH = 3
 
-
-# TODO: NOMBRE DE TRANSICIONES EN PY Y CPP!
-
-class RectHandleGraphicsItem(QGraphicsRectItem):
-    def __init__(self, width, parent=None):
-        super().__init__(-SQUARE_SIDE / 2, -SQUARE_SIDE / 2, SQUARE_SIDE, SQUARE_SIDE, parent)
-        self.setAcceptHoverEvents(True)
-
-        # set the color of the rectangle
-        brush = QBrush(Qt.SolidPattern)
-        brush.setColor(Qt.red)
-        self.setBrush(brush)
-
-        self.dragging = False
-
-    def hoverEnterEvent(self, event):
-        myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_FOCUS_WIDTH)
-        self.setPen(myPen)
-
-    def hoverLeaveEvent(self, event):
-        myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_NORMAL_WIDTH)
-        self.setPen(myPen)
-
-    def mousePressEvent(self, qGraphicsSceneMouseEvent):
-        if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
-            self.dragging = True
-        super().mousePressEvent(qGraphicsSceneMouseEvent)
-
-    def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
-        if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
-            self.dragging = False
-        super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
-
-    def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
-        if self.dragging:
-            # newPos = self.mapToScene(self.pos())
-            print('new transition pos:' + str(self.scenePos()))
-            self.parentItem().updateMiddlePoints(self.scenePos())
-            print('middle handle position updated')
-        super().mouseMoveEvent(qGraphicsSceneMouseEvent)
-
-
 class TransitionGraphicsItem(QGraphicsLineItem):
     def __init__(self, orig, dest, id, name='transition'):
         super().__init__()
@@ -81,6 +39,9 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.id = id
         self.name = name
         self.code = ""
+        self.transitionType = transitiontype.TransitionType.TEMPORAL
+        self.temporal = 0 # when to transition
+        self.condition = ""
 
         self.origin = orig
         self.origin.addOriginTransition(self)
@@ -93,6 +54,8 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.arrow = None
         self.textGraphics = None
         self.middleHandle = None
+
+        self.isEventsRemoved = False
 
         #
         # startPoint = QPointF(self.origin.scenePos().x(), self.origin.scenePos().y())
@@ -181,7 +144,7 @@ class TransitionGraphicsItem(QGraphicsLineItem):
     def createMiddleHandle(self):
         # create middle handle
         if self.middleHandle == None:
-            self.middleHandle = RectHandleGraphicsItem(SQUARE_SIDE, self)
+            self.middleHandle = recthandlegraphicsitem.RectHandleGraphicsItem(SQUARE_SIDE, self)
             self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable)
 
         self.middleHandle.setPos(self.midPointX, self.midPointY)
@@ -206,3 +169,36 @@ class TransitionGraphicsItem(QGraphicsLineItem):
     def nameChanged(self, name):
         self.name = name
         self.createIdTextBox()
+
+    def removeEventConnections(self):
+        if not self.isEventsRemoved:
+            if self.origin == self.destination:
+                self.origin.posChanged.disconnect(self.statePosChanged)
+            else:
+                self.origin.posChanged.disconnect(self.statePosChanged)
+                self.destination.posChanged.disconnect(self.statePosChanged)
+            self.eventsRemoved = True
+
+    def setType(self, type):
+        self.transitionType = type
+
+    def getType(self):
+        return self.transitionType
+
+    def setTemporalTime(self, time):
+        self.temporal = time
+
+    def getTemporalTime(self):
+        return self.temporal
+
+    def setCondition(self, cond):
+        self.condition = cond
+
+    def getCondition(self):
+        return self.condition
+
+    def setCode(self, code):
+        self.code = code
+
+    def getCode(self):
+        return self.code
