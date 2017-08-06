@@ -13,7 +13,7 @@ class TransitionCodeDialog(QDialog):
         self.setWindowTitle(name)
         self.resize(800, 600)
         self.codeEdit = QTextEdit()
-        self.codeEdit.setText(self.transition.code)
+        self.codeEdit.setText(self.transition.getCode())
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.codeEdit.setFont(fixedWidthFont)
         self.cancelButton = QPushButton('Cancel')

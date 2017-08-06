@@ -1,20 +1,25 @@
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
-from PyQt5.QtCore import Qt, pyqtSignal, QObject, QPoint
-from enum import Enum
-from . import guistate, guitransition
+from PyQt5.QtCore import Qt, pyqtSignal
+from .guistate import StateGraphicsItem
+from .guitransition import TransitionGraphicsItem
 from .renamediaolog import RenameDialog
 from .codedialog import CodeDialog
 from .transitioncodedialog import TransitionCodeDialog
 from .transitiontype import TransitionType
+from .optype import OpType
+from .state import State
+from .transition import Transition
+from .idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 
 class AutomataScene(QGraphicsScene):
-    # slots
+    # signals
     stateInserted = pyqtSignal('QGraphicsItem')
     stateRemoved = pyqtSignal('QGraphicsItem')
     transitionInserted = pyqtSignal('QGraphicsItem')
     transitionRemoved = pyqtSignal('QGraphicsItem')
     stateNameChangedSignal = pyqtSignal('QGraphicsItem')
+    activeStateChanged = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -25,8 +30,8 @@ class AutomataScene(QGraphicsScene):
         self.origin = None
         self.destination = None
 
-        self.stateIndex = -1
-        self.transitionIndex = -1
+        self.stateIndex = 0
+        self.transitionIndex = 0
 
         self.prevOperationType = None
         self.stateTextEditingStarted = False
@@ -75,13 +80,13 @@ class AutomataScene(QGraphicsScene):
 
 
     def renameState(self):
-        dialog = RenameDialog('Rename', self.selectedState.name)
+        dialog = RenameDialog('Rename', self.selectedState.stateData.name)
         dialog.move(self.contextPosition)
         dialog.nameChanged.connect(self.externalStateNameChanged)
         dialog.exec_()
 
     def editStateCode(self, state):
-        dialog = CodeDialog('State Code', self.selectedState.code)
+        dialog = CodeDialog('State Code', self.selectedState.stateData.code)
         dialog.move(self.contextPosition)
         dialog.codeChanged.connect(self.stateCodeChanged)
         dialog.exec_()
@@ -96,12 +101,13 @@ class AutomataScene(QGraphicsScene):
 
     #TODO: do i need to copy also transitions?
     def copyState(self):
-        self.copiedState = self.selectedState.getNewCopy()
+        self.copiedState = self.selectedState.stateData.getNewCopy()
 
     def pasteState(self):
         self.copiedState.id = self.getStateIndex()
-        self.copiedState.setPos(self.currentScenePos)
-        self.addStateItem(self.copiedState)
+        self.copiedState.x = self.currentScenePos.x()
+        self.copiedState.y = self.currentScenePos.y()
+        self.addStateItem(self.copiedState.getGraphicsItem())
         self.copyState()
 
     def removeState(self):
@@ -109,24 +115,25 @@ class AutomataScene(QGraphicsScene):
 
 
     def renameTransition(self):
-        dialog = RenameDialog('Rename', self.selectedTransition.name)
+        dialog = RenameDialog('Rename', self.selectedTransition.transitionData.name)
         dialog.move(self.contextPosition)
         dialog.nameChanged.connect(self.externalTransitionNameChanged)
         dialog.exec_()
 
     def editTransitionCode(self):
-        dialog = TransitionCodeDialog('Transition Code', self.selectedTransition)
+        dialog = TransitionCodeDialog('Transition Code', self.selectedTransition.transitionData)
         dialog.move(self.contextPosition)
         dialog.codeChanged.connect(self.transitionCodeChanged)
         dialog.exec_()
 
     def removeTransition(self):
         self.removeItem(self.selectedTransition)
-        self.selectedTransition.origin.removeOriginTransition(self.selectedTransition)
-        self.selectedTransition.destination.removeTargetTransition(self.selectedTransition)
-        self.selectedTransition.removeEventConnections()
+        transition = self.selectedTransition.transitionData
+        transition.origin.removeOriginTransition(transition)
+        transition.destination.removeDestTransition(transition)
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
+        print('mouse press event')
         super().mousePressEvent(qGraphicsSceneMouseEvent)
 
 
@@ -138,46 +145,44 @@ class AutomataScene(QGraphicsScene):
     #             if selectedItems[0].dragging:
     #                 self.origin = None
 
-    def addTransitionItem(self, tranItem):
+    def addTransitionItem(self, tranItem, isInsertion=True):
         self.addItem(tranItem)
-        self.transitionInserted.emit(tranItem)
+        if isInsertion:
+            self.transitionInserted.emit(tranItem)
 
 
-    def addStateItem(self, stateItem):
+    def addStateItem(self, stateItem, isInsertion=True):
         stateItem.stateNameChanged.connect(self.stateNameChanged)
         stateItem.stateTextEditStarted.connect(self.stateTextEditStarted)
         stateItem.stateTextEditFinished.connect(self.stateTextEditFinished)
 
         self.addItem(stateItem)
-        self.activeState.addChild(stateItem)
-        self.stateInserted.emit(stateItem)
+        self.activeState.addChild(stateItem.stateData)
+        if isInsertion:
+            self.stateInserted.emit(stateItem)
 
     def removeStateItem(self, stateItem):
         stateItem.stateNameChanged.disconnect(self.stateNameChanged)
         stateItem.stateTextEditStarted.disconnect(self.stateTextEditStarted)
         stateItem.stateTextEditFinished.disconnect(self.stateTextEditFinished)
 
-        for tran in stateItem.getOriginTransitions():
-            print('removing origin:' + tran.name)
-            tran.destination.removeTargetTransition(tran)
-            self.removeItem(tran)
-            tran.removeEventConnections()
-            self.transitionRemoved.emit(tran)
+        for tran in stateItem.stateData.getOriginTransitions():
+            print('removing origin tran:' + tran.name)
+            tran.destination.removeDestTransition(tran)
+            self.removeItem(tran.getGraphicsItem())
+            self.transitionRemoved.emit(tran.getGraphicsItem())
 
-        for tran in stateItem.getTargetTransitions():
-            print('removing destination:' + tran.name)
+        for tran in stateItem.stateData.getDestTransitions():
+            print('removing destination tran:' + tran.name)
             tran.origin.removeOriginTransition(tran)
-            self.removeItem(tran)
-            tran.removeEventConnections()
-            self.transitionRemoved.emit(tran)
-
-        stateItem.removeTransitions()
+            self.removeItem(tran.getGraphicsItem())
+            self.transitionRemoved.emit(tran.getGraphicsItem())
 
         if self.origin == stateItem:
             self.origin = None
 
         self.removeItem(stateItem)
-        self.activeState.removeChild(stateItem)
+        self.activeState.removeChild(stateItem.stateData)
 
         self.stateRemoved.emit(stateItem)
 
@@ -188,7 +193,7 @@ class AutomataScene(QGraphicsScene):
 
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
-
+        print('mouse release event')
         # if we were editing the state text next mouse release should disable text editing and should not add a new state or transition
         if self.stateTextEditingStarted:
             self.stateTextEditingStarted = False
@@ -199,10 +204,10 @@ class AutomataScene(QGraphicsScene):
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
-                stateItem = guistate.StateGraphicsItem(sIndex, qGraphicsSceneMouseEvent.scenePos().x(),
-                                                       qGraphicsSceneMouseEvent.scenePos().y(), False,
-                                                       'state ' + str(sIndex))
-                self.addStateItem(stateItem)
+                state = State(sIndex, 'state ' + str(sIndex), False, self.activeState)
+                state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
+                             qGraphicsSceneMouseEvent.scenePos().y())
+                self.addStateItem(state.getGraphicsItem())
 
             self.origin = None
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
@@ -210,19 +215,24 @@ class AutomataScene(QGraphicsScene):
             if len(selectedItems) > 0:
                 # get the parent
                 item = self.getParentItem(selectedItems[0])
-                if isinstance(item, guistate.StateGraphicsItem):
+                if isinstance(item, StateGraphicsItem):
                     if self.origin != None:
                         self.destination = item
                         tIndex = self.getTransitionIndex()
-                        tranItem = guitransition.TransitionGraphicsItem(self.origin, self.destination, tIndex,
-                                                                        'transition ' + str(tIndex))
-                        self.addTransitionItem(tranItem)
+                        tran = Transition(tIndex, 'transition ' + str(tIndex),
+                                          self.origin.stateData, self.destination.stateData)
+                        self.addTransitionItem(tran.getGraphicsItem())
+                        self.origin = None
                     else:
                         self.origin = item
                 else:
                     self.origin = None
             else:
                 self.origin = None
+        else:
+            if self.operationType == OpType.OPENAUTOMATA:
+                self.operationType = self.prevOperationType
+
 
         super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
@@ -231,21 +241,27 @@ class AutomataScene(QGraphicsScene):
         selectedItems = self.items(qGraphicsSceneContextMenuEvent.scenePos())
         if len(selectedItems) > 0:
             item = self.getParentItem(selectedItems[0])
-            if isinstance(item, guistate.StateGraphicsItem):
+            if isinstance(item, StateGraphicsItem):
                 self.showStateContextMenu(item, qGraphicsSceneContextMenuEvent)
-            elif isinstance(item, guitransition.TransitionGraphicsItem):
+            elif isinstance(item, TransitionGraphicsItem):
                 self.showTransitionContextMenu(item, qGraphicsSceneContextMenuEvent)
         elif len(selectedItems) == 0:
             self.showSceneContextMenu(qGraphicsSceneContextMenuEvent)
 
     def mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent):
-        super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+        print('mouse double click')
         selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
-        if len(selectedItems) == 1:
-            item = self.getParentItem(selectedItems[0])
-            if isinstance(item, guistate.StateGraphicsItem):
-                #TODO: now change the active state
-                pass
+        if len(selectedItems) > 0:
+            if isinstance(selectedItems[0], IdTextBoxGraphicsItem):
+                super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+            else:
+                item = self.getParentItem(selectedItems[0])
+                if isinstance(item, StateGraphicsItem):
+                    self.setActiveState(item.stateData)
+                super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+
+        self.prevOperationType = self.operationType
+        self.operationType = OpType.OPENAUTOMATA
 
 
 
@@ -297,20 +313,22 @@ class AutomataScene(QGraphicsScene):
         self.selectedState.textGraphics.textChanged.emit(newName)
 
     def externalTransitionNameChanged(self, newName):
+        self.selectedTransition.transitionData.name = newName
         self.selectedTransition.textGraphics.setPlainText(newName)
         self.selectedTransition.textGraphics.textChanged.emit(newName)
 
     def stateCodeChanged(self, newCode):
-        self.selectedState.code = newCode
+        self.selectedState.stateData.code = newCode
 
     def transitionCodeChanged(self, type, typeValue, code):
-        self.selectedTransition.setType(type)
+        transition = self.selectedTransition.transitionData
+        transition.setType(type)
         if type == TransitionType.TEMPORAL:
-            self.selectedTransition.setTemporalTime(typeValue)
+            transition.setTemporalTime(typeValue)
         elif type == TransitionType.CONDITIONAL:
-            self.selectedTransition.setCondition(typeValue)
+            transition.setCondition(typeValue)
 
-        self.selectedTransition.setCode(code)
+        transition.setCode(code)
 
 
     def stateNameChanged(self, state):
@@ -329,25 +347,36 @@ class AutomataScene(QGraphicsScene):
         self.prevOperationType = None
         self.stateTextEditingStarted = True
 
-    def removeAllItems(self):
-        if self.activeState is not None:
-            for s in self.activeState.getChildren():
-                for t in s.getTransitions():
-                    if t in self.items():
-                        self.removeItem(t)
-                if s in self.items():
-                    self.removeItem(s)
+    # def removeAllItems(self):
+    #     if self.activeState is not None:
+    #         for s in self.activeState.getChildren():
+    #             self.removeStateItem(s)
 
     def setActiveState(self, state):
         if state != self.activeState:
-            self.removeAllItems()
+            # clear scene
+            self.clear()
+            if self.activeState != None:
+                # reset all of the graphics item of the current active state
+                print('type:' + str(type(self.activeState)))
+                for child in self.activeState.getChildren():
+                    child.resetGraphicsItem()
+                    for tran in child.getOriginTransitions():
+                        tran.resetGraphicsItem()
+
             self.activeState = state
+            transitions = []
+            for child in self.activeState.getChildren():
+                self.addStateItem(child.getGraphicsItem(), False)
+                transitions = transitions + child.getOriginTransitions()
+
+            for tran in transitions:
+                self.addTransitionItem(tran.getGraphicsItem(), False)
+
+            print('set active state:' + self.activeState.name)
+            self.activeStateChanged.emit()
+
 
     def resetIndexes(self):
-        self.stateIndex = -1
-        self.transitionIndex = -1
-
-
-class OpType(Enum):
-    ADDSTATE = 0
-    ADDTRANSITION = 1
+        self.stateIndex = 0
+        self.transitionIndex = 0

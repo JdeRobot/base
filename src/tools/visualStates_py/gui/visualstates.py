@@ -1,11 +1,12 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton
 
 from gui.automatascene import AutomataScene, OpType
 from gui.filemanager import FileManager
 from gui.treemodel import TreeModel
 from .guistate import StateGraphicsItem
+from .state import State
 
 
 class VisualStates(QMainWindow):
@@ -15,7 +16,8 @@ class VisualStates(QMainWindow):
         self.setWindowTitle("VisualStates")
 
         # root state
-        self.rootState = StateGraphicsItem(0, 0, 0, True, "root")
+        self.rootState = State(0, "root", True)
+        self.activeState = self.rootState
 
         # create status bar
         self.statusBar()
@@ -147,7 +149,7 @@ class VisualStates(QMainWindow):
     def newAction(self):
         self.clearScene()
         # create new root state
-        self.rootState = StateGraphicsItem(0, 0, 0, True, "root")
+        self.rootState = State(0, 'root', True)
         self.automataScene.setActiveState(self.rootState)
         self.automataScene.resetIndexes()
 
@@ -168,7 +170,7 @@ class VisualStates(QMainWindow):
             self.clearScene()
             for state in self.rootState.getChildren():
                 self.automataScene.addStateItem(state)
-                transitionItems = state.getTransitions()
+                transitionItems = state.getOriginTransitions()
                 for t in transitionItems:
                     self.automataScene.addTransitionItem(t)
         else:
@@ -241,15 +243,19 @@ class VisualStates(QMainWindow):
         self.treeView = QTreeView()
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
-        self.treeView.setColumnWidth(0, 50)
 
         self.logo = QLabel()
         logoPixmap = QPixmap('/usr/local/share/jderobot/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
+        self.upButton = QPushButton()
+        self.upButton.setText('Up')
+        self.upButton.clicked.connect(self.upButtonClicked)
+
         leftContainer = QWidget()
         leftLayout = QVBoxLayout()
         leftLayout.addWidget(self.treeView)
+        leftLayout.addWidget(self.upButton)
         leftLayout.addWidget(self.logo)
         leftContainer.setLayout(leftLayout)
 
@@ -260,27 +266,49 @@ class VisualStates(QMainWindow):
         self.stateCanvas = QGraphicsView()
         self.automataScene = AutomataScene()
         self.automataScene.setSceneRect(0, 0, 2000, 2000)
+        self.automataScene.activeStateChanged.connect(self.activeStateChanged)
         self.automataScene.stateInserted.connect(self.stateInserted)
         self.automataScene.stateRemoved.connect(self.stateRemoved)
         self.automataScene.transitionInserted.connect(self.transitionInserted)
         self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
         self.automataScene.setActiveState(self.rootState)
+
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setScene(self.automataScene)
         self.stateCanvas.setRenderHint(QPainter.Antialiasing)
         self.stateCanvas.setAcceptDrops(True)
 
     def stateInserted(self, state):
-        self.treeModel.insertState(state, QColor(Qt.white))
+        if self.activeState != self.rootState:
+            parent = self.treeModel.getByDataId(self.activeState.id)
+            self.treeModel.insertState(state, QColor(Qt.white), parent)
+        else:
+            self.treeModel.insertState(state, QColor(Qt.white))
 
     def stateRemoved(self, state):
-        self.treeModel.removeState(state)
+        if self.activeState != self.rootState:
+            self.treeModel.removeState(state.stateData, self.activeState)
+        else:
+            self.treeModel.removeState(state.stateData)
 
     def transitionInserted(self, tran):
-        print('transition inserted:' + tran.name)
+        print('transition inserted:' + tran.transitionData.name)
 
     def stateNameChanged(self, state):
-        dataItem = self.treeModel.getByDataId(state.id)
+        dataItem = self.treeModel.getByDataId(state.stateData.id)
         if dataItem != None:
-            dataItem.name = state.name
+            dataItem.name = state.stateData.name
             self.treeModel.layoutChanged.emit()
+
+    def activeStateChanged(self):
+        if self.automataScene.activeState != self.activeState:
+            print('visual states active state changed:' + self.automataScene.activeState.name)
+            self.activeState = self.automataScene.activeState
+            if self.activeState.id != 0:
+                self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
+
+    def upButtonClicked(self):
+        if self.activeState != None:
+            if self.activeState.parent != None:
+                print('parent name:' + self.activeState.parent.name)
+                self.automataScene.setActiveState(self.activeState.parent)

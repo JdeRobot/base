@@ -18,36 +18,27 @@
  
   '''
 
-from PyQt5.QtWidgets import QGraphicsLineItem, QGraphicsRectItem, QGraphicsPolygonItem, QGraphicsItem
+from PyQt5.QtWidgets import QGraphicsObject, QGraphicsLineItem, QGraphicsPolygonItem, QGraphicsItem
 from PyQt5.QtGui import QPen, QBrush, QPolygonF
-from PyQt5.QtCore import Qt, QPointF, QLineF, QRectF
-from . import guistate, idtextboxgraphicsitem
-from . import recthandlegraphicsitem
-from . import transitiontype
+from PyQt5.QtCore import Qt, QPointF, QLineF, pyqtSignal, QObject
+
+from .guistate import StateGraphicsItem
+from .idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from .recthandlegraphicsitem import RectHandleGraphicsItem
 import math
 
-# CONST
-SQUARE_SIDE = 10
-ARROW_SIZE = 12
-PEN_NORMAL_WIDTH = 1
-PEN_FOCUS_WIDTH = 3
+class TransitionGraphicsItem(QGraphicsObject):
+    # constant values
+    SQUARE_SIDE = 10
+    ARROW_SIZE = 12
+    PEN_NORMAL_WIDTH = 1
+    PEN_FOCUS_WIDTH = 3
 
-class TransitionGraphicsItem(QGraphicsLineItem):
-    def __init__(self, orig, dest, id, name='transition'):
+    posChanged = pyqtSignal('QGraphicsItem')
+
+    def __init__(self, data):
         super().__init__()
-
-        self.id = id
-        self.name = name
-        self.code = ""
-        self.transitionType = transitiontype.TransitionType.TEMPORAL
-        self.temporal = 0 # when to transition
-        self.condition = ""
-
-        self.origin = orig
-        self.origin.addOriginTransition(self)
-        self.destination = dest
-        self.destination.addTargetTransition(self)
-
+        self.transitionData = data
 
         self.originLine = None
         self.destinationLine = None
@@ -55,26 +46,15 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.textGraphics = None
         self.middleHandle = None
 
-        self.isEventsRemoved = False
-
-        #
-        # startPoint = QPointF(self.origin.scenePos().x(), self.origin.scenePos().y())
-        # midPoint = QPointF((self.destination.scenePos().x() + self.origin.scenePos().x())/2.0,
-        # 				   (self.destination.scenePos().y() + self.origin.scenePos().y()) / 2.0)
-        # endPoint = QPointF(self.destination.scenePos().x(), self.destination.scenePos().y())
-        #
-        # polygon = QPolygonF()
-        # polygon << startPoint << midPoint << endPoint
-        # self.setPolygon(polygon)
+        self.graphicsOrigin = self.transitionData.origin.getGraphicsItem()
+        self.graphicsDestination = self.transitionData.destination.getGraphicsItem()
 
         # connect position changed event
-        self.origin.posChanged.connect(self.statePosChanged)
-        self.destination.posChanged.connect(self.statePosChanged)
+        self.graphicsOrigin.posChanged.connect(self.statePosChanged)
+        self.graphicsDestination.posChanged.connect(self.statePosChanged)
 
-        self.midPointX = (self.destination.scenePos().x() + self.origin.scenePos().x()) / 2.0
-        self.midPointY = (self.destination.scenePos().y() + self.origin.scenePos().y()) / 2.0
-        # self.setPos(self.midPointX, self.midPointY)
-        print('transition pos:' + str(self.pos()))
+        self.midPointX = (self.graphicsDestination.scenePos().x() + self.graphicsOrigin.scenePos().x()) / 2.0
+        self.midPointY = (self.graphicsDestination.scenePos().y() + self.graphicsOrigin.scenePos().y()) / 2.0
 
         self.createOriginLine()
         self.createDestinationLine()
@@ -84,39 +64,39 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.createIdTextBox()
 
     def statePosChanged(self, state):
-        if self.origin == state:
+        if self.graphicsOrigin == state:
             self.createOriginLine()
-        elif self.destination == state:
+        elif self.graphicsDestination == state:
             self.createDestinationLine()
             self.createArrow()
 
     def createOriginLine(self):
         if self.originLine == None:
-            self.originLine = QGraphicsLineItem(self.midPointX, self.midPointY, self.origin.scenePos().x(),
-                                                self.origin.scenePos().y(), self)
+            self.originLine = QGraphicsLineItem(self.midPointX, self.midPointY, self.graphicsOrigin.scenePos().x(),
+                                                self.graphicsOrigin.scenePos().y(), self)
         else:
-            self.originLine.setLine(QLineF(self.midPointX, self.midPointY, self.origin.scenePos().x(),
-                                           self.origin.scenePos().y()))
+            self.originLine.setLine(QLineF(self.midPointX, self.midPointY, self.graphicsOrigin.scenePos().x(),
+                                           self.graphicsOrigin.scenePos().y()))
         myLine = self.originLine.line()
-        myLine.setLength(myLine.length() - guistate.NODE_WIDTH / 2)
+        myLine.setLength(myLine.length() - StateGraphicsItem.NODE_WIDTH / 2)
         self.originLine.setLine(myLine)
 
     def createDestinationLine(self):
         if self.destinationLine == None:
-            self.destinationLine = QGraphicsLineItem(self.midPointX, self.midPointY, self.destination.scenePos().x(),
-                                                     self.destination.scenePos().y(), self)
+            self.destinationLine = QGraphicsLineItem(self.midPointX, self.midPointY, self.graphicsDestination.scenePos().x(),
+                                                     self.graphicsDestination.scenePos().y(), self)
         else:
-            self.destinationLine.setLine(QLineF(self.midPointX, self.midPointY, self.destination.scenePos().x(),
-                                                self.destination.scenePos().y()))
+            self.destinationLine.setLine(QLineF(self.midPointX, self.midPointY, self.graphicsDestination.scenePos().x(),
+                                                self.graphicsDestination.scenePos().y()))
 
         myLine = self.destinationLine.line()
-        myLine.setLength(myLine.length() - guistate.NODE_WIDTH / 2)
+        myLine.setLength(myLine.length() - StateGraphicsItem.NODE_WIDTH / 2)
         self.destinationLine.setLine(myLine)
 
     def createArrow(self):
         # add an arrow to destination line
         myLine = self.destinationLine.line()
-        myLine.setLength(myLine.length() - ARROW_SIZE)
+        myLine.setLength(myLine.length() - TransitionGraphicsItem.ARROW_SIZE)
         rotatePoint = myLine.p2() - self.destinationLine.line().p2()
 
         rightPointX = rotatePoint.x() * math.cos(math.pi / 6) - rotatePoint.y() * math.sin(math.pi / 6)
@@ -144,19 +124,20 @@ class TransitionGraphicsItem(QGraphicsLineItem):
     def createMiddleHandle(self):
         # create middle handle
         if self.middleHandle == None:
-            self.middleHandle = recthandlegraphicsitem.RectHandleGraphicsItem(SQUARE_SIDE, self)
+            self.middleHandle = RectHandleGraphicsItem(TransitionGraphicsItem.SQUARE_SIDE, self)
             self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable)
 
         self.middleHandle.setPos(self.midPointX, self.midPointY)
 
     def createIdTextBox(self):
         if self.textGraphics == None:
-            self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.name, self)
+            self.textGraphics = IdTextBoxGraphicsItem(self.transitionData.name, self)
             self.textGraphics.textChanged.connect(self.nameChanged)
         else:
-            self.textGraphics.setPlainText(self.name)
+            self.textGraphics.setPlainText(self.transitionData.name)
         textWidth = self.textGraphics.boundingRect().width()
-        self.textGraphics.setPos(self.midPointX - textWidth / 2, self.midPointY + SQUARE_SIDE - (SQUARE_SIDE / 2) + 5)
+        self.textGraphics.setPos(self.midPointX - textWidth / 2, self.midPointY + TransitionGraphicsItem.SQUARE_SIDE -
+                                 (TransitionGraphicsItem.SQUARE_SIDE / 2) + 5)
 
     def updateMiddlePoints(self, newPosition):
         self.midPointX = newPosition.x()
@@ -165,40 +146,47 @@ class TransitionGraphicsItem(QGraphicsLineItem):
         self.createDestinationLine()
         self.createArrow()
         self.createIdTextBox()
+        self.posChanged.emit(self)
 
     def nameChanged(self, name):
-        self.name = name
+        self.transitionData.name = name
         self.createIdTextBox()
 
-    def removeEventConnections(self):
-        if not self.isEventsRemoved:
-            if self.origin == self.destination:
-                self.origin.posChanged.disconnect(self.statePosChanged)
-            else:
-                self.origin.posChanged.disconnect(self.statePosChanged)
-                self.destination.posChanged.disconnect(self.statePosChanged)
-            self.eventsRemoved = True
+    def boundingRect(self):
+        if self.middleHandle != None:
+            return self.middleHandle.boundingRect()
+        else:
+            return None
 
-    def setType(self, type):
-        self.transitionType = type
+    # def removeEventConnections(self):
+    #     if not self.isEventsRemoved:
+    #         if self.origin == self.destination:
+    #             self.origin.posChanged.disconnect(self.statePosChanged)
+    #         else:
+    #             self.origin.posChanged.disconnect(self.statePosChanged)
+    #             self.destination.posChanged.disconnect(self.statePosChanged)
+    #         self.eventsRemoved = True
 
-    def getType(self):
-        return self.transitionType
-
-    def setTemporalTime(self, time):
-        self.temporal = time
-
-    def getTemporalTime(self):
-        return self.temporal
-
-    def setCondition(self, cond):
-        self.condition = cond
-
-    def getCondition(self):
-        return self.condition
-
-    def setCode(self, code):
-        self.code = code
-
-    def getCode(self):
-        return self.code
+    # def setType(self, type):
+    #     self.transitionType = type
+    #
+    # def getType(self):
+    #     return self.transitionType
+    #
+    # def setTemporalTime(self, time):
+    #     self.temporal = time
+    #
+    # def getTemporalTime(self):
+    #     return self.temporal
+    #
+    # def setCondition(self, cond):
+    #     self.condition = cond
+    #
+    # def getCondition(self):
+    #     return self.condition
+    #
+    # def setCode(self, code):
+    #     self.code = code
+    #
+    # def getCode(self):
+    #     return self.code

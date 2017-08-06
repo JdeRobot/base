@@ -23,71 +23,58 @@ from PyQt5.QtCore import Qt, pyqtSignal, QRectF
 from PyQt5.QtGui import QBrush, QPen
 from . import idtextboxgraphicsitem
 
-# CONST
-NODE_WIDTH = 40
-INIT_WIDTH = 30
-PEN_NORMAL_WIDTH = 1
-PEN_FOCUS_WIDTH = 3
-
-
 class StateGraphicsItem(QGraphicsObject):
+    # constant values
+    NODE_WIDTH = 40
+    INIT_WIDTH = 30
+    PEN_NORMAL_WIDTH = 1
+    PEN_FOCUS_WIDTH = 3
+
     posChanged = pyqtSignal('QGraphicsItem')
     stateNameChanged = pyqtSignal('QGraphicsItem')
 
     stateTextEditStarted = pyqtSignal()
     stateTextEditFinished = pyqtSignal()
 
-    def __init__(self, id, x, y, initial, name='state'):
+    def __init__(self, data):
         super().__init__()
-
-        self.id = id
-        self.name = name
-        self.initial = False
+        self.stateData = data
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable)
-        # self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setAcceptDrops(True)
 
         # position of the graphics item on the scene
-        self.setPos(x, y)
+        self.setPos(self.stateData.x, self.stateData.y)
 
         self.dragging = False
 
         # create an ellipse
-        self.ellipse = QGraphicsEllipseItem(-NODE_WIDTH / 2, -NODE_WIDTH / 2, NODE_WIDTH, NODE_WIDTH, self)
+        self.ellipse = QGraphicsEllipseItem(-StateGraphicsItem.NODE_WIDTH / 2,
+                                            -StateGraphicsItem.NODE_WIDTH / 2,
+                                            StateGraphicsItem.NODE_WIDTH,
+                                            StateGraphicsItem.NODE_WIDTH, self)
         brush = QBrush(Qt.SolidPattern)
         brush.setColor(Qt.blue)
         self.ellipse.setBrush(brush)
 
-        self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.name, self)
+        self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.stateData.name, self)
         textWidth = self.textGraphics.boundingRect().width()
-        self.textGraphics.setPos(-textWidth / 2, NODE_WIDTH - (NODE_WIDTH / 2) + 5)
+        self.textGraphics.setPos(-textWidth / 2, StateGraphicsItem.NODE_WIDTH -
+                                 (StateGraphicsItem.NODE_WIDTH / 2) + 5)
         self.textGraphics.textChanged.connect(self.nameChanged)
         self.textGraphics.textEditStarted.connect(self.textEditStarted)
         self.textGraphics.textEditFinished.connect(self.textEditFinished)
 
         self.initGraphics = None
-        # this should run just after other visuals to make sure that it is on the top of other visuals
-        self.setInitial(initial)
-
-        # the list of transition that state is the origin for
-        self.originTransitions = []
-        self.targetTransitions = []
-
-        # states that is the container for them
-        self.childStates = []
-
-        self.code = ""
-
-
-    def isInitial(self):
-        return self.initial
+        self.setInitial(self.stateData.initial)
 
     def setInitial(self, initial):
-        self.initial = initial
-        if self.initial:
+        if initial:
             if self.initGraphics is None:
-                self.initGraphics = QGraphicsEllipseItem(-INIT_WIDTH / 2, -INIT_WIDTH / 2, INIT_WIDTH, INIT_WIDTH, self)
+                self.initGraphics = QGraphicsEllipseItem(-StateGraphicsItem.INIT_WIDTH / 2,
+                                                         -StateGraphicsItem.INIT_WIDTH / 2,
+                                                         StateGraphicsItem.INIT_WIDTH,
+                                                         StateGraphicsItem.INIT_WIDTH, self)
             else:
                 self.initGraphics.setParentItem(self)
         else:
@@ -96,13 +83,13 @@ class StateGraphicsItem(QGraphicsObject):
 
     def hoverEnterEvent(self, event):
         myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_FOCUS_WIDTH)
+        myPen.setWidth(StateGraphicsItem.PEN_FOCUS_WIDTH)
         self.ellipse.setPen(myPen)
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
         myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_NORMAL_WIDTH)
+        myPen.setWidth(StateGraphicsItem.PEN_NORMAL_WIDTH)
         self.ellipse.setPen(myPen)
         super().hoverLeaveEvent(event)
 
@@ -114,7 +101,6 @@ class StateGraphicsItem(QGraphicsObject):
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = False
-
         super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
     def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
@@ -125,15 +111,12 @@ class StateGraphicsItem(QGraphicsObject):
     def boundingRect(self):
         return self.ellipse.boundingRect()
 
-    def paint(self, qPainter, qStyleOptionGraphicsItem, qWidget_widget=None):
-        pass
-
     def nameChanged(self, newName):
-        print('text changed')
-        self.name = newName
+        self.stateData.name = newName
         textWidth = self.textGraphics.boundingRect().width()
         # reposition to center the text
-        self.textGraphics.setPos(-textWidth / 2, NODE_WIDTH - (NODE_WIDTH / 2) + 5)
+        self.textGraphics.setPos(-textWidth / 2, StateGraphicsItem.NODE_WIDTH -
+                                 (StateGraphicsItem.NODE_WIDTH / 2) + 5)
         self.stateNameChanged.emit(self)
 
     def textEditStarted(self):
@@ -142,152 +125,17 @@ class StateGraphicsItem(QGraphicsObject):
     def textEditFinished(self):
         self.stateTextEditFinished.emit()
 
-    def addOriginTransition(self, transition):
-        print('add origin transition:' + transition.name)
-        self.originTransitions.append(transition)
-
-    def removeOriginTransition(self, tran):
-        if tran in self.originTransitions:
-            self.originTransitions.remove(tran)
-
-    def addTargetTransition(self, transition):
-        print('add target transition:' + transition.name + ' to:' + self.name)
-        self.targetTransitions.append(transition)
-
-    def removeTargetTransition(self, tran):
-        if tran in self.targetTransitions:
-            self.targetTransitions.remove(tran)
-
-    def removeTransitions(self):
-        self.targetTransitions.clear()
-        self.originTransitions.clear()
-
-    def getOriginTransitions(self):
-        return self.originTransitions
-
-    def getTargetTransitions(self):
-        return self.targetTransitions
-
-    def getChildren(self):
-        return self.childStates
-
-    def addChild(self, child):
-        if child not in self.childStates:
-            self.childStates.append(child)
-
-    def removeChild(self, child):
-        if child in self.childStates:
-            self.childStates.remove(child)
-
-    def getNewCopy(self):
-        self.newCopy = StateGraphicsItem(self.id, self.pos().x(), self.pos().y(), self.isInitial(), self.name)
-        self.newCopy.code = self.code
-        for child in self.getChildren():
-            self.newCopy.addChild(child.getNewCopy())
-
-        return self.newCopy
-
-    # implement this method to be able to
-    def getNewCopyWithTransitions(self):
+    def paint(self, QPainter, QStyleOptionGraphicsItem, QWidget_widget=None):
         pass
 
-
-    # def mouseDoubleClickEvent(self, event):
-    # 	# self.state.notifyChangeCurrentSubautomata(self.state.idSubautSon)
-    # 	pass
-
-
+    # def getNewCopy(self):
+    #     self.newCopy = StateGraphicsItem(self.id, self.pos().x(), self.pos().y(), self.isInitial(), self.name)
+    #     self.newCopy.code = self.code
+    #     for child in self.getChildren():
+    #         self.newCopy.addChild(child.getNewCopy())
     #
-    # def __init__(self, id, idSubSon, subautomata, x, y, isInit, name, windowId=0):
-    # 	self.id = id
-    # 	self.idSubautSon = idSubSon
-    # 	self.subautomata = subautomata
-    # 	self.x = x - NODE_WIDTH/2
-    # 	self.y = y - NODE_WIDTH/2
-    # 	self.isInit = isInit
-    # 	self.name = name
-    # 	self.copies = []
-    # 	self.windowId = windowId
-    # 	self.color = "blue"
+    #     return self.newCopy
     #
-    # 	#CREATE GUI ELEMENTS
-    # 	self.ellipse = self.State(self, self.x, self.y, NODE_WIDTH)
-    # 	self.text = QtGui.QGraphicsSimpleTextItem(self.name)
-    # 	self.text.setPos(self.x, self.y+NODE_WIDTH)
-    # 	if self.isInit:
-    # 		self.ellipseInit = QtGui.QGraphicsEllipseItem(self.x+5, self.y+5,
-    # 								INIT_WIDTH, INIT_WIDTH)
-    # 	else:
-    # 		self.ellipseInit = None
-    # 	self.paint("blue", PEN_NORMAL_WIDTH)
-    #
-    #
-    # def getIdNodeFather(self):
-    # 	return self.subautomata.idNodeFather
-    #
-    # def show(self):
-    # 	self.ellipse.show()
-    # 	self.text.show()
-    # 	if self.isInit:
-    # 		self.ellipseInit.show()
-    #
-    #
-    # def hide(self):
-    # 	self.ellipse.hide()
-    # 	self.text.hide()
-    # 	if self.isInit:
-    # 		self.ellipseInit.hide()
-    #
-    #
-    # def setWidth(self, width):
-    # 	pen = QtGui.QPen(QtGui.QColor("black"), width)
-    # 	self.ellipse.setPen(pen)
-    # 	if self.isInit:
-    # 		self.ellipseInit.setPen(pen)
-    #
-    #
-    # def setColor(self, color):
-    # 	self.paint(color, PEN_NORMAL_WIDTH)
-    #
-    #
-    # def paint(self, color, width):
-    # 	pen = QtGui.QPen(QtGui.QColor("black"), width)
-    # 	brush = QtGui.QBrush(QtCore.Qt.SolidPattern)
-    # 	brush.setColor(QtGui.QColor(color))
-    # 	self.ellipse.setPen(pen)
-    # 	self.ellipse.setBrush(brush)
-    # 	self.color = color
-    # 	for copy in self.copies:
-    # 		copy.paint(color, width)
-    #
-    #
-    # def notifyChangeCurrentSubautomata(self, idNewSub):
-    # 	if self.windowId == 0:
-    # 		if idNewSub != 0:
-    # 			self.setWidth(PEN_NORMAL_WIDTH)
-    # 			self.subautomata.automataGui.changeCurrentSubautomata(idNewSub)
-    # 		else:
-    # 			print("This node does not have any subautomata son")
-    #
-    #
-    # def draw(self, view):
-    # 	view.addItem(self.ellipse)
-    # 	view.addItem(self.text)
-    # 	if self.isInit:
-    # 		view.addItem(self.ellipseInit)
-    #
-    #
-    # def createCopy(self, windowId):
-    # 	x = self.x + NODE_WIDTH/2
-    # 	y = self.y + NODE_WIDTH/2
-    # 	nodeAux = GuiNode(self.id, self.idSubautSon, self.subautomata,
-    # 				 		x, y, self.isInit, self.name, windowId)
-    # 	nodeAux.color = self.color
-    # 	self.copies.append(nodeAux)
-    # 	return self.copies[-1]
-    #
-    #
-    # def removeCopy(self, windowId):
-    # 	for copy in self.copies:
-    # 		if copy.windowId == windowId:
-    # 			self.copies.remove(copy)
+    # # implement this method to be able to
+    # def getNewCopyWithTransitions(self):
+    #     pass
