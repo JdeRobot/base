@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QTreeWidgetItem
 from PyQt5.QtGui import QColor
 
+
 class TreeNode(QTreeWidgetItem):
     def __init__(self, id, name, color, parent=None):
         super().__init__(parent)
@@ -52,3 +53,6 @@ class TreeNode(QTreeWidgetItem):
 
     def removeChildren(self):
         self.childItems.clear()
+
+    def myClicked(self, item, column):
+        print('clicked:' + str(item))

@@ -117,6 +117,7 @@ class TreeModel(QAbstractItemModel):
         if parent is None:
             parent = self.rootNode
         newNode = TreeNode(stateData.id, stateData.name, color, parent)
+        # newNode.itemClicked.connect(self.itemDoubleClicked)
         parent.appendChild(newNode)
         # TODO: this redraws whole tree, just update according to the insertion
         self.layoutChanged.emit()
@@ -125,7 +126,7 @@ class TreeModel(QAbstractItemModel):
         if parent is None:
             parent = self.rootNode
         childToBeRemoved = None
-        for s in parent.getChildren():
+        for s in parent.getChildren(self.rootNode):
             if s.id == state.id:
                 childToBeRemoved = s
                 break
@@ -135,11 +136,18 @@ class TreeModel(QAbstractItemModel):
             parent.removeChild(childToBeRemoved)
             self.layoutChanged.emit()
 
-    def getChildren(self):
-        return self.rootNode.childItems
+    def getChildren(self, node):
+        mychildren = []
+        if node != self.rootNode:
+            mychildren.append(node)
+
+        for child in node.childItems:
+            mychildren = mychildren + self.getChildren(child)
+
+        return mychildren
 
     def getByDataId(self, id):
-        for item in self.getChildren():
+        for item in self.getChildren(self.rootNode):
             if item.id == id:
                 return item
         return None

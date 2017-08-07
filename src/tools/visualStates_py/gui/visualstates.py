@@ -234,6 +234,7 @@ class VisualStates(QMainWindow):
         dockWidget.setFeatures(QDockWidget.NoDockWidgetFeatures)
         dockWidget.setTitleBarWidget(QWidget())
         self.treeView = QTreeView()
+        self.treeView.clicked.connect(self.treeItemClicked)
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
 
@@ -297,7 +298,9 @@ class VisualStates(QMainWindow):
         if self.automataScene.activeState != self.activeState:
             print('visual states active state changed:' + self.automataScene.activeState.name)
             self.activeState = self.automataScene.activeState
-            if self.activeState.id != 0:
+            if self.activeState == self.rootState:
+                self.treeView.selectionModel().clearSelection()
+            else:
                 self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
     def upButtonClicked(self):
@@ -305,3 +308,27 @@ class VisualStates(QMainWindow):
             if self.activeState.parent != None:
                 print('parent name:' + self.activeState.parent.name)
                 self.automataScene.setActiveState(self.activeState.parent)
+                # if self.activeState.parent == self.rootState:
+                #     self.treeView.selectionModel().clearSelection()
+                #     print('clear selection')
+
+
+    def getStateById(self,state, id):
+        if state.id == id:
+            return state
+        else:
+            result = None
+            for child in state.getChildren():
+                result = self.getStateById(child, id)
+                if result is not None:
+                    return result
+            return result
+
+    def treeItemClicked(self, index):
+        print('clicked item.id:' + str(index.internalPointer().id))
+        state = self.getStateById(self.rootState, index.internalPointer().id)
+        if state is not None:
+            # set the active state as the loaded state
+            self.automataScene.setActiveState(state)
+
+
