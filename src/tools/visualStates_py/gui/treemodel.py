@@ -19,6 +19,7 @@
   '''
 
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel
+from PyQt5.QtGui import QColor
 from .treenode import TreeNode
 
 class TreeModel(QAbstractItemModel):
@@ -110,9 +111,12 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def insertState(self, state, color, parent=None):
+        self.insertStateData(state.stateData, color, parent)
+
+    def insertStateData(self, stateData, color, parent=None):
         if parent is None:
             parent = self.rootNode
-        newNode = TreeNode(state.stateData.id, state.stateData.name, color, parent)
+        newNode = TreeNode(stateData.id, stateData.name, color, parent)
         parent.appendChild(newNode)
         # TODO: this redraws whole tree, just update according to the insertion
         self.layoutChanged.emit()
@@ -143,3 +147,8 @@ class TreeModel(QAbstractItemModel):
     def removeAll(self):
         self.rootNode.removeChildren()
         self.layoutChanged.emit()
+
+    def loadFromRoot(self, rootState):
+        for child in rootState.getChildren():
+            self.insertStateData(child, QColor(Qt.white), self.getByDataId(rootState.id))
+            self.loadFromRoot(child)

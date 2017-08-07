@@ -354,16 +354,7 @@ class AutomataScene(QGraphicsScene):
 
     def setActiveState(self, state):
         if state != self.activeState:
-            # clear scene
-            self.clear()
-            if self.activeState != None:
-                # reset all of the graphics item of the current active state
-                print('type:' + str(type(self.activeState)))
-                for child in self.activeState.getChildren():
-                    child.resetGraphicsItem()
-                    for tran in child.getOriginTransitions():
-                        tran.resetGraphicsItem()
-
+            self.clearScene()
             self.activeState = state
             transitions = []
             for child in self.activeState.getChildren():
@@ -376,6 +367,17 @@ class AutomataScene(QGraphicsScene):
             print('set active state:' + self.activeState.name)
             self.activeStateChanged.emit()
 
+
+    def clearScene(self):
+        # clear scene
+        self.clear()
+        if self.activeState != None:
+            # reset all of the graphics item of the current active state
+            print('type:' + str(type(self.activeState)))
+            for child in self.activeState.getChildren():
+                child.resetGraphicsItem()
+                for tran in child.getOriginTransitions():
+                    tran.resetGraphicsItem()
 
     def resetIndexes(self):
         self.stateIndex = 0

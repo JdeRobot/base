@@ -153,10 +153,6 @@ class VisualStates(QMainWindow):
         self.automataScene.setActiveState(self.rootState)
         self.automataScene.resetIndexes()
 
-    def clearScene(self):
-        self.automataScene.removeAllItems()
-        self.treeModel.removeAll()
-
     def openAction(self):
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Open VisualStates File")
@@ -166,13 +162,10 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             self.rootState = self.fileManager.open(fileDialog.selectedFiles()[0])
-            # add to scene
-            self.clearScene()
-            for state in self.rootState.getChildren():
-                self.automataScene.addStateItem(state)
-                transitionItems = state.getOriginTransitions()
-                for t in transitionItems:
-                    self.automataScene.addTransitionItem(t)
+            self.treeModel.removeAll()
+            self.treeModel.loadFromRoot(self.rootState)
+            # set the active state as the loaded state
+            self.automataScene.setActiveState(self.rootState)
         else:
             print('open is canceled')
 
