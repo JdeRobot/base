@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraph
 from gui.automatascene import AutomataScene, OpType
 from gui.filemanager import FileManager
 from gui.treemodel import TreeModel
-from .guistate import StateGraphicsItem
 from .state import State
+from .timerdialog import TimerDialog
 
 
 class VisualStates(QMainWindow):
@@ -30,6 +30,8 @@ class VisualStates(QMainWindow):
         self.show()
 
         self.fileManager = FileManager()
+
+        self.timeStepDuration = 100
 
     def createMenu(self):
         # create actions
@@ -202,7 +204,9 @@ class VisualStates(QMainWindow):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def timerAction(self):
-        print('Timer Action')
+        timerDialog = TimerDialog('Time Step Duration', str(self.timeStepDuration))
+        timerDialog.timeChanged.connect(self.timeStepDurationChanged)
+        timerDialog.exec_()
 
     def variablesAction(self):
         print('Variables Action')
@@ -330,5 +334,8 @@ class VisualStates(QMainWindow):
         if state is not None:
             # set the active state as the loaded state
             self.automataScene.setActiveState(state)
+
+    def timeStepDurationChanged(self, duration):
+        self.timeStepDuration = duration
 
 
