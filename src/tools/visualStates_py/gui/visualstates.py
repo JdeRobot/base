@@ -7,6 +7,9 @@ from gui.filemanager import FileManager
 from gui.treemodel import TreeModel
 from .state import State
 from .timerdialog import TimerDialog
+from .codedialog import CodeDialog
+from .librariesdialog import LibrariesDialog
+from .configdialog import ConfigDialog
 
 
 class VisualStates(QMainWindow):
@@ -32,6 +35,10 @@ class VisualStates(QMainWindow):
         self.fileManager = FileManager()
 
         self.timeStepDuration = 100
+        self.variables = ''
+        self.functions = ''
+        self.libraries = []
+        self.configs = []
 
     def createMenu(self):
         # create actions
@@ -209,16 +216,24 @@ class VisualStates(QMainWindow):
         timerDialog.exec_()
 
     def variablesAction(self):
-        print('Variables Action')
+        variablesDialog = CodeDialog('Variables', self.variables)
+        variablesDialog.codeChanged.connect(self.variablesChanged)
+        variablesDialog.exec_()
 
     def functionsAction(self):
-        print('Functions Action')
+        functionsDialog = CodeDialog('Functions', self.functions)
+        functionsDialog.codeChanged.connect(self.functionsChanged)
+        functionsDialog.exec_()
 
     def librariesAction(self):
-        print('libraries Action')
+        librariesDialog = LibrariesDialog('Libraries', self.libraries)
+        librariesDialog.librariesChanged.connect(self.librariesChanged)
+        librariesDialog.exec_()
 
     def configFileAction(self):
-        print('config file action')
+        configDialog = ConfigDialog('Config', self.configs)
+        configDialog.configChanged.connect(self.configsChanged)
+        configDialog.exec_()
 
     def generateCppAction(self):
         print('generate cpp action')
@@ -338,4 +353,14 @@ class VisualStates(QMainWindow):
     def timeStepDurationChanged(self, duration):
         self.timeStepDuration = duration
 
+    def variablesChanged(self, variables):
+        self.variables = variables
 
+    def functionsChanged(self, functions):
+        self.functions = functions
+
+    def librariesChanged(self, libraries):
+        self.libraries = libraries
+
+    def configsChanged(self, configs):
+        self.configs = configs

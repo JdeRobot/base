@@ -56,5 +56,3 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     dialog = TimerDialog('Timer', 100)
     dialog.exec_()
-
-
