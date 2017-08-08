@@ -24,7 +24,7 @@ JdeRobot simplifies the access to hardware devices from the control program. Get
 * Wiimote
 * X10 home automation devices
 
-JdeRobot includes several robot programming tools and libraries. First, viewers and teleoperators for several robots, its sensors and motors. Second, a camara calibration component and a tunning tool for color filters. Third, VisualHFSM tool for programming robot behavior using hierarchical finite state machines. It includes many sample components using OpenCV, PCL, OpenGL, etc.. In addition, it also provides a library to develop fuzzy controllers, a library for projective geometry and some computer vision processing.
+JdeRobot includes several robot programming tools and libraries. First, viewers and teleoperators for several robots, its sensors and motors. Second, a camara calibration component and a tunning tool for color filters. Third, VisualStates tool for programming robot behavior using hierarchical finite state machines. It includes many sample components using OpenCV, PCL, OpenGL, etc.. In addition, it also provides a library to develop fuzzy controllers, a library for projective geometry and some computer vision processing.
 
 Each component may have its own independent Graphical User Interface or none at all. Currently, GTK and Qt libraries are supported, and several examples of OpenGL for 3D graphics with both libraries are included.
 

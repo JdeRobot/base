@@ -40,8 +40,9 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
                 lc = new ListenerLaser(0, nullptr, nodeName, topic);
                 lc->start();
                 client = (JdeRobotComm::LaserClient*) lc;
+            #else
+                throw "ERROR: ROS is not available";
             #endif
-            throw "ERROR: ROS is not available";
 
 		 	break;
 		}

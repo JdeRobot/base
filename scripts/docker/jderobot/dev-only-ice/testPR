@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function usage {
+ echo "usage: testPR remote branch directory MakeJobs"
+ exit 
+}
+
+
+if [ "$1" == "-h" ]; then
+ usage
+fi
+
+if (($# < 3)); then
+ usage
+fi
+
+
+local=jderobot
+remote=$1
+branch=$2
+directory=$3
+makejob=$4
+
+if [ -z "$makejob" ]
+then
+  makejob=1
+fi
+
+
+git clone https://github.com/$local/JdeRobot.git $directory
+cd $directory
+
+git remote add $remote https://github.com/$remote/JdeRobot.git
+git fetch $remote
+git merge --no-edit $remote/$branch
+
+mkdir build && cd build
+
+cmake ..
+make install -j$makejob
+

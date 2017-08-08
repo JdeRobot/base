@@ -19,7 +19,7 @@ target_link_libraries(ns
  
 ### Install
 install(TARGETS ns
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

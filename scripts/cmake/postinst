@@ -4,8 +4,8 @@
 pip2 install --upgrade pip
 pip2 install zeroc-ice
 
-echo "/usr/local/lib/jderobot/" > /etc/ld.so.conf.d/jderobot.conf
-cat /usr/local/share/jderobot/gazebo/gazebo-setup.sh >> ~/.bashrc
+echo "/opt/jderobot/lib/jderobot/" > /etc/ld.so.conf.d/jderobot.conf
+echo "source /opt/jderobot/setup.bash" >> ~/.bashrc
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc 
 ldconfig

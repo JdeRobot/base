@@ -51,7 +51,7 @@ target_link_libraries(test_gladelocator ${binname})
 
 ### Install
 install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 install(DIRECTORY include/

@@ -14,10 +14,10 @@ namespace openniServer {
             prefix(propertyPrefix),
             device(device) {
         Ice::PropertiesPtr prop = propIn;
-
+        mirror = prop->getPropertyAsIntWithDefault(prefix+"Mirror",0);
         int fps = prop->getPropertyAsIntWithDefault("openniServer.pointCloud.Fps", 10);
         bool extra = (bool) prop->getPropertyAsIntWithDefault("openniServer.ExtraCalibration", 0);
-        replyCloud = new ReplyCloud(this, device, fps);
+        replyCloud = new ReplyCloud(this, device, fps,mirror);
         this->control = replyCloud->start();
     }
 
@@ -35,11 +35,12 @@ namespace openniServer {
 
 
 
-    RGBDServer::ReplyCloud::ReplyCloud(RGBDServer *server, ConcurrentDevicePtr device, int fpsIn):
+    RGBDServer::ReplyCloud::ReplyCloud(RGBDServer *server, ConcurrentDevicePtr device, int fpsIn,bool mirror):
             server(server),
             device(device),
             fps(fpsIn),
-            _done(false)
+            _done(false),
+            mirror(mirror)
     {
         this->cameraSize=cv::Size(device->getVideoMode().witdh,device->getVideoMode().heigth);
         LOG(INFO) << "Working with: " << device->getVideoMode().witdh << " x " <<device->getVideoMode().heigth;
@@ -66,6 +67,11 @@ namespace openniServer {
             float distance;
             cv::Mat rgb,depth;
             this->device->getSyncData(rgb,depth);
+
+            if (mirror){
+                cv::flip(rgb,rgb,1);
+                cv::flip(depth,depth,1);
+            }
 
             this->mutex.lock();
             jderobot::rgbData temporalData;

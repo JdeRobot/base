@@ -22,7 +22,7 @@ target_link_libraries(geometry tinyxml GLU ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRA
 
 ### Install
 install(TARGETS geometry
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

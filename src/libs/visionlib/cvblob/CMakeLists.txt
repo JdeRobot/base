@@ -39,7 +39,7 @@ target_link_libraries(cvblob ${OPENGL_LIBRARIES})
 
 ### Install
 install(TARGETS cvblob
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 

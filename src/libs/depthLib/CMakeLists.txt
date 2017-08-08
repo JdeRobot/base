@@ -16,7 +16,7 @@ set_target_properties(depthLibshare PROPERTIES OUTPUT_NAME depthLib)
 
 ### Install
 install(TARGETS depthLib depthLibshare
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/jderobot
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT core
 )
 
