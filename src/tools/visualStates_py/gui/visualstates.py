@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
+    QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton, QMessageBox
 
 from gui.automatascene import AutomataScene, OpType
 from gui.filemanager import FileManager
@@ -10,6 +11,9 @@ from .timerdialog import TimerDialog
 from .codedialog import CodeDialog
 from .librariesdialog import LibrariesDialog
 from .configdialog import ConfigDialog
+from gui.cppgenerator import CppGenerator
+from gui.pythongenerator import PythonGenerator
+import os
 
 
 class VisualStates(QMainWindow):
@@ -39,6 +43,8 @@ class VisualStates(QMainWindow):
         self.functions = ''
         self.libraries = []
         self.configs = []
+        self.interfaceHeaderMap = {}
+        self.createInterfaceHeaderMap()
 
     def createMenu(self):
         # create actions
@@ -155,6 +161,14 @@ class VisualStates(QMainWindow):
         helpMenu = menubar.addMenu('&Help')
         helpMenu.addAction(aboutAction)
 
+    def createInterfaceHeaderMap(self):
+        os.system('/opt/jderobot/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt')
+        fp = open('/tmp/allinterfaces.txt')
+        for line in fp:
+            data = line.split(' ')
+            self.interfaceHeaderMap[data[0]] = data[1]
+
+
     def newAction(self):
         self.clearScene()
         # create new root state
@@ -188,13 +202,13 @@ class VisualStates(QMainWindow):
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
-        fileDialog.setWindowTitle("Save As VisualStates File")
+        fileDialog.setWindowTitle("Save VisualStates Project")
         fileDialog.setViewMode(QFileDialog.Detail)
-        fileDialog.setNameFilters(['VisualStates Files (*.xml)'])
-        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setNameFilters(['VisualStates Directory'])
+        fileDialog.setOptions(QFileDialog.ShowDirsOnly)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
-            self.fileManager.setFileName(fileDialog.selectedFiles()[0])
+            self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
             self.fileManager.save(self.rootState)
         else:
             print('file dialog canceled')
@@ -235,8 +249,19 @@ class VisualStates(QMainWindow):
         configDialog.configChanged.connect(self.configsChanged)
         configDialog.exec_()
 
+
+    def showWarning(self, title, msg):
+        QMessageBox.warning(self, title, msg)
+
     def generateCppAction(self):
-        print('generate cpp action')
+        stateList = []
+        if self.fileManager.hasFile():
+            self.getStateList(self.rootState, stateList)
+            generator = CppGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
+            generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
+        else:
+            self.showWarning('CPP Generation', 'Please save the project before code generation')
+
 
     def compileCppAction(self):
         print('compile cpp action')
@@ -364,3 +389,11 @@ class VisualStates(QMainWindow):
 
     def configsChanged(self, configs):
         self.configs = configs
+
+    def getStateList(self, state, stateList):
+        if len(state.getChildren()) > 0:
+            stateList.append(state)
+
+        for s in state.getChildren():
+            self.getStateList(s, stateList)
+
