@@ -9,6 +9,9 @@ class State:
         self.id = id
         self.name = name
         self.code = ''
+        self.functions = ''
+        self.variables = ''
+        self.timeStepDuration = 100
         self.x = 0
         self.y = 0
         self.initial = initial
@@ -95,6 +98,12 @@ class State:
         if len(stateElement.getElementsByTagName('code')[0].childNodes) > 0:
             self.code = stateElement.getElementsByTagName('code')[0].childNodes[0].nodeValue
 
+        if len(stateElement.getElementsByTagName('functions')[0].childNodes) > 0:
+            self.functions = stateElement.getElementsByTagName('functions')[0].childNodes[0].nodeValue
+
+        if len(stateElement.getElementsByTagName('timestep')[0].childNodes) > 0:
+            self.timeStepDuration = int(stateElement.getElementsByTagName('timestep')[0].childNodes[0].nodeValue)
+
         # recursive child state parsing
         allChildTransitions = []
         statesById = {}
@@ -135,6 +144,12 @@ class State:
         codeElement = doc.createElement('code')
         codeElement.appendChild(doc.createTextNode(self.code))
         stateElement.appendChild(codeElement)
+        functionsElement = doc.createElement('functions')
+        functionsElement.appendChild(doc.createTextNode(self.functions))
+        stateElement.appendChild(functionsElement)
+        timeElement = doc.createElement('timestep')
+        timeElement.appendChild(doc.createTextNode(str(self.timeStepDuration)))
+        stateElement.appendChild(timeElement)
 
         # create transition elements
         for tran in self.getOriginTransitions():
@@ -148,3 +163,37 @@ class State:
             parentElement.appendChild(stateElement)
 
         return stateElement
+
+    def getCode(self):
+        return self.code
+
+    def setCode(self, code):
+        self.code = code
+
+    def getFunctions(self):
+        return self.functions
+
+    def setFunctions(self, functions):
+        self.functions = functions
+
+    def getVariables(self):
+        return self.variables
+
+    def setVariables(self, vars):
+        self.variables = vars
+
+    def getTimeStep(self):
+        return self.timeStepDuration
+
+    def setTimeStep(self, timestep):
+        self.timeStepDuration = timestep
+
+    def getInitialChild(self):
+        for child in self.getChildren():
+            if child.initial:
+                return child
+
+        return None
+
+    def setInitial(self, initial):
+        self.initial = initial

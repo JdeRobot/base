@@ -15,7 +15,7 @@ class CppGenerator(Generator):
         self.generateEnums(stringList)
         self.generateVariables(stringList)
         self.generateShutdownMethod(stringList)
-        self.generateUserMethods(stringList)
+        self.generateUserFunctions(stringList)
         self.generateRunTimeGui(stringList)
         self.generateStates(stringList)
         self.generateAutomataGui(stringList)
@@ -29,14 +29,14 @@ class CppGenerator(Generator):
         stringList = []
         self.generateCfg(stringList)
         cfgString = ''.join(stringList)
-        fp = open(projectPath + os.sep + projectName + '.cfg')
+        fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
         fp.write(cfgString)
         fp.close()
 
         stringList = []
-        self.generateCmake(stringList)
+        self.generateCmake(stringList, projectName)
         cmakeString = ''.join(stringList)
-        fp = open(projectPath + os.sep + 'CMakeLists.txt')
+        fp = open(projectPath + os.sep + 'CMakeLists.txt', 'w')
         fp.write(cmakeString)
         fp.close()
 
@@ -48,7 +48,7 @@ class CppGenerator(Generator):
         headers.append('#include <jderobot/visualStates/automatagui.h>\n')
         for lib in self.libraries:
             headers.append('#include <')
-            headers.append(lib)
+            headers.append(lib.strip('\n'))
             headers.append('>\n')
 
         # generate interface headers
@@ -69,7 +69,7 @@ class CppGenerator(Generator):
             enums.append(' {\n')
             for childState in state.getChildren():
                 enums.append('\t')
-                enums.append(childState.name)
+                enums.append(self.sanitizeVar(childState.name))
                 enums.append(',\n')
             enums.append('} State_')
             enums.append(str(state.id))
@@ -81,7 +81,7 @@ class CppGenerator(Generator):
             enums.append('[] = {\n')
             for childState in state.getChildren():
                 enums.append('\t"')
-                enums.append(childState.name)
+                enums.append(self.sanitizeVar(childState.name))
                 enums.append('",\n')
             enums.append('};\n\n')
 
@@ -105,12 +105,13 @@ class CppGenerator(Generator):
         vars.append('\n')
 
         for state in self.states:
+            initialChild = state.getInitialChild()
             vars.append('State_')
             vars.append(str(state.id))
             vars.append(' sub_')
             vars.append(str(state.id))
             vars.append(' = ')
-            vars.append(str(state.name))
+            vars.append(self.sanitizeVar(initialChild.name))
             vars.append(';\n')
         vars.append('\n')
 
@@ -137,7 +138,7 @@ class CppGenerator(Generator):
 
     def generateRunTimeGui(self, runtimegui):
         runtimegui.append('std::list<GuiSubautomata> createGuiSubAutomataList(){\n')
-        runtimegui.append('\tstd::list<GuiSubautomata< guiSubautomataList;\n\n')
+        runtimegui.append('\tstd::list<GuiSubautomata> guiSubautomataList;\n\n')
 
         stateVar = ''
         for state in self.states:
@@ -165,24 +166,24 @@ class CppGenerator(Generator):
                 runtimegui.append(str(childState.x))
                 runtimegui.append(', ')
                 runtimegui.append(str(childState.y))
-                runtimegui.append(');\n')
+                runtimegui.append(');\n\t')
                 runtimegui.append(stateVar)
                 runtimegui.append('->setIsInitialLastGuiNode(')
                 if childState.initial:
                     runtimegui.append('true')
                 else:
                     runtimegui.append('false')
-                runtimegui.append(');\n')
+                runtimegui.append(');\n\t')
                 runtimegui.append(stateVar)
                 runtimegui.append('->setNameLastGuiNode("')
                 runtimegui.append(childState.name)
-                runtimegui.append(');\n\n')
+                runtimegui.append('");\n\n')
 
             # now iterate over the transitions
             for childState in state.getChildren():
                 for tran in childState.getOriginTransitions():
                     runtimegui.append('\tPoint* ')
-                    originVar = 'origin'+str(state.id)+str(tran.id)
+                    originVar = 'origin'+str(childState.id)+str(tran.id)
                     runtimegui.append(originVar)
                     runtimegui.append(' = new Point(')
                     runtimegui.append(str(tran.origin.x))
@@ -191,7 +192,7 @@ class CppGenerator(Generator):
                     runtimegui.append(');\n')
 
                     runtimegui.append('\tPoint* ')
-                    destVar = 'dest'+str(state.id)+str(tran.id)
+                    destVar = 'dest'+str(childState.id)+str(tran.id)
                     runtimegui.append(destVar)
                     runtimegui.append(' = new Point(')
                     runtimegui.append(str(tran.destination.x))
@@ -200,7 +201,7 @@ class CppGenerator(Generator):
                     runtimegui.append(');\n')
 
                     runtimegui.append('\tPoint* ')
-                    midVar = 'midPoint'+str(state.id)+str(tran.id)
+                    midVar = 'midPoint'+str(childState.id)+str(tran.id)
                     runtimegui.append(midVar)
                     runtimegui.append(' = new Point(')
                     runtimegui.append(str(tran.x))
@@ -217,11 +218,11 @@ class CppGenerator(Generator):
                     runtimegui.append(', *')
                     runtimegui.append(midVar)
                     runtimegui.append(', ')
-                    runtimegui.append(tran.id)
+                    runtimegui.append(str(tran.id))
                     runtimegui.append(', ')
-                    runtimegui.append(tran.origin.id)
+                    runtimegui.append(str(tran.origin.id))
                     runtimegui.append(', ')
-                    runtimegui.append(tran.destination.id)
+                    runtimegui.append(str(tran.destination.id))
                     runtimegui.append(');\n')
 
             runtimegui.append('\t')
@@ -239,10 +240,10 @@ class CppGenerator(Generator):
         for state in self.states:
             stateStr.append('void* state_')
             stateStr.append(str(state.id))
-            stateStr.append(' (void* {\n')
+            stateStr.append(' (void*) {\n')
             stateStr.append('\tstruct timeval a, b;\n')
             stateStr.append('\tint cycle = ')
-            stateStr.append(str(state.getTime()))
+            stateStr.append(str(state.getTimeStep()))
             stateStr.append(';\n')
             stateStr.append('\tlong totala, totalb;\n')
             stateStr.append('\tlong diff;\n')
@@ -255,7 +256,7 @@ class CppGenerator(Generator):
             for tran in state.getOriginTransitions():
                 if tran.getType() == TransitionType.TEMPORAL:
                     stateStr.append('\tfloat t_')
-                    stateStr.append(state.name)
+                    stateStr.append(self.sanitizeVar(state.name))
                     stateStr.append('_max = ')
                     stateStr.append(str(tran.getTemporalTime()/1000.0))
                     stateStr.append(';\n')
@@ -269,16 +270,16 @@ class CppGenerator(Generator):
 
             # step loop of the state
             stateStr.append('\twhile (run')
-            stateStr.append(state.id)
+            stateStr.append(str(state.id))
             stateStr.append(') {\n')
             stateStr.append('\t\tgettimeofday(&a, NULL);\n')
             stateStr.append('\t\ttotala = a.tv_sec * 1000000 + a.tv_usec;\n\n')
 
             if state.parent is not None:
                 stateStr.append('\t\tif (sub_')
-                stateStr.append(state.parent.id)
+                stateStr.append(str(state.parent.id))
                 stateStr.append(' == ')
-                stateStr.append(state.parent.name)
+                stateStr.append(self.sanitizeVar(state.parent.name))
                 stateStr.append(') {\n')
 
                 stateStr.append('\t\t\tif (')
@@ -286,7 +287,7 @@ class CppGenerator(Generator):
                     stateStr.append(' sub_')
                     stateStr.append(str(state.id))
                     stateStr.append(' == ')
-                    stateStr.append(childState.name)
+                    stateStr.append(self.sanitizeVar(childState.name))
                     stateStr.append('_ghost')
                     if childState != state.getChildren()[len(state.getChildren())-1]:
                         stateStr.append(' || ')
@@ -294,22 +295,22 @@ class CppGenerator(Generator):
                 stateStr.append(') {\n')
 
                 stateStr.append('\t\t\t\tsub_')
-                stateStr.append(state.id)
+                stateStr.append(str(state.id))
                 stateStr.append(' = (State_Sub_')
-                stateStr.append(state.id)
+                stateStr.append(str(state.id))
                 stateStr.append(')(sub_')
-                stateStr.append(state.id)
+                stateStr.append(str(state.id))
                 stateStr.append(' - 1);\n')
                 stateStr.append('\t\t\t\tt_ini = time(NULL);\n')
                 stateStr.append('\t\t\t}\n')
 
             stateStr.append('\t\t//Evaluation switch\n')
             stateStr.append('\t\tswitch (sub_')
-            stateStr.append(state.id)
+            stateStr.append(str(state.id))
             stateStr.append(') {\n')
             for childState in state.getChildren():
                 stateStr.append('\t\t\tcase ')
-                stateStr.append(childState.name)
+                stateStr.append(self.sanitizeVar(childState.name))
                 stateStr.append(': {\n')
 
                 for tran in state.getOriginTransitions():
@@ -320,7 +321,7 @@ class CppGenerator(Generator):
                         stateStr.append('\t\t\t\t\tsub_')
                         stateStr.append(str(state.id))
                         stateStr.append(' = ')
-                        stateStr.append(tran.destination.name)
+                        stateStr.append(self.sanitizeVar(tran.destination.name))
                         stateStr.append(';\n')
                         tranCode = tran.getCode()
                         for codeLine in tranCode.split('\n'):
@@ -346,12 +347,12 @@ class CppGenerator(Generator):
                             stateStr.append(') {\n')
                         else:
                             stateStr.append('\t\t\t\t\tif (secs > (double) t_')
-                            stateStr.append(state.name)
+                            stateStr.append(self.sanitizeVar(state.name))
                             stateStr.append('_max) {\n')
                         stateStr.append('\t\t\t\t\t\tsub_')
                         stateStr.append(str(state.id))
                         stateStr.append(' = ')
-                        stateStr.append(tran.destination.name)
+                        stateStr.append(self.sanitizeVar(tran.destination.name))
                         stateStr.append(';\n')
                         stateStr.append('\t\t\t\t\t\tt_activated = false;\n')
                         tranCode = tran.getCode()
@@ -366,7 +367,7 @@ class CppGenerator(Generator):
                         stateStr.append('\t\t\t\t\t\t}\n')
                         if state.parent is not None:
                             stateStr.append('\t\t\t\t\t\tt_')
-                            stateStr.append(state.name)
+                            stateStr.append(self.sanitizeVar(state.name))
                             stateStr.append('_max = ')
                             nameTimeMap[state.name] = tran.getTemporalTime() / 1000.0
                             stateStr.append(str(tran.getTemporalTime() / 1000.0))
@@ -378,7 +379,7 @@ class CppGenerator(Generator):
                 stateStr.append('\t\t\t\tbreak;\n')
                 stateStr.append('\t\t\t}\n')
 
-            stateStr.append('\t\t\n\n')
+            stateStr.append('\t\t}\n\n')
 
             stateStr.append('\t\t// Actuation switch\n')
             stateStr.append('\t\tswitch (sub_')
@@ -386,9 +387,9 @@ class CppGenerator(Generator):
             stateStr.append(') {\n')
             for childState in state.getChildren():
                 stateStr.append('\t\t\tcase ')
-                stateStr.append(childState.name)
+                stateStr.append(self.sanitizeVar(childState.name))
                 stateStr.append(': {\n')
-                for codeLine in not childState.getCode().split('\n'):
+                for codeLine in childState.getCode().split('\n'):
                     stateStr.append('\t\t\t\t')
                     stateStr.append(codeLine)
                     stateStr.append('\n')
@@ -404,11 +405,11 @@ class CppGenerator(Generator):
                 stateStr.append(') {\n')
                 for childState in state.getChildren():
                     stateStr.append('\t\t\t\tcase ')
-                    stateStr.append(childState.name)
+                    stateStr.append(self.sanitizeVar(childState.name))
                     stateStr.append(':\n')
                     if childState.name in nameTimeMap:
                         stateStr.append('\t\t\t\t\tt_')
-                        stateStr.append(childState.name)
+                        stateStr.append(self.sanitizeVar(childState.name))
                         stateStr.append('_max = ')
                         stateStr.append(str(nameTimeMap[childState.name]))
                         stateStr.append(' - difftime(t_fin, t_ini);\n')
@@ -442,7 +443,7 @@ class CppGenerator(Generator):
         return stateStr
 
     def generateAutomataGui(self, guiStr):
-        guiStr.append('void* runAutomatagui (void*) {\n')
+        guiStr.append('void* runAutomatagui(void*) {\n')
         guiStr.append('\tautomatagui->run();\n')
         guiStr.append('}\n\n')
 
@@ -453,7 +454,7 @@ class CppGenerator(Generator):
         guiStr.append('\t}\n')
 
         guiStr.append('\tautomatagui->setGuiSubautomataList(createGuiSubAutomataList());\n')
-        guiStr.append('\tpthread_create(&thr_automatagui, NULL, runAutomatagui, NULL);\n')
+        guiStr.append('\tpthread_create(&thr_gui, NULL, runAutomatagui, NULL);\n')
         guiStr.append('\tautomatagui->loadGuiSubautomata();\n')
         guiStr.append('\treturn true;\n')
         guiStr.append('}\n\n')
@@ -462,28 +463,29 @@ class CppGenerator(Generator):
 
     def generateReadArgs(self, readArgsStr):
         mystr = '''
-    void readArgs(int *argc, char* argv[]){
-        int i;
-        std::string splitedArg;
+void readArgs(int *argc, char* argv[]){
+    int i;
+    std::string splitedArg;
     
-        for(i = 0; i < *argc; i++){
-            splitedArg = strtok(argv[i], "=");
-            if (splitedArg.compare("--displaygui") == 0){
-                splitedArg = strtok(NULL, "=");
-                if (splitedArg.compare("true") == 0 || splitedArg.compare("True") == 0){
-                    displayGui = true;
-                    std::cout << "displayGui ENABLED" << std::endl;
-                }else{
-                    displayGui = false;
-                    std::cout << "displayGui DISABLED" << std::endl;
-                }
-            }
-            if(i == *argc -1){
-                (*argc)--;
+    for(i = 0; i < *argc; i++){
+        splitedArg = strtok(argv[i], "=");
+        if (splitedArg.compare("--displaygui") == 0){
+            splitedArg = strtok(NULL, "=");
+            if (splitedArg.compare("true") == 0 || splitedArg.compare("True") == 0){
+                displayGui = true;
+                std::cout << "displayGui ENABLED" << std::endl;
+            }else{
+                displayGui = false;
+                std::cout << "displayGui DISABLED" << std::endl;
             }
         }
+        if(i == *argc -1){
+            (*argc)--;
+        }
     }
-        '''
+}
+
+'''
 
         readArgsStr.append(mystr)
         return readArgsStr
@@ -491,6 +493,7 @@ class CppGenerator(Generator):
     def generateMain(self, mainStr):
         mainStr.append('int main(int argc, char* argv[]) {\n')
         mainStr.append('\tint status;\n\n')
+        mainStr.append('\tIce::CommunicatorPtr ic;\n')
         mainStr.append('\ttry {\n')
         mainStr.append('\t\tic = EasyIce::initialize(argc, argv);\n')
         mainStr.append('\t\treadArgs(&argc, argv);\n\n')
@@ -526,57 +529,55 @@ class CppGenerator(Generator):
             mainStr.append(cfg['name'])
             mainStr.append(' connected" << std::endl;\n\n')
 
-            mystr = '''
-            if (displayGui) {
-                automatagui = new AutomataGui(argc, argv);
-                displayGui = showAutomataGui();
-            }
-            '''
-            mainStr.append(mystr)
-            mainStr.append('\n')
+        mystr = '''
+        if (displayGui) {
+            automatagui = new AutomataGui(argc, argv);
+            displayGui = showAutomataGui();
+        }
+'''
+        mainStr.append(mystr)
+        mainStr.append('\n')
 
-            for state in self.states:
-                mainStr.append('\t\tpthread_create(&thr_sub_')
-                mainStr.append(str(state.id))
-                mainStr.append(', NULL, &subautomata_')
-                mainStr.append(str(state.id))
-                mainStr.append(', NULL);\n')
-            mainStr.append('\n')
+        for state in self.states:
+            mainStr.append('\t\tpthread_create(&thr_')
+            mainStr.append(str(state.id))
+            mainStr.append(', NULL, &state_')
+            mainStr.append(str(state.id))
+            mainStr.append(', NULL);\n')
 
-            for state in self.states:
-                mainStr.append('\t\tpthread_join(thr_sub_')
-                mainStr.append(str(state.id))
-                mainStr.append(', NULL);\n')
+        for state in self.states:
+            mainStr.append('\t\tpthread_join(thr_')
+            mainStr.append(str(state.id))
+            mainStr.append(', NULL);\n')
 
-            mystr = '''
-            if (displayGui)
-                pthread_join(thr_automatagui, NULL);
-            '''
-            mainStr.append(mystr)
-            mainStr.append('\n')
+        mystr = '''
+        if (displayGui)
+            pthread_join(thr_gui, NULL);
+'''
+        mainStr.append(mystr)
+        mainStr.append('\n')
 
-            mystr = '''
-            } catch (const Ice::Exception& ex) {
-                std::cerr << ex << std::endl;
-                status = 1;
-            } catch (const char* msg) {
-                std::cerr << msg << std::endl;
-                status = 1;
-            }
+        mystr = '''
+    } catch (const Ice::Exception& ex) {
+        std::cerr << ex << std::endl;
+        status = 1;
+    } catch (const char* msg) {
+        std::cerr << msg << std::endl;
+        status = 1;
+    }
             
-            if (ic)
-                ic->destroy();
+    if (ic)
+        ic->destroy();
                 
-            return status;
-            }
-            '''
-            mainStr.append(mystr)
+    return status;
+}
+'''
+        mainStr.append(mystr)
 
 
-    def generateCmake(self, cmakeStr):
+    def generateCmake(self, cmakeStr, projectName):
         cmakeStr.append('project(')
-        #todo: how to set project name
-        cmakeStr.append('myproject')
+        cmakeStr.append(projectName)
         cmakeStr.append(')\n\n')
 
         cmakeStr.append('cmake_minimum_required(VERSION 2.8)\n')
@@ -584,66 +585,69 @@ class CppGenerator(Generator):
 
         cmakeStr.append('SET(SOURCE_FILES_AUTOMATA\n')
         cmakeStr.append('\t')
-        #todo: get cpp files
-        cmakeStr.append('myproject.cpp')
+        cmakeStr.append(projectName)
+        cmakeStr.append('.cpp')
         cmakeStr.append(')\n\n')
 
         mystr = '''
-        pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
+pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
         
-        SET(INTERFACES_CPP_DIR /opt/jderobot/include)
-        SET(LIBS_DIR /usr/local/lib)
-        SET(JDEROBOT_LIBS_DIR /opt/jderobot/lib)
-        SET(easyiceconfig_LIBRARIES ${JDEROBOT_LIBS_DIR}/jderobot/libeasyiceconfig.so)
+SET(INTERFACES_CPP_DIR /opt/jderobot/include)
+SET(LIBS_DIR /usr/local/lib)
+SET(JDEROBOT_LIBS_DIR /opt/jderobot/lib)
         
-        SET(CMAKE_CXX_FLAGS "-pthread")
+SET(CMAKE_CXX_FLAGS "-pthread")
         
-        SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
         
-        SET(goocanvasmm_INCLUDE_DIRS
-        \t/usr/include/goocanvasmm-2.0
-        \t/usr/lib/goocanvasmm-2.0/include
-        \t/usr/include/goocanvas-2.0
-        )
+SET(goocanvasmm_INCLUDE_DIRS
+    \t/usr/include/goocanvasmm-2.0
+    \t/usr/lib/goocanvasmm-2.0/include
+    \t/usr/include/goocanvas-2.0
+)
         
-        include_directories(
-        \t/opt/jderobot/include/jderobot
-        \t${INTERFACES_CPP_DIR}
-        \t${easyiceconfig_INCLUDE_DIRS}
-        \t${LIBS_DIR}
-        \t${JDEROBOT_LIBS_DIR}
-        \t${CMAKE_CURRENT_SOURCE_DIR}
-        \t${GTKMM_INCLUDE_DIRS}
-        \t${goocanvasmm_INCLUDE_DIRS}
-        )
+include_directories(
+    \t/opt/jderobot/include/
+    \t${INTERFACES_CPP_DIR}
+    \t${easyiceconfig_INCLUDE_DIRS}
+    \t${LIBS_DIR}
+    \t${JDEROBOT_LIBS_DIR}
+    \t${CMAKE_CURRENT_SOURCE_DIR}
+    \t${GTKMM_INCLUDE_DIRS}
+    \t${goocanvasmm_INCLUDE_DIRS}
+)
         
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
         
-        link_directories(${GTKMM_LIBRARY_DIRS} ${easyiceconfig_LIBRARY_DIRS})
-        '''
+link_directories(${GTKMM_LIBRARY_DIRS} ${JDEROBOT_LIBS_DIR})
+'''
         cmakeStr.append(mystr)
         #todo: how to get name of the project
         cmakeStr.append('add_executable(')
-        cmakeStr.append('myproject')
+        cmakeStr.append(projectName)
         cmakeStr.append(' ${SOURCE_FILES_AUTOMATA})\n\n')
         cmakeStr.append('SET(goocanvasmm_LIBRARIES goocanvasmm-2.0 goocanvas-2.0)\n\n')
 
+        cmakeStr.append('TARGET_LINK_LIBRARIES (\t')
+        cmakeStr.append(projectName)
+        cmakeStr.append('\n')
+
         mystr = '''
-        TARGET_LINK_LIBRARIES (
-        \t${GTKMM_LIBRARIES}
-        \t${easyiceconfig_LIBRARIES}
-        \t${goocanvasmm_LIBRARIES}
-        \t${JDEROBOT_LIBS_DIR}/jderobot/libvisualStatesLib.so
-        \t${JDEROBOT_LIBS_DIR}/jderobot/libJderobotInterfaces.so
-        \t${JDEROBOT_LIBS_DIR}/jderobot/libjderobotutil.so
-        \tIce
-        \tİceUtil
-        )
+    ${GTKMM_LIBRARIES}
+    easyiceconfig
+    ${goocanvasmm_LIBRARIES}
+    visualStateslib
+    JderobotInterfaces
+    jderobotutil
+    Ice
+    IceUtil
+)
         
-        '''
+'''
         cmakeStr.append(mystr)
 
         return cmakeStr
+
 
 
 

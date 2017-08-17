@@ -14,14 +14,44 @@ class FileManager():
     def setFullPath(self, path):
         self.fullPath = path
 
-    def save(self, rootState):
+    def save(self, rootState, configs, libraries):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
 
+        # save config data
+        configsElement = doc.createElement('configs')
+        for cfg in configs:
+            cfgElement = doc.createElement('config')
+            nameElement = doc.createElement('name')
+            nameElement.appendChild(doc.createTextNode(cfg['name']))
+            cfgElement.appendChild(nameElement)
+            proxyNameElement = doc.createElement('proxyname')
+            proxyNameElement.appendChild(doc.createTextNode(cfg['proxyName']))
+            cfgElement.appendChild(proxyNameElement)
+            ipElement = doc.createElement('ip')
+            ipElement.appendChild(doc.createTextNode(cfg['ip']))
+            cfgElement.appendChild(ipElement)
+            portElement = doc.createElement('port')
+            portElement.appendChild(doc.createTextNode(cfg['port']))
+            cfgElement.appendChild(portElement)
+            interfaceElement = doc.createElement('interface')
+            interfaceElement.appendChild(doc.createTextNode(cfg['interface']))
+            cfgElement.appendChild(interfaceElement)
+            configsElement.appendChild(cfgElement)
+        root.appendChild(configsElement)
+
+        # save libraries
+        libraryElement = doc.createElement('libraries')
+        for lib in libraries:
+            libElement = doc.createElement('library')
+            libElement.appendChild(doc.createTextNode(lib))
+            libraryElement.appendChild(libElement)
+        root.appendChild(libraryElement)
+
         root.appendChild(self.createDocFromState(rootState, doc))
         xmlStr = doc.toprettyxml(indent='  ')
-        with open(self.fullPath+'.xml', 'w') as f:
+        with open(self.fullPath, 'w') as f:
             f.write(xmlStr)
 
     def createDocFromState(self, state, doc):
@@ -29,14 +59,46 @@ class FileManager():
         return stateElement
 
     def open(self, fullPath):
-        projectName = fullPath[0:fullPath.rfind('.')]
-        self.setFullPath(projectName)
+        self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
         rootState = State(0, 'root', True)
         rootState.parse(rootNode)
 
-        return rootState
+        configs = []
+
+        # parse configs
+        configsElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('configs')
+        if len(configsElements) > 0:
+            configElements = configsElements[0].getElementsByTagName('config')
+            cfg = None
+            if len(configElements) > 0:
+                cfg = {}
+            for cfgElement in configElements:
+                if len(cfgElement.getElementsByTagName('name')[0].childNodes) > 0:
+                    cfg['name'] = cfgElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
+                if len(cfgElement.getElementsByTagName('proxyname')[0].childNodes) > 0:
+                    cfg['proxyName'] = cfgElement.getElementsByTagName('proxyname')[0].childNodes[0].nodeValue
+                if len(cfgElement.getElementsByTagName('ip')[0].childNodes) > 0:
+                    cfg['ip'] = cfgElement.getElementsByTagName('ip')[0].childNodes[0].nodeValue
+                if len(cfgElement.getElementsByTagName('port')[0].childNodes) > 0:
+                    cfg['port'] = cfgElement.getElementsByTagName('port')[0].childNodes[0].nodeValue
+                if len(cfgElement.getElementsByTagName('interface')[0].childNodes) > 0:
+                    cfg['interface'] = cfgElement.getElementsByTagName('interface')[0].childNodes[0].nodeValue
+
+            if cfg is not None:
+                configs.append(cfg)
+
+        libraries = []
+
+        # parse libraries
+        libraryElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('libraries')
+        if len(libraryElements) > 0:
+            libraryElements = libraryElements[0].getElementsByTagName('library')
+            for libElement in libraryElements:
+                libraries.append(libElement.childNodes[0].nodeValue)
+
+        return (rootState, configs, libraries)
 
     def hasFile(self):
         return len(self.fullPath) > 0

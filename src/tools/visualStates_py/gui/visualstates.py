@@ -38,9 +38,6 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
 
-        self.timeStepDuration = 100
-        self.variables = ''
-        self.functions = ''
         self.libraries = []
         self.configs = []
         self.interfaceHeaderMap = {}
@@ -180,11 +177,11 @@ class VisualStates(QMainWindow):
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Open VisualStates File")
         fileDialog.setViewMode(QFileDialog.Detail)
-        fileDialog.setNameFilters(['VisualStates Files (*.xml)'])
+        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            self.rootState = self.fileManager.open(fileDialog.selectedFiles()[0])
+            (self.rootState, self.configs, self.libraries) = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -199,18 +196,17 @@ class VisualStates(QMainWindow):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState)
+            self.fileManager.save(self.rootState, self.configs, self.libraries)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Save VisualStates Project")
         fileDialog.setViewMode(QFileDialog.Detail)
-        fileDialog.setNameFilters(['VisualStates Directory'])
-        fileDialog.setOptions(QFileDialog.ShowDirsOnly)
+        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState)
+            self.fileManager.save(self.rootState, self.configs, self.libraries)
         else:
             print('file dialog canceled')
 
@@ -226,19 +222,26 @@ class VisualStates(QMainWindow):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def timerAction(self):
-        timerDialog = TimerDialog('Time Step Duration', str(self.timeStepDuration))
-        timerDialog.timeChanged.connect(self.timeStepDurationChanged)
-        timerDialog.exec_()
+        if self.activeState is not None:
+            timerDialog = TimerDialog('Time Step Duration', str(self.activeState.getTimeStep()))
+            timerDialog.timeChanged.connect(self.timeStepDurationChanged)
+            timerDialog.exec_()
 
     def variablesAction(self):
-        variablesDialog = CodeDialog('Variables', self.variables)
-        variablesDialog.codeChanged.connect(self.variablesChanged)
-        variablesDialog.exec_()
+        if self.activeState is not None:
+            variablesDialog = CodeDialog('Variables', self.activeState.getVariables())
+            variablesDialog.codeChanged.connect(self.variablesChanged)
+            variablesDialog.exec_()
+        else:
+            self.showWarning('Choose a state', 'You can create variables only for a selected state')
 
     def functionsAction(self):
-        functionsDialog = CodeDialog('Functions', self.functions)
-        functionsDialog.codeChanged.connect(self.functionsChanged)
-        functionsDialog.exec_()
+        if self.activeState is not None:
+            functionsDialog = CodeDialog('Functions', self.functions)
+            functionsDialog.codeChanged.connect(self.functionsChanged)
+            functionsDialog.exec_()
+        else:
+            self.showWarning('Choose a state', 'You can create functions only for a selected state')
 
     def librariesAction(self):
         librariesDialog = LibrariesDialog('Libraries', self.libraries)
@@ -254,14 +257,18 @@ class VisualStates(QMainWindow):
     def showWarning(self, title, msg):
         QMessageBox.warning(self, title, msg)
 
+    def showInfo(self, title, msg):
+        QMessageBox.information(self, title, msg)
+
     def generateCppAction(self):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             generator = CppGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
+            self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
-            self.showWarning('CPP Generation', 'Please save the project before code generation')
+            self.showWarning('C++ Generation', 'Please save the project before code generation.')
 
 
     def compileCppAction(self):
@@ -377,13 +384,16 @@ class VisualStates(QMainWindow):
             self.automataScene.setActiveState(state)
 
     def timeStepDurationChanged(self, duration):
-        self.timeStepDuration = duration
+        if self.activeState is not None:
+            self.activeState.setTimeStep(duration)
 
     def variablesChanged(self, variables):
-        self.variables = variables
+        if self.activeState is not None:
+            self.activeState.setVariables(variables)
 
     def functionsChanged(self, functions):
-        self.functions = functions
+        if self.activeState is not None:
+            self.activeState.setFunctions(functions)
 
     def librariesChanged(self, libraries):
         self.libraries = libraries

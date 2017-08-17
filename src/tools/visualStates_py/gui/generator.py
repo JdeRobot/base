@@ -28,8 +28,11 @@ class Generator():
         return cfgStr
 
 
-    def generateUserMethods(self, methodStr):
+    def generateUserFunctions(self, functionsStr):
         for state in self.states:
-            methodStr.append(state.getMethods())
-            methodStr.append('\n')
-        return methodStr
+            functionsStr.append(state.getFunctions())
+            functionsStr.append('\n')
+        return functionsStr
+
+    def sanitizeVar(self, var):
+        return var.replace(' ', '_')

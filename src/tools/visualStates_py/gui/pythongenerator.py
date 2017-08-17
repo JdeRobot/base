@@ -60,7 +60,7 @@ class PythonGenerator(Generator):
     def generateAutomataClass(self, automataStr):
         automataStr.append('class Automata():\n\n')
         self.generateAutomataInit(automataStr)
-        self.generateUserMethods(automataStr)
+        self.generateUserFunctions(automataStr)
         self.generateStartThreads(automataStr)
         self.generateCreateGui(automataStr)
         self.generateShutDown(automataStr)
@@ -172,9 +172,9 @@ class PythonGenerator(Generator):
                 guiStr.append(str(childState.y))
                 guiStr.append(', ')
                 guiStr.append(str(childState.initial))
-                guiStr.append(', ')
+                guiStr.append(', "')
                 guiStr.append(childState.name)
-                guiStr.append('\n')
+                guiStr.append('")\n')
 
             for tran in state.getOriginTransitions():
                 guiStr.append('\tguiSubautomata')
@@ -237,9 +237,7 @@ class PythonGenerator(Generator):
         return runStr
 
 
-
     def generateAutomata(self, automataStr):
-
         for state in self.states:
             automataStr.append('\tdef subautomata')
             automataStr.append(str(state.id))
@@ -249,7 +247,7 @@ class PythonGenerator(Generator):
             automataStr.append(str(state.id))
             automataStr.append(' = True\n')
             automataStr.append('\t\tcycle = ')
-            automataStr.append(str(state.getTime()))
+            automataStr.append(str(state.getTimeStep()))
             automataStr.append('\n')
             automataStr.append('\t\tt_activated = False\n')
             automataStr.append('\t\tt_fin = 0\n\n')

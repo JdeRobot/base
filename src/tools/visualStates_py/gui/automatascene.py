@@ -95,8 +95,10 @@ class AutomataScene(QGraphicsScene):
         # there could be only one initial state
         for child in self.activeState.getChildren():
             child.setInitial(False)
+            child.getGraphicsItem().setInitial(False)
 
         self.selectedState.setInitial(True)
+        self.selectedState.stateData.setInitial(True)
 
 
     #TODO: do i need to copy also transitions?
@@ -158,6 +160,10 @@ class AutomataScene(QGraphicsScene):
 
         self.addItem(stateItem)
         self.activeState.addChild(stateItem.stateData)
+        if len(self.activeState.getChildren()) == 1:
+            self.selectedState = stateItem
+            self.makeInitial()
+
         if isInsertion:
             self.stateInserted.emit(stateItem)
 
