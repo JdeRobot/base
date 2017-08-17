@@ -189,6 +189,7 @@ class VisualStates(QMainWindow):
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState)
         else:
             print('open is canceled')
 

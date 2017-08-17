@@ -382,3 +382,16 @@ class AutomataScene(QGraphicsScene):
     def resetIndexes(self):
         self.stateIndex = 0
         self.transitionIndex = 0
+
+    def setLastIndexes(self, rootState):
+        if rootState.id > self.stateIndex:
+            self.stateIndex = rootState.id
+
+        for tran in rootState.getOriginTransitions():
+            if tran.id > self.transitionIndex:
+                self.transitionIndex = tran.id
+
+        for child in rootState.getChildren():
+            self.setLastIndexes(child)
+
+

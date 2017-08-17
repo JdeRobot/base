@@ -25,7 +25,7 @@ class Transition:
             self.destination = dest
             self.destination.addDestTransition(self)
 
-        # self.setPosFromOriginAndDestination()
+        self.setPosFromOriginAndDestination()
 
         self.graphicsItem = None
 
@@ -85,10 +85,10 @@ class Transition:
         self.x = tranItem.midPointX
         self.y = tranItem.midPointY
 
-    # def setPosFromOriginAndDestination(self):
-    #     if self.origin is not None and self.destination is not None:
-    #         self.x = (self.origin.x + self.destination.x)/2
-    #         self.y = (self.origin.y + self.destination.y)/2
+    def setPosFromOriginAndDestination(self):
+        if self.origin is not None and self.destination is not None:
+            self.x = (self.origin.x + self.destination.x)/2
+            self.y = (self.origin.y + self.destination.y)/2
 
     def createElement(self, doc):
         tranElement = doc.createElement('transition')

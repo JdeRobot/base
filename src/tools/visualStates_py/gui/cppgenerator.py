@@ -108,7 +108,7 @@ class CppGenerator(Generator):
             vars.append('State_')
             vars.append(str(state.id))
             vars.append(' sub_')
-            vars.apppend(str(state.id))
+            vars.append(str(state.id))
             vars.append(' = ')
             vars.append(str(state.name))
             vars.append(';\n')

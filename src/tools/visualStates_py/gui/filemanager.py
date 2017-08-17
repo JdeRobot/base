@@ -29,8 +29,9 @@ class FileManager():
         return stateElement
 
     def open(self, fullPath):
-        self.setFullPath(fullPath)
-        doc = minidom.parse(self.fullPath)
+        projectName = fullPath[0:fullPath.rfind('.')]
+        self.setFullPath(projectName)
+        doc = minidom.parse(fullPath)
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
         rootState = State(0, 'root', True)
         rootState.parse(rootNode)
