@@ -16,31 +16,31 @@ class PythonGenerator(Generator):
         self.generateAutomataClass(stringList)
         self.generateMain(stringList)
         sourceCode = ''.join(stringList)
-        fp = open(projectPath + os.sep + projectName + '.py')
+        fp = open(projectPath + os.sep + projectName + '.py', 'w')
         fp.write(sourceCode)
         fp.close()
 
         stringList = []
         self.generateCfg(stringList)
-        fp = open(projectPath + os.sep + projectName + '.cfg')
+        fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
         fp.write(''.join(stringList))
         fp.close()
 
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
 
-    def generateHaders(self, headerStr):
-        mystr = '''
-        #!/usr/bin/python
-        # -*- coding: utf-8 -*-
-        
-        import Ice
-        import easyiceconfig as EasyIce
-        import sys, signal
-        sys.path.append('/opt/jderobot/share/jderobot/python/visualStates_py)
-        import traceback, threading, time
-        from automatagui import Automatagui, QtGui, GuiSubautomata
-        '''
+    def generateHeaders(self, headerStr):
+        mystr = '''#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import Ice
+import easyiceconfig as EasyIce
+import sys, signal
+sys.path.append('/opt/jderobot/share/jderobot/python/visualStates_py')
+import traceback, threading, time
+from automatagui import AutomataGui, QtGui, GuiSubautomata
+
+'''
         headerStr.append(mystr)
         for lib in self.libraries:
             headerStr.append('import ')
@@ -49,7 +49,7 @@ class PythonGenerator(Generator):
         headerStr.append('\n')
 
         for cfg in self.configs:
-            headerStr.append('from jderobot import')
+            headerStr.append('from jderobot import ')
             headerStr.append(cfg['interface'])
             headerStr.append('Prx\n')
 
@@ -58,7 +58,7 @@ class PythonGenerator(Generator):
         return headerStr
 
     def generateAutomataClass(self, automataStr):
-        automataStr.append('class Automata():\n\n')
+        automataStr.append('class Automata():\n')
         self.generateAutomataInit(automataStr)
         self.generateUserFunctions(automataStr)
         self.generateStartThreads(automataStr)
@@ -75,10 +75,10 @@ class PythonGenerator(Generator):
 
     def generateAutomataInit(self, automataStr):
         mystr = '''
-        def __init__(self):
-            self.lock = threading.Lock()
-            self.displayGui = False
-        '''
+\tdef __init__(self):
+\t\tself.lock = threading.Lock()
+\t\tself.displayGui = False
+'''
         automataStr.append(mystr)
 
         for state in self.states:
@@ -92,24 +92,24 @@ class PythonGenerator(Generator):
                 automataStr.append(childState.name)
                 automataStr.append('",\n')
 
-                if childState.parent is not None:
-                    automataStr.append('\t\t\t"')
-                    automataStr.append(childState.name)
-                    automataStr.append('_ghost')
-                    automataStr.append('",')
+                # if childState.parent is not None:
+                #     automataStr.append('\t\t\t"')
+                #     automataStr.append(childState.name)
+                #     automataStr.append('_ghost')
+                #     automataStr.append('",')
 
             automataStr.append('\t\t]\n\n')
 
         for state in self.states:
             initialState = None
             for childState in state.getChildren():
-                if childState.initial():
+                if childState.initial:
                     initialState = childState
                     break
 
             stateName = initialState.name
-            if state.parent is not None:
-                stateName += '_ghost'
+            # if state.parent is not None:
+            #     stateName += '_ghost'
 
             automataStr.append('\t\t')
             automataStr.append('self.sub')
@@ -127,15 +127,15 @@ class PythonGenerator(Generator):
         return automataStr
 
     def generateStartThreads(self, threadStr):
-        threadStr.append('def startThreads(self):\n')
+        threadStr.append('\tdef startThreads(self):\n')
 
         for state in self.states:
-            threadStr.append('\tself.t')
+            threadStr.append('\t\tself.t')
             threadStr.append(str(state.id))
             threadStr.append(' = threading.Thread(target=self.subautomata')
             threadStr.append(str(state.id))
-            threadStr.append('\n')
-            threadStr.append('\tself.t')
+            threadStr.append(')\n')
+            threadStr.append('\t\tself.t')
             threadStr.append(str(state.id))
             threadStr.append('.start()\n')
 
@@ -143,24 +143,28 @@ class PythonGenerator(Generator):
 
     def generateCreateGui(self, guiStr):
         mystr = '''
-        def createAutomata(self):
-            guiSubautomataList = []
-        '''
+\tdef createAutomata(self):
+\t\tguiSubautomataList = []
+'''
+        guiStr.append(mystr)
 
         for state in self.states:
-            guiStr.append('# Creating subAutomata')
+            guiStr.append('\t\t# Creating subAutomata')
             guiStr.append(str(state.id))
             guiStr.append('\n')
-            guiStr.append('\tguiSubautomata')
+            guiStr.append('\t\tguiSubautomata')
             guiStr.append(str(state.id))
             guiStr.append(' = GuiSubautomata(')
             guiStr.append(str(state.id))
             guiStr.append(', ')
-            guiStr.append(str(state.parent.id))
+            if state.parent is None:
+                guiStr.append('0')
+            else:
+                guiStr.append(str(state.parent.id))
             guiStr.append(', self.automataGui)\n\n')
 
             for childState in state.getChildren():
-                guiStr.append('\tguiSubautomata')
+                guiStr.append('\t\tguiSubautomata')
                 guiStr.append(str(state.id))
                 guiStr.append('.newGuiNode(')
                 guiStr.append(str(childState.id))
@@ -176,33 +180,33 @@ class PythonGenerator(Generator):
                 guiStr.append(childState.name)
                 guiStr.append('")\n')
 
-            for tran in state.getOriginTransitions():
-                guiStr.append('\tguiSubautomata')
-                guiStr.append(str(state.id))
-                guiStr.append('.newGuiTransition((')
-                guiStr.append(str(tran.origin.x))
-                guiStr.append(', ')
-                guiStr.append(str(tran.origin.y))
-                guiStr.append('), (')
-                guiStr.append(str(tran.destination.x))
-                guiStr.append(', ')
-                guiStr.append(str(tran.destination.y))
-                guiStr.append('), (')
-                guiStr.append(str(tran.x))
-                guiStr.append(', ')
-                guiStr.append(str(tran.y))
-                guiStr.append('), ')
-                guiStr.append(str(tran.id))
-                guiStr.append(', ')
-                guiStr.append(str(tran.origin.id))
-                guiStr.append(', ')
-                guiStr.append(str(tran.destination.id))
-                guiStr.append(')\n')
+                for tran in childState.getOriginTransitions():
+                    guiStr.append('\t\tguiSubautomata')
+                    guiStr.append(str(state.id))
+                    guiStr.append('.newGuiTransition((')
+                    guiStr.append(str(tran.origin.x))
+                    guiStr.append(', ')
+                    guiStr.append(str(tran.origin.y))
+                    guiStr.append('), (')
+                    guiStr.append(str(tran.destination.x))
+                    guiStr.append(', ')
+                    guiStr.append(str(tran.destination.y))
+                    guiStr.append('), (')
+                    guiStr.append(str(tran.x))
+                    guiStr.append(', ')
+                    guiStr.append(str(tran.y))
+                    guiStr.append('), ')
+                    guiStr.append(str(tran.id))
+                    guiStr.append(', ')
+                    guiStr.append(str(tran.origin.id))
+                    guiStr.append(', ')
+                    guiStr.append(str(tran.destination.id))
+                    guiStr.append(')\n')
 
-            guiStr.append('\tguiSubautomataList.append(guiSubautomata')
+            guiStr.append('\t\tguiSubautomataList.append(guiSubautomata')
             guiStr.append(str(state.id))
             guiStr.append(')\n\n')
-        guiStr.append('\treturn guiSubautomataList')
+        guiStr.append('\t\treturn guiSubautomataList\n\n')
 
         return guiStr
 
@@ -222,16 +226,16 @@ class PythonGenerator(Generator):
 
     def generateRunGui(self, runStr):
         mystr = '''
-        def runGui(self):
-            app = QtGui.QApplication(sys.argv)
-            self.automataGui = AutomataGui()
-            self.automataGui.setAutomata(self.createAutomata())
-            self.automataGui.loadAutomata()
-            self.startThreads()
-            self.automataGui.show()
-            app.exec_()
-            
-        '''
+\tdef runGui(self):
+\t\tapp = QtGui.QApplication(sys.argv)
+\t\tself.automataGui = AutomataGui()
+\t\tself.automataGui.setAutomata(self.createAutomata())
+\t\tself.automataGui.loadAutomata()
+\t\tself.startThreads()
+\t\tself.automataGui.show()
+\t\tapp.exec_()
+
+'''
         runStr.append(mystr)
 
         return runStr
@@ -250,7 +254,7 @@ class PythonGenerator(Generator):
             automataStr.append(str(state.getTimeStep()))
             automataStr.append('\n')
             automataStr.append('\t\tt_activated = False\n')
-            automataStr.append('\t\tt_fin = 0\n\n')
+            automataStr.append('\t\tt_fin = 0\n')
 
             nameTimeMap = {}
 
@@ -284,7 +288,7 @@ class PythonGenerator(Generator):
                 automataStr.append(' == "')
                 automataStr.append(state.parent.name)
                 automataStr.append('"')
-                automataStr.append(');\n')
+                automataStr.append('):\n')
                 automataStr.append('\t\t\t\t')
                 automataStr.append('if (')
                 for childState in state.getChildren():
@@ -342,7 +346,7 @@ class PythonGenerator(Generator):
                     automataStr.append('"):\n')
 
                 ifHeaderUsed = False
-                for tran in state.getOriginTransitions():
+                for tran in childState.getOriginTransitions():
                     if tran.origin.id == childState.id:
                         if not ifHeaderUsed:
                             automataStr.append(tabStr+'\t')
@@ -376,7 +380,6 @@ class PythonGenerator(Generator):
                             automataStr.append(str(tran.destination.id))
                             automataStr.append('")\n')
                         else:
-                            automataStr.append(tabStr+'\t')
                             automataStr.append('if (not t_activated):\n')
                             automataStr.append(tabStr+'\t\t')
                             automataStr.append('t_ini = time.time()\n')
@@ -428,6 +431,9 @@ class PythonGenerator(Generator):
                                 automataStr.append('\n')
 
                         automataStr.append('\n')
+
+                if not ifHeaderUsed:
+                    automataStr.append('\t\t\t\tpass\n')
             automataStr.append('\n')
 
             automataStr.append(tabStr)
@@ -498,58 +504,57 @@ class PythonGenerator(Generator):
             automataStr.append('\t\t\t\tmsecs = cycle - msecs\n\n')
             automataStr.append('\t\t\ttime.sleep(msecs / 1000)\n')
             automataStr.append('\t\t\tif (msecs < 33):\n')
-            automataStr.append('\t\t\t\ttime.sleep(33 / 1000)\n\n\n')
+            automataStr.append('\t\t\t\ttime.sleep(33 / 1000)\n\n')
 
         return automataStr
 
     def generateConnectProxies(self, proxyStr):
-        proxyStr.append('def connectToProxies(self):\n')
-        proxyStr.append('\tself.ic = EasyIce.initialize(sys.argv)\n\n')
+        proxyStr.append('\tdef connectToProxies(self):\n')
+        proxyStr.append('\t\tself.ic = EasyIce.initialize(sys.argv)\n\n')
 
         for cfg in self.configs:
-            proxyStr.append('\t#Contact to ')
+            proxyStr.append('\t\t#Contact to ')
             proxyStr.append(cfg['name'])
             proxyStr.append('\n')
 
+            proxyStr.append('\t\t')
             proxyStr.append(cfg['name'])
-            proxyStr.append(' = self.ic.propertyToProxy(automata.')
+            proxyStr.append(' = self.ic.propertyToProxy("automata.')
             proxyStr.append(cfg['name'])
-            proxyStr.append('.Proxy)\n')
+            proxyStr.append('.Proxy")\n')
 
-            proxyStr.append('\tif (not ')
+            proxyStr.append('\t\tif (not ')
             proxyStr.append(cfg['name'])
             proxyStr.append('):\n')
-            proxyStr.append('\t\traise Exception("could not create proxy with')
+            proxyStr.append('\t\t\traise Exception("could not create proxy with')
             proxyStr.append(cfg['name'])
             proxyStr.append('")\n')
 
-            proxyStr.append('\tself.')
+            proxyStr.append('\t\tself.')
             proxyStr.append(cfg['name'])
             proxyStr.append(' = ')
             proxyStr.append(cfg['interface'])
-            proxyStr.append('.Prx.checkedCast(')
+            proxyStr.append('Prx.checkedCast(')
             proxyStr.append(cfg['name'])
             proxyStr.append(')\n')
 
-            proxyStr.append('\tif (not self.')
+            proxyStr.append('\t\tif (not self.')
             proxyStr.append(cfg['name'])
             proxyStr.append('):\n')
-            proxyStr.append('\t\traise Exception("invalid proxy automata.')
+            proxyStr.append('\t\t\traise Exception("invalid proxy automata.')
             proxyStr.append(cfg['name'])
             proxyStr.append('.Proxy")\n')
-            proxyStr.append('\tprint("')
+            proxyStr.append('\t\tprint("')
             proxyStr.append(cfg['name'])
-            proxyStr.append(' connected")\n\n')
+            proxyStr.append(' connected")\n')
 
         return proxyStr
 
     def generateDestroyIc(self, icStr):
         mystr = '''
-    def destroyIc(self):
-        if (self.ic):
-            self.ic.destroy()
-    
-
+\tdef destroyIc(self):
+\t\tif (self.ic):
+\t\t\tself.ic.destroy()
 '''
         icStr.append(mystr)
         return icStr
@@ -557,12 +562,12 @@ class PythonGenerator(Generator):
 
     def generateStart(self, startStr):
         mystr = '''
-    def start(self):
-        if self.displayGui:
-            self.guiThread = threading.Thread(target=self.runGui)
-            self.guiThread.start()
-        else:
-            self.startThreads()
+\tdef start(self):
+\t\tif self.displayGui:
+\t\t\tself.guiThread = threading.Thread(target=self.runGui)
+\t\t\tself.guiThread.start()
+\t\telse:
+\t\t\tself.startThreads()
 
 '''
         startStr.append(mystr)
@@ -585,17 +590,16 @@ class PythonGenerator(Generator):
 
     def generateReadArgs(self, argsStr):
         mystr = '''
-    def readArgs(self):
-        for arg in sys.argv:
-            splitedArg = arg.split('=')
-            if splitedArg[0] == "--displaygui":
-                if splitedArg[1] == "True" or splitedArg[1] == "true":
-                    self.displayGui = True
-                    print("runtime gui enabled")
-                else:
-                    self.displayGui = False
-                    print("runtime gui disabled")
-                    
+\tdef readArgs(self):
+\t\tfor arg in sys.argv:
+\t\t\tsplitedArg = arg.split('=')
+\t\t\tif splitedArg[0] == "--displaygui":
+\t\t\t\t\tif splitedArg[1] == "True" or splitedArg[1] == "true":
+\t\t\t\t\t\tself.displayGui = True
+\t\t\t\t\t\tprint("runtime gui enabled")
+\t\t\telse:
+\t\t\t\tself.displayGui = False
+\t\t\t\tprint("runtime gui disabled")
 '''
         argsStr.append(mystr)
         return argsStr
@@ -603,20 +607,18 @@ class PythonGenerator(Generator):
     def generateMain(self, mainStr):
         mystr = '''
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-    automata = Automata()
-    try:
-        automata.connectToProxies()
-        automata.readArgs()
-        automata.start()
-        automata.join()
-        
-        sys.exit(0)
-    except:
-        traceback.print_exc()
-        automata.destroyIc()
-        sys.exit(-1)
-        
+\tsignal.signal(signal.SIGINT, signal.SIG_DFL)
+\tautomata = Automata()
+\ttry:
+\t\tautomata.connectToProxies()
+\t\tautomata.readArgs()
+\t\tautomata.start()
+\t\tautomata.join()    
+\t\tsys.exit(0)
+\texcept:
+\t\ttraceback.print_exc()
+\t\tautomata.destroyIc()
+\t\tsys.exit(-1)    
 '''
         mainStr.append(mystr)
 

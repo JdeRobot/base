@@ -54,7 +54,7 @@ class CppGenerator(Generator):
         # generate interface headers
         for cfg in self.configs:
             headers.append('#include <jderobot/')
-            headers.append(self.interfaceHeaders[cfg['proxyName']])
+            headers.append(self.interfaceHeaders[cfg['proxyName']].strip('\n'))
             headers.append('.h>\n')
 
         headers.append('\n')
@@ -250,22 +250,22 @@ class CppGenerator(Generator):
             stateStr.append('\ttime_t t_ini;\n')
             stateStr.append('\ttime_t t_fin;\n')
             stateStr.append('\tdouble secs;\n')
-            stateStr.append('\tbool t_activated;\n\n')
+            stateStr.append('\tbool t_activated = false;\n\n')
 
             # create time based transitions
-            for tran in state.getOriginTransitions():
-                if tran.getType() == TransitionType.TEMPORAL:
-                    stateStr.append('\tfloat t_')
-                    stateStr.append(self.sanitizeVar(state.name))
-                    stateStr.append('_max = ')
-                    stateStr.append(str(tran.getTemporalTime()/1000.0))
-                    stateStr.append(';\n')
+            # for tran in state.getChildrenTransitions():
+            #     if tran.getType() == TransitionType.TEMPORAL:
+            #         stateStr.append('\tfloat t_')
+            #         stateStr.append(self.sanitizeVar(state.name))
+            #         stateStr.append('_max = ')
+            #         stateStr.append(str(tran.getTemporalTime()/1000.0))
+            #         stateStr.append(';\n')
 
             # variables
             varLines = state.getVariables().split('\n')
             for varLine in varLines:
                 stateStr.append('\t')
-                stateStr.append(varLine)
+                stateStr.append(varLine.strip('\n'))
                 stateStr.append('\n')
 
             # step loop of the state
@@ -275,34 +275,34 @@ class CppGenerator(Generator):
             stateStr.append('\t\tgettimeofday(&a, NULL);\n')
             stateStr.append('\t\ttotala = a.tv_sec * 1000000 + a.tv_usec;\n\n')
 
-            if state.parent is not None:
-                stateStr.append('\t\tif (sub_')
-                stateStr.append(str(state.parent.id))
-                stateStr.append(' == ')
-                stateStr.append(self.sanitizeVar(state.parent.name))
-                stateStr.append(') {\n')
-
-                stateStr.append('\t\t\tif (')
-                for childState in state.getChildren():
-                    stateStr.append(' sub_')
-                    stateStr.append(str(state.id))
-                    stateStr.append(' == ')
-                    stateStr.append(self.sanitizeVar(childState.name))
-                    stateStr.append('_ghost')
-                    if childState != state.getChildren()[len(state.getChildren())-1]:
-                        stateStr.append(' || ')
-
-                stateStr.append(') {\n')
-
-                stateStr.append('\t\t\t\tsub_')
-                stateStr.append(str(state.id))
-                stateStr.append(' = (State_Sub_')
-                stateStr.append(str(state.id))
-                stateStr.append(')(sub_')
-                stateStr.append(str(state.id))
-                stateStr.append(' - 1);\n')
-                stateStr.append('\t\t\t\tt_ini = time(NULL);\n')
-                stateStr.append('\t\t\t}\n')
+            # if state.parent is not None:
+            #     stateStr.append('\t\tif (sub_')
+            #     stateStr.append(str(state.parent.id))
+            #     stateStr.append(' == ')
+            #     stateStr.append(self.sanitizeVar(state.parent.name))
+            #     stateStr.append(') {\n')
+            #
+            #     stateStr.append('\t\t\tif (')
+            #     for childState in state.getChildren():
+            #         stateStr.append(' sub_')
+            #         stateStr.append(str(state.id))
+            #         stateStr.append(' == ')
+            #         stateStr.append(self.sanitizeVar(childState.name))
+            #         stateStr.append('_ghost')
+            #         if childState != state.getChildren()[len(state.getChildren())-1]:
+            #             stateStr.append(' || ')
+            #
+            #     stateStr.append(') {\n')
+            #
+            #     stateStr.append('\t\t\t\tsub_')
+            #     stateStr.append(str(state.id))
+            #     stateStr.append(' = (State_Sub_')
+            #     stateStr.append(str(state.id))
+            #     stateStr.append(')(sub_')
+            #     stateStr.append(str(state.id))
+            #     stateStr.append(' - 1);\n')
+            #     stateStr.append('\t\t\t\tt_ini = time(NULL);\n')
+            #     stateStr.append('\t\t\t}\n')
 
             stateStr.append('\t\t//Evaluation switch\n')
             stateStr.append('\t\tswitch (sub_')
@@ -313,8 +313,8 @@ class CppGenerator(Generator):
                 stateStr.append(self.sanitizeVar(childState.name))
                 stateStr.append(': {\n')
 
-                for tran in state.getOriginTransitions():
-                    if tran.origin.id == childState.id and tran.getType() == TransitionType.CONDITIONAL:
+                for tran in childState.getOriginTransitions():
+                    if tran.getType() == TransitionType.CONDITIONAL:
                         stateStr.append('\t\t\t\tif (')
                         stateStr.append(tran.getCondition())
                         stateStr.append(') {\n')
@@ -341,14 +341,14 @@ class CppGenerator(Generator):
                         stateStr.append('\t\t\t\t} else {\n')
                         stateStr.append('\t\t\t\t\tt_fin = time(NULL);\n')
                         stateStr.append('\t\t\t\t\tsecs = difftime(t_fin, t_ini);\n')
-                        if state.parent is None:
-                            stateStr.append('\t\t\t\t\tif (secs > (double) ')
-                            stateStr.append(str(tran.getTemporalTime() / 1000.0))
-                            stateStr.append(') {\n')
-                        else:
-                            stateStr.append('\t\t\t\t\tif (secs > (double) t_')
-                            stateStr.append(self.sanitizeVar(state.name))
-                            stateStr.append('_max) {\n')
+                        # if state.parent is None:
+                        stateStr.append('\t\t\t\t\tif (secs > (double) ')
+                        stateStr.append(str(tran.getTemporalTime() / 1000.0))
+                        stateStr.append(') {\n')
+                        # else:
+                        #     stateStr.append('\t\t\t\t\tif (secs > (double) t_')
+                        #     stateStr.append(self.sanitizeVar(state.name))
+                        #     stateStr.append('_max) {\n')
                         stateStr.append('\t\t\t\t\t\tsub_')
                         stateStr.append(str(state.id))
                         stateStr.append(' = ')
@@ -365,13 +365,13 @@ class CppGenerator(Generator):
                         stateStr.append(tran.destination.name)
                         stateStr.append('");\n')
                         stateStr.append('\t\t\t\t\t\t}\n')
-                        if state.parent is not None:
-                            stateStr.append('\t\t\t\t\t\tt_')
-                            stateStr.append(self.sanitizeVar(state.name))
-                            stateStr.append('_max = ')
-                            nameTimeMap[state.name] = tran.getTemporalTime() / 1000.0
-                            stateStr.append(str(tran.getTemporalTime() / 1000.0))
-                            stateStr.append(';\n')
+                        # if state.parent is not None:
+                        #     stateStr.append('\t\t\t\t\t\tt_')
+                        #     stateStr.append(self.sanitizeVar(state.name))
+                        #     stateStr.append('_max = ')
+                        #     nameTimeMap[state.name] = tran.getTemporalTime() / 1000.0
+                        #     stateStr.append(str(tran.getTemporalTime() / 1000.0))
+                        #     stateStr.append(';\n')
                         stateStr.append('\t\t\t\t\t}\n')
                         stateStr.append('\t\t\t\t}\n')
                     stateStr.append('\n')
@@ -398,31 +398,31 @@ class CppGenerator(Generator):
 
             stateStr.append('\t\t}\n')
 
-            if state.parent is not None:
-                stateStr.append('\t\t} else {\n')
-                stateStr.append('\t\t\tswitch (sub_')
-                stateStr.append(str(state.id))
-                stateStr.append(') {\n')
-                for childState in state.getChildren():
-                    stateStr.append('\t\t\t\tcase ')
-                    stateStr.append(self.sanitizeVar(childState.name))
-                    stateStr.append(':\n')
-                    if childState.name in nameTimeMap:
-                        stateStr.append('\t\t\t\t\tt_')
-                        stateStr.append(self.sanitizeVar(childState.name))
-                        stateStr.append('_max = ')
-                        stateStr.append(str(nameTimeMap[childState.name]))
-                        stateStr.append(' - difftime(t_fin, t_ini);\n')
-                    stateStr.append('\t\t\t\t\tsub_')
-                    stateStr.append(str(state.id))
-                    stateStr.append(' = (State_Sub_')
-                    stateStr.append(str(state.id))
-                    stateStr.append(')(sub_);\n')
-                    stateStr.append('\t\t\t\t\tbreak;\n')
-                stateStr.append('\t\t\t\tdefault:\n')
-                stateStr.append('\t\t\t\t\tbreak;\n')
-                stateStr.append('\t\t\t}\n')
-                stateStr.append('\t\t}\n')
+            # if state.parent is not None:
+            #     stateStr.append('\t\t} else {\n')
+            #     stateStr.append('\t\t\tswitch (sub_')
+            #     stateStr.append(str(state.id))
+            #     stateStr.append(') {\n')
+            #     for childState in state.getChildren():
+            #         stateStr.append('\t\t\t\tcase ')
+            #         stateStr.append(self.sanitizeVar(childState.name))
+            #         stateStr.append(':\n')
+            #         if childState.name in nameTimeMap:
+            #             stateStr.append('\t\t\t\t\tt_')
+            #             stateStr.append(self.sanitizeVar(childState.name))
+            #             stateStr.append('_max = ')
+            #             stateStr.append(str(nameTimeMap[childState.name]))
+            #             stateStr.append(' - difftime(t_fin, t_ini);\n')
+            #         stateStr.append('\t\t\t\t\tsub_')
+            #         stateStr.append(str(state.id))
+            #         stateStr.append(' = (State_Sub_')
+            #         stateStr.append(str(state.id))
+            #         stateStr.append(')(sub_);\n')
+            #         stateStr.append('\t\t\t\t\tbreak;\n')
+            #     stateStr.append('\t\t\t\tdefault:\n')
+            #     stateStr.append('\t\t\t\t\tbreak;\n')
+            #     stateStr.append('\t\t\t}\n')
+            #     stateStr.append('\t\t}\n')
 
             stateStr.append('\n')
 
@@ -501,7 +501,7 @@ void readArgs(int *argc, char* argv[]){
         for cfg in self.configs:
             mainStr.append('\t\t// Contact to ')
             mainStr.append(cfg['name'])
-            mainStr.append('\t\tIce::ObjectPrx temp_')
+            mainStr.append('\n\t\tIce::ObjectPrx temp_')
             mainStr.append(cfg['name'])
             mainStr.append(' = ic->propertyToProxy("automata.')
             mainStr.append(cfg['name'])

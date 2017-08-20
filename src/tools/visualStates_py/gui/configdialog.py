@@ -62,7 +62,7 @@ class ConfigDialog(QDialog):
         # add interfaces to the combobox
         interfaces = Interfaces.getInterfaces()
         for interfaceName in interfaces:
-            self.interfaceCombo.addItem(interfaceName, interfaces[interfaceName])
+            self.interfaceCombo.addItem(interfaceName, interfaceName)
 
         row = 2
         for configItem in self.configs:

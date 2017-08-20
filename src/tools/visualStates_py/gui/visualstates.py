@@ -237,7 +237,7 @@ class VisualStates(QMainWindow):
 
     def functionsAction(self):
         if self.activeState is not None:
-            functionsDialog = CodeDialog('Functions', self.functions)
+            functionsDialog = CodeDialog('Functions', self.activeState.getFunctions())
             functionsDialog.codeChanged.connect(self.functionsChanged)
             functionsDialog.exec_()
         else:
@@ -275,7 +275,14 @@ class VisualStates(QMainWindow):
         print('compile cpp action')
 
     def generatePythonAction(self):
-        print('generate python action')
+        stateList = []
+        if self.fileManager.hasFile():
+            self.getStateList(self.rootState, stateList)
+            generator = PythonGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
+            generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
+            self.showInfo('Python Code Generation', 'Python code generation is successful.')
+        else:
+            self.showWarning('Python Generation', 'Please save the project before code generation.')
 
     def aboutAction(self):
         print('about action')

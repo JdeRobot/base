@@ -59,7 +59,7 @@ class Transition:
         return self.temporalTime
 
     def setTemporalTime(self, time):
-        self.temporalTime = time
+        self.temporalTime = int(time)
 
     def getCondition(self):
         return self.condition

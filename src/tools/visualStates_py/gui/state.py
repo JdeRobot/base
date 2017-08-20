@@ -197,3 +197,9 @@ class State:
 
     def setInitial(self, initial):
         self.initial = initial
+
+    def getChildrenTransitions(self):
+        childTransitions = []
+        for child in self.getChildren():
+            childTransitions += child.getOriginTransitions()
+        return childTransitions
