@@ -9,11 +9,46 @@ class PythonGenerator(Generator):
         self.interfaceHeaders = interfaceHeaders
         self.states = states
 
+    def getAllStates(self):
+        addedStates = {}
+        allStates = []
+        for state in self.states:
+            if state.id not in addedStates:
+                addedStates[state.id] = state
+                allStates.append(state)
+
+            for childState in state.getChildren():
+                if childState.id not in addedStates:
+                    addedStates[childState.id] = childState
+                    allStates.append(childState)
+
+        return allStates
+
+    def getAllTransitions(self):
+        addedTransitions = {}
+        transitions = []
+        for state in self.states:
+            for tran in state.getOriginTransitions():
+                # print('1tran.id:' + str(tran.id) + ' origin:' + str(tran.origin.id) + ' dest:' + str(tran.destination.id))
+                if tran.id not in addedTransitions:
+                    addedTransitions[tran.id] = tran
+                    transitions.append(tran)
+            for childState in state.getChildren():
+                for tran in childState.getOriginTransitions():
+                    # print('2tran.id:' + str(tran.id) + ' origin:' + str(tran.origin.id) + ' dest:' + str(
+                    #     tran.destination.id))
+                    if tran.id not in addedTransitions:
+                        addedTransitions[tran.id] = tran
+                        transitions.append(tran)
+
+        return transitions
 
     def generate(self, projectPath, projectName):
         stringList = []
-        self.generateHeaders(stringList)
-        self.generateAutomataClass(stringList)
+        self.generateImports(stringList)
+        self.generateStateClasses(stringList)
+        self.generateTransitionClasses(stringList)
+        self.generateInterfaces(stringList)
         self.generateMain(stringList)
         sourceCode = ''.join(stringList)
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
@@ -29,16 +64,14 @@ class PythonGenerator(Generator):
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
 
-    def generateHeaders(self, headerStr):
-        mystr = '''#!/usr/bin/python
+    def generateImports(self, headerStr):
+        mystr = '''#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
-import Ice
+import sys
 import easyiceconfig as EasyIce
-import sys, signal
-sys.path.append('/opt/jderobot/share/jderobot/python/visualStates_py')
-import traceback, threading, time
-from automatagui import AutomataGui, QtGui, GuiSubautomata
+from gui.codegen.state import State
+from gui.codegen.temporaltransition import TemporalTransition
+from gui.codegen.conditionaltransition import ConditionalTransition
 
 '''
         headerStr.append(mystr)
@@ -57,570 +90,183 @@ from automatagui import AutomataGui, QtGui, GuiSubautomata
 
         return headerStr
 
-    def generateAutomataClass(self, automataStr):
-        automataStr.append('class Automata():\n')
-        self.generateAutomataInit(automataStr)
-        self.generateUserFunctions(automataStr)
-        self.generateStartThreads(automataStr)
-        self.generateCreateGui(automataStr)
-        self.generateShutDown(automataStr)
-        self.generateRunGui(automataStr)
-        self.generateAutomata(automataStr)
-        self.generateConnectProxies(automataStr)
-        self.generateDestroyIc(automataStr)
-        self.generateStart(automataStr)
-        self.generateJoin(automataStr)
-        self.generateReadArgs(automataStr)
+    def generateStateClasses(self, stateStr):
+        for state in self.getAllStates():
+            self.generateStateClass(state, stateStr)
 
+    def generateStateClass(self, state, stateStr):
+        stateStr.append('class State')
+        stateStr.append(str(state.id))
+        stateStr.append('(State):\n')
 
-    def generateAutomataInit(self, automataStr):
-        mystr = '''
+        if len(state.getVariables()) > 0:
+            stateStr.append('\tdef __init__(self, id, initial, config, cycleDuration, parent=None):\n')
+            stateStr.append('\t\tsuper().__init__(id, initial, config, cycleDuration, parent=None)\n')
+            for varLine in state.getVariables().split('\n'):
+                stateStr.append('\t\t' + varLine + '\n')
+            stateStr.append('\n')
+
+        stateStr.append('\tdef runCode(self):\n')
+        if len(state.getCode()) > 0:
+            for codeLine in state.getCode().split('\n'):
+                stateStr.append('\t\t' + codeLine + '\n')
+        else:
+            stateStr.append('\t\tpass\n')
+        stateStr.append('\n')
+
+        if len(state.getFunctions()) > 0:
+            for funcLine in state.getFunctions().split('\n'):
+                stateStr.append('\t' + funcLine + '\n')
+        stateStr.append('\n')
+
+    def generateInterfaces(self, interfaceStr):
+        mystr = '''class Interfaces():
 \tdef __init__(self):
-\t\tself.lock = threading.Lock()
-\t\tself.displayGui = False
+\t\tself.ic = None
 '''
-        automataStr.append(mystr)
+        interfaceStr.append(mystr)
+        for cfg in self.configs:
+            interfaceStr.append('\t\tself.' + cfg['name'] + ' = None\n')
 
-        for state in self.states:
-            automataStr.append('\t\tself.StatesSub')
-            automataStr.append(str(state.id))
-            automataStr.append(' = [\n')
+        interfaceStr.append('\t\tself.connectProxies()\n\n')
 
-            for childState in state.getChildren():
-                automataStr.append('\t\t\t')
-                automataStr.append('"')
-                automataStr.append(childState.name)
-                automataStr.append('",\n')
-
-                # if childState.parent is not None:
-                #     automataStr.append('\t\t\t"')
-                #     automataStr.append(childState.name)
-                #     automataStr.append('_ghost')
-                #     automataStr.append('",')
-
-            automataStr.append('\t\t]\n\n')
-
-        for state in self.states:
-            initialState = None
-            for childState in state.getChildren():
-                if childState.initial:
-                    initialState = childState
-                    break
-
-            stateName = initialState.name
-            # if state.parent is not None:
-            #     stateName += '_ghost'
-
-            automataStr.append('\t\t')
-            automataStr.append('self.sub')
-            automataStr.append(str(state.id))
-            automataStr.append(' = "')
-            automataStr.append(stateName)
-            automataStr.append('"\n')
-            automataStr.append('\t\t')
-            automataStr.append('self.run')
-            automataStr.append(str(state.id))
-            automataStr.append(' = True\n')
-
-        automataStr.append('\n')
-
-        return automataStr
-
-    def generateStartThreads(self, threadStr):
-        threadStr.append('\tdef startThreads(self):\n')
-
-        for state in self.states:
-            threadStr.append('\t\tself.t')
-            threadStr.append(str(state.id))
-            threadStr.append(' = threading.Thread(target=self.subautomata')
-            threadStr.append(str(state.id))
-            threadStr.append(')\n')
-            threadStr.append('\t\tself.t')
-            threadStr.append(str(state.id))
-            threadStr.append('.start()\n')
-
-        threadStr.append('\n')
-
-    def generateCreateGui(self, guiStr):
-        mystr = '''
-\tdef createAutomata(self):
-\t\tguiSubautomataList = []
-'''
-        guiStr.append(mystr)
-
-        for state in self.states:
-            guiStr.append('\t\t# Creating subAutomata')
-            guiStr.append(str(state.id))
-            guiStr.append('\n')
-            guiStr.append('\t\tguiSubautomata')
-            guiStr.append(str(state.id))
-            guiStr.append(' = GuiSubautomata(')
-            guiStr.append(str(state.id))
-            guiStr.append(', ')
-            if state.parent is None:
-                guiStr.append('0')
-            else:
-                guiStr.append(str(state.parent.id))
-            guiStr.append(', self.automataGui)\n\n')
-
-            for childState in state.getChildren():
-                guiStr.append('\t\tguiSubautomata')
-                guiStr.append(str(state.id))
-                guiStr.append('.newGuiNode(')
-                guiStr.append(str(childState.id))
-                guiStr.append(', ')
-                guiStr.append(str(childState.parent.id))
-                guiStr.append(', ')
-                guiStr.append(str(childState.x))
-                guiStr.append(', ')
-                guiStr.append(str(childState.y))
-                guiStr.append(', ')
-                guiStr.append(str(childState.initial))
-                guiStr.append(', "')
-                guiStr.append(childState.name)
-                guiStr.append('")\n')
-
-                for tran in childState.getOriginTransitions():
-                    guiStr.append('\t\tguiSubautomata')
-                    guiStr.append(str(state.id))
-                    guiStr.append('.newGuiTransition((')
-                    guiStr.append(str(tran.origin.x))
-                    guiStr.append(', ')
-                    guiStr.append(str(tran.origin.y))
-                    guiStr.append('), (')
-                    guiStr.append(str(tran.destination.x))
-                    guiStr.append(', ')
-                    guiStr.append(str(tran.destination.y))
-                    guiStr.append('), (')
-                    guiStr.append(str(tran.x))
-                    guiStr.append(', ')
-                    guiStr.append(str(tran.y))
-                    guiStr.append('), ')
-                    guiStr.append(str(tran.id))
-                    guiStr.append(', ')
-                    guiStr.append(str(tran.origin.id))
-                    guiStr.append(', ')
-                    guiStr.append(str(tran.destination.id))
-                    guiStr.append(')\n')
-
-            guiStr.append('\t\tguiSubautomataList.append(guiSubautomata')
-            guiStr.append(str(state.id))
-            guiStr.append(')\n\n')
-        guiStr.append('\t\treturn guiSubautomataList\n\n')
-
-        return guiStr
-
-
-    def generateShutDown(self, shutdownStr):
-        shutdownStr.append('\tdef shutDown(self):\n')
-
-        for state in self.states:
-            shutdownStr.append('\t\tself.run')
-            shutdownStr.append(str(state.id))
-            shutdownStr.append(' = False\n')
-
-        shutdownStr.append('\n')
-
-        return shutdownStr
-
-
-    def generateRunGui(self, runStr):
-        mystr = '''
-\tdef runGui(self):
-\t\tapp = QtGui.QApplication(sys.argv)
-\t\tself.automataGui = AutomataGui()
-\t\tself.automataGui.setAutomata(self.createAutomata())
-\t\tself.automataGui.loadAutomata()
-\t\tself.startThreads()
-\t\tself.automataGui.show()
-\t\tapp.exec_()
-
-'''
-        runStr.append(mystr)
-
-        return runStr
-
-
-    def generateAutomata(self, automataStr):
-        for state in self.states:
-            automataStr.append('\tdef subautomata')
-            automataStr.append(str(state.id))
-            automataStr.append('(self):\n')
-
-            automataStr.append('\t\tself.run')
-            automataStr.append(str(state.id))
-            automataStr.append(' = True\n')
-            automataStr.append('\t\tcycle = ')
-            automataStr.append(str(state.getTimeStep()))
-            automataStr.append('\n')
-            automataStr.append('\t\tt_activated = False\n')
-            automataStr.append('\t\tt_fin = 0\n')
-
-            nameTimeMap = {}
-
-            if state.parent is not None:
-                for tran in state.getOriginTransitions():
-                    if tran.getType() == TransitionType.TEMPORAL:
-                        automataStr.append('\t\tt_')
-                        automataStr.append(tran.origin.name)
-                        automataStr.append('_max = ')
-                        automataStr.append(str(tran.getTemporalTime() / 1000.0))
-                        automataStr.append('\n')
-                        nameTimeMap[tran.origin.name] = tran.getTemporalTime() / 1000.0
-
-                automataStr.append('\n')
-
-            for line in state.getVariables().split('\n'):
-                automataStr.append('\t\t')
-                automataStr.append(line)
-                automataStr.append('\n')
-            automataStr.append('\n')
-
-            automataStr.append('\t\twhile(self.run')
-            automataStr.append(str(state.id))
-            automataStr.append('):\n')
-            automataStr.append('\t\t\ttotala = time.time() * 1000000\n\n')
-
-            addTab = None
-            if state.parent is not None:
-                automataStr.append('\t\t\tif(self.sub')
-                automataStr.append(str(state.parent.id))
-                automataStr.append(' == "')
-                automataStr.append(state.parent.name)
-                automataStr.append('"')
-                automataStr.append('):\n')
-                automataStr.append('\t\t\t\t')
-                automataStr.append('if (')
-                for childState in state.getChildren():
-                    automataStr.append('(self.sub')
-                    automataStr.append(str(state.id))
-                    automataStr.append(' == "')
-                    automataStr.append(state.name)
-                    automataStr.append('_ghost")')
-                    if childState is not state.getChildren()[len(state.getChildren())-1]:
-                        automataStr.append(' or ')
-
-                automataStr.append('):\n')
-
-                automataStr.append('\t\t\t\t\tghostStateIndex = self.StatesSub')
-                automataStr.append(str(state.id))
-                automataStr.append('.index(self.sub')
-                automataStr.append(str(state.id))
-                automataStr.append(')\n')
-                automataStr.append('\t\t\t\t\tself.sub')
-                automataStr.append(str(state.id))
-                automataStr.append(' = self.StatesSub')
-                automataStr.append(str(state.id))
-                automataStr.append('[ghostStateIndex-1]\n')
-                automataStr.append('\t\t\t\t\tt_ini = time.time()\n\n')
-
-                addTab = 1
-            else:
-                addTab = 0
-
-            tabStr = '\t\t\t'
-            if addTab == 1:
-                tabStr += '\t'
-
-            automataStr.append(tabStr)
-            automataStr.append('#Evaluation \n')
-
-            firstState = True
-
-            for childState in state.getChildren():
-                firstTransition = True
-                if firstState:
-                    automataStr.append(tabStr)
-                    automataStr.append('if (self.sub')
-                    automataStr.append(str(state.id))
-                    automataStr.append(' == "')
-                    automataStr.append(childState.name)
-                    automataStr.append('"):\n')
-                    firstState = False
-                else:
-                    automataStr.append(tabStr)
-                    automataStr.append('elif (self.sub')
-                    automataStr.append(str(state.id))
-                    automataStr.append(' == "')
-                    automataStr.append(childState.name)
-                    automataStr.append('"):\n')
-
-                ifHeaderUsed = False
-                for tran in childState.getOriginTransitions():
-                    if tran.origin.id == childState.id:
-                        if not ifHeaderUsed:
-                            automataStr.append(tabStr+'\t')
-                            ifHeaderUsed = True
-
-                        if tran.getType() == TransitionType.CONDITIONAL:
-                            automataStr.append(tabStr+'\t\t')
-                            if firstTransition:
-                                automataStr.append('if (')
-                                automataStr.append(tran.getCondition())
-                                automataStr.append('):\n')
-                                firstTransition = False
-                            else:
-                                automataStr.append('elif(')
-                                automataStr.append(tran.getCondition())
-                                automataStr.append('):\n')
-
-                            automataStr.append('\t\t\t\t\t\tself.sub')
-                            automataStr.append(str(state.id))
-                            automataStr.append(' = "')
-                            automataStr.append(tran.destination.name)
-                            automataStr.append('"\n')
-
-                            for codeLine in tran.getCode().split('\n'):
-                                automataStr.append('\t\t\t\t\t\t')
-                                automataStr.append(codeLine)
-                                automataStr.append('\n')
-
-                            automataStr.append('\t\t\t\t\t\tif self.displayGui:\n')
-                            automataStr.append('\t\t\t\t\t\t\tself.automataGui.notifySetNodeAsActive("\n')
-                            automataStr.append(str(tran.destination.id))
-                            automataStr.append('")\n')
-                        else:
-                            automataStr.append('if (not t_activated):\n')
-                            automataStr.append(tabStr+'\t\t')
-                            automataStr.append('t_ini = time.time()\n')
-                            automataStr.append(tabStr+'\t\t')
-                            automataStr.append('t_activated = True\n')
-                            automataStr.append(tabStr+'\t')
-                            automataStr.append('else:\n')
-                            automataStr.append(tabStr+'\t\t')
-                            automataStr.append('t_fin = time.time()\n')
-                            automataStr.append(tabStr+'\t\t')
-                            automataStr.append('secs = t_fin - t_ini\n')
-                            automataStr.append(tabStr+'\t\t')
-                            if state.parent is None:
-                                automataStr.append('if (secs > ')
-                                automataStr.append(str(tran.getTemporalTime() / 1000.0))
-                                automataStr.append('):\n')
-                            else:
-                                automataStr.append('if (secs > t_')
-                                automataStr.append(childState.name)
-                                automataStr.append('_max):\n')
-
-                            automataStr.append(tabStr+'\t\t\t')
-                            automataStr.append('self.sub')
-                            automataStr.append(str(state.id))
-                            automataStr.append(' = "')
-                            automataStr.append(tran.destination.name)
-                            automataStr.append('"\n')
-                            automataStr.append(tabStr+'\t\t\t')
-                            automataStr.append('t_activated = False\n')
-
-                            for codeLine in tran.getCode().split('\n'):
-                                automataStr.append(tabStr+'\t\t\t')
-                                automataStr.append(codeLine)
-                                automataStr.append('\n')
-
-                            automataStr.append(tabStr+'\t\t\t')
-                            automataStr.append('if self.displayGui:\n')
-                            automataStr.append(tabStr+'\t\t\t\t')
-                            automataStr.append('self.automataGui.notifySetNodeAsActive("')
-                            automataStr.append(tran.destination.name)
-                            automataStr.append('")\n')
-
-                            if state.parent is not None:
-                                automataStr.append(tabStr+'\t\t\t')
-                                automataStr.append('t_')
-                                automataStr.append(tran.origin.name)
-                                automataStr.append('_max = ')
-                                automataStr.append(nameTimeMap[tran.origin.name])
-                                automataStr.append('\n')
-
-                        automataStr.append('\n')
-
-                if not ifHeaderUsed:
-                    automataStr.append('\t\t\t\tpass\n')
-            automataStr.append('\n')
-
-            automataStr.append(tabStr)
-            automataStr.append('# Actuation\n')
-
-            firstState = True
-            for childState in state.getChildren():
-                if len(childState.getCode()) > 0:
-                    automataStr.append(tabStr)
-                    if firstState:
-                        automataStr.append('if (self.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(' == "')
-                        automataStr.append(childState.name)
-                        automataStr.append('"):\n')
-                        firstState = False
-                    else:
-                        automataStr.append('elif (self.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(' == "')
-                        automataStr.append(childState.name)
-                        automataStr.append('"):\n')
-
-                for codeLine in childState.getCode().split('\n'):
-                    automataStr.append(tabStr+'\t')
-                    automataStr.append(codeLine)
-                    automataStr.append('\n')
-
-            if state.parent is not None:
-                firstState = True
-
-                for childState in state.getChildren():
-                    if firstState:
-                        automataStr.append('\t\t\telse:\n')
-                        automataStr.append('\t\t\t\tif (self.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(' == "')
-                        automataStr.append(childState.name)
-                        automataStr.append('"):\n')
-                        firstState = False
-                    else:
-                        automataStr.append('\t\t\t\t')
-                        automataStr.append('elif (self.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(' == "')
-                        automataStr.append(childState.name)
-                        automataStr.append('"):\n')
-                    if childState.name in nameTimeMap:
-                        automataStr.append('\t\t\t\t\t')
-                        automataStr.append('ghostStateIndex = self.StatesSub')
-                        automataStr.append(str(state.id))
-                        automataStr.append('.index(self.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(') + 1\n')
-                        automataStr.append('\t\t\t\t\tself.sub')
-                        automataStr.append(str(state.id))
-                        automataStr.append(' = self.StatesSub')
-                        automataStr.append(str(state.id))
-                        automataStr.append('[ghostStateIndex]\n')
-
-            automataStr.append('\n')
-
-            automataStr.append('\t\t\ttotalb = time.time() * 1000000\n')
-            automataStr.append('\t\t\tmsecs = (totalb - totala) / 1000\n')
-            automataStr.append('\t\t\tif (msecs < 0 or msecs > cycle):\n')
-            automataStr.append('\t\t\t\tmsecs = cycle\n')
-            automataStr.append('\t\t\telse:\n')
-            automataStr.append('\t\t\t\tmsecs = cycle - msecs\n\n')
-            automataStr.append('\t\t\ttime.sleep(msecs / 1000)\n')
-            automataStr.append('\t\t\tif (msecs < 33):\n')
-            automataStr.append('\t\t\t\ttime.sleep(33 / 1000)\n\n')
-
-        return automataStr
-
-    def generateConnectProxies(self, proxyStr):
-        proxyStr.append('\tdef connectToProxies(self):\n')
-        proxyStr.append('\t\tself.ic = EasyIce.initialize(sys.argv)\n\n')
+        interfaceStr.append('\tdef connectProxies(self):\n')
+        interfaceStr.append('\t\tself.ic = EasyIce.initialize(sys.argv)\n')
 
         for cfg in self.configs:
-            proxyStr.append('\t\t#Contact to ')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('\n')
+            interfaceStr.append('\t\tself.' + cfg['name'] + ' = self.ic.propertyToProxy("automata.' + cfg['name'] + '.Proxy")\n')
+            interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
+            interfaceStr.append('\t\t\traise Exception("could not create proxy with name:' + cfg['name'] + '")\n')
+            interfaceStr.append('\t\tself.' + cfg['name'] + ' = ' + cfg['interface'] + 'Prx.checkedCast(self.' + cfg['name'] + ')\n')
+            interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
+            interfaceStr.append('\t\t\traise Exception("invalid proxy automata.myMotors.Proxy")\n')
 
-            proxyStr.append('\t\t')
-            proxyStr.append(cfg['name'])
-            proxyStr.append(' = self.ic.propertyToProxy("automata.')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('.Proxy")\n')
+        interfaceStr.append('\n')
 
-            proxyStr.append('\t\tif (not ')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('):\n')
-            proxyStr.append('\t\t\traise Exception("could not create proxy with')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('")\n')
+        interfaceStr.append('\tdef destroyProxies(self):\n')
+        interfaceStr.append('\t\tif self.ic is not None:\n')
+        interfaceStr.append('\t\t\tself.ic.destroy()\n\n')
 
-            proxyStr.append('\t\tself.')
-            proxyStr.append(cfg['name'])
-            proxyStr.append(' = ')
-            proxyStr.append(cfg['interface'])
-            proxyStr.append('Prx.checkedCast(')
-            proxyStr.append(cfg['name'])
-            proxyStr.append(')\n')
+    def generateTransitionClasses(self, tranStr):
+        for tran in self.getAllTransitions():
+            if tran.getType() == TransitionType.CONDITIONAL:
+                tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
+                tranStr.append('\tdef checkCondition(self):\n')
+                for checkLine in tran.getCondition().split('\t'):
+                    tranStr.append('\t\t' + checkLine + '\n')
+                tranStr.append('\n')
+            elif tran.getType() == TransitionType.TEMPORAL:
+                tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
 
-            proxyStr.append('\t\tif (not self.')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('):\n')
-            proxyStr.append('\t\t\traise Exception("invalid proxy automata.')
-            proxyStr.append(cfg['name'])
-            proxyStr.append('.Proxy")\n')
-            proxyStr.append('\t\tprint("')
-            proxyStr.append(cfg['name'])
-            proxyStr.append(' connected")\n')
-
-        return proxyStr
-
-    def generateDestroyIc(self, icStr):
-        mystr = '''
-\tdef destroyIc(self):
-\t\tif (self.ic):
-\t\t\tself.ic.destroy()
-'''
-        icStr.append(mystr)
-        return icStr
+            tranStr.append('\tdef runCode(self):\n')
+            if len(tran.getCode()) > 0:
+                for codeLine in tran.getCode().split('\n'):
+                    tranStr.append('\t\t' + codeLine + '\n')
+                tranStr.append('\n')
+            else:
+                tranStr.append('\t\tpass\n\n')
 
 
-    def generateStart(self, startStr):
-        mystr = '''
-\tdef start(self):
-\t\tif self.displayGui:
-\t\t\tself.guiThread = threading.Thread(target=self.runGui)
-\t\t\tself.guiThread.start()
-\t\telse:
-\t\t\tself.startThreads()
-
-'''
-        startStr.append(mystr)
-        return startStr
-
-    def generateJoin(self, joinStr):
-        joinStr.append('\tdef join(self):\n')
-        joinStr.append('\t\tif self.displayGui:\n')
-        joinStr.append('\t\t\tself.guiThread.join()\n')
-
-        for state in self.states:
-            joinStr.append('\t\tself.t')
-            joinStr.append(str(state.id))
-            joinStr.append('.join()\n')
-
-        joinStr.append('\n\n')
-
-        return joinStr
 
 
-    def generateReadArgs(self, argsStr):
-        mystr = '''
-\tdef readArgs(self):
-\t\tfor arg in sys.argv:
-\t\t\tsplitedArg = arg.split('=')
-\t\t\tif splitedArg[0] == "--displaygui":
-\t\t\t\t\tif splitedArg[1] == "True" or splitedArg[1] == "true":
-\t\t\t\t\t\tself.displayGui = True
-\t\t\t\t\t\tprint("runtime gui enabled")
-\t\t\telse:
-\t\t\t\tself.displayGui = False
-\t\t\t\tprint("runtime gui disabled")
-'''
-        argsStr.append(mystr)
-        return argsStr
+#
+#     def generateStart(self, startStr):
+#         mystr = '''
+# \tdef start(self):
+# \t\tif self.displayGui:
+# \t\t\tself.guiThread = threading.Thread(target=self.runGui)
+# \t\t\tself.guiThread.start()
+# \t\telse:
+# \t\t\tself.startThreads()
+#
+# '''
+#         startStr.append(mystr)
+#         return startStr
+#
+#     def generateJoin(self, joinStr):
+#         joinStr.append('\tdef join(self):\n')
+#         joinStr.append('\t\tif self.displayGui:\n')
+#         joinStr.append('\t\t\tself.guiThread.join()\n')
+#
+#         for state in self.states:
+#             joinStr.append('\t\tself.t')
+#             joinStr.append(str(state.id))
+#             joinStr.append('.join()\n')
+#
+#         joinStr.append('\n\n')
+#
+#         return joinStr
+
+
+#     def generateReadArgs(self, argsStr):
+#         mystr = '''
+# \tdef readArgs(self):
+# \t\tfor arg in sys.argv:
+# \t\t\tsplitedArg = arg.split('=')
+# \t\t\tif splitedArg[0] == "--displaygui":
+# \t\t\t\t\tif splitedArg[1] == "True" or splitedArg[1] == "true":
+# \t\t\t\t\t\tself.displayGui = True
+# \t\t\t\t\t\tprint("runtime gui enabled")
+# \t\t\telse:
+# \t\t\t\tself.displayGui = False
+# \t\t\t\tprint("runtime gui disabled")
+# '''
+#         argsStr.append(mystr)
+#         return argsStr
+#
+#     def generateMain(self, mainStr):
+#         mystr = '''
+# if __name__ == '__main__':
+# \tsignal.signal(signal.SIGINT, signal.SIG_DFL)
+# \tautomata = Automata()
+# \ttry:
+# \t\tautomata.connectToProxies()
+# \t\tautomata.readArgs()
+# \t\tautomata.start()
+# \t\tautomata.join()
+# \t\tsys.exit(0)
+# \texcept:
+# \t\ttraceback.print_exc()
+# \t\tautomata.destroyIc()
+# \t\tsys.exit(-1)
+# '''
+#         mainStr.append(mystr)
 
     def generateMain(self, mainStr):
-        mystr = '''
-if __name__ == '__main__':
-\tsignal.signal(signal.SIGINT, signal.SIG_DFL)
-\tautomata = Automata()
-\ttry:
-\t\tautomata.connectToProxies()
-\t\tautomata.readArgs()
-\t\tautomata.start()
-\t\tautomata.join()    
-\t\tsys.exit(0)
-\texcept:
-\t\ttraceback.print_exc()
-\t\tautomata.destroyIc()
-\t\tsys.exit(-1)    
-'''
-        mainStr.append(mystr)
+        mainStr.append('if __name__ == "__main__":\n')
+        mainStr.append('\tinterfaces = Interfaces()\n')
+        for state in self.getAllStates():
+            mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', interfaces, ' +
+                           str(state.getTimeStep()))
+            if state.parent is None:
+                mainStr.append(', None)\n')
+            else:
+                mainStr.append(', state' + str(state.parent.id) + ')\n')
+
+        mainStr.append('\n')
+
+        # create and add transitions to their origins
+        for tran in self.getAllTransitions():
+            if tran.getType() == TransitionType.TEMPORAL:
+                mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ')\n')
+            elif tran.getType() == TransitionType.CONDITIONAL:
+                mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ')\n')
+
+            mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
+
+        # start threads
+        for state in self.states:
+            mainStr.append('\tstate' + str(state.id) + '.startThread()\n')
+
+        # join threads
+        for state in self.states:
+            mainStr.append('\tstate' + str(state.id) + '.join()\n')
+
+
+
 
 
 
