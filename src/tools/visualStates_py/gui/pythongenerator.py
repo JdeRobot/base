@@ -166,72 +166,6 @@ from gui.codegen.conditionaltransition import ConditionalTransition
             else:
                 tranStr.append('\t\tpass\n\n')
 
-
-
-
-#
-#     def generateStart(self, startStr):
-#         mystr = '''
-# \tdef start(self):
-# \t\tif self.displayGui:
-# \t\t\tself.guiThread = threading.Thread(target=self.runGui)
-# \t\t\tself.guiThread.start()
-# \t\telse:
-# \t\t\tself.startThreads()
-#
-# '''
-#         startStr.append(mystr)
-#         return startStr
-#
-#     def generateJoin(self, joinStr):
-#         joinStr.append('\tdef join(self):\n')
-#         joinStr.append('\t\tif self.displayGui:\n')
-#         joinStr.append('\t\t\tself.guiThread.join()\n')
-#
-#         for state in self.states:
-#             joinStr.append('\t\tself.t')
-#             joinStr.append(str(state.id))
-#             joinStr.append('.join()\n')
-#
-#         joinStr.append('\n\n')
-#
-#         return joinStr
-
-
-#     def generateReadArgs(self, argsStr):
-#         mystr = '''
-# \tdef readArgs(self):
-# \t\tfor arg in sys.argv:
-# \t\t\tsplitedArg = arg.split('=')
-# \t\t\tif splitedArg[0] == "--displaygui":
-# \t\t\t\t\tif splitedArg[1] == "True" or splitedArg[1] == "true":
-# \t\t\t\t\t\tself.displayGui = True
-# \t\t\t\t\t\tprint("runtime gui enabled")
-# \t\t\telse:
-# \t\t\t\tself.displayGui = False
-# \t\t\t\tprint("runtime gui disabled")
-# '''
-#         argsStr.append(mystr)
-#         return argsStr
-#
-#     def generateMain(self, mainStr):
-#         mystr = '''
-# if __name__ == '__main__':
-# \tsignal.signal(signal.SIGINT, signal.SIG_DFL)
-# \tautomata = Automata()
-# \ttry:
-# \t\tautomata.connectToProxies()
-# \t\tautomata.readArgs()
-# \t\tautomata.start()
-# \t\tautomata.join()
-# \t\tsys.exit(0)
-# \texcept:
-# \t\ttraceback.print_exc()
-# \t\tautomata.destroyIc()
-# \t\tsys.exit(-1)
-# '''
-#         mainStr.append(mystr)
-
     def generateMain(self, mainStr):
         mainStr.append('if __name__ == "__main__":\n')
         mainStr.append('\tinterfaces = Interfaces()\n')
@@ -257,13 +191,25 @@ from gui.codegen.conditionaltransition import ConditionalTransition
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 
+        mainStr.append('\ttry:\n')
         # start threads
         for state in self.states:
-            mainStr.append('\tstate' + str(state.id) + '.startThread()\n')
+            mainStr.append('\t\tstate' + str(state.id) + '.startThread()\n')
 
         # join threads
         for state in self.states:
-            mainStr.append('\tstate' + str(state.id) + '.join()\n')
+            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
+
+        mainStr.append('\t\tinterfaces.destroyProxies()\n')
+        mainStr.append('\t\tsys.exit(0)')
+        mainStr.append('\texcept:\n')
+        for state in self.states:
+            mainStr.append('\t\tstate' + str(state.id) + '.stop()\n')
+        # join threads
+        for state in self.states:
+            mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
+        mainStr.append('\t\tinterfaces.destroyProxies()\n')
+        mainStr.append('\t\tsys.exit(1)\n')
 
 
 

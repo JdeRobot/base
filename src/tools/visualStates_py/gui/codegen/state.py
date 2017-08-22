@@ -45,7 +45,7 @@ class State():
         self.thread.start()
 
     def run(self):
-        firstRun = True
+        initState = True
         while(self.running):
             startTime = self.getCurrentTime()
 
@@ -58,9 +58,9 @@ class State():
 
             if runState:
 
-                if firstRun:
+                if initState:
                     self.currentState.init()
-                    firstRun = False
+                    initState = False
 
                 # transition evaluations
                 for tran in self.currentState.transitions:
@@ -70,6 +70,7 @@ class State():
                         self.currentState.init()
                         break
 
+                print('current state:' + str(self.currentState.id))
                 self.currentState.runCode()
 
             # control the cycle running time
@@ -83,7 +84,7 @@ class State():
                 time.sleep(elapsedTime / 1000)
 
     def stop(self):
-        self.running = True
+        self.running = False
 
     # returns the current time in microseconds
     def getCurrentTime(self):
