@@ -67,11 +67,15 @@ class PythonGenerator(Generator):
     def generateImports(self, headerStr):
         mystr = '''#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import sys
+import sys, threading, time
 import easyiceconfig as EasyIce
+sys.path.append("/opt/jderobot/lib/python2.7")
+sys.path.append("/opt/jderobot/share/jderobot/python3/visualStates_py")
 from gui.codegen.state import State
 from gui.codegen.temporaltransition import TemporalTransition
 from gui.codegen.conditionaltransition import ConditionalTransition
+from gui.runtimegui.python.runtimegui import RunTimeGui
+from PyQt5.QtWidgets import QApplication
 
 '''
         headerStr.append(mystr)
@@ -167,17 +171,70 @@ from gui.codegen.conditionaltransition import ConditionalTransition
                 tranStr.append('\t\tpass\n\n')
 
     def generateMain(self, mainStr):
+        mystr = '''displayGui = False
+guiThread = None
+gui = None
+
+def readArgs():
+\tglobal displayGui
+\tfor arg in sys.argv:
+\t\tsplitedArg = arg.split('=')
+\t\tif splitedArg[0] == '--displaygui':
+\t\t\tif splitedArg[1] == 'True' or splitedArg[1] == 'true':
+\t\t\t\tdisplayGui = True
+\t\t\t\tprint('runtime gui enabled')
+\t\t\telse:
+\t\t\t\tdisplayGui = False
+\t\t\t\tprint('runtime gui disabled')
+
+def runGui():
+\tglobal gui
+\tapp = QApplication(sys.argv)
+\tgui = RunTimeGui()
+\tgui.show()
+\tapp.exec_()
+
+'''
+        mainStr.append(mystr)
+
         mainStr.append('if __name__ == "__main__":\n')
-        mainStr.append('\tinterfaces = Interfaces()\n')
+        mainStr.append('\tinterfaces = Interfaces()\n\n')
+        mainStr.append('\treadArgs()\n')
+        mainStr.append('\tif displayGui:\n')
+        mainStr.append('\t\tguiThread = threading.Thread(target=runGui)\n')
+        mainStr.append('\t\tguiThread.start()\n\n')
+
+        mainStr.append('\n\tif displayGui:\n')
+        mainStr.append('\t\twhile(gui is None):\n')
+        mainStr.append('\t\t\ttime.sleep(0.1)\n\n')
+        # create runtime gui code
+        for state in self.getAllStates():
+            mainStr.append('\t\tgui.addState(' + str(state.id) + ', "' + state.name +
+                           '", ' + str(state.initial) + ', ' + str(state.x) + ', ' + str(state.y))
+            if state.parent is None:
+                mainStr.append(', None)\n')
+            else:
+                mainStr.append(', ' + str(state.parent.id) +')\n')
+
+        mainStr.append('\n')
+
+        for tran in self.getAllTransitions():
+            mainStr.append('\t\tgui.addTransition(' + str(tran.id) + ', "' + tran.name + '", ' +
+                           str(tran.origin.id) + ', ' + str(tran.destination.id) +
+                           ', ' + str(tran.x) + ', ' + str(tran.y) + ')\n')
+        mainStr.append('\n')
+
+        mainStr.append('\tif displayGui:\n')
+        mainStr.append('\t\tgui.emitActiveStateById(0)\n\n')
+
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
                            '(' + str(state.id) + ', ' + str(state.initial) + ', interfaces, ' +
                            str(state.getTimeStep()))
             if state.parent is None:
-                mainStr.append(', None)\n')
+                mainStr.append(', None, gui)\n')
             else:
-                mainStr.append(', state' + str(state.parent.id) + ')\n')
-
+                mainStr.append(', state' + str(state.parent.id) + ', gui)\n')
         mainStr.append('\n')
 
         # create and add transitions to their origins
@@ -195,16 +252,18 @@ from gui.codegen.conditionaltransition import ConditionalTransition
         # start threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.startThread()\n')
-
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
 
         mainStr.append('\t\tinterfaces.destroyProxies()\n')
-        mainStr.append('\t\tsys.exit(0)')
+        mainStr.append('\t\tsys.exit(0)\n')
         mainStr.append('\texcept:\n')
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.stop()\n')
+        mainStr.append('\t\tif displayGui:\n')
+        mainStr.append('\t\t\tgui.close()\n')
+        mainStr.append('\t\t\tguiThread.join()\n\n')
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')

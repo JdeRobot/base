@@ -1,8 +1,8 @@
 from threading import Thread
-import time
+import time, sys
 
 class State():
-    def __init__(self, id, initial, interfaces, cycleDuration, parent=None):
+    def __init__(self, id, initial, interfaces, cycleDuration, parent=None, gui=None):
         self.id = id
         self.active = False
         self.thread = None
@@ -11,12 +11,15 @@ class State():
         self.currentState = None
         self.initial = initial
         self.interfaces = interfaces
+        self.displayGui = False
 
         self.cycleDuration = cycleDuration
 
         self.states = []
         self.transitions = []
         self.statesById = {}
+
+        self.gui = gui
 
         # add state to parent
         if self.parent is not None:
@@ -25,6 +28,8 @@ class State():
     def init(self):
         for tran in self.transitions:
             tran.init()
+        if self.gui is not None:
+            self.gui.emitRunningStateById(self.id)
 
     def runCode(self):
         pass
@@ -56,18 +61,18 @@ class State():
             elif self.parent is None:
                 runState = True
 
+            if initState:
+                self.currentState.init()
+                initState = False
+
             if runState:
-
-                if initState:
-                    self.currentState.init()
-                    initState = False
-
                 # transition evaluations
                 for tran in self.currentState.transitions:
                     if tran.checkCondition():
                         tran.runCode()
                         self.currentState = self.statesById[tran.destinationId]
                         self.currentState.init()
+                        initState = False
                         break
 
                 print('current state:' + str(self.currentState.id))

@@ -158,6 +158,11 @@ class TransitionGraphicsItem(QGraphicsObject):
         else:
             return None
 
+    def disableInteraction(self):
+        if self.middleHandle is not None:
+            self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable, False)
+            self.middleHandle.disableInteraction()
+
     # def removeEventConnections(self):
     #     if not self.isEventsRemoved:
     #         if self.origin == self.destination:

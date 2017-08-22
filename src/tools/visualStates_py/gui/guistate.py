@@ -128,6 +128,18 @@ class StateGraphicsItem(QGraphicsObject):
     def paint(self, QPainter, QStyleOptionGraphicsItem, QWidget_widget=None):
         pass
 
+    def setRunning(self, status):
+        brush = QBrush(Qt.SolidPattern)
+
+        if status:
+            brush.setColor(Qt.green)
+        else:
+            brush.setColor(Qt.blue)
+
+        self.ellipse.setBrush(brush)
+
+
+
     # def getNewCopy(self):
     #     self.newCopy = StateGraphicsItem(self.id, self.pos().x(), self.pos().y(), self.isInitial(), self.name)
     #     self.newCopy.code = self.code

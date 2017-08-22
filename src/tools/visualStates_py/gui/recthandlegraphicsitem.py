@@ -17,16 +17,19 @@ class RectHandleGraphicsItem(QGraphicsRectItem):
         self.setBrush(brush)
 
         self.dragging = False
+        self.interaction = True
 
     def hoverEnterEvent(self, event):
-        myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_FOCUS_WIDTH)
-        self.setPen(myPen)
+        if self.interaction:
+            myPen = QPen(Qt.SolidLine)
+            myPen.setWidth(PEN_FOCUS_WIDTH)
+            self.setPen(myPen)
 
     def hoverLeaveEvent(self, event):
-        myPen = QPen(Qt.SolidLine)
-        myPen.setWidth(PEN_NORMAL_WIDTH)
-        self.setPen(myPen)
+        if self.interaction:
+            myPen = QPen(Qt.SolidLine)
+            myPen.setWidth(PEN_NORMAL_WIDTH)
+            self.setPen(myPen)
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
@@ -42,3 +45,6 @@ class RectHandleGraphicsItem(QGraphicsRectItem):
         if self.dragging:
             self.parentItem().updateMiddlePoints(self.scenePos())
         super().mouseMoveEvent(qGraphicsSceneMouseEvent)
+
+    def disableInteraction(self):
+        self.interaction = False

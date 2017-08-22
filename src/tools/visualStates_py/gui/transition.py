@@ -29,6 +29,11 @@ class Transition:
 
         self.graphicsItem = None
 
+    def setPos(self, x, y):
+        self.x = x
+        self.y = y
+        self.isPosChanged = True
+
     def addOriginState(self, origin):
         if origin != self.origin:
             self.origin = origin

@@ -160,3 +160,13 @@ class TreeModel(QAbstractItemModel):
         for child in rootState.getChildren():
             self.insertStateData(child, QColor(Qt.white), self.getByDataId(rootState.id))
             self.loadFromRoot(child)
+
+    def setAllBackground(self, color):
+        allNodes = self.getChildren(self.rootNode)
+        for node in allNodes:
+            node.setColor(color)
+
+    def setBackgroundById(self, id, color):
+        data = self.getByDataId(id)
+        data.setColor(color)
+        self.layoutChanged.emit()
