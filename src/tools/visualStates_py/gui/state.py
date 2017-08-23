@@ -20,6 +20,7 @@ class State:
         self.destTransitions = []
 
         self.graphicsItem = None
+        self.isRunning = False
 
     def setPos(self, x, y):
         self.x = x
@@ -62,6 +63,7 @@ class State:
         if self.graphicsItem == None:
             self.graphicsItem = StateGraphicsItem(self)
             self.graphicsItem.posChanged.connect(self.posChanged)
+            self.graphicsItem.setRunning(self.isRunning)
         return self.graphicsItem
 
     def resetGraphicsItem(self):
@@ -203,3 +205,12 @@ class State:
         for child in self.getChildren():
             childTransitions += child.getOriginTransitions()
         return childTransitions
+
+    def setRunning(self, status):
+        self.isRunning = status
+        if self.graphicsItem is not None:
+            self.graphicsItem.setRunning(self.isRunning)
+
+        if not self.isRunning:
+            for child in self.getChildren():
+                child.setRunning(self.isRunning)

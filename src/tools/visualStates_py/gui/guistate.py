@@ -35,6 +35,7 @@ class StateGraphicsItem(QGraphicsObject):
 
     stateTextEditStarted = pyqtSignal()
     stateTextEditFinished = pyqtSignal()
+    doubleClicked = pyqtSignal('QGraphicsItem')
 
     def __init__(self, data):
         super().__init__()
@@ -108,6 +109,9 @@ class StateGraphicsItem(QGraphicsObject):
             self.posChanged.emit(self)
         super().mouseMoveEvent(qGraphicsSceneMouseEvent)
 
+    def mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent):
+        self.doubleClicked.emit(self)
+
     def boundingRect(self):
         return self.ellipse.boundingRect()
 
@@ -130,7 +134,6 @@ class StateGraphicsItem(QGraphicsObject):
 
     def setRunning(self, status):
         brush = QBrush(Qt.SolidPattern)
-
         if status:
             brush.setColor(Qt.green)
         else:

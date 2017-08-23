@@ -53,6 +53,8 @@ class RunTimeGui(QMainWindow):
         self.runningStateChanged.connect(self.runningStateChangedHandle)
         self.loadFromRoot.connect(self.loadFromRootHandle)
 
+        # self.waitForActiveState = False
+
         # self.fileManager = FileManager()
         #
         # self.libraries = []
@@ -310,7 +312,7 @@ class RunTimeGui(QMainWindow):
         dockWidget.setFeatures(QDockWidget.NoDockWidgetFeatures)
         dockWidget.setTitleBarWidget(QWidget())
         self.treeView = QTreeView()
-        # self.treeView.clicked.connect(self.treeItemClicked)
+        self.treeView.clicked.connect(self.treeItemClicked)
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
 
@@ -368,13 +370,20 @@ class RunTimeGui(QMainWindow):
         self.runningStateChanged.emit(id)
 
     def runningStateChangedHandle(self, id):
+        # if self.waitForActiveState:
+        #     return
+
         print('running state:' + str(id))
         runningState = self.states[id]
         parentId = None
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
-                child.getGraphicsItem().setRunning(False)
-            runningState.getGraphicsItem().setRunning(True)
+                child.setRunning(False)
+                # if self.activeState == child:
+                #     for grandChild in self.activeState.getChildren():
+                #         grandChild.setRunning(False)
+
+            runningState.setRunning(True)
             parentId = runningState.parent.id
 
         self.treeModel.setAllBackgroundByParentId(Qt.white, parentId)
@@ -384,27 +393,44 @@ class RunTimeGui(QMainWindow):
         self.activeStateChanged.emit(id)
 
     def activeStateChangedHandle(self, id):
+        # self.waitForActiveState = True
+
+        if self.activeState is not None:
+            for child in self.activeState.getChildren():
+                child.resetGraphicsItem()
+                for tran in child.getOriginTransitions():
+                    tran.resetGraphicsItem()
+
         self.activeState = self.states[id]
         print('set active state:' + str(id))
         self.scene.clear()
         for childState in self.activeState.getChildren():
             print('add child to scene:' + str(childState.id))
+            # childState.resetGraphicsItem()
             qitem = childState.getGraphicsItem()
             qitem.setAcceptHoverEvents(False)
             qitem.setFlag(QGraphicsItem.ItemIsMovable, False)
+            qitem.doubleClicked.connect(self.stateDoubleClicked)
             self.setAcceptDrops(False)
             self.scene.addItem(qitem)
             for tran in childState.getOriginTransitions():
                 print('add transition:' + str(tran.id))
+                # tran.resetGraphicsItem()
                 qitem = tran.getGraphicsItem()
                 qitem.disableInteraction()
                 self.scene.addItem(qitem)
+        # self.waitForActiveState = False
 
     def emitLoadFromRoot(self):
         self.loadFromRoot.emit(0)
 
     def loadFromRootHandle(self, id):
         self.treeModel.loadFromRoot(self.states[id])
+
+    def stateDoubleClicked(self, stateItem):
+        print('emit active state by id:' + str(stateItem.stateData.id))
+        if len(stateItem.stateData.getChildren()) > 0:
+            self.emitActiveStateById(stateItem.stateData.id)
 
 
     # def stateInserted(self, state):
@@ -439,10 +465,11 @@ class RunTimeGui(QMainWindow):
     #             self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
     def upButtonClicked(self):
-        if self.activeState != None:
-            if self.activeState.parent != None:
-                print('parent name:' + self.activeState.parent.name)
-                self.automataScene.setActiveState(self.activeState.parent)
+        if self.activeState is not None:
+            if self.activeState.parent is not None:
+                self.emitActiveStateById(self.activeState.parent.id)
+                # print('parent name:' + self.activeState.parent.name)
+                # self.automataScene.setActiveState(self.activeState.parent)
                 # if self.activeState.parent == self.rootState:
                 #     self.treeView.selectionModel().clearSelection()
                 #     print('clear selection')
@@ -459,12 +486,12 @@ class RunTimeGui(QMainWindow):
                     return result
             return result
 
-    # def treeItemClicked(self, index):
-    #     print('clicked item.id:' + str(index.internalPointer().id))
-    #     state = self.getStateById(self.rootState, index.internalPointer().id)
-    #     if state is not None:
-    #         # set the active state as the loaded state
-    #         self.automataScene.setActiveState(state)
+    def treeItemClicked(self, index):
+        print('clicked item.id:' + str(index.internalPointer().id))
+        # state = self.getStateById(self.rootState, index.internalPointer().id)
+        # if state is not None:
+        #     # set the active state as the loaded state
+        #     self.automataScene.setActiveState(state)
 
     # def timeStepDurationChanged(self, duration):
     #     if self.activeState is not None:
