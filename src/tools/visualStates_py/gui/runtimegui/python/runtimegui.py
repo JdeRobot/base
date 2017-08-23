@@ -310,7 +310,7 @@ class RunTimeGui(QMainWindow):
         dockWidget.setFeatures(QDockWidget.NoDockWidgetFeatures)
         dockWidget.setTitleBarWidget(QWidget())
         self.treeView = QTreeView()
-        self.treeView.clicked.connect(self.treeItemClicked)
+        # self.treeView.clicked.connect(self.treeItemClicked)
         self.treeModel = TreeModel()
         self.treeView.setModel(self.treeModel)
 
@@ -370,11 +370,14 @@ class RunTimeGui(QMainWindow):
     def runningStateChangedHandle(self, id):
         print('running state:' + str(id))
         runningState = self.states[id]
+        parentId = None
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
                 child.getGraphicsItem().setRunning(False)
             runningState.getGraphicsItem().setRunning(True)
-        self.treeModel.setAllBackground(Qt.white)
+            parentId = runningState.parent.id
+
+        self.treeModel.setAllBackgroundByParentId(Qt.white, parentId)
         self.treeModel.setBackgroundById(runningState.id, Qt.green)
 
     def emitActiveStateById(self, id):
@@ -456,12 +459,12 @@ class RunTimeGui(QMainWindow):
                     return result
             return result
 
-    def treeItemClicked(self, index):
-        print('clicked item.id:' + str(index.internalPointer().id))
-        state = self.getStateById(self.rootState, index.internalPointer().id)
-        if state is not None:
-            # set the active state as the loaded state
-            self.automataScene.setActiveState(state)
+    # def treeItemClicked(self, index):
+    #     print('clicked item.id:' + str(index.internalPointer().id))
+    #     state = self.getStateById(self.rootState, index.internalPointer().id)
+    #     if state is not None:
+    #         # set the active state as the loaded state
+    #         self.automataScene.setActiveState(state)
 
     # def timeStepDurationChanged(self, duration):
     #     if self.activeState is not None:
