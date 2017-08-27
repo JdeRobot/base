@@ -32,7 +32,7 @@ class Tran0(Transition):
     def checkCondition(self):
         print('check condition')
     
-    def runCode(self).:
+    def runCode(self):
         print('run code')
 
 class Interfaces():

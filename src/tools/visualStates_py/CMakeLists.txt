@@ -1,40 +1,26 @@
-#add_custom_command(TARGET visualStates_py POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualStates>/gui)
-#
-#
-#    install(TARGETS visualStates
-#    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-#    COMPONENT tools
-#    )
-#
-#	install(TARGETS visualStateslib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/ COMPONENT tools)
-#
-#	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh
-#      PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
-#	  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-#
-#	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade/visualStates)
-#
-#    # Install Glade
-#	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
-#	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade/visualStates)
-#
-#	# install resources (jderobot logo)
-#	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/jderobot.png DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/resources)
-#
-#
-#	# Install C++ Headers
-#	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-#	INSTALL(FILES ${h_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visualStates)
-#
-#	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/popups/*.h")
-#	INSTALL(FILES ${h_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visualStates/popups)
 
+cmake_minimum_required(VERSION 2.8)
 
-	# Install Python Files
+SET(SOURCE_CPP_RUNTIME
+	gui/codegen/cpp/state.cpp
+	gui/codegen/cpp/transition.cpp
+	gui/codegen/cpp/temporaltransition.cpp
+        gui/codegen/cpp/runtimegui.cpp
+)
 
-	INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/gui" DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python3/visualStates_py)
+INCLUDE_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/include)
+LINK_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/lib)
 
+ADD_LIBRARY(visualStatesRunTime SHARED ${SOURCE_CPP_RUNTIME})
+TARGET_LINK_LIBRARIES(visualStatesRunTime easyiceconfig Ice JderobotInterfaces IceUtil pthread)
 
+INSTALL(TARGETS visualStatesRunTime DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/visualstates_py/)
 
+#install runtime headers
+INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/gui/codegen/cpp/
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/include/visualstates_py/
+		FILES_MATCHING PATTERN "*.h")
 
+#install python runtime dependencies
+INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/gui/codegen/python/
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python3.5/visualStates_py PATTERN __pycache__ EXCLUDE )

@@ -1,23 +1,18 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QPainter, QColor, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
-    QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton, QMessageBox, QGraphicsItem, \
+from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, \
+    QWidget, QLabel, QVBoxLayout, QPushButton, QGraphicsItem, \
     QGraphicsScene
 
-# from gui.automatascene import AutomataScene, OpType
-# from gui.filemanager import FileManager
+
 from gui.treemodel import TreeModel
 from gui.state import State
 from gui.transition import Transition
-# from .state import State
-# from .timerdialog import TimerDialog
-# from .codedialog import CodeDialog
-# from .librariesdialog import LibrariesDialog
-# from .configdialog import ConfigDialog
-# from gui.cppgenerator import CppGenerator
-# from gui.pythongenerator import PythonGenerator
-# import os
 
+# import mmap
+from threading import Thread
+import time
+import sysv_ipc
 
 class RunTimeGui(QMainWindow):
 
@@ -61,6 +56,9 @@ class RunTimeGui(QMainWindow):
         # self.configs = []
         # self.interfaceHeaderMap = {}
         # self.createInterfaceHeaderMap()
+        # self.mm = None
+        self.memory = None
+        self.ipcThread = None
 
     # def createMenu(self):
     #     # create actions
@@ -517,4 +515,40 @@ class RunTimeGui(QMainWindow):
 
         for s in state.getChildren():
             self.getStateList(s, stateList)
+
+    def loopIPC(self):
+        while True:
+            msg = self.getIPCMessage()
+            if msg is not None:
+                print('msg received:' + msg)
+            time.sleep(1.0/1000)
+
+    def activateIPC(self):
+        # fp0 = open('/tmp/visualstates', 'w')
+        # for i in range(1024):
+        #     fp0.write('0')
+        # fp0.close()
+
+        # fp = open('/tmp/visualstates', 'r+b')
+        # self.mm = mmap.mmap(fp.fileno(), 1024)
+        # Create shared memory object
+        self.memory = sysv_ipc.SharedMemory(123456, sysv_ipc.IPC_CREAT)
+        self.ipcThread = Thread(target=self.loopIPC)
+        self.ipcThread.start()
+
+    def getIPCMessage(self):
+        if self.memory is not None:
+            data = self.memory.read().decode()
+            if data[0] != '0':
+                self.memory.write('0'.encode())
+                i = data.find('\0')
+                if i != -1:
+                    data = data[:i]
+                return data
+
+        return None
+
+
+
+
 
