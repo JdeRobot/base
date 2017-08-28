@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
@@ -41,7 +41,7 @@ class AutomataScene(QGraphicsScene):
     activeStateChanged = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super(QGraphicsScene, self).__init__(parent)
 
         self.operationType = None
 
@@ -155,7 +155,6 @@ class AutomataScene(QGraphicsScene):
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         print('mouse press event')
-        super().mousePressEvent(qGraphicsSceneMouseEvent)
 
     def addTransitionItem(self, tranItem, isInsertion=True):
         self.addItem(tranItem)
@@ -208,7 +207,7 @@ class AutomataScene(QGraphicsScene):
         # and should not add a new state or transition
         if self.stateTextEditingStarted:
             self.stateTextEditingStarted = False
-            super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
+            super(QGraphicsScene, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
             return
 
         if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
@@ -244,11 +243,10 @@ class AutomataScene(QGraphicsScene):
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
 
-
-        super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
+        # super(QGraphicsScene, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
     def contextMenuEvent(self, qGraphicsSceneContextMenuEvent):
-        super().contextMenuEvent(qGraphicsSceneContextMenuEvent)
+        super(QGraphicsScene, self).contextMenuEvent(qGraphicsSceneContextMenuEvent)
         selectedItems = self.items(qGraphicsSceneContextMenuEvent.scenePos())
         if len(selectedItems) > 0:
             item = self.getParentItem(selectedItems[0])
@@ -264,12 +262,12 @@ class AutomataScene(QGraphicsScene):
         selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
         if len(selectedItems) > 0:
             if isinstance(selectedItems[0], IdTextBoxGraphicsItem):
-                super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+                super(QGraphicsScene, self).mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
             else:
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
                     self.setActiveState(item.stateData)
-                super().mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+                super(QGraphicsScene, self).mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
 
         self.prevOperationType = self.operationType
         self.operationType = OpType.OPENAUTOMATA

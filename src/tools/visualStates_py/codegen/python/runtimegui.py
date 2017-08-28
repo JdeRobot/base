@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtCore import Qt, pyqtSignal
@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, 
 from gui.treemodel import TreeModel
 from gui.state import State
 from gui.transition import Transition
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 
 from threading import Thread
 import time
@@ -37,7 +38,7 @@ class RunTimeGui(QMainWindow):
     loadFromRoot = pyqtSignal(int)
 
     def __init__(self, parent=None):
-        super().__init__()
+        super(QMainWindow, self).__init__()
 
         self.setWindowTitle("VisualStates RunTime GUI")
 
@@ -75,7 +76,7 @@ class RunTimeGui(QMainWindow):
         self.treeView.setModel(self.treeModel)
 
         self.logo = QLabel()
-        logoPixmap = QPixmap('/usr/local/share/jderobot/resources/jderobot.png')
+        logoPixmap = QPixmap(CMAKE_INSTALL_PREFIX + '/share/jderobot/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
         self.upButton = QPushButton()

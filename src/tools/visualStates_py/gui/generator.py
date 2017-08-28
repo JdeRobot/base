@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 class Generator():
@@ -23,14 +23,21 @@ class Generator():
         pass
 
     def generateCfg(self, cfgStr):
+        cfgStr.append('# 0 -> Deactivate, 1 -> Ice , 2 -> ROS\n')
         for cfg in self.configs:
-            interface = cfg['interface']
-            if interface == 'ArDroneExtra':
-                interface = 'Extra'
-
-            proxyName = cfg['proxyName']
-            if len(proxyName) == 0:
+            proxyName = None
+            if 'proxyName' not in cfg:
                 proxyName = cfg['interface']
+            else:
+                proxyName = cfg['proxyName']
+            cfgStr.append('automata.')
+            cfgStr.append(cfg['name'])
+            cfgStr.append('.Server=')
+            if cfg['serverType'] == 'ice':
+                cfgStr.append('1')
+            elif cfg['serverType'] == 'ros':
+                cfgStr.append('2')
+            cfgStr.append('\n')
 
             cfgStr.append('automata.')
             cfgStr.append(cfg['name'])
@@ -40,6 +47,20 @@ class Generator():
             cfgStr.append(cfg['ip'])
             cfgStr.append(' -p ')
             cfgStr.append(str(cfg['port']))
+            cfgStr.append('\n')
+
+            if 'topic' not in cfg:
+                cfg['topic'] = ''
+            cfgStr.append('automata.')
+            cfgStr.append(cfg['name'])
+            cfgStr.append('.Topic=')
+            cfgStr.append(cfg['topic'])
+            cfgStr.append('\n')
+
+            cfgStr.append('automata.')
+            cfgStr.append(cfg['name'])
+            cfgStr.append('.Name=')
+            cfgStr.append(cfg['name'])
             cfgStr.append('\n')
 
         return cfgStr

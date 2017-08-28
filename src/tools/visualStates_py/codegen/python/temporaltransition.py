@@ -14,15 +14,15 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.codegen.transition import Transition
+from codegen.python.transition import Transition
 from time import time
 
 class TemporalTransition(Transition):
     def __init__(self, id, destinationId, elapsedTime):
-        super().__init__(id, destinationId)
+        Transition.__init__(self, id, destinationId)
         # elapsed time in milliseconds
         self.elapsedTime = elapsedTime
         self.startTime = None
@@ -34,7 +34,7 @@ class TemporalTransition(Transition):
         pass
 
     def checkCondition(self):
-        super().checkCondition()
+        Transition.checkCondition(self)
         diffTime = (time()*1000)-self.startTime
         if diffTime > self.elapsedTime:
             return True

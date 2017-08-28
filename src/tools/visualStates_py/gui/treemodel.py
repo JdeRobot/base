@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
  
   '''
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel
@@ -23,7 +23,7 @@ from gui.treenode import TreeNode
 
 class TreeModel(QAbstractItemModel):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super(QAbstractItemModel, self).__init__(parent)
         self.rootNode = TreeNode("ID", "Name", "white")
 
     def columnCount(self, parent):
@@ -171,6 +171,7 @@ class TreeModel(QAbstractItemModel):
             self.setAllBackgroundByParentId(color, node.id)
 
     def setBackgroundById(self, id, color):
+        print('set bg color:' + str(id))
         data = self.getByDataId(id)
         data.setColor(color)
         self.layoutChanged.emit()

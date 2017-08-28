@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QGraphicsObject, QGraphicsLineItem, QGraphicsPolygonItem, QGraphicsItem
@@ -36,7 +36,7 @@ class TransitionGraphicsItem(QGraphicsObject):
     posChanged = pyqtSignal('QGraphicsItem')
 
     def __init__(self, data):
-        super().__init__()
+        super(QGraphicsObject, self).__init__()
         self.transitionData = data
 
         self.originLine = None

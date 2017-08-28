@@ -14,10 +14,11 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from gui.generator import Generator
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.transitiontype import TransitionType
 import os
 
@@ -81,15 +82,17 @@ class PythonGenerator(Generator):
 
 
     def generateImports(self, headerStr):
-        mystr = '''#!/usr/bin/python3
+        mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys, threading, time
 import easyiceconfig as EasyIce
-sys.path.append("/opt/jderobot/lib/python2.7")
-sys.path.append("/opt/jderobot/share/jderobot/python3/visualStates_py")
-from codegen.state import State
-from codegen.temporaltransition import TemporalTransition
-from codegen.conditionaltransition import ConditionalTransition
+'''
+        headerStr.append(mystr)
+        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
+        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
+        mystr = '''from codegen.python.state import State
+from codegen.python.temporaltransition import TemporalTransition
+from codegen.python.conditionaltransition import ConditionalTransition
 from codegen.python.runtimegui import RunTimeGui
 from PyQt5.QtWidgets import QApplication
 
@@ -101,10 +104,12 @@ from PyQt5.QtWidgets import QApplication
             headerStr.append('\n')
         headerStr.append('\n')
 
-        for cfg in self.configs:
-            headerStr.append('from jderobot import ')
-            headerStr.append(cfg['interface'])
-            headerStr.append('Prx\n')
+        # for cfg in self.configs:
+        #     headerStr.append('from jderobot import ')
+        #     headerStr.append(cfg['interface'])
+        #     headerStr.append('Prx\n')
+
+        headerStr.append('import jderobotComm as comm\n')
 
         headerStr.append('\n')
 
@@ -121,7 +126,7 @@ from PyQt5.QtWidgets import QApplication
 
         if len(state.getVariables()) > 0:
             stateStr.append('\tdef __init__(self, id, initial, config, cycleDuration, parent=None):\n')
-            stateStr.append('\t\tsuper().__init__(id, initial, config, cycleDuration, parent)\n')
+            stateStr.append('\t\tsuper(State, self).__init__(id, initial, config, cycleDuration, parent)\n')
             for varLine in state.getVariables().split('\n'):
                 stateStr.append('\t\t' + varLine + '\n')
             stateStr.append('\n')
@@ -142,7 +147,8 @@ from PyQt5.QtWidgets import QApplication
     def generateInterfaces(self, interfaceStr):
         mystr = '''class Interfaces():
 \tdef __init__(self):
-\t\tself.ic = None
+\t\tself.ice = None
+\t\tself.node = None
 '''
         interfaceStr.append(mystr)
         for cfg in self.configs:
@@ -151,21 +157,20 @@ from PyQt5.QtWidgets import QApplication
         interfaceStr.append('\t\tself.connectProxies()\n\n')
 
         interfaceStr.append('\tdef connectProxies(self):\n')
-        interfaceStr.append('\t\tself.ic = EasyIce.initialize(sys.argv)\n')
+        interfaceStr.append('\t\tself.ice = EasyIce.initialize(sys.argv)\n')
+        interfaceStr.append('\t\tself.ice, self.node = comm.init(self.ice)\n')
 
         for cfg in self.configs:
-            interfaceStr.append('\t\tself.' + cfg['name'] + ' = self.ic.propertyToProxy("automata.' + cfg['name'] + '.Proxy")\n')
+            interfaceStr.append('\t\tself.' + cfg['name'] + ' = comm.get'+ cfg['interface']+'Client(self.ice, "automata.' + cfg['name'] + '")\n')
             interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
-            interfaceStr.append('\t\t\traise Exception("could not create proxy with name:' + cfg['name'] + '")\n')
-            interfaceStr.append('\t\tself.' + cfg['name'] + ' = ' + cfg['interface'] + 'Prx.checkedCast(self.' + cfg['name'] + ')\n')
-            interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
-            interfaceStr.append('\t\t\traise Exception("invalid proxy automata.myMotors.Proxy")\n')
+            interfaceStr.append('\t\t\traise Exception("could not create client with name:' + cfg['name'] + '")\n')
+            interfaceStr.append('\t\tprint("' + cfg['name'] + ' is connected")\n')
 
         interfaceStr.append('\n')
 
         interfaceStr.append('\tdef destroyProxies(self):\n')
-        interfaceStr.append('\t\tif self.ic is not None:\n')
-        interfaceStr.append('\t\t\tself.ic.destroy()\n\n')
+        interfaceStr.append('\t\tif self.ice is not None:\n')
+        interfaceStr.append('\t\t\tself.ice.destroy()\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
@@ -241,6 +246,7 @@ def runGui():
         mainStr.append('\n')
 
         mainStr.append('\tif displayGui:\n')
+        mainStr.append('\t\tgui.emitLoadFromRoot()\n')
         mainStr.append('\t\tgui.emitActiveStateById(0)\n\n')
 
         for state in self.getAllStates():

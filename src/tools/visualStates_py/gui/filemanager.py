@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from xml.dom import minidom
@@ -40,9 +40,15 @@ class FileManager():
         configsElement = doc.createElement('configs')
         for cfg in configs:
             cfgElement = doc.createElement('config')
+            serverElement = doc.createElement('server')
+            serverElement.appendChild(doc.createTextNode(cfg['serverType']))
+            cfgElement.appendChild(serverElement)
             nameElement = doc.createElement('name')
             nameElement.appendChild(doc.createTextNode(cfg['name']))
             cfgElement.appendChild(nameElement)
+            topicElement = doc.createElement('topic')
+            topicElement.appendChild(doc.createTextNode(cfg['topic']))
+            cfgElement.appendChild(topicElement)
             proxyNameElement = doc.createElement('proxyname')
             proxyNameElement.appendChild(doc.createTextNode(cfg['proxyName']))
             cfgElement.appendChild(proxyNameElement)
@@ -92,8 +98,12 @@ class FileManager():
             if len(configElements) > 0:
                 cfg = {}
             for cfgElement in configElements:
+                if len(cfgElement.getElementsByTagName('server')[0].childNodes) > 0:
+                    cfg['serverType'] = cfgElement.getElementsByTagName('server')[0].childNodes[0].nodeValue
                 if len(cfgElement.getElementsByTagName('name')[0].childNodes) > 0:
                     cfg['name'] = cfgElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
+                if len(cfgElement.getElementsByTagName('topic')[0].childNodes) > 0:
+                    cfg['topic'] = cfgElement.getElementsByTagName('topic')[0].childNodes[0].nodeValue
                 if len(cfgElement.getElementsByTagName('proxyname')[0].childNodes) > 0:
                     cfg['proxyName'] = cfgElement.getElementsByTagName('proxyname')[0].childNodes[0].nodeValue
                 if len(cfgElement.getElementsByTagName('ip')[0].childNodes) > 0:

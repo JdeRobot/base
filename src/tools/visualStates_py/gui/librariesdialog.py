@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 import sys
@@ -29,7 +29,7 @@ class LibrariesDialog(QDialog):
     librariesChanged = pyqtSignal(list)
 
     def __init__(self, name, libraries):
-        super().__init__()
+        super(QDialog, self).__init__()
         self.setWindowTitle(name)
         self.resize(300, 100)
         self.libraries = libraries

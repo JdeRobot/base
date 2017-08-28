@@ -14,11 +14,12 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from gui.transitiontype import TransitionType
 from gui.generator import Generator
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 import os, stat
 
 class CppGenerator(Generator):
@@ -123,9 +124,9 @@ class CppGenerator(Generator):
 
         # generate interface headers
         for cfg in self.configs:
-            headers.append('#include <jderobot/')
+            headers.append('#include <jderobot/comm')
             headers.append(self.interfaceHeaders[cfg['proxyName']].strip('\n'))
-            headers.append('.h>\n')
+            headers.append('Client.hpp>\n')
 
         headers.append('\n')
 
@@ -165,7 +166,7 @@ class CppGenerator(Generator):
         classStr.append('public:\n')
         classStr.append('\tIce::CommunicatorPtr ice;\n')
         for cfg in self.configs:
-            classStr.append('\tjderobot::' + cfg['interface'] + 'Prx ' + cfg['name'] + ';\n')
+            classStr.append('\tJdeRobotComm::' + cfg['interface'] + 'Client* ' + cfg['name'] + ';\n')
         classStr.append('\n')
         classStr.append('\tvirtual void connectProxies(int argc, char* argv[]);\n')
         classStr.append('\tvirtual void destroyProxies();\n')
@@ -205,13 +206,9 @@ class CppGenerator(Generator):
         proxyStr.append('void Interfaces::connectProxies(int argc, char* argv[]) {\n')
         proxyStr.append('\tice = EasyIce::initialize(argc, argv);\n\n')
         for cfg in self.configs:
-            proxyStr.append('\tIce::ObjectPrx temp' + cfg['name'] + ' = ice->propertyToProxy("automata.' + cfg['name'] + '.Proxy");\n')
-            proxyStr.append('\tif (temp' + cfg['name'] + ' == 0) {\n')
-            proxyStr.append('\t\tthrow "cannot create proxy from automata.' + cfg['name'] + '.Proxy";\n')
-            proxyStr.append('\t}\n')
-            proxyStr.append('\t' + cfg['name'] + ' = jderobot::' + cfg['interface'] + 'Prx::checkedCast(temp' + cfg['name'] + ');\n')
-            proxyStr.append('\tif (' + cfg['name'] + ' == 0) {\n')
-            proxyStr.append('\t\tthrow "invalid proxy automata.' + cfg['name'] + '.Proxy";\n')
+            proxyStr.append('\t' + cfg['name'] + ' = JdeRobotComm::get' + cfg['interface'] + 'Client(ice, "automata.' + cfg['name'] + '");\n')
+            proxyStr.append('\tif (' + cfg['name'] + ' == NULL) {\n')
+            proxyStr.append('\t\tthrow "invalid proxy automata.' + cfg['name'] + '";\n')
             proxyStr.append('\t}\n')
             proxyStr.append('\tstd::cout << "' + cfg['name'] + ' is connected" << std::endl;\n')
         proxyStr.append('}\n\n')
@@ -311,10 +308,10 @@ void readArgs(int *argc, char* argv[]) {
         mainStr.append('}\n')
 
     def generateRunTimeGui(self, guiStr):
-        guiStr.append('#!/usr/bin/python3\n')
+        guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
         guiStr.append('import sys\n')
-        guiStr.append('sys.path.append("/opt/jderobot/lib/python3.5/visualStates_py")\n\n')
+        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n\n')
 
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
         guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
@@ -363,10 +360,10 @@ void readArgs(int *argc, char* argv[]) {
         cmakeStr.append('.cpp')
         cmakeStr.append(')\n\n')
 
+        cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
+
         mystr = '''
         
-SET(JDEROBOT_INSTALL_PATH /opt/jderobot)
-
 SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
 SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
 
@@ -397,12 +394,16 @@ link_directories(
 
         mystr = '''
     easyiceconfig
+    visualStatesRunTime
+    jderobotcomm
     JderobotInterfaces
     jderobotutil
+    colorspacesmm
+    pthread
     Ice
     IceUtil
-    visualStatesRunTime
-    pthread
+    IceStorm
+    glog
 )
 '''
         cmakeStr.append(mystr)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
    Copyright (C) 1997-2017 JDERobot Developers Team
 
@@ -14,7 +15,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtCore import Qt
@@ -32,11 +33,12 @@ from gui.librariesdialog import LibrariesDialog
 from gui.configdialog import ConfigDialog
 from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 import os
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
-        super().__init__()
+        super(QMainWindow, self).__init__()
 
         self.setWindowTitle("VisualStates")
 
@@ -174,7 +176,7 @@ class VisualStates(QMainWindow):
         helpMenu.addAction(aboutAction)
 
     def createInterfaceHeaderMap(self):
-        os.system('/opt/jderobot/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt')
+        os.system(CMAKE_INSTALL_PREFIX + '/bin/getinterfaces.sh ' + CMAKE_INSTALL_PREFIX + '/include/jderobot/slice > /tmp/allinterfaces.txt')
         fp = open('/tmp/allinterfaces.txt')
         for line in fp:
             data = line.split(' ')
@@ -313,7 +315,7 @@ class VisualStates(QMainWindow):
         self.treeView.setModel(self.treeModel)
 
         self.logo = QLabel()
-        logoPixmap = QPixmap('/usr/local/share/jderobot/resources/jderobot.png')
+        logoPixmap = QPixmap(CMAKE_INSTALL_PREFIX + '/share/jderobot/resources/jderobot.png')
         self.logo.setPixmap(logoPixmap)
 
         self.upButton = QPushButton()

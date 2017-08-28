@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QTreeWidgetItem
@@ -22,7 +22,7 @@ from PyQt5.QtGui import QColor
 
 class TreeNode(QTreeWidgetItem):
     def __init__(self, id, name, color, parent=None):
-        super().__init__(parent)
+        super(QTreeWidgetItem, self).__init__(parent)
 
         self.parentItem = parent
         self.id = id
@@ -70,7 +70,7 @@ class TreeNode(QTreeWidgetItem):
         self.color = color
 
     def removeChildren(self):
-        self.childItems.clear()
+        del self.childItems[:]
 
     def myClicked(self, item, column):
         print('clicked:' + str(item))

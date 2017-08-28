@@ -14,11 +14,12 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 # a class to discover JdeRobot and ROS interfaces
 import os
+from gui.cmakevars import CMAKE_INSTALL_PREFIX
 
 class Interfaces:
 
@@ -27,7 +28,7 @@ class Interfaces:
     @staticmethod
     def getInterfaces():
         if Interfaces.interfaces is None:
-            os.system('/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/slice > /tmp/allInterfaces.txt')
+            os.system(CMAKE_INSTALL_PREFIX + '/bin/getinterfaces.sh ' + CMAKE_INSTALL_PREFIX + '/include/jderobot/comm/interfaces > /tmp/allInterfaces.txt')
             fp = open('/tmp/allInterfaces.txt')
             Interfaces.interfaces = {}
             for line in fp:

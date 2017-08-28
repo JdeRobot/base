@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QGraphicsTextItem
@@ -27,7 +27,7 @@ class IdTextBoxGraphicsItem(QGraphicsTextItem):
     textEditFinished = pyqtSignal()
 
     def __init__(self, name, parent=None):
-        super().__init__(name, parent)
+        super(QGraphicsTextItem, self).__init__(name, parent)
         self.name = name
 
 
@@ -36,11 +36,11 @@ class IdTextBoxGraphicsItem(QGraphicsTextItem):
             self.setTextInteractionFlags(Qt.TextEditorInteraction)
             self.textEditStarted.emit()
 
-        super().mouseDoubleClickEvent(event)
+        super(QGraphicsTextItem, self).mouseDoubleClickEvent(event)
 
 
     def focusOutEvent(self, event):
         self.setTextInteractionFlags(Qt.NoTextInteraction)
         self.textChanged.emit(self.toPlainText())
         self.textEditFinished.emit()
-        super().focusOutEvent(event)
+        super(QGraphicsTextItem, self).focusOutEvent(event)

@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 2.8)
 
 SET(SOURCE_CPP_RUNTIME
@@ -23,7 +22,7 @@ INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/codegen/cpp/
 
 #install python runtime dependencies
 INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/codegen/python/
-		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python3.5/visualStates_py/codegen/python/ 
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/python/
 		PATTERN __pycache__ EXCLUDE )
 
 # install python runtime gui dependencies
@@ -36,4 +35,22 @@ INSTALL(FILES ${CMAKE_SOURCE_DIR}/gui/state.py
 		${CMAKE_SOURCE_DIR}/gui/transitiontype.py
 		${CMAKE_SOURCE_DIR}/gui/treemodel.py
 		${CMAKE_SOURCE_DIR}/gui/treenode.py
-		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python3.5/visualStates_py/gui/)
+		${CMAKE_SOURCE_DIR}/gui/cmakevars.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/gui/)
+
+# install python module __init__.py
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/)
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/)
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/python/)
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/gui/)
+
+# install getinterfaces.sh bash script to be able to get the interfaces
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/getinterfaces.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ PERMISSIONS
+OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+# set the cmake variables to be used in the source code
+configure_file(${CMAKE_SOURCE_DIR}/gui/cmakevars.py.in ${CMAKE_SOURCE_DIR}/gui/cmakevars.py)

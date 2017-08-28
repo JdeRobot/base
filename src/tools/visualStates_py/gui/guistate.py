@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsObject, QGraphicsItem
@@ -37,7 +37,7 @@ class StateGraphicsItem(QGraphicsObject):
     doubleClicked = pyqtSignal('QGraphicsItem')
 
     def __init__(self, data):
-        super().__init__()
+        super(QGraphicsObject, self).__init__()
         self.stateData = data
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable)
@@ -85,28 +85,28 @@ class StateGraphicsItem(QGraphicsObject):
         myPen = QPen(Qt.SolidLine)
         myPen.setWidth(StateGraphicsItem.PEN_FOCUS_WIDTH)
         self.ellipse.setPen(myPen)
-        super().hoverEnterEvent(event)
+        super(QGraphicsObject, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
         myPen = QPen(Qt.SolidLine)
         myPen.setWidth(StateGraphicsItem.PEN_NORMAL_WIDTH)
         self.ellipse.setPen(myPen)
-        super().hoverLeaveEvent(event)
+        super(QGraphicsObject, self).hoverLeaveEvent(event)
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = True
-        super().mousePressEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsObject, self).mousePressEvent(qGraphicsSceneMouseEvent)
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = False
-        super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsObject, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
     def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
         if self.dragging:
             self.posChanged.emit(self)
-        super().mouseMoveEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsObject, self).mouseMoveEvent(qGraphicsSceneMouseEvent)
 
     def mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent):
         self.doubleClicked.emit(self)

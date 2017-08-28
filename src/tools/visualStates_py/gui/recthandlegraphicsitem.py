@@ -14,7 +14,7 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-   Authors : Okan Aşık (asik.okan@gmail.com)
+   Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
 from PyQt5.QtWidgets import QGraphicsRectItem
@@ -27,7 +27,7 @@ PEN_NORMAL_WIDTH = 1
 
 class RectHandleGraphicsItem(QGraphicsRectItem):
     def __init__(self, width, parent=None):
-        super().__init__(-SQUARE_SIDE / 2, -SQUARE_SIDE / 2, SQUARE_SIDE, SQUARE_SIDE, parent)
+        super(QGraphicsRectItem, self).__init__(-SQUARE_SIDE / 2, -SQUARE_SIDE / 2, SQUARE_SIDE, SQUARE_SIDE, parent)
         self.setAcceptHoverEvents(True)
 
         # set the color of the rectangle
@@ -53,17 +53,17 @@ class RectHandleGraphicsItem(QGraphicsRectItem):
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = True
-        super().mousePressEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsRectItem, self).mousePressEvent(qGraphicsSceneMouseEvent)
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         if qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             self.dragging = False
-        super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsRectItem, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
 
     def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
         if self.dragging:
             self.parentItem().updateMiddlePoints(self.scenePos())
-        super().mouseMoveEvent(qGraphicsSceneMouseEvent)
+        super(QGraphicsRectItem, self).mouseMoveEvent(qGraphicsSceneMouseEvent)
 
     def disableInteraction(self):
         self.interaction = False
