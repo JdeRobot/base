@@ -1,3 +1,22 @@
+'''
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 import sys
 from PyQt5.QtWidgets import QDialog, \
     QLineEdit, QPushButton, \
@@ -18,35 +37,6 @@ class LibrariesDialog(QDialog):
         self.addButton = None
 
         self.drawWindow()
-
-        # self.cancelButton = QPushButton()
-        # self.cancelButton.setText('Cancel')
-        # self.cancelButton.clicked.connect(self.cancelClicked)
-        #
-        # self.acceptButton = QPushButton()
-        # self.acceptButton.setText('Accept')
-        # self.acceptButton.clicked.connect(self.acceptClicked)
-        #
-        # buttonContainer = QWidget()
-        # hLayout = QHBoxLayout()
-        # hLayout.addWidget(self.cancelButton)
-        # hLayout.addWidget(self.acceptButton)
-        # buttonContainer.setLayout(hLayout)
-        # vLayout.addWidget(buttonContainer)
-        # timeContainer.setLayout(vLayout)
-        #
-        # vLayout2 = QVBoxLayout()
-        # vLayout2.addWidget(timeContainer)
-        # self.setLayout(vLayout2)
-
-    # def cancelClicked(self):
-    #     self.close()
-    #
-    # def acceptClicked(self):
-    #     #todo: make sure that provided value is integer
-    #     self.timeChanged.emit(int(self.lineEdit.text()))
-    #     self.close()
-    #     pass
 
     def drawWindow(self):
         if self.layout() is not None:

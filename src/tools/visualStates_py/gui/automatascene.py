@@ -1,3 +1,22 @@
+'''
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
 from PyQt5.QtCore import Qt, pyqtSignal
 from gui.guistate import StateGraphicsItem
@@ -138,15 +157,6 @@ class AutomataScene(QGraphicsScene):
         print('mouse press event')
         super().mousePressEvent(qGraphicsSceneMouseEvent)
 
-
-    # def mouseMoveEvent(self, qGraphicsSceneMouseEvent):
-    #     super().mouseMoveEvent(qGraphicsSceneMouseEvent)
-    #     selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
-    #     if len(selectedItems) > 0:
-    #         if isinstance(selectedItems[0], guistate.StateGraphicsItem):
-    #             if selectedItems[0].dragging:
-    #                 self.origin = None
-
     def addTransitionItem(self, tranItem, isInsertion=True):
         self.addItem(tranItem)
         if isInsertion:
@@ -192,15 +202,10 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
-    # def removeTransitionItem(self, tranItem):
-    #     tranItem.origin.removeOriginTransition(tranItem)
-    #     tranItem.destination.removeTargetTransition(tranItem)
-    #     print('removing tran:' + tranItem.name)
-
-
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         print('mouse release event')
-        # if we were editing the state text next mouse release should disable text editing and should not add a new state or transition
+        # if we were editing the state text next mouse release should disable text editing
+        # and should not add a new state or transition
         if self.stateTextEditingStarted:
             self.stateTextEditingStarted = False
             super().mouseReleaseEvent(qGraphicsSceneMouseEvent)
@@ -313,7 +318,6 @@ class AutomataScene(QGraphicsScene):
             item = item.parentItem()
         return item
 
-
     def externalStateNameChanged(self, newName):
         self.selectedState.textGraphics.setPlainText(newName)
         self.selectedState.textGraphics.textChanged.emit(newName)
@@ -352,11 +356,6 @@ class AutomataScene(QGraphicsScene):
         self.operationType = self.prevOperationType
         self.prevOperationType = None
         self.stateTextEditingStarted = True
-
-    # def removeAllItems(self):
-    #     if self.activeState is not None:
-    #         for s in self.activeState.getChildren():
-    #             self.removeStateItem(s)
 
     def setActiveState(self, state):
         if state != self.activeState:

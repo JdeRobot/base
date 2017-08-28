@@ -1,3 +1,22 @@
+/*
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+*/
 #include "runtimegui.h"
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -56,19 +75,14 @@ void RunTimeGui::createSharedMem() {
     int shmid;
     int mode;
 
-//    if ((fkey = ftok("/tmp/visualstates", 'R')) == -1) {
-//        std::cerr << "cannot read shared mem /tmp/visualstates" << std::endl;
-//        return;
-//    }
-
     if ((shmid = shmget(123456, 0, 0644)) == -1) {
-        std::cerr << "error 2" << std::endl;
+        std::cerr << "error shmget" << std::endl;
         return;
     }
 
     ipcData = (char*) shmat(shmid, (void *)0, 0);
     if (ipcData == (char *)(-1)) {
-        std::cerr << "exit" << std::endl;
+        std::cerr << "error shmat" << std::endl;
         return;
     }
 }

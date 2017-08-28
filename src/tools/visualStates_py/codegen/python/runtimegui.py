@@ -1,10 +1,27 @@
+'''
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QLabel, QVBoxLayout, QPushButton, QGraphicsItem, \
     QGraphicsScene
-
-
 from gui.treemodel import TreeModel
 from gui.state import State
 from gui.transition import Transition
@@ -24,9 +41,7 @@ class RunTimeGui(QMainWindow):
 
         self.setWindowTitle("VisualStates RunTime GUI")
 
-        # # root state
         self.rootState = None
-        #self.activeState = self.rootState
 
         # create status bar
         self.statusBar()
@@ -81,11 +96,6 @@ class RunTimeGui(QMainWindow):
         self.stateCanvas = QGraphicsView()
         self.scene = QGraphicsScene()
         self.scene.setSceneRect(0, 0, 2000, 2000)
-        # self.automataScene.activeStateChanged.connect(self.activeStateChanged)
-        # self.automataScene.stateInserted.connect(self.stateInserted)
-        # self.automataScene.stateRemoved.connect(self.stateRemoved)
-        # self.automataScene.transitionInserted.connect(self.transitionInserted)
-        # self.automataScene.stateNameChangedSignal.connect(self.stateNameChanged)
 
         self.setCentralWidget(self.stateCanvas)
         self.stateCanvas.setScene(self.scene)
@@ -98,10 +108,8 @@ class RunTimeGui(QMainWindow):
             self.states[parentId].addChild(self.states[id])
             parentItem = self.treeModel.getByDataId(parentId)
             print('parent:' + str(parentItem))
-            # self.treeModel.insertState(self.states[id].getGraphicsItem(), Qt.white, parentItem)
         else:
             self.states[id] = State(id, name, initial, None)
-            # self.treeModel.insertState(self.states[id].getGraphicsItem(), Qt.white)
         if id == 0:
             self.rootState = self.states[id]
 
@@ -116,9 +124,6 @@ class RunTimeGui(QMainWindow):
         self.runningStateChanged.emit(id)
 
     def runningStateChangedHandle(self, id):
-        # if self.waitForActiveState:
-        #     return
-
         print('running state:' + str(id))
         if id not in self.states:
             return
@@ -129,9 +134,6 @@ class RunTimeGui(QMainWindow):
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
                 child.setRunning(False)
-                # if self.activeState == child:
-                #     for grandChild in self.activeState.getChildren():
-                #         grandChild.setRunning(False)
 
             runningState.setRunning(True)
             parentId = runningState.parent.id
@@ -143,8 +145,6 @@ class RunTimeGui(QMainWindow):
         self.activeStateChanged.emit(id)
 
     def activeStateChangedHandle(self, id):
-        # self.waitForActiveState = True
-
         if self.activeState is not None:
             for child in self.activeState.getChildren():
                 child.resetGraphicsItem()
@@ -156,7 +156,6 @@ class RunTimeGui(QMainWindow):
         self.scene.clear()
         for childState in self.activeState.getChildren():
             print('add child to scene:' + str(childState.id))
-            # childState.resetGraphicsItem()
             qitem = childState.getGraphicsItem()
             qitem.setAcceptHoverEvents(False)
             qitem.setFlag(QGraphicsItem.ItemIsMovable, False)
@@ -165,11 +164,9 @@ class RunTimeGui(QMainWindow):
             self.scene.addItem(qitem)
             for tran in childState.getOriginTransitions():
                 print('add transition:' + str(tran.id))
-                # tran.resetGraphicsItem()
                 qitem = tran.getGraphicsItem()
                 qitem.disableInteraction()
                 self.scene.addItem(qitem)
-        # self.waitForActiveState = False
 
     def emitLoadFromRoot(self):
         self.loadFromRoot.emit(0)
@@ -178,52 +175,13 @@ class RunTimeGui(QMainWindow):
         self.treeModel.loadFromRoot(self.states[id])
 
     def stateDoubleClicked(self, stateItem):
-        # print('emit active state by id:' + str(stateItem.stateData.id))
         if len(stateItem.stateData.getChildren()) > 0:
             self.emitActiveStateById(stateItem.stateData.id)
-
-
-    # def stateInserted(self, state):
-    #     if self.activeState != self.rootState:
-    #         parent = self.treeModel.getByDataId(self.activeState.id)
-    #         self.treeModel.insertState(state, QColor(Qt.white), parent)
-    #     else:
-    #         self.treeModel.insertState(state, QColor(Qt.white))
-    #
-    # def stateRemoved(self, state):
-    #     if self.activeState != self.rootState:
-    #         self.treeModel.removeState(state.stateData, self.activeState)
-    #     else:
-    #         self.treeModel.removeState(state.stateData)
-    #
-    # def transitionInserted(self, tran):
-    #     print('transition inserted:' + tran.transitionData.name)
-    #
-    # def stateNameChanged(self, state):
-    #     dataItem = self.treeModel.getByDataId(state.stateData.id)
-    #     if dataItem != None:
-    #         dataItem.name = state.stateData.name
-    #         self.treeModel.layoutChanged.emit()
-
-    # def activeStateChanged(self):
-    #     if self.automataScene.activeState != self.activeState:
-    #         print('visual states active state changed:' + self.automataScene.activeState.name)
-    #         self.activeState = self.automataScene.activeState
-    #         if self.activeState == self.rootState:
-    #             self.treeView.selectionModel().clearSelection()
-    #         else:
-    #             self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
     def upButtonClicked(self):
         if self.activeState is not None:
             if self.activeState.parent is not None:
                 self.emitActiveStateById(self.activeState.parent.id)
-                # print('parent name:' + self.activeState.parent.name)
-                # self.automataScene.setActiveState(self.activeState.parent)
-                # if self.activeState.parent == self.rootState:
-                #     self.treeView.selectionModel().clearSelection()
-                #     print('clear selection')
-
 
     def getStateById(self,state, id):
         if state.id == id:
@@ -238,32 +196,6 @@ class RunTimeGui(QMainWindow):
 
     def treeItemClicked(self, index):
         print('clicked item.id:' + str(index.internalPointer().id))
-        # state = self.getStateById(self.rootState, index.internalPointer().id)
-        # if state is not None:
-        #     # set the active state as the loaded state
-        #     self.automataScene.setActiveState(state)
-        #     if state == self.rootState:
-        #         self.treeView.selectionModel().clearSelection()
-        #     else:
-        #         self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
-
-    # def timeStepDurationChanged(self, duration):
-    #     if self.activeState is not None:
-    #         self.activeState.setTimeStep(duration)
-    #
-    # def variablesChanged(self, variables):
-    #     if self.activeState is not None:
-    #         self.activeState.setVariables(variables)
-    #
-    # def functionsChanged(self, functions):
-    #     if self.activeState is not None:
-    #         self.activeState.setFunctions(functions)
-    #
-    # def librariesChanged(self, libraries):
-    #     self.libraries = libraries
-    #
-    # def configsChanged(self, configs):
-    #     self.configs = configs
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:
@@ -287,14 +219,6 @@ class RunTimeGui(QMainWindow):
             time.sleep(1.0/1000)
 
     def activateIPC(self):
-        # fp0 = open('/tmp/visualstates', 'w')
-        # for i in range(1024):
-        #     fp0.write('0')
-        # fp0.close()
-
-        # fp = open('/tmp/visualstates', 'r+b')
-        # self.mm = mmap.mmap(fp.fileno(), 1024)
-        # Create shared memory object
         self.memory = sysv_ipc.SharedMemory(123456, sysv_ipc.IPC_CREAT)
         self.ipcThread = Thread(target=self.loopIPC)
         self.ipcThread.start()

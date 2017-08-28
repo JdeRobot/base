@@ -1,3 +1,22 @@
+'''
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 from gui.generator import Generator
 from gui.transitiontype import TransitionType
 import os
@@ -29,14 +48,11 @@ class PythonGenerator(Generator):
         transitions = []
         for state in self.states:
             for tran in state.getOriginTransitions():
-                # print('1tran.id:' + str(tran.id) + ' origin:' + str(tran.origin.id) + ' dest:' + str(tran.destination.id))
                 if tran.id not in addedTransitions:
                     addedTransitions[tran.id] = tran
                     transitions.append(tran)
             for childState in state.getChildren():
                 for tran in childState.getOriginTransitions():
-                    # print('2tran.id:' + str(tran.id) + ' origin:' + str(tran.origin.id) + ' dest:' + str(
-                    #     tran.destination.id))
                     if tran.id not in addedTransitions:
                         addedTransitions[tran.id] = tran
                         transitions.append(tran)
@@ -105,7 +121,7 @@ from PyQt5.QtWidgets import QApplication
 
         if len(state.getVariables()) > 0:
             stateStr.append('\tdef __init__(self, id, initial, config, cycleDuration, parent=None):\n')
-            stateStr.append('\t\tsuper().__init__(id, initial, config, cycleDuration, parent=None)\n')
+            stateStr.append('\t\tsuper().__init__(id, initial, config, cycleDuration, parent)\n')
             for varLine in state.getVariables().split('\n'):
                 stateStr.append('\t\t' + varLine + '\n')
             stateStr.append('\n')
@@ -269,37 +285,3 @@ def runGui():
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
         mainStr.append('\t\tinterfaces.destroyProxies()\n')
         mainStr.append('\t\tsys.exit(1)\n')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

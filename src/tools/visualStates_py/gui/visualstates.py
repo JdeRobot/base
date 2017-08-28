@@ -1,3 +1,22 @@
+'''
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Library General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
@@ -14,7 +33,6 @@ from gui.configdialog import ConfigDialog
 from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
 import os
-
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
@@ -45,7 +63,6 @@ class VisualStates(QMainWindow):
 
     def createMenu(self):
         # create actions
-        # archieve menu
         newAction = QAction('&New', self)
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('Create New Visual States')
@@ -73,12 +90,10 @@ class VisualStates(QMainWindow):
 
         # figures menu
         stateAction = QAction('&State', self)
-        # stateAction.setShortcut('Ctrl+N')
         stateAction.setStatusTip('Create a state')
         stateAction.triggered.connect(self.stateAction)
 
         transitionAction = QAction('&Transition', self)
-        # transitionAction.setShortcut('Ctrl+T')
         transitionAction.setStatusTip('Create a transition')
         transitionAction.triggered.connect(self.transitionAction)
 
@@ -367,9 +382,6 @@ class VisualStates(QMainWindow):
             if self.activeState.parent != None:
                 print('parent name:' + self.activeState.parent.name)
                 self.automataScene.setActiveState(self.activeState.parent)
-                # if self.activeState.parent == self.rootState:
-                #     self.treeView.selectionModel().clearSelection()
-                #     print('clear selection')
 
 
     def getStateById(self,state, id):
@@ -414,4 +426,3 @@ class VisualStates(QMainWindow):
 
         for s in state.getChildren():
             self.getStateList(s, stateList)
-

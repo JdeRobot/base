@@ -1,23 +1,22 @@
 '''
-   Copyright (C) 1997-2016 JDERobot Developers Team
- 
+   Copyright (C) 1997-2017 JDERobot Developers Team
+
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
- 
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU Library General Public License for more details.
- 
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
- 
-   Authors : Samuel Rey <samuel.rey.escudero@gmail.com> 
- 
-  '''
 
+   Authors : Okan Aşık (asik.okan@gmail.com)
+
+  '''
 from PyQt5.QtWidgets import QGraphicsObject, QGraphicsLineItem, QGraphicsPolygonItem, QGraphicsItem
 from PyQt5.QtGui import QBrush, QPolygonF
 from PyQt5.QtCore import Qt, QPointF, QLineF, pyqtSignal
@@ -162,36 +161,3 @@ class TransitionGraphicsItem(QGraphicsObject):
         if self.middleHandle is not None:
             self.middleHandle.setFlag(QGraphicsItem.ItemIsMovable, False)
             self.middleHandle.disableInteraction()
-
-    # def removeEventConnections(self):
-    #     if not self.isEventsRemoved:
-    #         if self.origin == self.destination:
-    #             self.origin.posChanged.disconnect(self.statePosChanged)
-    #         else:
-    #             self.origin.posChanged.disconnect(self.statePosChanged)
-    #             self.destination.posChanged.disconnect(self.statePosChanged)
-    #         self.eventsRemoved = True
-
-    # def setType(self, type):
-    #     self.transitionType = type
-    #
-    # def getType(self):
-    #     return self.transitionType
-    #
-    # def setTemporalTime(self, time):
-    #     self.temporal = time
-    #
-    # def getTemporalTime(self):
-    #     return self.temporal
-    #
-    # def setCondition(self, cond):
-    #     self.condition = cond
-    #
-    # def getCondition(self):
-    #     return self.condition
-    #
-    # def setCode(self, code):
-    #     self.code = code
-    #
-    # def getCode(self):
-    #     return self.code
