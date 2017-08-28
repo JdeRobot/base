@@ -23,18 +23,5 @@
  */
 LICENSE
 
-allInterfaces=`egrep -ri interface $1 | awk '{ if ($2 == "interface") print $1 $3 }' | sort`
-for interface in $allInterfaces
-do
-    class=`echo $interface | cut -f1 -d: | cut -f7 -d/ | cut -f1 -d.`
-    theInterface=`echo $interface | cut -f2 -d:`
-    i="$((${#theInterface}-1))"
-    last=${theInterface:$i:1}
-    if [ $last == "{" ]; then
-        echo "${theInterface%?} $class"
-    else
-        echo "$theInterface $class"
-    fi
-done
+egrep -ri Client $1 | awk '{ if ($2 == "class") {myindex=index($3,"Client"); print substr($3,1,myindex-1)" "tolower(substr($3,1,1))substr($3,2,length($3)-1); }}' | sort
 
-exit 0

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualHFSM><SubAutomata id="1" idFather="0"><state initial="true" id="1"><posx>111.864</posx><posy>129.882</posy><name>get_close_to_wall</name><idSubautomataSon>2</idSubautomataSon><code>//float left_dist = get_left_distance();
+//float turn_scale = 0.5f;
+
+//myMotors-&gt;sendV(0.2);
+//myMotors-&gt;sendW(left_dist*turn_scale);
+
+//float angle = get_wall_angle();
+//std::cout &lt;&lt; "wall_angle:" &lt;&lt; angle &lt;&lt; std::endl;</code></state><state initial="false" id="2"><posx>354.095</posx><posy>123.422</posy><name>align_wall</name><idSubautomataSon>0</idSubautomataSon><code>float angle = get_wall_angle();
+float turn_scale = -0.8f;
+
+float min_dist = get_left_min_dist();
+
+/*
+if (min_dist &lt; 1.5) {
+	myMotors-&gt;sendV(0.1);
+} else {
+	myMotors-&gt;sendV(0.2);
+}
+*/
+float dist_error = 1.5 - min_dist;
+myMotors-&gt;sendW(angle*turn_scale-dist_error/3.0f);
+myMotors-&gt;sendV(0.2);
+
+
+</code></state><transition id="3"><posx>225.739</posx><posy>48.4172</posy><origin>1</origin><destiny>2</destiny><transcode></transcode><name>near_to_wall</name><trans type="condition">get_left_min_dist() &lt; 1.5</trans></transition><iteration_time>100</iteration_time><variables></variables><functions>#define PI 3.14159265
+
+float get_left_distance() {
+	std::vector&lt;float&gt; distValues = myLaser-&gt;getLaserData().values;
+	// there 180 values for every angle staring from the right of the robot
+	float lastx = 0.0f;	
+	float lasty = -distValues.at(distValues.size()-1);
+	
+	float valx = -cos(PI/4.0)*distValues.at(distValues.size()-45);
+	float valy = -valx;
+
+	return -lasty;
+}
+
+float get_wall_angle() {
+	std::vector&lt;float&gt; distValues = myLaser-&gt;getLaserData().values;
+	// there 180 values for every angle staring from the right of the robot
+	float lastx = 0.0f;	
+	float lasty = -distValues.at(distValues.size()-1);
+	
+	float valx = cos(PI/4.0)*distValues.at(distValues.size()-45);
+	float valy = -valx;
+
+	float angle = atan2(valy-lasty, valx-lastx);
+	
+	std::cout &lt;&lt; "angle:" &lt;&lt; angle &lt;&lt; std::endl;
+
+	return angle;
+}</functions></SubAutomata><SubAutomata id="2" idFather="1"><state initial="true" id="3"><posx>93</posx><posy>168</posy><name>turn_to_wall</name><idSubautomataSon>0</idSubautomataSon><code>#define PI 3.14159265359
+
+if (!start_turning) {
+	starting_angle = myPose-&gt;getPose().yaw;
+	start_turning = true;
+	wall_angle = get_wall_angle2()-(PI/6);
+	wall_angle = fabs(normalize_angle(wall_angle));
+	std::cout &lt;&lt; "wall_angle:" &lt;&lt; wall_angle &lt;&lt; std::endl;
+} else {
+	if (wall_angle &lt; 0) {
+		myMotors-&gt;sendW(-0.13);
+	} else {
+		myMotors-&gt;sendW(0.13);
+	}
+	myMotors-&gt;sendV(0.0);
+}</code></state><state initial="false" id="4"><posx>290</posx><posy>159</posy><name>go_to_wall</name><idSubautomataSon>0</idSubautomataSon><code>// slowly approach to wall
+myMotors-&gt;sendV(0.2f);
+myMotors-&gt;sendW(0.0f);</code></state><transition id="1"><posx>163</posx><posy>82</posy><origin>3</origin><destiny>4</destiny><transcode></transcode><name>turned_to_wall</name><trans type="condition">get_turned_angle() &gt; wall_angle</trans></transition><iteration_time>100</iteration_time><variables></variables><functions>bool start_turning = false;
+float starting_angle = 0.0f;
+float wall_angle = 0.0f;
+
+float normalize_angle(float angle) {
+	if (angle &gt; PI) {
+		angle = angle - PI;
+	} else if (angle &lt; -PI) {
+		angle = angle+PI;
+	}
+	return angle;
+}
+
+float get_turned_angle() {
+	if (!start_turning) {
+		return 0.0f;
+	} else {
+		float angle = myPose-&gt;getPose().yaw - starting_angle;
+		std::cout &lt;&lt; "turned:" &lt;&lt; angle  &lt;&lt; "norm_turned:" &lt;&lt; normalize_angle(angle) &lt;&lt; std::endl;
+		return fabs(normalize_angle(angle));
+	}
+}
+
+float get_wall_angle2() {
+	std::vector&lt;float&gt; distValues = myLaser-&gt;getLaserData().values;
+	// there 180 values for every angle staring from the right of the robot
+	float lastx = 0.0f;	
+	float lasty = -distValues.at(distValues.size()-1);
+	
+	float valx = cos(PI/4.0)*distValues.at(distValues.size()-45);
+	float valy = -valx;
+
+	float angle = atan2(valy-lasty, valx-lastx);
+	
+	std::cout &lt;&lt; "angle:" &lt;&lt; angle &lt;&lt; std::endl;
+
+	return angle;
+}
+
+float get_left_min_dist() {
+	std::vector&lt;float&gt; distValues = myLaser-&gt;getLaserData().values;
+	// there 180 values for every angle staring from the right of the robot
+	float min_dist = 100000;
+	for (int i = distValues.size()-1; i &gt; distValues.size()-45; i--) {
+		if (distValues.at(i) &lt; min_dist) {
+			min_dist = distValues.at(i);
+		}
+	}
+	return min_dist;
+}
+
+
+
+</functions></SubAutomata><libraries/><config><iceinterface><servertype>1</servertype><nameinterface>myLaser</nameinterface><nameproxy>Laser</nameproxy><topic></topic><ip>localhost</ip><port>9001</port><interface>Laser</interface></iceinterface><iceinterface><servertype>1</servertype><nameinterface>myMotors</nameinterface><nameproxy>Motors</nameproxy><topic></topic><ip>localhost</ip><port>9001</port><interface>Motors</interface></iceinterface><iceinterface><servertype>1</servertype><nameinterface>myPose</nameinterface><nameproxy>Pose3D</nameproxy><topic></topic><ip>localhost</ip><port>9001</port><interface>Pose3d</interface></iceinterface></config></VisualHFSM>

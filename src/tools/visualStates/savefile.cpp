@@ -161,11 +161,17 @@ void SaveFile::init () {
 				listInterfacesIterator != this->listInterfaces.end(); listInterfacesIterator++ ) {
 			xmlpp::Element* nodeIceInterface = nodeConfig->add_child("iceinterface");
 
-			xmlpp::Element* nodeConfigChild = nodeIceInterface->add_child("nameinterface");
+			xmlpp::Element* nodeConfigChild = nodeIceInterface->add_child("servertype");
+			nodeConfigChild->set_child_text(std::to_string((int)listInterfacesIterator->getServerType()));
+
+			nodeConfigChild = nodeIceInterface->add_child("nameinterface");
 			nodeConfigChild->set_child_text(listInterfacesIterator->getName());
 
 			nodeConfigChild = nodeIceInterface->add_child("nameproxy");
 			nodeConfigChild->set_child_text(listInterfacesIterator->getProxyName());
+
+			nodeConfigChild = nodeIceInterface->add_child("topic");
+			nodeConfigChild->set_child_text(listInterfacesIterator->getRosTopic());
 
 			nodeConfigChild = nodeIceInterface->add_child("ip");
 			nodeConfigChild->set_child_text(listInterfacesIterator->getIp());

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualHFSM><SubAutomata id="1" idFather="0"><state initial="true" id="1"><posx>118.113</posx><posy>121.092</posy><name>goforward</name><idSubautomataSon>0</idSubautomataSon><code>self.my_motors.sendV(0.2)
+</code></state><iteration_time>100</iteration_time><variables></variables><functions></functions></SubAutomata><libraries/><config><iceinterface><nameinterface>my_motors</nameinterface><nameproxy>Motors</nameproxy><ip>localhost</ip><port>9001</port><interface>Motors</interface></iceinterface></config></VisualHFSM>

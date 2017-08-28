@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<VisualStates>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
+    <state id="1" initial="False">
+      <posx>808.0</posx>
+      <posy>820.0</posy>
+      <name>state 1</name>
+      <code>self.setMotors(0.5)
+self.setAngle('Body', 0.4)</code>
+      <transition id="1">
+        <type>0</type>
+        <time>0</time>
+        <posx>1156.0</posx>
+        <posy>822.5</posy>
+        <name>mytran1</name>
+        <originid>1</originid>
+        <destinationid>3</destinationid>
+        <code></code>
+      </transition>
+    </state>
+    <state id="2" initial="False">
+      <posx>836.0</posx>
+      <posy>1157.0</posy>
+      <name>hello state</name>
+      <code></code>
+      <transition id="2">
+        <type>0</type>
+        <time>0</time>
+        <posx>806.5</posx>
+        <posy>881.0</posy>
+        <name>transition 2</name>
+        <originid>2</originid>
+        <destinationid>4</destinationid>
+        <code></code>
+      </transition>
+    </state>
+    <state id="3" initial="False">
+      <posx>1166.0</posx>
+      <posy>1181.0</posy>
+      <name>state 3</name>
+      <code></code>
+    </state>
+    <state id="4" initial="False">
+      <posx>1115.0</posx>
+      <posy>881.0</posy>
+      <name>state 4</name>
+      <code></code>
+    </state>
+  </state>
+</VisualStates>

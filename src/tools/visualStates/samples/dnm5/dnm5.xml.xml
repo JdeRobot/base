@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<VisualStates>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
+    <state id="1" initial="False">
+      <posx>862.0</posx>
+      <posy>791.0</posy>
+      <name>state 1</name>
+      <code></code>
+      <transition id="1">
+        <type>0</type>
+        <time>0</time>
+        <posx>924.0</posx>
+        <posy>887.0</posy>
+        <name>transition 1</name>
+        <originid>1</originid>
+        <destinationid>2</destinationid>
+        <code></code>
+      </transition>
+      <state id="1" initial="False">
+        <posx>854.0</posx>
+        <posy>731.0</posy>
+        <name>state 3</name>
+        <code></code>
+        <transition id="1">
+          <type>0</type>
+          <time>0</time>
+          <posx>949.5</posx>
+          <posy>853.0</posy>
+          <name>transition 1</name>
+          <originid>1</originid>
+          <destinationid>2</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="2" initial="False">
+        <posx>1045.0</posx>
+        <posy>975.0</posy>
+        <name>state 2</name>
+        <code></code>
+      </state>
+    </state>
+    <state id="2" initial="False">
+      <posx>1030.0</posx>
+      <posy>1040.0</posy>
+      <name>state 2</name>
+      <code></code>
+    </state>
+  </state>
+</VisualStates>
