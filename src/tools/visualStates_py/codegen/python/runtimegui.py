@@ -9,7 +9,6 @@ from gui.treemodel import TreeModel
 from gui.state import State
 from gui.transition import Transition
 
-# import mmap
 from threading import Thread
 import time
 import sysv_ipc
@@ -26,13 +25,12 @@ class RunTimeGui(QMainWindow):
         self.setWindowTitle("VisualStates RunTime GUI")
 
         # # root state
-        # self.rootState = State(0, "root", True)
-        # self.activeState = self.rootState
+        self.rootState = None
+        #self.activeState = self.rootState
 
         # create status bar
         self.statusBar()
 
-        # self.createMenu()
         self.createTreeView()
         self.createStateCanvas()
 
@@ -48,261 +46,8 @@ class RunTimeGui(QMainWindow):
         self.runningStateChanged.connect(self.runningStateChangedHandle)
         self.loadFromRoot.connect(self.loadFromRootHandle)
 
-        # self.waitForActiveState = False
-
-        # self.fileManager = FileManager()
-        #
-        # self.libraries = []
-        # self.configs = []
-        # self.interfaceHeaderMap = {}
-        # self.createInterfaceHeaderMap()
-        # self.mm = None
         self.memory = None
         self.ipcThread = None
-
-    # def createMenu(self):
-    #     # create actions
-    #     # archieve menu
-    #     newAction = QAction('&New', self)
-    #     newAction.setShortcut('Ctrl+N')
-    #     newAction.setStatusTip('Create New Visual States')
-    #     newAction.triggered.connect(self.newAction)
-    #
-    #     openAction = QAction('&Open', self)
-    #     openAction.setShortcut('Ctrl+O')
-    #     openAction.setStatusTip('Open Visual States')
-    #     openAction.triggered.connect(self.openAction)
-    #
-    #     saveAction = QAction('&Save', self)
-    #     saveAction.setShortcut('Ctrl+S')
-    #     saveAction.setStatusTip('Save Visual States')
-    #     saveAction.triggered.connect(self.saveAction)
-    #
-    #     saveAsAction = QAction('&Save As', self)
-    #     saveAsAction.setShortcut('Ctrl+S')
-    #     saveAsAction.setStatusTip('Save Visual States as New One')
-    #     saveAsAction.triggered.connect(self.saveAsAction)
-    #
-    #     quitAction = QAction('&Quit', self)
-    #     quitAction.setShortcut('Ctrl+Q')
-    #     quitAction.setStatusTip('Quit Visual States')
-    #     quitAction.triggered.connect(self.quitAction)
-    #
-    #     # figures menu
-    #     stateAction = QAction('&State', self)
-    #     # stateAction.setShortcut('Ctrl+N')
-    #     stateAction.setStatusTip('Create a state')
-    #     stateAction.triggered.connect(self.stateAction)
-    #
-    #     transitionAction = QAction('&Transition', self)
-    #     # transitionAction.setShortcut('Ctrl+T')
-    #     transitionAction.setStatusTip('Create a transition')
-    #     transitionAction.triggered.connect(self.transitionAction)
-    #
-    #     # data menu
-    #     timerAction = QAction('&Timer', self)
-    #     timerAction.setShortcut('Ctrl+M')
-    #     timerAction.setStatusTip('Set timing of states')
-    #     timerAction.triggered.connect(self.timerAction)
-    #
-    #     variablesAction = QAction('&Variables', self)
-    #     variablesAction.setShortcut('Ctrl+V')
-    #     variablesAction.setStatusTip('Define state variables')
-    #     variablesAction.triggered.connect(self.variablesAction)
-    #
-    #     functionsAction = QAction('&Functions', self)
-    #     functionsAction.setShortcut('Ctrl+F')
-    #     functionsAction.setStatusTip('Define functions')
-    #     functionsAction.triggered.connect(self.functionsAction)
-    #
-    #     # actions menu
-    #     librariesAction = QAction('&Libraries', self)
-    #     librariesAction.setShortcut('Ctrl+L')
-    #     librariesAction.setStatusTip('Add additional libraries')
-    #     librariesAction.triggered.connect(self.librariesAction)
-    #
-    #     configFileAction = QAction('&Config File', self)
-    #     configFileAction.setShortcut('Ctrl+C')
-    #     configFileAction.setStatusTip('Edit configuration file')
-    #     configFileAction.triggered.connect(self.configFileAction)
-    #
-    #     generateCppAction = QAction('&Generate C++', self)
-    #     generateCppAction.setShortcut('Ctrl+G')
-    #     generateCppAction.setStatusTip('Generate C++ code')
-    #     generateCppAction.triggered.connect(self.generateCppAction)
-    #
-    #     compileCppAction = QAction('&Compile C++', self)
-    #     compileCppAction.setShortcut('Ctrl+P')
-    #     compileCppAction.setStatusTip('Compile generated C++ code')
-    #     compileCppAction.triggered.connect(self.compileCppAction)
-    #
-    #     generatePythonAction = QAction('&Generate Python', self)
-    #     generatePythonAction.setShortcut('Ctrl+Y')
-    #     generatePythonAction.setStatusTip('Generate Python code')
-    #     generatePythonAction.triggered.connect(self.generatePythonAction)
-    #
-    #     # help menu
-    #     aboutAction = QAction('&About', self)
-    #     aboutAction.setShortcut('F1')
-    #     aboutAction.setStatusTip('Information about VisualStates')
-    #     aboutAction.triggered.connect(self.aboutAction)
-    #
-    #     # create main menu
-    #     menubar = self.menuBar()
-    #     archieveMenu = menubar.addMenu('&File')
-    #     archieveMenu.addAction(newAction)
-    #     archieveMenu.addAction(openAction)
-    #     archieveMenu.addAction(saveAction)
-    #     archieveMenu.addAction(saveAsAction)
-    #     archieveMenu.addAction(quitAction)
-    #
-    #     figuresMenu = menubar.addMenu('&Figures')
-    #     figuresMenu.addAction(stateAction)
-    #     figuresMenu.addAction(transitionAction)
-    #
-    #     dataMenu = menubar.addMenu('&Data')
-    #     dataMenu.addAction(timerAction)
-    #     dataMenu.addAction(variablesAction)
-    #     dataMenu.addAction(functionsAction)
-    #
-    #     actionsMenu = menubar.addMenu('&Actions')
-    #     actionsMenu.addAction(librariesAction)
-    #     actionsMenu.addAction(configFileAction)
-    #     actionsMenu.addAction(generateCppAction)
-    #     actionsMenu.addAction(compileCppAction)
-    #     actionsMenu.addAction(generatePythonAction)
-    #
-    #     helpMenu = menubar.addMenu('&Help')
-    #     helpMenu.addAction(aboutAction)
-
-    # def createInterfaceHeaderMap(self):
-    #     os.system('/opt/jderobot/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt')
-    #     fp = open('/tmp/allinterfaces.txt')
-    #     for line in fp:
-    #         data = line.split(' ')
-    #         self.interfaceHeaderMap[data[0]] = data[1]
-
-
-    # def newAction(self):
-    #     self.clearScene()
-    #     # create new root state
-    #     self.rootState = State(0, 'root', True)
-    #     self.automataScene.setActiveState(self.rootState)
-    #     self.automataScene.resetIndexes()
-    #
-    # def openAction(self):
-    #     fileDialog = QFileDialog(self)
-    #     fileDialog.setWindowTitle("Open VisualStates File")
-    #     fileDialog.setViewMode(QFileDialog.Detail)
-    #     fileDialog.setNameFilters(['VisualStates File (*.xml)'])
-    #     fileDialog.setDefaultSuffix('.xml')
-    #     fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
-    #     if fileDialog.exec_():
-    #         (self.rootState, self.configs, self.libraries) = self.fileManager.open(fileDialog.selectedFiles()[0])
-    #         self.treeModel.removeAll()
-    #         self.treeModel.loadFromRoot(self.rootState)
-    #         # set the active state as the loaded state
-    #         self.automataScene.setActiveState(self.rootState)
-    #         self.automataScene.setLastIndexes(self.rootState)
-    #     else:
-    #         print('open is canceled')
-    #
-    #
-    #
-    # def saveAction(self):
-    #     if len(self.fileManager.getFileName()) == 0:
-    #         self.saveAsAction()
-    #     else:
-    #         self.fileManager.save(self.rootState, self.configs, self.libraries)
-    #
-    # def saveAsAction(self):
-    #     fileDialog = QFileDialog(self)
-    #     fileDialog.setWindowTitle("Save VisualStates Project")
-    #     fileDialog.setViewMode(QFileDialog.Detail)
-    #     fileDialog.setNameFilters(['VisualStates File (*.xml)'])
-    #     fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-    #     if fileDialog.exec_():
-    #         self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-    #         self.fileManager.save(self.rootState, self.configs, self.libraries)
-    #     else:
-    #         print('file dialog canceled')
-    #
-    #
-    # def quitAction(self):
-    #     print('Quit')
-    #     self.close()
-    #
-    # def stateAction(self):
-    #     self.automataScene.setOperationType(OpType.ADDSTATE)
-    #
-    # def transitionAction(self):
-    #     self.automataScene.setOperationType(OpType.ADDTRANSITION)
-    #
-    # def timerAction(self):
-    #     if self.activeState is not None:
-    #         timerDialog = TimerDialog('Time Step Duration', str(self.activeState.getTimeStep()))
-    #         timerDialog.timeChanged.connect(self.timeStepDurationChanged)
-    #         timerDialog.exec_()
-    #
-    # def variablesAction(self):
-    #     if self.activeState is not None:
-    #         variablesDialog = CodeDialog('Variables', self.activeState.getVariables())
-    #         variablesDialog.codeChanged.connect(self.variablesChanged)
-    #         variablesDialog.exec_()
-    #     else:
-    #         self.showWarning('Choose a state', 'You can create variables only for a selected state')
-    #
-    # def functionsAction(self):
-    #     if self.activeState is not None:
-    #         functionsDialog = CodeDialog('Functions', self.activeState.getFunctions())
-    #         functionsDialog.codeChanged.connect(self.functionsChanged)
-    #         functionsDialog.exec_()
-    #     else:
-    #         self.showWarning('Choose a state', 'You can create functions only for a selected state')
-    #
-    # def librariesAction(self):
-    #     librariesDialog = LibrariesDialog('Libraries', self.libraries)
-    #     librariesDialog.librariesChanged.connect(self.librariesChanged)
-    #     librariesDialog.exec_()
-    #
-    # def configFileAction(self):
-    #     configDialog = ConfigDialog('Config', self.configs)
-    #     configDialog.configChanged.connect(self.configsChanged)
-    #     configDialog.exec_()
-    #
-    #
-    # def showWarning(self, title, msg):
-    #     QMessageBox.warning(self, title, msg)
-    #
-    # def showInfo(self, title, msg):
-    #     QMessageBox.information(self, title, msg)
-    #
-    # def generateCppAction(self):
-    #     stateList = []
-    #     if self.fileManager.hasFile():
-    #         self.getStateList(self.rootState, stateList)
-    #         generator = CppGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
-    #         generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
-    #         self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
-    #     else:
-    #         self.showWarning('C++ Generation', 'Please save the project before code generation.')
-    #
-    #
-    # def compileCppAction(self):
-    #     print('compile cpp action')
-    #
-    # def generatePythonAction(self):
-    #     stateList = []
-    #     if self.fileManager.hasFile():
-    #         self.getStateList(self.rootState, stateList)
-    #         generator = PythonGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
-    #         generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
-    #         self.showInfo('Python Code Generation', 'Python code generation is successful.')
-    #     else:
-    #         self.showWarning('Python Generation', 'Please save the project before code generation.')
-
-    # def aboutAction(self):
-    #     print('about action')
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -357,6 +102,8 @@ class RunTimeGui(QMainWindow):
         else:
             self.states[id] = State(id, name, initial, None)
             # self.treeModel.insertState(self.states[id].getGraphicsItem(), Qt.white)
+        if id == 0:
+            self.rootState = self.states[id]
 
         self.states[id].setPos(x, y)
 
@@ -365,6 +112,7 @@ class RunTimeGui(QMainWindow):
         self.transitions[id].setPos(x, y)
 
     def emitRunningStateById(self, id):
+        print('emit running state:' + str(id))
         self.runningStateChanged.emit(id)
 
     def runningStateChangedHandle(self, id):
@@ -372,7 +120,11 @@ class RunTimeGui(QMainWindow):
         #     return
 
         print('running state:' + str(id))
+        if id not in self.states:
+            return
+
         runningState = self.states[id]
+
         parentId = None
         if runningState.parent is not None:
             for child in runningState.parent.getChildren():
@@ -426,7 +178,7 @@ class RunTimeGui(QMainWindow):
         self.treeModel.loadFromRoot(self.states[id])
 
     def stateDoubleClicked(self, stateItem):
-        print('emit active state by id:' + str(stateItem.stateData.id))
+        # print('emit active state by id:' + str(stateItem.stateData.id))
         if len(stateItem.stateData.getChildren()) > 0:
             self.emitActiveStateById(stateItem.stateData.id)
 
@@ -490,6 +242,10 @@ class RunTimeGui(QMainWindow):
         # if state is not None:
         #     # set the active state as the loaded state
         #     self.automataScene.setActiveState(state)
+        #     if state == self.rootState:
+        #         self.treeView.selectionModel().clearSelection()
+        #     else:
+        #         self.treeView.setCurrentIndex(self.treeModel.indexOf(self.treeModel.getByDataId(self.activeState.id)))
 
     # def timeStepDurationChanged(self, duration):
     #     if self.activeState is not None:
@@ -521,6 +277,13 @@ class RunTimeGui(QMainWindow):
             msg = self.getIPCMessage()
             if msg is not None:
                 print('msg received:' + msg)
+                methodName = msg.split(' ')[0]
+                id = int(msg.split(' ')[1])
+                if methodName == 'emitRunningStateById':
+                    self.emitRunningStateById(id)
+                else:
+                    print('unknown method name')
+
             time.sleep(1.0/1000)
 
     def activateIPC(self):

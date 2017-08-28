@@ -33,5 +33,7 @@ INSTALL(FILES ${CMAKE_SOURCE_DIR}/gui/state.py
 		${CMAKE_SOURCE_DIR}/gui/guistate.py
 		${CMAKE_SOURCE_DIR}/gui/idtextboxgraphicsitem.py
 		${CMAKE_SOURCE_DIR}/gui/recthandlegraphicsitem.py
-		${CMAKE_SOURCE_DIR}/gui/transitiontype.py 
+		${CMAKE_SOURCE_DIR}/gui/transitiontype.py
+		${CMAKE_SOURCE_DIR}/gui/treemodel.py
+		${CMAKE_SOURCE_DIR}/gui/treenode.py
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python3.5/visualStates_py/gui/)

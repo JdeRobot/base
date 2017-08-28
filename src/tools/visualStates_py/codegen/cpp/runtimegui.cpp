@@ -41,11 +41,9 @@ void RunTimeGui::loopIPC() {
     while(true) {
         if (msgQueue.size() > 0) {
             if (ipcData[0] == '0') {
-                std::cout << "write data" << std::endl;
                 std::string msg = msgQueue.front();
                 msgQueue.pop();
                 strncpy(ipcData, msg.c_str(), 1024);
-                std::cout << "written data:" << ipcData << ":" << std::endl;
             }
         }
 

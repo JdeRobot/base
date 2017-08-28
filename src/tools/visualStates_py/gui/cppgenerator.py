@@ -1,6 +1,6 @@
 from gui.transitiontype import TransitionType
 from gui.generator import Generator
-import os
+import os, stat
 
 class CppGenerator(Generator):
     def __init__(self, libraries, configs, interfaceHeaders, states):
@@ -60,8 +60,8 @@ class CppGenerator(Generator):
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
         self.generateProxies(stringList)
-        self.generateReadArgs(stringList)
-        self.generateMain(stringList)
+        self.generateReadArgs(stringList, projectName)
+        self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
         fp = open(projectPath + os.sep + projectName + '.cpp', 'w')
         fp.write(sourceCode)
@@ -73,20 +73,8 @@ class CppGenerator(Generator):
         fp = open(projectPath + os.sep + projectName + '_runtime.py', 'w')
         fp.write(sourceCode)
         fp.close()
-
-        # self.generateEnums(stringList)
-        # self.generateVariables(stringList)
-        # self.generateShutdownMethod(stringList)
-        # self.generateUserFunctions(stringList)
-        # self.generateRunTimeGui(stringList)
-        # self.generateStates(stringList)
-        # self.generateAutomataGui(stringList)
-        # self.generateReadArgs(stringList)
-        # self.generateMain(stringList)
-        # sourceCode = ''.join(stringList)
-        # fp = open(projectPath + os.sep + projectName + '.cpp', 'w')
-        # fp.write(sourceCode)
-        # fp.close()
+        # make runtime gui python file executable
+        os.chmod(projectPath + os.sep + projectName + '_runtime.py', stat.S_IEXEC | stat.S_IXOTH | stat.S_IWRITE | stat.S_IREAD)
 
         stringList = []
         self.generateCfg(stringList)
@@ -217,7 +205,7 @@ class CppGenerator(Generator):
         proxyStr.append('\t\tice->destroy();\n')
         proxyStr.append('\t}\n}\n\n')
 
-    def generateReadArgs(self, argStr):
+    def generateReadArgs(self, argStr, projectName):
         mystr = '''
 pthread_t guiThread;
 RunTimeGui* runTimeGui = NULL;
@@ -244,8 +232,12 @@ void readArgs(int *argc, char* argv[]) {
 \t\t}
 \t}
 }
+
 '''
         argStr.append(mystr)
+        argStr.append('void* runGui(void*) {\n')
+        argStr.append('\tsystem("./' + projectName + '_runtime.py");\n')
+        argStr.append('}\n\n')
 
     def parentString(self, state):
         if state.parent is None:
@@ -253,7 +245,7 @@ void readArgs(int *argc, char* argv[]) {
         else:
             return 'state'+str(state.parent.id)
 
-    def generateMain(self, mainStr):
+    def generateMain(self, mainStr, projectName):
         mainStr.append('int main(int argc, char* argv[]) {\n')
         mainStr.append('\tInterfaces interfaces;\n')
         mainStr.append('\ttry {\n')
@@ -271,6 +263,7 @@ void readArgs(int *argc, char* argv[]) {
         mainStr.append('\treadArgs(&argc, argv);\n\n')
 
         mainStr.append('\tif (displayGui) {\n')
+        mainStr.append('\t\tpthread_create(&guiThread, NULL, &runGui, NULL);')
         mainStr.append('\t\trunTimeGui = new RunTimeGui();\n\n')
         mainStr.append('\t}\n')
 
@@ -302,13 +295,19 @@ void readArgs(int *argc, char* argv[]) {
         mainStr.append('}\n')
 
     def generateRunTimeGui(self, guiStr):
-        guiStr.append('sys.path.append("/opt/jderobot/')
+        guiStr.append('#!/usr/bin/python3\n')
+        guiStr.append('# -*- coding: utf-8 -*-\n')
+        guiStr.append('import sys\n')
+        guiStr.append('sys.path.append("/opt/jderobot/lib/python3.5/visualStates_py")\n\n')
 
+        guiStr.append('from PyQt5.QtWidgets import QApplication\n')
+        guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
         guiStr.append('gui = None\n\n')
-        guiStr.append('def runGui(self):\n')
+        guiStr.append('def runGui():\n')
         guiStr.append('\tglobal gui\n')
         guiStr.append('\tapp = QApplication(sys.argv)\n')
-        guiStr.append('\tgui = RunTimeGui()\n\n')
+        guiStr.append('\tgui = RunTimeGui()\n')
+        guiStr.append('\tgui.activateIPC()\n\n')
 
         # create runtime state code
         for state in self.getAllStates():
@@ -326,6 +325,7 @@ void readArgs(int *argc, char* argv[]) {
                            ', ' + str(tran.x) + ', ' + str(tran.y) + ')\n')
         guiStr.append('\n')
 
+        guiStr.append('\tgui.emitLoadFromRoot()\n')
         guiStr.append('\tgui.emitActiveStateById(0)\n')
         guiStr.append('\tgui.show()\n')
         guiStr.append('\tapp.exec_()\n\n')
