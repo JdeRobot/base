@@ -1,6 +1,5 @@
-from .guistate import StateGraphicsItem
-from .transitiontype import TransitionType
-from .transition import Transition
+from gui.guistate import StateGraphicsItem
+from gui.transition import Transition
 from xml.dom.minidom import Node
 
 class State:

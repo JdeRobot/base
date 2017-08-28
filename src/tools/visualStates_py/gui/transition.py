@@ -1,5 +1,5 @@
-from .transitiontype import TransitionType
-from .guitransition import TransitionGraphicsItem
+from gui.transitiontype import TransitionType
+from gui.guitransition import TransitionGraphicsItem
 from PyQt5.QtCore import QPointF
 
 class Transition:

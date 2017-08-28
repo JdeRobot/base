@@ -1,7 +1,6 @@
 # a class to discover JdeRobot and ROS interfaces
 import os
 
-
 class Interfaces:
 
     interfaces = None

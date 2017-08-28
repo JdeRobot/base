@@ -71,10 +71,10 @@ import sys, threading, time
 import easyiceconfig as EasyIce
 sys.path.append("/opt/jderobot/lib/python2.7")
 sys.path.append("/opt/jderobot/share/jderobot/python3/visualStates_py")
-from gui.codegen.state import State
-from gui.codegen.temporaltransition import TemporalTransition
-from gui.codegen.conditionaltransition import ConditionalTransition
-from gui.runtimegui.python.runtimegui import RunTimeGui
+from codegen.state import State
+from codegen.temporaltransition import TemporalTransition
+from codegen.conditionaltransition import ConditionalTransition
+from codegen.python.runtimegui import RunTimeGui
 from PyQt5.QtWidgets import QApplication
 
 '''

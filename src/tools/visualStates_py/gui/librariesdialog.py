@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QDialog, QGroupBox, \
-    QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
+from PyQt5.QtWidgets import QDialog, \
+    QLineEdit, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase

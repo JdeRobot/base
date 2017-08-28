@@ -1,15 +1,15 @@
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
 from PyQt5.QtCore import Qt, pyqtSignal
-from .guistate import StateGraphicsItem
-from .guitransition import TransitionGraphicsItem
-from .renamediaolog import RenameDialog
-from .codedialog import CodeDialog
-from .transitioncodedialog import TransitionCodeDialog
-from .transitiontype import TransitionType
-from .optype import OpType
-from .state import State
-from .transition import Transition
-from .idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from gui.guistate import StateGraphicsItem
+from gui.guitransition import TransitionGraphicsItem
+from gui.renamediaolog import RenameDialog
+from gui.codedialog import CodeDialog
+from gui.transitioncodedialog import TransitionCodeDialog
+from gui.transitiontype import TransitionType
+from gui.optype import OpType
+from gui.state import State
+from gui.transition import Transition
+from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 
 class AutomataScene(QGraphicsScene):

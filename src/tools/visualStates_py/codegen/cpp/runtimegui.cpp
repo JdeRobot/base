@@ -11,12 +11,14 @@ RunTimeGui::RunTimeGui() {
     // create shared memory
     createSharedMem();
     pthread_create(&threadIPC, NULL, &RunTimeGui::loopStaticIPC, this);
+    ipcData[0] == '0';
 }
 
 void RunTimeGui::emitRunningStateById(int id) {
     std::stringstream strstream;
     strstream << "emitRunningStateById " << id;
     msgQueue.push(strstream.str());
+    std::cout << "running state:" << id << std::endl;
 }
 
 void RunTimeGui::emitLoadFromRoot() {
@@ -38,7 +40,6 @@ void* RunTimeGui::loopStaticIPC(void* owner) {
 void RunTimeGui::loopIPC() {
     while(true) {
         if (msgQueue.size() > 0) {
-            std::cout << "loop ipc data:" << ipcData << ":" << std::endl;
             if (ipcData[0] == '0') {
                 std::cout << "write data" << std::endl;
                 std::string msg = msgQueue.front();

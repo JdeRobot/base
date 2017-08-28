@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QDialog, QTextEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QApplication, QRadioButton, QGroupBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QFontDatabase
-from .transitiontype import TransitionType
+from gui.transitiontype import TransitionType
 
 class TransitionCodeDialog(QDialog):
     codeChanged = pyqtSignal('int', 'QString', 'QString')

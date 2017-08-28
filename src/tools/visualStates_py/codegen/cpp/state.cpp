@@ -33,7 +33,6 @@ void State::addState(State* state) {
 
     states.push_back(state);
     statesById.insert(std::pair<int, State*>(state->id, state));
-    std::cout << "state added:" << state->id << std::endl;
 }
 
 void State::addTransition(Transition* tran) {
@@ -86,7 +85,6 @@ void State::run() {
         if (elapsedTime < cycleDuration) {
             elapsedTime = cycleDuration - elapsedTime;
             // convert milliseconds to microseconds
-            std::cout << "sleeping for " << elapsedTime << " ms." << std::endl;
             usleep(elapsedTime*1000);
         }
     }

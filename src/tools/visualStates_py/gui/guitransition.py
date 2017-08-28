@@ -19,12 +19,12 @@
   '''
 
 from PyQt5.QtWidgets import QGraphicsObject, QGraphicsLineItem, QGraphicsPolygonItem, QGraphicsItem
-from PyQt5.QtGui import QPen, QBrush, QPolygonF
-from PyQt5.QtCore import Qt, QPointF, QLineF, pyqtSignal, QObject
+from PyQt5.QtGui import QBrush, QPolygonF
+from PyQt5.QtCore import Qt, QPointF, QLineF, pyqtSignal
 
-from .guistate import StateGraphicsItem
-from .idtextboxgraphicsitem import IdTextBoxGraphicsItem
-from .recthandlegraphicsitem import RectHandleGraphicsItem
+from gui.guistate import StateGraphicsItem
+from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from gui.recthandlegraphicsitem import RectHandleGraphicsItem
 import math
 
 class TransitionGraphicsItem(QGraphicsObject):

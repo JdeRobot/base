@@ -20,7 +20,7 @@
 
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel
 from PyQt5.QtGui import QColor
-from .treenode import TreeNode
+from gui.treenode import TreeNode
 
 class TreeModel(QAbstractItemModel):
     def __init__(self, parent=None):

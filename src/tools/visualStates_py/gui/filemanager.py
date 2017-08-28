@@ -1,7 +1,5 @@
-
 from xml.dom import minidom
-from PyQt5.QtCore import QPointF
-from .state import State
+from gui.state import State
 import os
 
 class FileManager():

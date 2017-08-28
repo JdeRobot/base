@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraph
 from gui.automatascene import AutomataScene, OpType
 from gui.filemanager import FileManager
 from gui.treemodel import TreeModel
-from .state import State
-from .timerdialog import TimerDialog
-from .codedialog import CodeDialog
-from .librariesdialog import LibrariesDialog
-from .configdialog import ConfigDialog
+from gui.state import State
+from gui.timerdialog import TimerDialog
+from gui.codedialog import CodeDialog
+from gui.librariesdialog import LibrariesDialog
+from gui.configdialog import ConfigDialog
 from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
 import os

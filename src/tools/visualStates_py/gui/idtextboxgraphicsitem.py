@@ -1,6 +1,4 @@
-
 from PyQt5.QtWidgets import QGraphicsTextItem
-from PyQt5.QtCore import Qt
 from PyQt5.QtCore import Qt, pyqtSignal
 
 class IdTextBoxGraphicsItem(QGraphicsTextItem):

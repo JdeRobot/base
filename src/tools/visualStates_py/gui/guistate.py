@@ -21,7 +21,7 @@
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsObject, QGraphicsItem
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF
 from PyQt5.QtGui import QBrush, QPen
-from . import idtextboxgraphicsitem
+from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 class StateGraphicsItem(QGraphicsObject):
     # constant values
@@ -58,7 +58,7 @@ class StateGraphicsItem(QGraphicsObject):
         brush.setColor(Qt.blue)
         self.ellipse.setBrush(brush)
 
-        self.textGraphics = idtextboxgraphicsitem.IdTextBoxGraphicsItem(self.stateData.name, self)
+        self.textGraphics = IdTextBoxGraphicsItem(self.stateData.name, self)
         textWidth = self.textGraphics.boundingRect().width()
         self.textGraphics.setPos(-textWidth / 2, StateGraphicsItem.NODE_WIDTH -
                                  (StateGraphicsItem.NODE_WIDTH / 2) + 5)

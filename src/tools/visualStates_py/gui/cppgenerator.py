@@ -67,6 +67,12 @@ class CppGenerator(Generator):
         fp.write(sourceCode)
         fp.close()
 
+        stringList = []
+        self.generateRunTimeGui(stringList)
+        sourceCode = ''.join(stringList)
+        fp = open(projectPath + os.sep + projectName + '_runtime.py', 'w')
+        fp.write(sourceCode)
+        fp.close()
 
         # self.generateEnums(stringList)
         # self.generateVariables(stringList)
@@ -264,6 +270,10 @@ void readArgs(int *argc, char* argv[]) {
 
         mainStr.append('\treadArgs(&argc, argv);\n\n')
 
+        mainStr.append('\tif (displayGui) {\n')
+        mainStr.append('\t\trunTimeGui = new RunTimeGui();\n\n')
+        mainStr.append('\t}\n')
+
         # create state instances
         for state in self.getAllStates():
             mainStr.append('\tState* state' + str(state.id) + ' = new State' + str(state.id) + '(' +
@@ -290,6 +300,38 @@ void readArgs(int *argc, char* argv[]) {
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->join();\n')
         mainStr.append('}\n')
+
+    def generateRunTimeGui(self, guiStr):
+        guiStr.append('sys.path.append("/opt/jderobot/')
+
+        guiStr.append('gui = None\n\n')
+        guiStr.append('def runGui(self):\n')
+        guiStr.append('\tglobal gui\n')
+        guiStr.append('\tapp = QApplication(sys.argv)\n')
+        guiStr.append('\tgui = RunTimeGui()\n\n')
+
+        # create runtime state code
+        for state in self.getAllStates():
+            guiStr.append('\tgui.addState(' + str(state.id) + ', "' + state.name +
+                           '", ' + str(state.initial) + ', ' + str(state.x) + ', ' + str(state.y))
+            if state.parent is None:
+                guiStr.append(', None)\n')
+            else:
+                guiStr.append(', ' + str(state.parent.id) + ')\n')
+        guiStr.append('\n')
+
+        for tran in self.getAllTransitions():
+            guiStr.append('\tgui.addTransition(' + str(tran.id) + ', "' + tran.name + '", ' +
+                           str(tran.origin.id) + ', ' + str(tran.destination.id) +
+                           ', ' + str(tran.x) + ', ' + str(tran.y) + ')\n')
+        guiStr.append('\n')
+
+        guiStr.append('\tgui.emitActiveStateById(0)\n')
+        guiStr.append('\tgui.show()\n')
+        guiStr.append('\tapp.exec_()\n\n')
+
+        guiStr.append('if __name__ == "__main__":\n')
+        guiStr.append('\trunGui()\n\n')
 
 
     def generateCmake(self, cmakeStr, projectName):

@@ -1,4 +1,3 @@
-
 class OpType():
     ADDSTATE = 0
     ADDTRANSITION = 1
