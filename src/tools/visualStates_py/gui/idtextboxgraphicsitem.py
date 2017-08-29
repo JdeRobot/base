@@ -30,17 +30,16 @@ class IdTextBoxGraphicsItem(QGraphicsTextItem):
         super(QGraphicsTextItem, self).__init__(name, parent)
         self.name = name
 
-
     def mouseDoubleClickEvent(self, event):
         if self.textInteractionFlags() == Qt.NoTextInteraction:
             self.setTextInteractionFlags(Qt.TextEditorInteraction)
             self.textEditStarted.emit()
 
-        super(QGraphicsTextItem, self).mouseDoubleClickEvent(event)
+        QGraphicsTextItem.mouseDoubleClickEvent(self, event)
 
 
     def focusOutEvent(self, event):
         self.setTextInteractionFlags(Qt.NoTextInteraction)
         self.textChanged.emit(self.toPlainText())
         self.textEditFinished.emit()
-        super(QGraphicsTextItem, self).focusOutEvent(event)
+        QGraphicsTextItem.focusOutEvent(self, event)

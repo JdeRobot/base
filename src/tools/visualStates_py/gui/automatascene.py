@@ -154,7 +154,7 @@ class AutomataScene(QGraphicsScene):
         transition.destination.removeDestTransition(transition)
 
     def mousePressEvent(self, qGraphicsSceneMouseEvent):
-        print('mouse press event')
+        QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
 
     def addTransitionItem(self, tranItem, isInsertion=True):
         self.addItem(tranItem)
@@ -202,12 +202,11 @@ class AutomataScene(QGraphicsScene):
         self.stateRemoved.emit(stateItem)
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
-        print('mouse release event')
         # if we were editing the state text next mouse release should disable text editing
         # and should not add a new state or transition
         if self.stateTextEditingStarted:
             self.stateTextEditingStarted = False
-            super(QGraphicsScene, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
+            QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
             return
 
         if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
@@ -243,10 +242,9 @@ class AutomataScene(QGraphicsScene):
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
 
-        # super(QGraphicsScene, self).mouseReleaseEvent(qGraphicsSceneMouseEvent)
+        QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
 
     def contextMenuEvent(self, qGraphicsSceneContextMenuEvent):
-        super(QGraphicsScene, self).contextMenuEvent(qGraphicsSceneContextMenuEvent)
         selectedItems = self.items(qGraphicsSceneContextMenuEvent.scenePos())
         if len(selectedItems) > 0:
             item = self.getParentItem(selectedItems[0])
@@ -258,16 +256,16 @@ class AutomataScene(QGraphicsScene):
             self.showSceneContextMenu(qGraphicsSceneContextMenuEvent)
 
     def mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent):
-        print('mouse double click')
         selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
         if len(selectedItems) > 0:
             if isinstance(selectedItems[0], IdTextBoxGraphicsItem):
-                super(QGraphicsScene, self).mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+                QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
+                pass
             else:
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
                     self.setActiveState(item.stateData)
-                super(QGraphicsScene, self).mouseDoubleClickEvent(qGraphicsSceneMouseEvent)
+                QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
         self.prevOperationType = self.operationType
         self.operationType = OpType.OPENAUTOMATA

@@ -20,8 +20,9 @@
 import sys
 from PyQt5.QtWidgets import QDialog, QTextEdit, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QApplication, QRadioButton, QGroupBox
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtGui import QFontDatabase, QFontMetrics, QColor
 from gui.transitiontype import TransitionType
+from PyQt5.Qsci import QsciScintilla, QsciLexerPython, QsciLexerCPP
 
 class TransitionCodeDialog(QDialog):
     codeChanged = pyqtSignal('int', 'QString', 'QString')
@@ -31,14 +32,48 @@ class TransitionCodeDialog(QDialog):
         self.transition = transition
         self.setWindowTitle(name)
         self.resize(800, 600)
-        self.codeEdit = QTextEdit()
+
+        self.codeEdit = QsciScintilla()
         self.codeEdit.setText(self.transition.getCode())
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.codeEdit.setFont(fixedWidthFont)
+        fontmetrics = QFontMetrics(fixedWidthFont)
+        self.codeEdit.setMarginWidth(0, fontmetrics.width("000"))
+        self.codeEdit.setMarginLineNumbers(0, True)
+        self.codeEdit.setMarginsBackgroundColor(QColor("#cccccc"))
+
+        self.codeEdit.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+        self.codeEdit.setCaretLineVisible(True)
+        self.codeEdit.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+        lexer = QsciLexerPython()
+        lexer.setDefaultFont(fixedWidthFont)
+        self.codeEdit.setLexer(lexer)
+        self.codeEdit.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        self.codeEdit.setUtf8(True)
+
+        self.codeEdit.setTabWidth(4)
+        self.codeEdit.setIndentationsUseTabs(True)
+        self.codeEdit.setIndentationGuides(True)
+        self.codeEdit.setTabIndents(True)
+        self.codeEdit.setAutoIndent(True)
+
         self.cancelButton = QPushButton('Cancel')
         self.cancelButton.clicked.connect(self.cancel)
         self.acceptButton = QPushButton('Accept')
         self.acceptButton.clicked.connect(self.accept)
+
+        self.language = 'python'
+        self.pythonButton = QRadioButton('Python')
+        self.pythonButton.setChecked(True)
+        self.pythonButton.clicked.connect(self.pythonClicked)
+        self.cppButton = QRadioButton('C++')
+        self.cppButton.clicked.connect(self.cppClicked)
+
+        codeLanguageContainer = QWidget()
+        hLayout0 = QHBoxLayout()
+        hLayout0.addWidget(self.pythonButton)
+        hLayout0.addWidget(self.cppButton)
+        codeLanguageContainer.setLayout(hLayout0)
 
         self.temporalButton = QRadioButton('Temporal', self)
         self.temporalButton.toggled.connect(self.temporalToggled)
@@ -68,6 +103,7 @@ class TransitionCodeDialog(QDialog):
 
         verticalLayout = QVBoxLayout()
         verticalLayout.addWidget(typeContainer)
+        verticalLayout.addWidget(codeLanguageContainer)
         verticalLayout.addWidget(self.codeEdit)
 
         container = QWidget()
@@ -100,7 +136,7 @@ class TransitionCodeDialog(QDialog):
             type = int(TransitionType.CONDITIONAL)
             typeValue = self.transitionTypeCode.toPlainText()
 
-        self.codeChanged.emit(type, typeValue, self.codeEdit.toPlainText())
+        self.codeChanged.emit(type, typeValue, self.codeEdit.text())
         self.close()
 
     def temporalToggled(self):
@@ -114,6 +150,20 @@ class TransitionCodeDialog(QDialog):
             self.transitionGroupBox.setTitle('Condition (evaluates to true or false)')
             self.transitionTypeCode.setPlainText(self.transition.getCondition())
             print('conditional toggled')
+
+    def pythonClicked(self):
+        fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        lexer = QsciLexerPython()
+        lexer.setDefaultFont(fixedWidthFont)
+        self.codeEdit.setLexer(lexer)
+        self.language = 'python'
+
+    def cppClicked(self):
+        fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        lexer = QsciLexerCPP()
+        lexer.setDefaultFont(fixedWidthFont)
+        self.codeEdit.setLexer(lexer)
+        self.language = 'cpp'
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

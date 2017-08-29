@@ -33,6 +33,7 @@ from gui.librariesdialog import LibrariesDialog
 from gui.configdialog import ConfigDialog
 from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
+from gui.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 import os
 
@@ -60,8 +61,7 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.configs = []
-        self.interfaceHeaderMap = {}
-        self.createInterfaceHeaderMap()
+        self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
         # create actions
@@ -174,13 +174,6 @@ class VisualStates(QMainWindow):
 
         helpMenu = menubar.addMenu('&Help')
         helpMenu.addAction(aboutAction)
-
-    def createInterfaceHeaderMap(self):
-        os.system(CMAKE_INSTALL_PREFIX + '/bin/getinterfaces.sh ' + CMAKE_INSTALL_PREFIX + '/include/jderobot/slice > /tmp/allinterfaces.txt')
-        fp = open('/tmp/allinterfaces.txt')
-        for line in fp:
-            data = line.split(' ')
-            self.interfaceHeaderMap[data[0]] = data[1]
 
 
     def newAction(self):

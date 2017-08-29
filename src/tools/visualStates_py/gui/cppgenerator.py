@@ -60,6 +60,43 @@ class CppGenerator(Generator):
 
         return transitions
 
+    def getVar(self, varLine):
+        varParts = varLine.strip(' ').split(' ')
+        i = 0
+        while varParts[i] == '' and i + 1 < len(varParts):
+            i += 1
+        myvar = varParts[i]
+        i += 1
+        while varParts[i] == '' and i + 1 < len(varParts):
+            i += 1
+        return (myvar, varParts[i])
+
+    def getVariables(self, state):
+        myvars = []
+        for varLine in state.getVariables():
+            (mytype, myvarname) = self.getVar(varLine)
+            print('type:' + mytype + ' varname:' + myvarname)
+            myvars.append(mytype + ' ' + myvarname + ';')
+        return myvars
+
+    def getFunctions(self, state):
+        functions = []
+        parCount = 0
+        for funcLine in state.getFunctions().strip(' ').strip('\n').split('\n'):
+            i = 0
+            for mychar in funcLine:
+                if mychar == '{':
+                    parCount += 1
+                elif mychar == '}':
+                    parCount -= 1
+
+                if mychar == '{' and parCount == 1:
+                    (mytype, varname) = self.getVar(funcLine[0:i])
+                    print('myfuncreturn:' + mytype + ' myfuncname' + varname + ';')
+                    functions.append(mytype + ' ' + varname + ';')
+                i += 1
+        return functions
+
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateHeaders(stringList, projectName)
@@ -124,9 +161,11 @@ class CppGenerator(Generator):
 
         # generate interface headers
         for cfg in self.configs:
-            headers.append('#include <jderobot/comm')
+            if len(cfg['proxyName']) == 0:
+                cfg['proxyName'] = cfg['interface']
+            headers.append('#include <jderobot/comm/')
             headers.append(self.interfaceHeaders[cfg['proxyName']].strip('\n'))
-            headers.append('Client.hpp>\n')
+            headers.append('.hpp>\n')
 
         headers.append('\n')
 
@@ -137,9 +176,13 @@ class CppGenerator(Generator):
             classStr.append('class State' + str(state.id) + ' : public State {\n')
             classStr.append('public:\n')
             classStr.append('\tInterfaces* interfaces;\n')
+            for myvar in self.getVariables(state):
+                classStr.append('\t' + myvar + '\n')
             classStr.append('\tState' + str(state.id) + '(int id, bool initial, Interfaces* interfaces, int cycleDuration, State* parent, RunTimeGui* gui):\n')
             classStr.append('\t\tState(id, initial, cycleDuration, parent, gui) {this->interfaces = interfaces;}\n')
             classStr.append('\tvirtual void runCode();\n')
+            for myfunc in self.getFunctions(state):
+                classStr.append('\t' + myfunc + '\n')
             classStr.append('};\n\n')
 
     def generateTransitionClasses(self, classStr):
@@ -276,7 +319,7 @@ void readArgs(int *argc, char* argv[]) {
         mainStr.append('\treadArgs(&argc, argv);\n\n')
 
         mainStr.append('\tif (displayGui) {\n')
-        mainStr.append('\t\tpthread_create(&guiThread, NULL, &runGui, NULL);')
+        mainStr.append('\t\tpthread_create(&guiThread, NULL, &runGui, NULL);\n')
         mainStr.append('\t\trunTimeGui = new RunTimeGui();\n\n')
         mainStr.append('\t}\n')
 
@@ -294,7 +337,7 @@ void readArgs(int *argc, char* argv[]) {
                            ', ' + str(tran.destination.id) + ', &interfaces);\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
-                               ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');')
+                               ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '->addTransition(tran' + str(tran.id) + ');\n')
         mainStr.append('\n')

@@ -100,18 +100,32 @@ class FileManager():
             for cfgElement in configElements:
                 if len(cfgElement.getElementsByTagName('server')[0].childNodes) > 0:
                     cfg['serverType'] = cfgElement.getElementsByTagName('server')[0].childNodes[0].nodeValue
+                else:
+                    cfg['serverType'] = ''
                 if len(cfgElement.getElementsByTagName('name')[0].childNodes) > 0:
                     cfg['name'] = cfgElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
+                else:
+                    cfg['name'] = ''
                 if len(cfgElement.getElementsByTagName('topic')[0].childNodes) > 0:
                     cfg['topic'] = cfgElement.getElementsByTagName('topic')[0].childNodes[0].nodeValue
+                else:
+                    cfg['topic'] = ''
                 if len(cfgElement.getElementsByTagName('proxyname')[0].childNodes) > 0:
                     cfg['proxyName'] = cfgElement.getElementsByTagName('proxyname')[0].childNodes[0].nodeValue
+                else:
+                    cfg['proxyName'] = ''
                 if len(cfgElement.getElementsByTagName('ip')[0].childNodes) > 0:
                     cfg['ip'] = cfgElement.getElementsByTagName('ip')[0].childNodes[0].nodeValue
+                else:
+                    cfg['ip'] = ''
                 if len(cfgElement.getElementsByTagName('port')[0].childNodes) > 0:
                     cfg['port'] = cfgElement.getElementsByTagName('port')[0].childNodes[0].nodeValue
+                else:
+                    cfg['port'] = ''
                 if len(cfgElement.getElementsByTagName('interface')[0].childNodes) > 0:
                     cfg['interface'] = cfgElement.getElementsByTagName('interface')[0].childNodes[0].nodeValue
+                else:
+                    cfg['interface'] = ''
 
             if cfg is not None:
                 configs.append(cfg)
