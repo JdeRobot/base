@@ -74,9 +74,23 @@ void RunTimeGui::createSharedMem() {
     key_t fkey;
     int shmid;
     int mode;
+    int numTrial = 10;
+    int trial = 0;
 
-    if ((shmid = shmget(123456, 0, 0644)) == -1) {
-        std::cerr << "error shmget" << std::endl;
+    while (trial < numTrial) {
+        if ((shmid = shmget(123456, 0, 0644)) == -1) {
+            std::cerr << "error shmget try for " << trial << std::endl;
+        } else {
+            break;
+        }
+        trial++;
+        usleep(100000); // sleep for 100 milliseconds
+    }
+
+    if (trial < numTrial) {
+        std::cout << "shmget works" << std::endl;
+    } else if (trial >= numTrial) {
+        std::cerr << "we could not be able to get shared memory in " << numTrial << " trials." << std::endl;
         return;
     }
 

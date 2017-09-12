@@ -29,6 +29,9 @@ class FileManager():
         return self.fullPath
 
     def setFullPath(self, path):
+        # check for the xml extensition if missing add the extension
+        if path.rfind('.xml') < 0:
+            path += '.xml'
         self.fullPath = path
 
     def save(self, rootState, configs, libraries):

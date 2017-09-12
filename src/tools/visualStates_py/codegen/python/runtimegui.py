@@ -220,7 +220,12 @@ class RunTimeGui(QMainWindow):
             time.sleep(1.0/1000)
 
     def activateIPC(self):
-        self.memory = sysv_ipc.SharedMemory(123456, sysv_ipc.IPC_CREAT)
+        try:
+            self.memory = sysv_ipc.SharedMemory(123456, sysv_ipc.IPC_CREX)
+        except:
+            # if memory exists just open shared memory
+            self.memory = sysv_ipc.SharedMemory(123456)
+
         self.ipcThread = Thread(target=self.loopIPC)
         self.ipcThread.start()
 

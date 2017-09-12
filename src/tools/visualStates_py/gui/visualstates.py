@@ -177,7 +177,7 @@ class VisualStates(QMainWindow):
 
 
     def newAction(self):
-        self.clearScene()
+        self.automataScene.clearScene()
         # create new root state
         self.rootState = State(0, 'root', True)
         self.automataScene.setActiveState(self.rootState)
