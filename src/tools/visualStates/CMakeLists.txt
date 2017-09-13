@@ -49,6 +49,7 @@ link_directories(
 )
 
 include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
