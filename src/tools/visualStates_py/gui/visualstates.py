@@ -35,6 +35,7 @@ from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
 from gui.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
+from gui.config import JdeRobotConfig, RosConfig
 import os
 
 class VisualStates(QMainWindow):
@@ -42,6 +43,7 @@ class VisualStates(QMainWindow):
         super(QMainWindow, self).__init__()
 
         self.setWindowTitle("VisualStates")
+        self.configDialog = None
 
         # root state
         self.rootState = State(0, "root", True)
@@ -60,7 +62,7 @@ class VisualStates(QMainWindow):
         self.fileManager = FileManager()
 
         self.libraries = []
-        self.configs = []
+        self.config = None
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -191,7 +193,7 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.configs, self.libraries) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            (self.rootState, self.config, self.libraries) = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -206,7 +208,7 @@ class VisualStates(QMainWindow):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState, self.configs, self.libraries)
+            self.fileManager.save(self.rootState, self.config, self.libraries)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
@@ -216,7 +218,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState, self.configs, self.libraries)
+            self.fileManager.save(self.rootState, self.config, self.libraries)
         else:
             print('file dialog canceled')
 
@@ -259,9 +261,9 @@ class VisualStates(QMainWindow):
         librariesDialog.exec_()
 
     def configFileAction(self):
-        configDialog = ConfigDialog('Config', self.configs)
-        configDialog.configChanged.connect(self.configsChanged)
-        configDialog.exec_()
+        self.configDialog = ConfigDialog('Config', self.config)
+        self.configDialog.configChanged.connect(self.configChanged)
+        self.configDialog.exec_()
 
 
     def showWarning(self, title, msg):
@@ -274,7 +276,7 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
-            generator = CppGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
+            generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
@@ -288,7 +290,7 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
-            generator = PythonGenerator(self.libraries, self.configs, self.interfaceHeaderMap, stateList)
+            generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
@@ -412,8 +414,9 @@ class VisualStates(QMainWindow):
     def librariesChanged(self, libraries):
         self.libraries = libraries
 
-    def configsChanged(self, configs):
-        self.configs = configs
+    def configChanged(self):
+        if self.configDialog is not None:
+            self.config = self.configDialog.getConfig()
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:

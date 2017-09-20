@@ -19,6 +19,7 @@
   '''
 from xml.dom import minidom
 from gui.state import State
+from gui.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 import os
 
 class FileManager():
@@ -34,38 +35,13 @@ class FileManager():
             path += '.xml'
         self.fullPath = path
 
-    def save(self, rootState, configs, libraries):
+    def save(self, rootState, config, libraries):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
 
         # save config data
-        configsElement = doc.createElement('configs')
-        for cfg in configs:
-            cfgElement = doc.createElement('config')
-            serverElement = doc.createElement('server')
-            serverElement.appendChild(doc.createTextNode(cfg['serverType']))
-            cfgElement.appendChild(serverElement)
-            nameElement = doc.createElement('name')
-            nameElement.appendChild(doc.createTextNode(cfg['name']))
-            cfgElement.appendChild(nameElement)
-            topicElement = doc.createElement('topic')
-            topicElement.appendChild(doc.createTextNode(cfg['topic']))
-            cfgElement.appendChild(topicElement)
-            proxyNameElement = doc.createElement('proxyname')
-            proxyNameElement.appendChild(doc.createTextNode(cfg['proxyName']))
-            cfgElement.appendChild(proxyNameElement)
-            ipElement = doc.createElement('ip')
-            ipElement.appendChild(doc.createTextNode(cfg['ip']))
-            cfgElement.appendChild(ipElement)
-            portElement = doc.createElement('port')
-            portElement.appendChild(doc.createTextNode(cfg['port']))
-            cfgElement.appendChild(portElement)
-            interfaceElement = doc.createElement('interface')
-            interfaceElement.appendChild(doc.createTextNode(cfg['interface']))
-            cfgElement.appendChild(interfaceElement)
-            configsElement.appendChild(cfgElement)
-        root.appendChild(configsElement)
+        root.appendChild(config.createNode(doc))
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -91,47 +67,15 @@ class FileManager():
         rootState = State(0, 'root', True)
         rootState.parse(rootNode)
 
-        configs = []
-
         # parse configs
-        configsElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('configs')
-        if len(configsElements) > 0:
-            configElements = configsElements[0].getElementsByTagName('config')
-            cfg = None
-            if len(configElements) > 0:
-                cfg = {}
-            for cfgElement in configElements:
-                if len(cfgElement.getElementsByTagName('server')[0].childNodes) > 0:
-                    cfg['serverType'] = cfgElement.getElementsByTagName('server')[0].childNodes[0].nodeValue
-                else:
-                    cfg['serverType'] = ''
-                if len(cfgElement.getElementsByTagName('name')[0].childNodes) > 0:
-                    cfg['name'] = cfgElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
-                else:
-                    cfg['name'] = ''
-                if len(cfgElement.getElementsByTagName('topic')[0].childNodes) > 0:
-                    cfg['topic'] = cfgElement.getElementsByTagName('topic')[0].childNodes[0].nodeValue
-                else:
-                    cfg['topic'] = ''
-                if len(cfgElement.getElementsByTagName('proxyname')[0].childNodes) > 0:
-                    cfg['proxyName'] = cfgElement.getElementsByTagName('proxyname')[0].childNodes[0].nodeValue
-                else:
-                    cfg['proxyName'] = ''
-                if len(cfgElement.getElementsByTagName('ip')[0].childNodes) > 0:
-                    cfg['ip'] = cfgElement.getElementsByTagName('ip')[0].childNodes[0].nodeValue
-                else:
-                    cfg['ip'] = ''
-                if len(cfgElement.getElementsByTagName('port')[0].childNodes) > 0:
-                    cfg['port'] = cfgElement.getElementsByTagName('port')[0].childNodes[0].nodeValue
-                else:
-                    cfg['port'] = ''
-                if len(cfgElement.getElementsByTagName('interface')[0].childNodes) > 0:
-                    cfg['interface'] = cfgElement.getElementsByTagName('interface')[0].childNodes[0].nodeValue
-                else:
-                    cfg['interface'] = ''
-
-            if cfg is not None:
-                configs.append(cfg)
+        config = None
+        configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
+        if configElement.getAttribute('type') == str(ROS):
+            config = RosConfig()
+            config.loadNode(configElement)
+        elif configElement.getAttribute('type') == str(JDEROBOTCOMM):
+            config = JdeRobotConfig()
+            config.loadNode(configElement)
 
         libraries = []
 
@@ -142,7 +86,7 @@ class FileManager():
             for libElement in libraryElements:
                 libraries.append(libElement.childNodes[0].nodeValue)
 
-        return (rootState, configs, libraries)
+        return (rootState, config, libraries)
 
     def hasFile(self):
         return len(self.fullPath) > 0

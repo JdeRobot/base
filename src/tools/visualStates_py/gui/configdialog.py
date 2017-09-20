@@ -18,137 +18,112 @@
 
   '''
 import sys
-from gui.interfaces import Interfaces
-from PyQt5.QtWidgets import QDialog, QGroupBox, \
-    QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
-    QWidget, QApplication, QLabel, QGridLayout, QComboBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QDialog, QApplication, QGroupBox, QComboBox,\
+    QVBoxLayout, QFormLayout, QGridLayout, QHBoxLayout, QWidget
 from PyQt5.QtGui import QFontDatabase
+from gui.jderobotcommconfigdialog import JdeRobotCommConfigDialog
+from gui.rosconfigdialog import RosConfigDialog
+from gui.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
+from PyQt5.QtCore import pyqtSignal
 
 class ConfigDialog(QDialog):
-    configChanged = pyqtSignal(list)
-
-    def __init__(self, name, configs):
+    configChanged = pyqtSignal()
+    def __init__(self, title, config):
         super(QDialog, self).__init__()
-        self.setWindowTitle(name)
-        self.configs = configs
-        self.serverTypeCombo = None
-        self.nameEdit = None
-        self.topicEdit = None
-        self.proxyNameEdit = None
-        self.ipEdit = None
-        self.portEdit = None
-        self.interfaceCombo = None
-        self.addButton = None
+        if config is not None:
+            self.type = config.type
+        else:
+            self.type = JDEROBOTCOMM
 
-        self.drawWindow()
-
-    def drawWindow(self):
-        if self.layout() is not None:
-            tempWidget = QWidget()
-            tempWidget.setLayout(self.layout())
-
-        gridLayout = QGridLayout()
-
-        # add header
-        gridLayout.addWidget(QLabel('Server Type'), 0, 0)
-        gridLayout.addWidget(QLabel('Name'), 0, 1)
-        gridLayout.addWidget(QLabel('Topic'), 0, 2)
-        gridLayout.addWidget(QLabel('Proxy Name'), 0, 3)
-        gridLayout.addWidget(QLabel('IP'), 0, 4)
-        gridLayout.addWidget(QLabel('Port'), 0, 5)
-        gridLayout.addWidget(QLabel('Interface'), 0, 6)
-        gridLayout.addWidget(QLabel(''), 0, 7)
-
+        self.setWindowTitle(title)
+        commSelectionBox = QGroupBox('Select Communication Interface')
+        commSelectionBox.setObjectName('commInterface')
         # add new config input fields
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.serverTypeCombo = QComboBox()
-        self.serverTypeCombo.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.serverTypeCombo, 1, 0)
-        self.nameEdit = QLineEdit()
-        self.nameEdit.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.nameEdit, 1, 1)
-        self.topicEdit = QLineEdit()
-        self.topicEdit.setFont(fixedWidthFont)
-        self.topicEdit.setEnabled(False)
-        gridLayout.addWidget(self.topicEdit, 1, 2)
-        self.proxyNameEdit = QLineEdit()
-        self.proxyNameEdit.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.proxyNameEdit, 1, 3)
-        self.ipEdit = QLineEdit()
-        self.ipEdit.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.ipEdit, 1, 4)
-        self.portEdit = QLineEdit()
-        self.portEdit.setFont(fixedWidthFont)
-        gridLayout.addWidget(self.portEdit, 1, 5)
-        self.interfaceCombo = QComboBox()
-        gridLayout.addWidget(self.interfaceCombo, 1, 6)
-        self.addButton = QPushButton('Add')
-        gridLayout.addWidget(self.addButton, 1, 7)
-        self.addButton.clicked.connect(self.addClicked)
+        self.commTypeCombo = QComboBox()
+        self.commTypeCombo.setFont(fixedWidthFont)
+        self.commTypeCombo.setMaximumWidth(220)
+        boxLayout = QVBoxLayout()
+        boxLayout.addWidget(self.commTypeCombo)
+        commSelectionBox.setLayout(boxLayout)
+        vLayout = QFormLayout()
+        vLayout.addWidget(commSelectionBox)
 
-        # add server types to the combobox
-        self.serverTypeCombo.addItem('ICE', 'ice')
-        self.serverTypeCombo.addItem('ROS', 'ros')
-        self.serverTypeCombo.currentIndexChanged.connect(self.serverTypeChanged)
+        self.configsLayout = QVBoxLayout()
+        self.configsBox = QGroupBox('')
+        self.configsBox.setLayout(self.configsLayout)
+        vLayout.addWidget(self.configsBox)
 
-        # add interfaces to the combobox
-        interfaces = Interfaces.getInterfaces()
-        for interfaceName in interfaces:
-            self.interfaceCombo.addItem(interfaceName, interfaceName)
+        self.setLayout(vLayout)
+        self.resize(700, 500)
+        #self.setStyleSheet('QGroupBox#commInterface { border: 1px solid black; border-radius: 4px; padding:15px;} QGroupBox::title#commInterface {background-color:transparent; padding-left:25px; padding-top:5px;} ')
 
-        row = 2
-        for configItem in self.configs:
-            gridLayout.addWidget(QLabel(configItem['serverType']), row, 0)
-            gridLayout.addWidget(QLabel(configItem['name']), row, 1)
-            gridLayout.addWidget(QLabel(configItem['topic']), row, 2)
-            gridLayout.addWidget(QLabel(configItem['proxyName']), row, 3)
-            gridLayout.addWidget(QLabel(configItem['ip']), row, 4)
-            gridLayout.addWidget(QLabel(configItem['port']), row, 5)
-            gridLayout.addWidget(QLabel(configItem['interface']), row, 6)
-            deleteButton = QPushButton('Delete')
-            deleteButton.clicked.connect(self.deleteClicked)
-            # we will find the item to be deleted based on the index on the config list
-            deleteButton.setObjectName(str(row-2))
-            gridLayout.addWidget(deleteButton, row, 7)
-            row += 1
+        self.rosConfigsUI = RosConfigDialog('ROS Communication')
+        self.rosConfigsUI.configChanged.connect(self.configChangedHandler)
+        self.configsLayout.addWidget(self.rosConfigsUI)
+        self.rosConfigsUI.setVisible(False)
+        self.jderobotCommConfigsUI = JdeRobotCommConfigDialog('JdeRobot Communication')
+        self.jderobotCommConfigsUI.configChanged.connect(self.configChangedHandler)
+        self.configsLayout.addWidget(self.jderobotCommConfigsUI)
+        self.jderobotCommConfigsUI.setVisible(True)
 
-        self.resize(700, 100)
-        self.setLayout(gridLayout)
+        self.rosConfig = None
+        self.jdeRobotCommConfig = None
 
-    def serverTypeChanged(self):
-        if self.serverTypeCombo.currentData() == 'ros':
-            self.topicEdit.setEnabled(True)
-            self.proxyNameEdit.setEnabled(False)
-            self.ipEdit.setEnabled(False)
-            self.portEdit.setEnabled(False)
-        elif self.serverTypeCombo.currentData() == 'ice':
-            self.topicEdit.setEnabled(False)
-            self.proxyNameEdit.setEnabled(True)
-            self.ipEdit.setEnabled(True)
-            self.portEdit.setEnabled(True)
+        self.commTypeCombo.addItem('JdeRobot Communication', 'jderobotcomm')
+        self.commTypeCombo.addItem('ROS Node', 'ros')
+        self.commTypeCombo.currentIndexChanged.connect(self.commTypeComboChanged)
 
-    def deleteClicked(self):
-        dataIndex = int(self.sender().objectName())
-        print('dataIndex:' + str(dataIndex))
-        self.configs.pop(dataIndex)
-        self.configChanged.emit(self.configs)
-        self.drawWindow()
+        if config is not None:
+            if config.type == ROS:
+                self.rosConfig = config
+                self.commTypeCombo.setCurrentIndex(1)
+                self.loadRosConfigs()
+            elif config.type == JDEROBOTCOMM:
+                self.jdeRobotCommConfig = config
+                self.commTypeCombo.setCurrentIndex(0)
+                self.loadJdeRobotCommConfigs()
+        else:
+            self.loadJdeRobotCommConfigs()
 
-    def addClicked(self):
-        configData = {}
-        configData['serverType'] = self.serverTypeCombo.currentData()
-        configData['name'] = self.nameEdit.text()
-        configData['topic'] = self.topicEdit.text()
-        configData['proxyName'] = self.proxyNameEdit.text()
-        configData['ip'] = self.ipEdit.text()
-        configData['port'] = self.portEdit.text()
-        configData['interface'] = self.interfaceCombo.currentData()
-        self.configs.append(configData)
-        self.configChanged.emit(self.configs)
-        self.drawWindow()
+
+
+    def commTypeComboChanged(self):
+        if self.commTypeCombo.currentData() == 'ros':
+            self.loadRosConfigs()
+        elif self.commTypeCombo.currentData() == 'jderobotcomm':
+            self.loadJdeRobotCommConfigs()
+
+
+    def loadRosConfigs(self):
+        self.type = ROS
+        self.jderobotCommConfigsUI.setVisible(False)
+        self.rosConfigsUI.setVisible(True)
+        if self.rosConfig is None:
+            self.rosConfig = RosConfig()
+        self.rosConfigsUI.setConfig(self.rosConfig)
+        self.configChanged.emit()
+
+    def loadJdeRobotCommConfigs(self):
+        self.type = JDEROBOTCOMM
+        self.rosConfigsUI.setVisible(False)
+        self.jderobotCommConfigsUI.setVisible(True)
+        if self.jdeRobotCommConfig is None:
+            self.jdeRobotCommConfig = JdeRobotConfig()
+        self.jderobotCommConfigsUI.setConfig(self.jdeRobotCommConfig)
+        self.configChanged.emit()
+
+    def configChangedHandler(self):
+        self.configChanged.emit()
+
+    def getConfig(self):
+        if self.type == ROS:
+            return self.rosConfig
+        elif self.type == JDEROBOTCOMM:
+            return self.jdeRobotCommConfig
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    dialog = ConfigDialog('Config', [])
+    config = JdeRobotConfig()
+    dialog = ConfigDialog('Config', config)
     dialog.exec_()

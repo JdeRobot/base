@@ -1,1 +1,1 @@
-CMAKE_INSTALL_PREFIX = '/usr/local'
+CMAKE_INSTALL_PREFIX = '/opt/jderobot'
