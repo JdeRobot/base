@@ -12,27 +12,6 @@ link_directories(
     ${easyiceconfig_LIBRARY_DIRS}
 )
 #boost_system 
-add_library(holoCarMotors SHARED holoCarMotors.cc)
-target_link_libraries(holoCarMotors 
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-
-    ${easyiceconfig_LIBRARIES}
-    colorspacesmm
-    JderobotInterfaces
-)
-
-add_library(holoCarPose3D SHARED holoCarPose3d.cc)
-target_link_libraries(holoCarPose3D
-	${GAZEBO_libraries} 
-	${ZeroCIce_LIBRARIES} 
-
-    ${easyiceconfig_LIBRARIES}
-    colorspacesmm
-    JderobotInterfaces
-)
-
-
 add_library(lasertaxi SHARED laser.cc)
 target_link_libraries(lasertaxi 
 	RayPlugin 
@@ -47,8 +26,5 @@ INSTALL (TARGETS lasertaxi
 	DESTINATION share/jderobot/gazebo/plugins/taxiholoLaser/ 
 	COMPONENT core)
 
-
-INSTALL (TARGETS holoCarMotors DESTINATION share/jderobot/gazebo/plugins/taxiholoLaser/ COMPONENT core)
-INSTALL (TARGETS holoCarPose3D DESTINATION share/jderobot/gazebo/plugins/taxiholoLaser/ COMPONENT core)
-FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/*.cfg)
+FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
 INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/conf/ COMPONENT core)
