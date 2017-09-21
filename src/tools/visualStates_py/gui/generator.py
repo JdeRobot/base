@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-class Generator():
+class Generator(object):
 
     def __init__(self):
         pass

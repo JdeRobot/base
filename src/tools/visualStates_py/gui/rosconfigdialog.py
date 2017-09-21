@@ -30,6 +30,8 @@ from gui.config import RosConfig
 class RosConfigDialog(QDialog):
     configChanged = pyqtSignal()
 
+    # use this for editable filtering of message types http://www.qtcentre.org/threads/23143-Combobox-entries-filter-as-I-type
+
     def __init__(self, name):
         super(QDialog, self).__init__()
         self.setWindowTitle(name)
@@ -89,8 +91,8 @@ class PackageTab(QWidget):
 
     def setConfig(self, config):
         self.config = config
-        self.buildDependencies.setPlainText(self.config.getBuildDependencies())
-        self.runDependencies.setPlainText(self.config.getRunDependencies())
+        self.buildDependencies.setPlainText(self.config.getBuildDependenciesAsText())
+        self.runDependencies.setPlainText(self.config.getRunDependenciesAsText())
 
 
 
@@ -105,6 +107,9 @@ class TopicsTab(QWidget):
         self.nameEdit = QLineEdit()
         self.dataTypeComboBox = QComboBox()
         self.fillDataTypes()
+        self.opTypeComboBox = QComboBox()
+        self.opTypeComboBox.addItem('sub', 'Subscribe')
+        self.opTypeComboBox.addItem('pub', 'Publish')
         self.addButton = QPushButton('Add')
         self.addButton.clicked.connect(self.addClicked)
 
@@ -112,6 +117,7 @@ class TopicsTab(QWidget):
         rowLayout = QHBoxLayout()
         rowLayout.addWidget(self.nameEdit)
         rowLayout.addWidget(self.dataTypeComboBox)
+        rowLayout.addWidget(self.opTypeComboBox)
         rowLayout.addWidget(self.addButton)
         rowContainer = QWidget()
         rowContainer.setLayout(rowLayout)
@@ -127,10 +133,11 @@ class TopicsTab(QWidget):
             self.dataTypeComboBox.addItem(concatType, concatType)
 
 
-    def addTopicRow(self, name, type):
+    def addTopicRow(self, name, type, opType):
         rowLayout = QHBoxLayout()
         rowLayout.addWidget(QLabel(name))
         rowLayout.addWidget(QLabel(type))
+        rowLayout.addWidget(QLabel(opType))
         removeButton = QPushButton('Remove')
         removeButton.clicked.connect(self.removeTopicClicked)
         removeButton.setObjectName(str(self.count))
@@ -145,8 +152,8 @@ class TopicsTab(QWidget):
 
     def addClicked(self):
         if self.config is not None:
-            self.config.addTopic(self.count, self.nameEdit.text(), self.dataTypeComboBox.currentData())
-            self.addTopicRow(self.nameEdit.text(), self.dataTypeComboBox.currentData())
+            self.config.addTopic(self.count, self.nameEdit.text(), self.dataTypeComboBox.currentData(), self.opTypeComboBox.currentData())
+            self.addTopicRow(self.nameEdit.text(), self.dataTypeComboBox.currentData(), self.opTypeComboBox.currentData())
             self.nameEdit.setText('')
             self.configChanged.emit()
 
@@ -186,7 +193,7 @@ class TopicsTab(QWidget):
         self.clearAllRows()
         for topic in self.config.getTopics():
             topic['id'] = self.count
-            self.addTopicRow(topic['name'], topic['type'])
+            self.addTopicRow(topic['name'], topic['type'], topic['opType'])
 
 
 if __name__ == '__main__':

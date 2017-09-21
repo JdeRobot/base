@@ -29,7 +29,7 @@ from PyQt5.QtCore import pyqtSignal
 class ConfigDialog(QDialog):
     configChanged = pyqtSignal()
     def __init__(self, title, config):
-        super(QDialog, self).__init__()
+        QDialog.__init__()
         if config is not None:
             self.type = config.type
         else:

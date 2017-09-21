@@ -23,9 +23,10 @@ from gui.transitiontype import TransitionType
 import os
 
 class PythonGenerator(Generator):
-    def __init__(self, libraries, configs, interfaceHeaders, states):
+    def __init__(self, libraries, config, interfaceHeaders, states):
+        Generator.__init__(self)
         self.libraries = libraries
-        self.configs = configs
+        self.config = config
         self.interfaceHeaders = interfaceHeaders
         self.states = states
 

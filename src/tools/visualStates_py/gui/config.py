@@ -8,6 +8,10 @@ class Config():
 
 
 class RosConfig(Config):
+
+    PUBLISH = 0
+    SUBSCRIBE = 1
+
     def __init__(self):
         self.type = ROS
         self.topics = []
@@ -17,11 +21,12 @@ class RosConfig(Config):
     def getTopics(self):
         return self.topics
 
-    def addTopic(self, id, name, type):
+    def addTopic(self, id, name, type, opType):
         topic = {}
         topic['id'] = id
         topic['name'] = name
         topic['type'] = type
+        topic['opType'] = opType
         self.topics.append(topic)
 
     def removeTopic(self, id):
@@ -34,16 +39,40 @@ class RosConfig(Config):
 
 
     def setBuildDependencies(self, dependencies):
-        pass
+        self.buildDependencies = []
+        dependStrs = dependencies.split('\n')
+        for dStr in dependStrs:
+            if len(dStr.strip()) >= 0:
+                self.buildDependencies.append(dStr.strip())
 
     def getBuildDependencies(self):
-        pass
+        return self.buildDependencies
+
+    def getBuildDependenciesAsText(self):
+        myStr = ''
+        for i in range(len(self.buildDependencies)):
+            myStr += self.buildDependencies[i]
+            if i < len(self.buildDependencies):
+                myStr += '\n'
+        return myStr
 
     def setRunDependencies(self, dependencies):
-        pass
+        self.runDependencies = []
+        dependStrs = dependencies.split('\n')
+        for dStr in dependStrs:
+            if len(dStr.strip()) >= 0:
+                self.runDependencies.append(dStr.strip())
 
     def getRunDependencies(self):
-        pass
+        return self.runDependencies
+
+    def getRunDependenciesAsText(self):
+        myStr = ''
+        for i in range(len(self.runDependencies)):
+            myStr += self.runDependencies[i]
+            if i < len(self.runDependencies):
+                myStr += '\n'
+        return myStr
 
     def createNode(self, doc):
         cfgElement = doc.createElement('config')
@@ -73,7 +102,12 @@ class RosConfig(Config):
             typeElement = doc.createElement('type')
             typeElement.appendChild(doc.createTextNode(t['type']))
             tElement.appendChild(typeElement)
+            opElement = doc.createElement('opType')
+            opElement.appendChild(doc.createTextNode(t['opType']))
+            tElement.appendChild(opElement)
+
             tElements.appendChild(tElement)
+
         cfgElement.appendChild(tElements)
 
         return cfgElement
@@ -95,11 +129,12 @@ class RosConfig(Config):
 
         self.topics = []
         tElements = node.getElementsByTagName('topics')[0]
-        for t in self.tElements.getElementsByTagName('topic'):
+        for t in tElements.getElementsByTagName('topic'):
             topic = {}
             topic['id'] = int(t.getAttribute('id'))
             topic['name'] = t.getElementsByTagName('name')[0].childNodes[0].nodeValue
             topic['type'] = t.getElementsByTagName('type')[0].childNodes[0].nodeValue
+            topic['opType'] = t.getElementsByTagName('opType')[0].childNodes[0].nodeValue
             self.topics.append(topic)
 
 
@@ -163,6 +198,7 @@ class JdeRobotConfig(Config):
 
             interfacesElement.appendChild(interElement)
 
+        cfgElement.appendChild(interfacesElement)
         return cfgElement
 
     def loadNode(self, node):

@@ -24,9 +24,10 @@ from gui.cppparser import CPPParser
 import os, stat
 
 class CppGenerator(Generator):
-    def __init__(self, libraries, configs, interfaceHeaders, states):
+    def __init__(self, libraries, config, interfaceHeaders, states):
+        Generator.__init__(self)
         self.libraries = libraries
-        self.configs = configs
+        self.config = config
         self.interfaceHeaders = interfaceHeaders
         self.states = states
 
@@ -161,7 +162,7 @@ class CppGenerator(Generator):
             headers.append('>\n')
 
         # generate interface headers
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             if len(cfg['proxyName']) == 0:
                 cfg['proxyName'] = cfg['interface']
             headers.append('#include <jderobot/comm/')
@@ -211,7 +212,7 @@ class CppGenerator(Generator):
         classStr.append('class Interfaces {\n')
         classStr.append('public:\n')
         classStr.append('\tIce::CommunicatorPtr ice;\n')
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             classStr.append('\tJdeRobotComm::' + cfg['interface'] + 'Client* ' + cfg['name'] + ';\n')
         classStr.append('\n')
         classStr.append('\tvirtual void connectProxies(int argc, char* argv[]);\n')
@@ -257,7 +258,7 @@ class CppGenerator(Generator):
     def generateProxies(self, proxyStr):
         proxyStr.append('void Interfaces::connectProxies(int argc, char* argv[]) {\n')
         proxyStr.append('\tice = EasyIce::initialize(argc, argv);\n\n')
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             proxyStr.append('\t' + cfg['name'] + ' = JdeRobotComm::get' + cfg['interface'] + 'Client(ice, "automata.' + cfg['name'] + '");\n')
             proxyStr.append('\tif (' + cfg['name'] + ' == NULL) {\n')
             proxyStr.append('\t\tthrow "invalid proxy automata.' + cfg['name'] + '";\n')

@@ -73,9 +73,11 @@ class FileManager():
         if configElement.getAttribute('type') == str(ROS):
             config = RosConfig()
             config.loadNode(configElement)
+            config.type = ROS
         elif configElement.getAttribute('type') == str(JDEROBOTCOMM):
             config = JdeRobotConfig()
             config.loadNode(configElement)
+            config.type = JDEROBOTCOMM
 
         libraries = []
 

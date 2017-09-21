@@ -35,7 +35,8 @@ from gui.cppgenerator import CppGenerator
 from gui.pythongenerator import PythonGenerator
 from gui.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.config import JdeRobotConfig, RosConfig
+from gui.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
+from gui.cpprosgenerator import CppRosGenerator
 import os
 
 class VisualStates(QMainWindow):
@@ -199,6 +200,7 @@ class VisualStates(QMainWindow):
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
             self.automataScene.setLastIndexes(self.rootState)
+            print(str(self.config))
         else:
             print('open is canceled')
 
@@ -276,7 +278,11 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
-            generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+            if self.config.type == ROS:
+                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+            elif self.config.type == JDEROBOTCOMM:
+                generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
         else:
