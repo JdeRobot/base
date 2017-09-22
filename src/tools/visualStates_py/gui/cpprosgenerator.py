@@ -36,7 +36,7 @@ class CppRosGenerator(CppGenerator):
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
         sourceCode = ''.join(stringList)
-        fp = open(projectPath + os.sep + projectName + '.h', 'w')
+        fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.h', 'w')
         fp.write(sourceCode)
         fp.close()
 
@@ -102,7 +102,7 @@ class CppRosGenerator(CppGenerator):
         return headers
 
     def generateRosNodeClass(self, classStr, config):
-        classStr.append('Class RosNode {\n')
+        classStr.append('class RosNode {\n')
         classStr.append('private:\n')
         classStr.append('\tros::NodeHandle nh;\n')
         classStr.append('\tros::Rate rate;\n')
@@ -197,11 +197,17 @@ class CppRosGenerator(CppGenerator):
         rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
         for topic in config.getTopics():
             varName = topic['name'].replace('/', '-')
+            type = topic['type']
+            types = type.split('/')
             if topic['opType'] == 'Publish':
-                rosStr.append('\t' + varName + 'Pub = nh.advertise<' + topic['type'] + '>("' + topic['name'] + ", 10);\n")
+                if len(types) == 2:
+                    rosStr.append('\t' + varName + 'Pub = nh.advertise<' + types[0] + '::' + types[1] + '>("' + topic['name'] + '", 10);\n')
+                else:
+                    rosStr.append('\t' + varName + 'Pub = nh.advertise<' + type + '>("' + topic[
+                        'name'] + '", 10);\n')
             elif topic['opType'] == 'Subscribe':
                 rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &RosNode::'+varName+'Callback, this);\n')
-        rosStr.append('\n\n')
+        rosStr.append('}\n\n')
 
         rosStr.append('void* RosNode::threadRunner(void* owner) {\n')
         rosStr.append('\t((RosNode*)owner)->run();\n')
@@ -383,11 +389,29 @@ void readArgs(int *argc, char* argv[]) {
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
         cmakeStr.append(')\n\n')
+        cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
+        myStr = '''
+SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
+SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
+SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
+SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/visualstates_py)
+
+include_directories(
+    ${catkin_INCLUDE_DIRS}
+    ${JDEROBOT_INCLUDE_DIR}
+    ${VISUALSTATE_RUNTIME_INCLUDE_DIR}
+)
+
+link_directories(
+    ${JDEROBOT_LIBS_DIR}
+    ${VISUALSTATE_RUNTIME_LIBS_DIR}
+)
+'''
+        cmakeStr.append(myStr)
 
         cmakeStr.append('catkin_package()\n')
-        cmakeStr.append('include_directories(${catkin_INCLUDE_DIRS})\n')
         cmakeStr.append('add_executable(' + projectName + ' src/' + projectName + '.cpp)\n')
-        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES})\n')
+        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES} visualStatesRunTime)\n')
         cmakeStr.append('install(TARGETS ' + projectName + ' RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n\n')
         return cmakeStr
 
