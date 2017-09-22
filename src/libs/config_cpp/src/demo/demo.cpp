@@ -10,5 +10,9 @@ main( int argc, const char* argv[] ){
     YAML::Node props = JdeRobotConfig::load(filename);
     std::cout << props << std::endl;
 
+    std::cout << props["Demo.Name"]<< std::endl;
+    //std::cout << props.IsScalar()<< std::endl;
+    //std::cout << props.as<int>()<< std::endl;
+
     return 0;
 }

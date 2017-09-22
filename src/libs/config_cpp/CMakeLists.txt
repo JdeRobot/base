@@ -46,7 +46,7 @@ set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NA
 
 ## demo
 add_executable(config_demo src/demo/demo.cpp ${HEADERS})
-target_link_libraries(config_demo  ${YAML_CPP_LIBRARIES})
+target_link_libraries(config_demo  ${YAML_CPP_LIBRARIES} ${PROJECT_NAME})
 configure_file(src/demo/ice.cfg ice.cfg)
 # set_target_properties(config_demo PROPERTIES COMPILE_FLAGS "-std=c++0x")
 

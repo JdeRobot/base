@@ -38,5 +38,5 @@ inline
 YAML::Node load(std::string filename)
     {return jderobotconfig::loader::load(filename);}
 
-
+}
 #endif // JDEROBOT_CONFIG_CONFIG_H
