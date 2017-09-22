@@ -191,7 +191,9 @@ class CppRosGenerator(CppGenerator):
         headerStr.append('#include "' + projectName + '.h"\n')
         headerStr.append('#include <iostream>\n')
         headerStr.append('#include <string>\n')
+        headerStr.append('#include <signal.h>\n')
         headerStr.append('#include <runtimegui.h>\n\n')
+
 
     def generateRosMethods(self, rosStr, config):
         rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
@@ -301,6 +303,17 @@ void readArgs(int *argc, char* argv[]) {
             return 'state'+str(state.parent.id)
 
     def generateMain(self, mainStr, projectName):
+        myStr = '''
+void signalCallback(int signum)
+{
+   std::cout << "Caught signal: " << signum << std::endl;
+   // Cleanup and close up stuff here
+   // Terminate program
+   exit(signum);
+}
+
+'''
+        mainStr.append(myStr)
         mainStr.append('int main(int argc, char* argv[]) {\n')
         mainStr.append('\tros::init(argc, argv,"' + projectName + '_node");\n')
         mainStr.append('\tRosNode node(10);\n')
@@ -333,6 +346,8 @@ void readArgs(int *argc, char* argv[]) {
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->startThread();\n')
         mainStr.append('\n')
+
+        mainStr.append('signal(SIGINT, signalCallback);\n')
 
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->join();\n')
