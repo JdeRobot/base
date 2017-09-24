@@ -1,17 +1,17 @@
-Package: ${PROJECT_NAME}-deps-dev
+Package: jderobot
 Version: ${PACKAGE_VERSION}
 Architecture: all
-Provides: ${PROJECT_NAME}-deps-dev
-Conflicts: ${PROJECT_NAME}-deps-dev
-Replaces: ${PROJECT_NAME}-deps-dev
-Section: net
+Provides: jderobot-deps
+Conflicts: jderobot-deps
+Replaces: jderobot-deps
 Priority: extra
+Section: net
 Size: 0
 Installed-Size: 0
-Depends: ${PACKAGE_DEPENDS}
+Depends: ${PACKAGE_DEPENDS}, jderobot-tools, jderobot-libs, jderobot-drivers, jderobot-interfaces, jderobot-types
 Maintainer: Francisco Perez <f.perez475@gmail.com>
 Private-Original-Maintainer: Victor Arribas <v.arribas.urjc@gmail.com>
 Homepage: http://jderobot.org
-Description: Metapackage that gathers all library headers required to compile JdeRobot framework.
+Description: Metapackage that gathers all libraries required by JdeRobot framework, and install the proyect for execution only.
  Jderobot is a software development suite for robotics applications.
  Get it from https://github.com/JdeRobot/JdeRobot.git

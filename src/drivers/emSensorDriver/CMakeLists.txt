@@ -35,11 +35,14 @@ if(wiringPi_LIBRARY)
                 ${wiringPi_LIBRARY}
         )
 
-        INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/emSensorDriver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+        INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/emSensorDriver.cfg 
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf
+          COMPONENT emSensorDriver
+        )
 
-        install(TARGETS emSensorDriver
+        INSTALL(TARGETS emSensorDriver
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
+          COMPONENT emSensorDriver
         )
 
     else()

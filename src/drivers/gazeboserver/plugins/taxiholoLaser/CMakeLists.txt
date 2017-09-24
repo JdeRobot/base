@@ -23,8 +23,8 @@ target_link_libraries(lasertaxi
 ) 
 
 INSTALL (TARGETS lasertaxi 
-	DESTINATION share/jderobot/gazebo/plugins/taxiholoLaser/ 
-	COMPONENT core)
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/taxiholoLaser/ 
+	COMPONENT gazeboserver)
 
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION share/jderobot/conf/ COMPONENT core)
+INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf/ COMPONENT gazeboserver)

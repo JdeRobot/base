@@ -1,0 +1,17 @@
+Package: jderobot-tools
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Provides: jderobot-tools
+Conflicts: jderobot-tools
+Replaces: jderobot-tools
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: jderobot-3dviewer, jderobot-cameracalibrator, jderobot-cameraview, jderobot-cameraview-python, jderobot-colortuner-python, jderobot-giraffeClient, jderobot-kobukiviewer, jderobot-namingservice, jderobot-navigatorcamera, jderobot-panTiltTeleop, jderobot-recorder2, jderobot-replayController, jderobot-replayer2, jderobot-rgbdCalibrator, jderobot-rgbdManualCalibrator, jderobot-rgbdViewer, jderobot-uav-viewer, jderobot-uav-viewer-python
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that gathers all the tools of JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/JdeRobot/JdeRobot.git
+

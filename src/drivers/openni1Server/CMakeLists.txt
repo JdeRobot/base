@@ -65,11 +65,14 @@ IF(openni_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 				)
 		ENDIF()
 
-		install(TARGETS openni1Server
+		INSTALL(TARGETS openni1Server
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
+          COMPONENT openni1Server
         )
         
-		INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/openni1Server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+		INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/openni1Server.cfg 
+			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf
+			COMPONENT openni1Server
+		)
 ENDIF()
 

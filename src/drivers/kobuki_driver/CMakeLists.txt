@@ -30,9 +30,8 @@ if (${kobuki_COMPILE})
 
     install(TARGETS kobuki_driver
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
+          COMPONENT kobuki-driver
         )
         
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobuki_driver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobuki_driver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT kobuki-driver)
 ENDIF()
-

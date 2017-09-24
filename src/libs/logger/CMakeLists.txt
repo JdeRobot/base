@@ -27,10 +27,10 @@ target_link_libraries(logger ${Boost_LIBRARIES})
 ### Install
 install(TARGETS logger
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT logger
 )
 install( FILES Logger.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/logger/
-    COMPONENT core
+    COMPONENT logger
 )
  
