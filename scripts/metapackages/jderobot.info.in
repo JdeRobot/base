@@ -1,9 +1,9 @@
-Package: jderobot
+Package: ${PROJECT_NAME}
 Version: ${PACKAGE_VERSION}
 Architecture: all
-Provides: jderobot-deps
-Conflicts: jderobot-deps
-Replaces: jderobot-deps
+Provides: ${PROJECT_NAME}-deps
+Conflicts: ${PROJECT_NAME}-deps
+Replaces: ${PROJECT_NAME}-deps
 Priority: extra
 Section: net
 Size: 0

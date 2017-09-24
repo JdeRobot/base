@@ -1,9 +1,9 @@
-Package: jderobot-drivers
+Package: ${PROJECT_NAME}-drivers
 Version: ${PACKAGE_VERSION}
 Architecture: all
-Provides: jderobot-drivers
-Conflicts: jderobot-drivers
-Replaces: jderobot-drivers
+Provides: ${PROJECT_NAME}-drivers
+Conflicts: ${PROJECT_NAME}-drivers
+Replaces: ${PROJECT_NAME}-drivers
 Section: net
 Priority: extra
 Size: 0

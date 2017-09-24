@@ -1,9 +1,9 @@
-Package: jderobot-libs
+Package: ${PROJECT_NAME}-libs
 Version: ${PACKAGE_VERSION}
 Architecture: all
-Provides: jderobot-libs
-Conflicts: jderobot-libs
-Replaces: jderobot-libs
+Provides: ${PROJECT_NAME}-libs
+Conflicts: ${PROJECT_NAME}-libs
+Replaces: ${PROJECT_NAME}-libs
 Section: net
 Priority: extra
 Size: 0

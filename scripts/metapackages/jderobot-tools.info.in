@@ -1,9 +1,9 @@
-Package: jderobot-tools
+Package: ${PROJECT_NAME}-tools
 Version: ${PACKAGE_VERSION}
 Architecture: all
-Provides: jderobot-tools
-Conflicts: jderobot-tools
-Replaces: jderobot-tools
+Provides: ${PROJECT_NAME}-tools
+Conflicts: ${PROJECT_NAME}-tools
+Replaces: ${PROJECT_NAME}-tools
 Section: net
 Priority: extra
 Size: 0
