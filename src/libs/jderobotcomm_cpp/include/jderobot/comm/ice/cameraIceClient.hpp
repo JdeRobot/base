@@ -28,7 +28,9 @@
 #include <jderobot/camera.h>
 #include <cv.h>
 #include <logger/Logger.h>
+#include <jderobotutil/utils/CameraUtils.h>
 #include <jderobot/types/image.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
 #include <zlib.h>
 
@@ -36,7 +38,7 @@ namespace JdeRobotComm {
 
 class CameraIceClient: public IceUtil::Thread, public JdeRobotComm::CameraClient {
 public:
-	CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix);
+	CameraIceClient(JdeRobotComm::Communicator jdrc, std::string prefix);
 	virtual ~CameraIceClient();
 	virtual void run();
 

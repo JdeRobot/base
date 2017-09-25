@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,28 +14,39 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors :
- *       Victor Arribas Raigadas <.varribas.urjc@gmail.com>
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
 #ifndef JDEROBOT_CONFIG_CONFIG_H
 #define JDEROBOT_CONFIG_CONFIG_H
 
 /**
- * @mainpage  libEasyIceConfig
- *            A library to tame Ice.Config
+ * @mainpage  Config
+ *            JdeRobot COnfig library
  *
- * @author    Victor Arribas Raigadas, .varribas.urjc@gmail.com
- * @date      November 2015
+ * @author    Aitor Martinez Fernandez , .aitor.martinez.fernandez@gmail.com
+ * @date      September 2017
  * @version    0.9.0 (alpha)
  */
 
 #include <yaml-cpp/yaml.h>
 #include <jderobot/config/loader.hpp>
+#include <jderobot/config/class.hpp>
 
 namespace JdeRobotConfig{
 
+
+/**
+ * @brief loads propierties from a file
+ *
+ *
+ * @param filename
+ * 
+ *
+ * @return config class with all propierties
+ */
 inline
-YAML::Node load(std::string filename)
+JdeRobotConfig::Config load(std::string filename)
     {return jderobotconfig::loader::load(filename);}
 
 }

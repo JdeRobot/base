@@ -23,6 +23,7 @@
 #include <jderobot/types/image.h>
 #include <Ice/Communicator.h>
 #include <Ice/Properties.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
 
 
@@ -41,7 +42,7 @@ namespace JdeRobotComm {
 	 *
 	 * @return null if propierties are wrong
 	 */
-	CameraClient* getCameraClient(Ice::CommunicatorPtr ic, std::string prefix);
+	CameraClient* getCameraClient(JdeRobotComm::Communicator jdrc, std::string prefix);
 
 
 } //NS

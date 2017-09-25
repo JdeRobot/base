@@ -25,12 +25,12 @@
 namespace JdeRobotComm {
 
 CameraClient* 
-getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
+getCameraClient(JdeRobotComm::Communicator jdrc, std::string prefix){
 	CameraClient* client = 0;
-	Ice::PropertiesPtr prop = ic->getProperties();
 
 
-	int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
+	//int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
+	int server = jdrc.getConfig().asInt(prefix+".Server");
 	switch (server){
 		case 0:
 		{
@@ -41,7 +41,7 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 		{
 			std::cout << "Receiving Image from ICE interfaces" << std::endl;
 			CameraIceClient* cl;
-			cl = new CameraIceClient(ic, prefix);
+			cl = new CameraIceClient(jdrc, prefix);
 			cl->start();
 		    client = (JdeRobotComm::CameraClient*) cl;
 		    break;
@@ -51,9 +51,9 @@ getCameraClient(Ice::CommunicatorPtr ic, std::string prefix){
 			#ifdef JDERROS
 				std::cout << "Receiving Image from ROS messages" << std::endl;
 				std::string nodeName;
-				nodeName =  prop->getPropertyWithDefault(prefix+".Name","CameraNode");
+				nodeName =  jdrc.getConfig().asString(prefix+".Name");
 				std::string topic;
-				topic = prop->getPropertyWithDefault(prefix+".Topic","");
+				topic = jdrc.getConfig().asString(prefix+".Topic");
 				ListenerCamera* lc;
 				lc = new ListenerCamera(0, nullptr, nodeName, topic);
 				lc->start();

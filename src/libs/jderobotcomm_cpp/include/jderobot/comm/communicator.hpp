@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2016 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,19 +14,33 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors :
- *       Victor Arribas Raigadas <varribas.urjc@gmail.com>
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
+#ifndef JDEROBOTCOMM_COMMUNICATOR_H
+#define JDEROBOTCOMM_COMMUNICATOR_H
 
-#ifndef JDEROBOT_CONFIG_HARDCOREDLOCATIONS_H
-#define JDEROBOT_CONFIG_HARDCOREDLOCATIONS_H
+#include <Ice/Communicator.h>
+#include <jderobot/config/config.h>
 
 
-namespace JdeRobotConfig{
-const char* HARDCORED_LOCATIONS =
-"@CMAKE_INSTALL_PREFIX@/share/jderobot/conf\
-";
+namespace JdeRobotComm {
+
+	class Communicator {
+	public:
+		Communicator(JdeRobotConfig::Config config);
+		~Communicator();
+
+		JdeRobotConfig::Config getConfig();
+		Ice::CommunicatorPtr getIceComm();
+
+
+	private:
+		JdeRobotConfig::Config config;
+		Ice::CommunicatorPtr ic;	
+	};
+
 
 } //NS
-#endif // JDEROBOT_CONFIG_HARDCOREDLOCATIONS_H
 
+#endif // JDEROBOTCOMM_COMMUNICATOR_H

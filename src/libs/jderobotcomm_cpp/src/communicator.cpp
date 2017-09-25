@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,24 +14,32 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors :
- *       Victor Arribas Raigadas <.varribas.urjc@gmail.com>
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
+#include <jderobot/comm/communicator.hpp>
 
+namespace JdeRobotComm {
 
-#ifndef JDEROBOT_CONFIG_DEBUG_HPP
-#define JDEROBOT_CONFIG_DEBUG_HPP
-
-#include <iostream>
-#include <yaml-cpp/yaml.h>
-
-namespace jderobotconfig{
-namespace debug{
-
-inline
-void printProperties(YAML::Node prop){
-	std::cout << prop << std::endl;
+Communicator::Communicator(JdeRobotConfig::Config config){
+	this->config = config;
 }
 
-}}//NS
 
-#endif // JDEROBOT_CONFIG_DEBUG_HPP
+Communicator::~Communicator(){
+	this->ic->destroy();
+}
+
+
+
+JdeRobotConfig::Config 
+Communicator::getConfig(){
+	return this->config;
+}
+
+Ice::CommunicatorPtr 
+Communicator::getIceComm(){
+	return this->ic;
+}
+
+
+}//NS

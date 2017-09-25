@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
  *  Authors :
- *       Victor Arribas Raigadas <.varribas.urjc@gmail.com>
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
 #ifndef JDEROBOT_CONFIG_LOADER_H
@@ -26,6 +26,7 @@
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/exceptions.h>
 #include <jderobot/config/hardcodedlocations.h>
+#include <jderobot/config/class.hpp>
 
 
 namespace jderobotconfig {
@@ -45,9 +46,9 @@ std::string findConfigFile(const std::string& filename);
 /**
  * @brief Loads File configuration from passed file.
  *
- * @return new YAML:Node or passed one.
+ * @return new JdeRobotConfig::Config or passed one.
  */
-YAML::Node load(std::string filename);
+JdeRobotConfig::Config load(std::string filename);
 
 
 

@@ -24,11 +24,10 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <jderobot/config/config.h>
-#include <jderobot/config/debug.hpp>
 
 
 
 int main(int argc, char* argv[]){
-    YAML::Node props = Config::load(argv[1]);
-    jderobotconfig::debug::printProperties(props);
+    JdeRobot::Config props = Config::load(argv[1]);
+    std::cout << props << std::endl;
 }

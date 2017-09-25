@@ -28,10 +28,12 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
     ${roscpp_INCLUDE_DIRS}
     ${INTERFACES_CPP_DIR}
+    ${jderobotconfig_INCLUDE_DIRS}
 )
 
 
 set(HEADERS
+    include/jderobot/comm/communicator.hpp
     include/jderobot/comm/laserClient.hpp
     include/jderobot/comm/interfaces/laserClient.hpp
     include/jderobot/comm/ice/laserIceClient.hpp
@@ -48,6 +50,7 @@ set(HEADERS
 )
 
 set(SOURCES
+    src/communicator.cpp
     src/laserClient.cpp
     src/ice/laserIceClient.cpp
     src/cameraClient.cpp
@@ -83,12 +86,15 @@ ENDIF()
 ## Adding shared library for common usage
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 
+add_dependencies(${PROJECT_NAME} ${jderobotconfig_LIBRARIES})
+
 target_link_libraries(${PROJECT_NAME} 
     ${ZeroCIce_LIBRARIES} 
     logger 
     ${Boost_LIBRARIES} 
     colorspacesmm 
-    ${catkin_LIBRARIES})
+    ${catkin_LIBRARIES}
+    ${jderobotconfig_LIBRARIES})
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
@@ -100,7 +106,8 @@ target_link_libraries(${PROJECT_NAME}-embedded
     ${Boost_LIBRARIES} 
     colorspacesmm 
     JderobotInterfaces
-    ${catkin_LIBRARIES})
+    ${catkin_LIBRARIES}
+    ${jderobotconfig_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 

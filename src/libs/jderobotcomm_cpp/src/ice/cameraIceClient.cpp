@@ -19,28 +19,26 @@
 
  */
 
-#include <jderobotutil/utils/CameraUtils.h>
 #include "jderobot/comm/ice/cameraIceClient.hpp"
 
 
 namespace JdeRobotComm {
 
 
-CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
+CameraIceClient::CameraIceClient(JdeRobotComm::Communicator jdrc, std::string prefix) {
 
 	this->prefix=prefix;
-	Ice::PropertiesPtr prop;
-	prop = ic->getProperties();
 	Ice::ObjectPrx baseCamera;
 	this->refreshRate=0;
 	this->mImageFormat.empty();
 
 	
 
-	int fps=prop->getPropertyAsIntWithDefault(prefix+".Fps",30);
-	this->cycle=(float)(1/(float)fps)*1000000;
+	float fps=jdrc.getConfig().asFloat(prefix+".Fps");
+	this->cycle=(1/fps)*1000000;
 	try{
-		baseCamera = ic->propertyToProxy(prefix+".Proxy");
+		std::string proxy = jdrc.getConfig().asString(prefix+".Proxy");
+		baseCamera = jdrc.getIceComm()->stringToProxy(proxy);
 		if (0==baseCamera){
 			this->on = false;
 			throw prefix + "Could not create proxy with Camera";
@@ -62,7 +60,7 @@ CameraIceClient::CameraIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
 	}
 
 	//check if default format is defined
-	std::string definedFormat=prop->getPropertyWithDefault(prefix+".Format", "RGB8");
+	std::string definedFormat=jdrc.getConfig().asString(prefix+".Format");
 
 	this->mImageFormat = CameraUtils::negotiateDefaultFormat(this->prx,definedFormat);
 

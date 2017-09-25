@@ -17,15 +17,15 @@ set(HEADERS
     include/jderobot/config/config.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/jderobot/config/hardcodedlocations.h
     include/jderobot/config/loader.hpp
-    include/jderobot/config/debug.hpp
-
+    include/jderobot/config/class.hpp
     include/jderobot/config/stdutils.hpp
 )
 
 set(SOURCES
     src/loader.cpp
+    src/class.cpp
 )
-# set_property(SOURCE src/loader.cpp PROPERTY COMPILE_FLAGS "-std=c++0x")
+
 
 ## Adding shared library for common usage
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
@@ -39,7 +39,7 @@ set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 
 
 ## Export library variables (like find_package)
 set(${PROJECT_NAME}_FOUND 1 CACHE BOOL "Find(${PROJECT_NAME})")
-set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "Find(${PROJECT_NAME})")
+set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" CACHE PATH "Find(${PROJECT_NAME})")
 set(${PROJECT_NAME}_LIBRARY_DIRS "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Find(${PROJECT_NAME})")
 set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NAME})")
 
@@ -47,16 +47,14 @@ set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NA
 ## demo
 add_executable(config_demo src/demo/demo.cpp ${HEADERS})
 target_link_libraries(config_demo  ${YAML_CPP_LIBRARIES} ${PROJECT_NAME})
-configure_file(src/demo/ice.cfg ice.cfg)
-# set_target_properties(config_demo PROPERTIES COMPILE_FLAGS "-std=c++0x")
+configure_file(src/demo/demo.yml demo.yml)
+
 
 ## tests
 #add_executable(config_test_stdutils src/tests/test_stdutils.cpp)
-# set_target_properties(config_test_stdutils PROPERTIES COMPILE_FLAGS "-std=c++0x")
 
 #add_executable(config_test_loader src/tests/test_loader.cpp)
 #target_link_libraries(config_test_loader ${PROJECT_NAME}  ${YAML_CPP_LIBRARIES})
-# set_target_properties(config_test_loader PROPERTIES COMPILE_FLAGS "-std=c++0x")
 
 
 ### Install
