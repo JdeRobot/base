@@ -7,3 +7,5 @@ __author__ = 'aitormf'
 #   import jderobotconfig as config
 from .config import *
 
+from .properties import Properties
+

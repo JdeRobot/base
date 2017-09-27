@@ -53,12 +53,12 @@ def __Cameradisabled(jdrc, prefix):
     print( prefix + " Disabled")
     return None
 
-def getCameraClient (jdrc, name):
+def getCameraClient (jdrc, prefix):
     '''
     Returns a Camera Client.
 
     @param jdrc: JdeRobotComm Communicator
-    @param name: name of client in config file
+    @param prefix: name of client in config file
 
     @type jdrc: JdeRobotComm Communicator
     @type name: String
@@ -66,8 +66,7 @@ def getCameraClient (jdrc, name):
     @return None if Camera is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 

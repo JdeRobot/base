@@ -30,12 +30,12 @@ class Laser:
         Laser Connector. Recives LaserData from Ice interface when you run update method.
     '''
 
-    def __init__(self, ic, prefix):
+    def __init__(self, jdrc, prefix):
         '''
         Laser Contructor.
         Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
 
-        @param ic: Ice Communicator
+        @param jdrc: JdeRobotComm Communicator
         @param prefix: prefix name of client in config file
 
         @type ic: Ice Communicator
@@ -45,9 +45,10 @@ class Laser:
         self.laser = LaserData()
 
         try:
-            base = ic.propertyToProxy(prefix+".Proxy")
+            ic = jdrc.getIc()
+            proxyStr = jdrc.getConfig().getProperty(prefix+".Proxy")
+            base = ic.stringToProxy(proxyStr)
             self.proxy = jderobot.LaserPrx.checkedCast(base)
-            prop = ic.getProperties()
 
             self.update()
 

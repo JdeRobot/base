@@ -21,6 +21,7 @@ __author__ = 'aitormf'
 import sys, os
 import yaml
 from .hardcodedpaths import HARDCODED_PATHS
+from .properties import Properties
 
 
 def findConfigFile(filename):
@@ -58,17 +59,15 @@ def load(filename):
 
     '''
     filepath = findConfigFile(filename)
-    properties= None
+    prop= None
     if (filepath):
         print ('loading Config file %s' %(filepath))
 
         with open(filepath, 'r') as stream:
-            properties=yaml.load(stream)
+            cfg=yaml.load(stream)
+            prop = Properties(cfg) 
     else:
         msg = "Ice.Config file '%s' could not being found" % (filename)
         raise ValueError(msg)
 
-    return properties
-
-def dump(conf):
-    return yaml.dump(conf)
+    return prop

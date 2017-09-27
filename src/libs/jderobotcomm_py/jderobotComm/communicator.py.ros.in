@@ -28,14 +28,15 @@ class Communicator:
 		self.__ic = None
 		self.config = config
 
-		for i in self.config:
-			if type(self.config[i]) is dict and self.config[i]["Server"] == 1:
+		ymlNode = self.config.getNode()
+		for i in ymlNode:
+			if type(ymlNode[i]) is dict and ymlNode[i]["Server"] == 1:
 				iceserver = True
-			if type(self.config[i]) is dict and self.config[i]["Server"] == 2:
+			if type(ymlNode[i]) is dict and ymlNode[i]["Server"] == 2:
 				rosserver = True
 
 		if rosserver:
-			self.__node = rospy.init_node(config["NodeName"], anonymous=True)
+			self.__node = rospy.init_node(ymlNode["NodeName"], anonymous=True)
 		if iceserver:
 			id = Ice.InitializationData()
 			self.__ic = Ice.initialize(None, id)
@@ -57,11 +58,8 @@ class Communicator:
 	def getIc(self):
 		return self.__ic
 
-	def getConfig(self, name=None):
-		if name:
-			return self.config[name]
-		else:
-			return self.config 
+	def getConfig(self):	
+		return self.config 
 
 
 	def getCameraClient(self, name):

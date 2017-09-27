@@ -53,7 +53,7 @@ def __Laserdisabled(jdrc, prefix):
     print( prefix + " Disabled")
     return None
 
-def getLaserClient (jdrc, name):
+def getLaserClient (jdrc, prefix):
     '''
     Returns a Laser Client.
 
@@ -66,8 +66,7 @@ def getLaserClient (jdrc, name):
     @return None if Laser is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 

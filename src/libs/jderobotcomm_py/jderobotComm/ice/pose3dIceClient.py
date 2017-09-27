@@ -31,12 +31,12 @@ class Pose3D:
         Pose3d Connector. Recives Pose3d from Ice interface when you run update method.
     '''
 
-    def __init__(self, ic, prefix):
+    def __init__(self, jdrc, prefix):
         '''
         Pose3d Contructor.
         Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
 
-        @param ic: Ice Communicator
+        @param jdrc: JdeRobotComm Communicator
         @param prefix: prefix name of client in config file
 
         @type ic: Ice Communicator
@@ -47,7 +47,9 @@ class Pose3D:
         self.pose = Pose3d()
 
         try:
-            base = ic.propertyToProxy(prefix+".Proxy")
+            ic = jdrc.getIc()
+            proxyStr = jdrc.getConfig().getProperty(prefix+".Proxy")
+            base = ic.stringToProxy(proxyStr)
             self.proxy = jderobot.Pose3DPrx.checkedCast(base)
             prop = ic.getProperties()
 

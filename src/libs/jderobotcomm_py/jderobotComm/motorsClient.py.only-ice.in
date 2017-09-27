@@ -55,7 +55,7 @@ def __Motorsdisabled(jdrc, prefix):
     print(prefix + " Disabled")
     return None
 
-def getMotorsClient (jdrc, name):
+def getMotorsClient (jdrc, prefix):
     '''
     Returns a Motors Client.
 
@@ -70,11 +70,10 @@ def getMotorsClient (jdrc, name):
     @return None if Motors is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 
     cons = [__Motorsdisabled, __getMotorsIceClient, __getPublisherMotors]
 
-    return cons[server](jdrc, name)
+    return cons[server](jdrc, prefix)

@@ -67,8 +67,7 @@ def getPose3dClient (jdrc, prefix):
     @return None if pose3d is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 

@@ -19,7 +19,7 @@ def __getMotorsIceClient(jdrc, prefix):
     @return Motors Ice Client
 
     '''
-     print("Publishing "+ prefix +" with ICE interfaces")
+    print("Publishing "+ prefix +" with ICE interfaces")
     client = MotorsIceClient(jdrc, prefix)
     client.start()
     return client
@@ -39,16 +39,15 @@ def __getPublisherMotors(jdrc, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Publishing "+  prefix + " with ROS messages")
-        cfg = jdrc.getConfig(prefix)
-        topic = cfg["Topic"]
+        topic = jdrc.getConfig().getProperty(prefix+".Topic")
 
-        maxW = cfg["maxW"]
+        maxW = jdrc.getConfig().getProperty(prefix+".maxW")
         if not maxW:
             maxW = 0.5
             print (prefix+".maxW not provided, the default value is used: "+ repr(maxW))
                 
 
-        maxV = cfg["maxV"]
+        maxV = jdrc.getConfig().getProperty(prefix+".maxV")
         if not maxV:
             maxV = 5
             print (prefix+".maxV not provided, the default value is used: "+ repr(maxV))
@@ -76,7 +75,7 @@ def __Motorsdisabled(jdrc, prefix):
     print(prefix + " Disabled")
     return None
 
-def getMotorsClient (jdrc, name):
+def getMotorsClient (jdrc, prefix):
     '''
     Returns a Motors Client.
 
@@ -91,11 +90,10 @@ def getMotorsClient (jdrc, name):
     @return None if Motors is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 
     cons = [__Motorsdisabled, __getMotorsIceClient, __getPublisherMotors]
 
-    return cons[server](jdrc, name)
+    return cons[server](jdrc, prefix)

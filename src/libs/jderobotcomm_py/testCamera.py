@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-import jderobotconfig as config
+import config
 import jderobotComm as comm
 import sys
 import time
@@ -13,7 +13,7 @@ from jderobotTypes import Image
 if __name__ == '__main__':
 
     cfg = config.load(sys.argv[1])
-    jdrc= comm.init(cfg["test"])
+    jdrc= comm.init(cfg)
 
     client = jdrc.getCameraClient("Camera1")
 

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-configure_module_python(jderobotconfig)
+configure_module_python(config)
 
-add_custom_target(jderobotconfig_py ALL)
-copy_to_binary_python(jderobotconfig_py jderobotconfig)
+add_custom_target(config_py ALL)
+copy_to_binary_python(config_py config)
 
-install_python(jderobotconfig core)
+install_python(config core)

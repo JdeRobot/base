@@ -27,11 +27,23 @@ from jderobotTypes import CMDVel
 
 class MotorsIceClient:
 
-    def __init__(self, ic, prefix):
+
+    '''
+        Motors Contructor.
+        Exits When it receives a Exception diferent to Ice.ConnectionRefusedException
+
+        @param jdrc: JdeRobotComm Communicator
+        @param prefix: prefix name of client in config file
+
+        @type ic: Ice Communicator
+        @type prefix: String
+        '''
+    def __init__(self, jdrc, prefix):
         self.lock = threading.Lock()
-        prop = ic.getProperties()
+        ic = jdrc.getIc()
         
-        maxWstr = prop.getProperty(prefix+".maxW")
+        
+        maxWstr = jdrc.getConfig().getProperty(prefix+".maxW")
         if maxWstr:
             self.maxW = float(maxWstr)
         else:
@@ -39,7 +51,7 @@ class MotorsIceClient:
             print (prefix+".maxW not provided, the default value is used: "+ repr(self.maxW))
                 
 
-        maxVstr = prop.getProperty(prefix+".maxV")
+        maxVstr = jdrc.getConfig().getProperty(prefix+".maxV")
         if maxWstr:
             self.maxV = float(maxVstr)
         else:
@@ -47,7 +59,8 @@ class MotorsIceClient:
             print (prefix+".maxV not provided, the default value is used: "+ repr(self.maxV))
 
         try:
-            base = ic.propertyToProxy(prefix+".Proxy")
+            proxyStr = jdrc.getConfig().getProperty(prefix+".Proxy")
+            base = ic.stringToProxy(proxyStr)
             self.proxy = jderobot.MotorsPrx.checkedCast(base)
 
 

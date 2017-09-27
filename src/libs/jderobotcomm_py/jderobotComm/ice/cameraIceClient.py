@@ -48,11 +48,11 @@ class Camera:
 
         try:
 
-            cfg = jdrc.getConfig(prefix)
             ic = jdrc.getIc()
-            basecamera = ic.stringToProxy(cfg["Proxy"])
+            proxyStr = jdrc.getConfig().getProperty(prefix+".Proxy")
+            basecamera = ic.stringToProxy(proxyStr)
             self.proxy = jderobot.CameraPrx.checkedCast(basecamera)
-            self.imgFormat = cfg["Format"]
+            self.imgFormat = jdrc.getConfig().getProperty(prefix+".Format")
             if not self.imgFormat:
                 self.imgFormat = "RGB8"
 

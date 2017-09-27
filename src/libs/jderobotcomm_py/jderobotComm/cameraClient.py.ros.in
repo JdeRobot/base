@@ -39,8 +39,7 @@ def __getListenerCamera(jdrc, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Receiving " + prefix + " Image from ROS messages")
-        cfg = jdrc.getConfig(prefix)
-        topic = cfg["Topic"]
+        topic = jdrc.getConfig().getProperty(prefix+".topic")
         client = ListenerCamera(topic)
         return client
     else:
@@ -63,12 +62,12 @@ def __Cameradisabled(jdrc, prefix):
     print( prefix + " Disabled")
     return None
 
-def getCameraClient (jdrc, name):
+def getCameraClient (jdrc, prefix):
     '''
     Returns a Camera Client.
 
     @param jdrc: JdeRobotComm Communicator
-    @param name: name of client in config file
+    @param prefix: name of client in config file
 
     @type jdrc: JdeRobotComm Communicator
     @type name: String
@@ -76,11 +75,10 @@ def getCameraClient (jdrc, name):
     @return None if Camera is disabled
 
     '''
-    cfg = jdrc.getConfig(name)
-    server = cfg["Server"]
+    server = jdrc.getConfig().getProperty(prefix+".Server")
     if not server:
         server=0
 
     cons = [__Cameradisabled, __getCameraIceClient, __getListenerCamera]
 
-    return cons[server](jdrc, cfg)
+    return cons[server](jdrc, prefix)

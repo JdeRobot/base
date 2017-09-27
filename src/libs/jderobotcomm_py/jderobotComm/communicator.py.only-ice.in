@@ -50,11 +50,8 @@ class Communicator:
 	def getIc(self):
 		return self.__ic
 
-	def getConfig(self, name=None):
-		if name:
-			return self.config[name]
-		else:
-			return self.config 
+	def getConfig(self):
+		return self.config 
 
 
 	def getCameraClient(self, name):
