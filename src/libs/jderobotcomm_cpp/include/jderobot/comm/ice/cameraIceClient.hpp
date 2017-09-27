@@ -38,7 +38,7 @@ namespace JdeRobotComm {
 
 class CameraIceClient: public IceUtil::Thread, public JdeRobotComm::CameraClient {
 public:
-	CameraIceClient(JdeRobotComm::Communicator jdrc, std::string prefix);
+	CameraIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 	virtual ~CameraIceClient();
 	virtual void run();
 

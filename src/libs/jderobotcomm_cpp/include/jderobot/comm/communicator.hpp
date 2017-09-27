@@ -21,22 +21,23 @@
 #define JDEROBOTCOMM_COMMUNICATOR_H
 
 #include <Ice/Communicator.h>
-#include <jderobot/config/config.h>
+#include <Ice/Initialize.h>
+#include <jderobot/config/class.hpp>
 
 
 namespace JdeRobotComm {
 
 	class Communicator {
 	public:
-		Communicator(JdeRobotConfig::Config config);
+		Communicator(Config::Properties config);
 		~Communicator();
 
-		JdeRobotConfig::Config getConfig();
+		Config::Properties getConfig();
 		Ice::CommunicatorPtr getIceComm();
 
 
 	private:
-		JdeRobotConfig::Config config;
+		Config::Properties config;
 		Ice::CommunicatorPtr ic;	
 	};
 

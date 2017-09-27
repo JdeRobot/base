@@ -22,7 +22,7 @@
 #define JDEROBOT_CONFIG_HARDCOREDLOCATIONS_H
 
 
-namespace JdeRobotConfig{
+namespace Config{
 const char* HARDCORED_LOCATIONS =
 "@CMAKE_INSTALL_PREFIX@/share/jderobot/conf\
 ";

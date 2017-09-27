@@ -23,5 +23,7 @@ import sys
 import jderobotconfig as config
 
 cfg = config.load(sys.argv[1])
+
+print (cfg["Demo"]["Motors"]["aaa"])
 print config.dump(cfg)
 

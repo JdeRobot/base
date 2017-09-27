@@ -35,13 +35,13 @@
 #include <yaml-cpp/yaml.h>
 #include <jderobot/config/stdutils.hpp>
 
-namespace JdeRobotConfig{
+namespace Config{
 
-class Config {
+class Properties {
 public:
-	Config();
-	Config(YAML::Node node);
-	//~Config();
+	Properties();
+	Properties(YAML::Node node);
+	//~Properties();
 
 	/**
 	 * @brief returns as string the propery given 
@@ -50,6 +50,16 @@ public:
 	 * 
 	 */
 	std::string asString(std::string element);
+
+
+	/**
+	 * @brief returns as string the propery given 
+	 *
+	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
+	 * @param default value
+	 * 
+	 */
+	std::string asStringWithDefault(std::string element, std::string dataDefault);
 
 	/**
 	 * @brief returns as float the propery given 
@@ -60,6 +70,15 @@ public:
 	float asFloat(std::string element);
 
 	/**
+	 * @brief returns as float the propery given 
+	 *
+	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
+	 * @param default value
+	 * 
+	 */
+	float asFloatWithDefault(std::string element, float dataDefault);
+
+	/**
 	 * @brief returns as integer the propery given 
 	 *
 	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
@@ -68,12 +87,30 @@ public:
 	int asInt(std::string element);
 
 	/**
+	 * @brief returns as integer the propery given 
+	 *
+	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
+	 * @param default value
+	 * 
+	 */
+	int asIntWithDefault(std::string element, int dataDefault);
+
+	/**
 	 * @brief returns as double the propery given 
 	 *
 	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
 	 * 
 	 */
 	double asDouble(std::string element);
+
+	/**
+	 * @brief returns as double the propery given 
+	 *
+	 * @param route to element separated by dots (example: "kobukiViewer.Camera.proxy")
+	 * @param default value
+	 * 
+	 */
+	double asDoubleWithDefault(std::string element, double dataDefault);
 
 		
 
@@ -102,11 +139,11 @@ private:
  * @brief function to make printable config class
  */
 inline
-std::ostream& operator<< (std::ostream & out, JdeRobotConfig::Config & data) {
+std::ostream& operator<< (std::ostream & out, Properties & data) {
     out << data.getNode(); 
     return out ;
 }
 
-}
+}//NS
 
 #endif // JDEROBOT_CONFIG_CLASS_H

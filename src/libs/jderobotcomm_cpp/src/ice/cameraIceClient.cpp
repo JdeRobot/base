@@ -21,11 +21,13 @@
 
 #include "jderobot/comm/ice/cameraIceClient.hpp"
 
+#include <exception>
+
 
 namespace JdeRobotComm {
 
 
-CameraIceClient::CameraIceClient(JdeRobotComm::Communicator jdrc, std::string prefix) {
+CameraIceClient::CameraIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix) {
 
 	this->prefix=prefix;
 	Ice::ObjectPrx baseCamera;
@@ -34,11 +36,11 @@ CameraIceClient::CameraIceClient(JdeRobotComm::Communicator jdrc, std::string pr
 
 	
 
-	float fps=jdrc.getConfig().asFloat(prefix+".Fps");
+	float fps=jdrc->getConfig().asFloat(prefix+".Fps");
 	this->cycle=(1/fps)*1000000;
 	try{
-		std::string proxy = jdrc.getConfig().asString(prefix+".Proxy");
-		baseCamera = jdrc.getIceComm()->stringToProxy(proxy);
+		std::string proxy = jdrc->getConfig().asString(prefix+".Proxy");
+		baseCamera = jdrc->getIceComm()->stringToProxy(proxy);
 		if (0==baseCamera){
 			this->on = false;
 			throw prefix + "Could not create proxy with Camera";
@@ -60,7 +62,7 @@ CameraIceClient::CameraIceClient(JdeRobotComm::Communicator jdrc, std::string pr
 	}
 
 	//check if default format is defined
-	std::string definedFormat=jdrc.getConfig().asString(prefix+".Format");
+	std::string definedFormat=jdrc->getConfig().asString(prefix+".Format");
 
 	this->mImageFormat = CameraUtils::negotiateDefaultFormat(this->prx,definedFormat);
 
@@ -127,12 +129,16 @@ CameraIceClient::run(){
 
 		try{
 
+			
 			dataPtr = this->prx->getImageData(this->mImageFormat);
+
+			
 
 			
 
 			// Putting image data
 			img.data = CameraUtils::getImageFromCameraProxy(dataPtr);
+			
 			img.format = dataPtr->description->format;
 			img.width = dataPtr->description->width;
 			img.height = dataPtr->description->height;
@@ -140,9 +146,10 @@ CameraIceClient::run(){
 
 
 
+
 		}
-		catch(...){
-			LOG(WARNING) << prefix +"error during request (connection error)";
+		catch(std::exception& e){
+			LOG(WARNING) << prefix +"error during request (connection error): " << e.what() << std::endl;
 			usleep(50000);
 
 		}

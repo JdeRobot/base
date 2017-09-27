@@ -24,20 +24,22 @@
 #include <Ice/Ice.h>
 #include <visionlib/colorspaces/colorspacesmm.h>
 #include "viewer.h"
-#include "easyiceconfig/EasyIce.h" 
+#include <jderobot/config/config.h> 
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/cameraClient.hpp>
 #include <jderobot/types/image.h>
 
 int main(int argc, char** argv){
 
 	cameraview::Viewer viewer;
-	Ice::CommunicatorPtr ic;
+	
 
 	JdeRobotComm::CameraClient* camRGB;
 
-	ic = EasyIce::initialize(argc,argv);
+	Config::Properties cfg = Config::load(argc, argv);
+	JdeRobotComm::Communicator* jdrc = new JdeRobotComm::Communicator(cfg);
 
-	camRGB = JdeRobotComm::getCameraClient(ic, "Cameraview.Camera");
+	camRGB = JdeRobotComm::getCameraClient(jdrc, "Cameraview.Camera");
 
 	JdeRobotTypes::Image rgb;
 
@@ -48,6 +50,8 @@ int main(int argc, char** argv){
 		viewer.display(rgb.data);
 		viewer.displayFrameRate(0);
 	}
+
+	delete jdrc;
 
 	return 0;
 }

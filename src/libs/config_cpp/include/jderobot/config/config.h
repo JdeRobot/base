@@ -33,7 +33,7 @@
 #include <jderobot/config/loader.hpp>
 #include <jderobot/config/class.hpp>
 
-namespace JdeRobotConfig{
+namespace Config{
 
 
 /**
@@ -46,8 +46,10 @@ namespace JdeRobotConfig{
  * @return config class with all propierties
  */
 inline
-JdeRobotConfig::Config load(std::string filename)
-    {return jderobotconfig::loader::load(filename);}
+Config::Properties load(int argc, char* argv[])
+{	
+	std::string filename (argv[1]);
+    return jderobotconfig::loader::load(filename);}
 
-}
+} //NS
 #endif // JDEROBOT_CONFIG_CONFIG_H

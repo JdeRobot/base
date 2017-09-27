@@ -46,9 +46,9 @@ std::string findConfigFile(const std::string& filename);
 /**
  * @brief Loads File configuration from passed file.
  *
- * @return new JdeRobotConfig::Config or passed one.
+ * @return new Config::Config or passed one.
  */
-JdeRobotConfig::Config load(std::string filename);
+Config::Properties load(std::string filename);
 
 
 

@@ -28,6 +28,6 @@
 
 
 int main(int argc, char* argv[]){
-    JdeRobot::Config props = Config::load(argv[1]);
+    Config::Properties props = Config::load(argv[1]);
     std::cout << props << std::endl;
 }

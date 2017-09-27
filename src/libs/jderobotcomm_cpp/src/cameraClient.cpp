@@ -25,12 +25,12 @@
 namespace JdeRobotComm {
 
 CameraClient* 
-getCameraClient(JdeRobotComm::Communicator jdrc, std::string prefix){
+getCameraClient(JdeRobotComm::Communicator* jdrc, std::string prefix){
 	CameraClient* client = 0;
 
 
 	//int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
-	int server = jdrc.getConfig().asInt(prefix+".Server");
+	int server = jdrc->getConfig().asInt(prefix+".Server");
 	switch (server){
 		case 0:
 		{
@@ -51,9 +51,9 @@ getCameraClient(JdeRobotComm::Communicator jdrc, std::string prefix){
 			#ifdef JDERROS
 				std::cout << "Receiving Image from ROS messages" << std::endl;
 				std::string nodeName;
-				nodeName =  jdrc.getConfig().asString(prefix+".Name");
+				nodeName =  jdrc->getConfig().asString(prefix+".Name");
 				std::string topic;
-				topic = jdrc.getConfig().asString(prefix+".Topic");
+				topic = jdrc->getConfig().asString(prefix+".Topic");
 				ListenerCamera* lc;
 				lc = new ListenerCamera(0, nullptr, nodeName, topic);
 				lc->start();

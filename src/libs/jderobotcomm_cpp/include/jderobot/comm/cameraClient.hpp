@@ -42,7 +42,7 @@ namespace JdeRobotComm {
 	 *
 	 * @return null if propierties are wrong
 	 */
-	CameraClient* getCameraClient(JdeRobotComm::Communicator jdrc, std::string prefix);
+	CameraClient* getCameraClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 
 
 } //NS

@@ -28,7 +28,7 @@ findConfigFile(const std::string& filename){
     if (std::fileexists(filename))
         return filename;
 
-    std::string path_holders[] = {JdeRobotConfig::HARDCORED_LOCATIONS};
+    std::string path_holders[] = {Config::HARDCORED_LOCATIONS};
     for (int i=0; i<2; i++){
         if (path_holders[i].empty()) continue;
         for (std::string path : std::split(path_holders[i], ":")){
@@ -42,7 +42,7 @@ findConfigFile(const std::string& filename){
     return "";
 }
 
-JdeRobotConfig::Config 
+Config::Properties 
 load(std::string filename){
     std::string filepath = findConfigFile(filename);
     if (filepath.empty()){
@@ -51,7 +51,7 @@ load(std::string filename){
     }
     YAML::Node nodeConfig = YAML::LoadFile(filepath);
 
-    JdeRobotConfig::Config config(nodeConfig); 
+    Config::Properties config(nodeConfig); 
     std::cout<<"[Info] loaded YAML Config file: "<<filepath<<std::endl;
     //properties->setProperty("Ice.Config", filepath);
     return config;
