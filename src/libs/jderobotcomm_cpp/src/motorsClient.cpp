@@ -7,12 +7,11 @@
 namespace JdeRobotComm {
 
 MotorsClient* 
-getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
+getMotorsClient(JdeRobotComm::Communicator* jdrc, std::string prefix){
 	MotorsClient* client = 0;
-	Ice::PropertiesPtr prop = ic->getProperties();
 
 
-	int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
+	int server = jdrc->getConfig().asIntWithDefault(prefix+".Server", 0);
 	switch (server){
 		case 0:
 		{
@@ -23,7 +22,7 @@ getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
 		{
 			std::cout << "Sending Velocities by ICE interfaces" << std::endl;
 			MotorsIceClient* cl;
-			cl = new MotorsIceClient(ic, prefix);
+			cl = new MotorsIceClient(jdrc, prefix);
 		    client = (JdeRobotComm::MotorsClient*) cl;
 		    break;
 		}
@@ -32,9 +31,9 @@ getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix){
 			#ifdef JDERROS
 				std::cout << "Sending Velocities by ROS messages" << std::endl;
 				std::string nodeName;
-				nodeName =  prop->getPropertyWithDefault(prefix+".Name","MotorsNode");
+				nodeName =  jdrc->getConfig().asStringWithDefault(prefix+".Name", "MotorsNode");
 				std::string topic;
-				topic = prop->getPropertyWithDefault(prefix+".Topic","");
+				topic = jdrc->getConfig().asStringWithDefault(prefix+".Topic", "");
 				PublisherMotors* pm;
 				pm = new PublisherMotors(0, nullptr, nodeName, topic);
 				pm->start();

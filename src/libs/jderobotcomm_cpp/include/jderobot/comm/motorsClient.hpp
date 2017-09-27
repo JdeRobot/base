@@ -22,7 +22,7 @@
 
 #include <jderobot/types/cmdvel.h>
 #include <Ice/Communicator.h>
-#include <Ice/Properties.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/motorsClient.hpp>
 
 
@@ -41,7 +41,7 @@ namespace JdeRobotComm {
 	 *
 	 * @return null if propierties are wrong
 	 */
-	MotorsClient* getMotorsClient(Ice::CommunicatorPtr ic, std::string prefix);
+	MotorsClient* getMotorsClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 
 
 } //NS

@@ -22,7 +22,7 @@
 
 #include <jderobot/types/laserData.h>
 #include <Ice/Communicator.h>
-#include <Ice/Properties.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/pose3dClient.hpp>
 
 
@@ -41,7 +41,7 @@ namespace JdeRobotComm {
 	 *
 	 * @return null if propierties are wrong
 	 */
-	Pose3dClient* getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix);
+	Pose3dClient* getPose3dClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 
 
 } //NS

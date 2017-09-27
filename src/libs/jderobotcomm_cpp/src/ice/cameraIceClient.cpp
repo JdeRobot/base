@@ -36,7 +36,7 @@ CameraIceClient::CameraIceClient(JdeRobotComm::Communicator* jdrc, std::string p
 
 	
 
-	float fps=jdrc->getConfig().asFloat(prefix+".Fps");
+	float fps=jdrc->getConfig().asFloatWithDefault(prefix+".Fps", 30);
 	this->cycle=(1/fps)*1000000;
 	try{
 		std::string proxy = jdrc->getConfig().asString(prefix+".Proxy");
@@ -62,7 +62,7 @@ CameraIceClient::CameraIceClient(JdeRobotComm::Communicator* jdrc, std::string p
 	}
 
 	//check if default format is defined
-	std::string definedFormat=jdrc->getConfig().asString(prefix+".Format");
+	std::string definedFormat=jdrc->getConfig().asStringWithDefault(prefix+".Format", "RGB8");
 
 	this->mImageFormat = CameraUtils::negotiateDefaultFormat(this->prx,definedFormat);
 

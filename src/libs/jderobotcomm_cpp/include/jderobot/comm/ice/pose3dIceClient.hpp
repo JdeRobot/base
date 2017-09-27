@@ -28,6 +28,7 @@
 #include <math.h> 
 #include <vector>
 #include <jderobot/types/pose3d.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/pose3dClient.hpp>
 
 namespace JdeRobotComm {
@@ -35,7 +36,7 @@ namespace JdeRobotComm {
 
 class Pose3dIceClient: public IceUtil::Thread, public JdeRobotComm::Pose3dClient {
 public:
-	Pose3dIceClient(Ice::CommunicatorPtr ic, std::string prefix);
+	Pose3dIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 	virtual ~Pose3dIceClient();
 	virtual void run();
 

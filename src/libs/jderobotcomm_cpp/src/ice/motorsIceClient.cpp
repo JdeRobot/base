@@ -21,14 +21,12 @@
 
 namespace JdeRobotComm {
 
-MotorsIceClient::MotorsIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
+MotorsIceClient::MotorsIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix) {
 
 	this->prefix=prefix;
-	Ice::PropertiesPtr prop;
-	prop = ic->getProperties();
 
-
-	Ice::ObjectPrx baseMotors = ic->propertyToProxy(prefix+".Proxy");
+	std::string proxy = jdrc->getConfig().asString(prefix+".Proxy");
+	Ice::ObjectPrx baseMotors = jdrc->getIceComm()->stringToProxy(proxy);
 
 	if (0==baseMotors){
 		this->on = false;

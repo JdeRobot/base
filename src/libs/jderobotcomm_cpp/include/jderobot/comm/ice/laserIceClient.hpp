@@ -31,6 +31,7 @@
 #include <fstream>
 #include <logger/Logger.h>
 #include <jderobot/types/laserData.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/laserClient.hpp>
 
 namespace JdeRobotComm {
@@ -38,7 +39,7 @@ namespace JdeRobotComm {
 
 class LaserIceClient: public IceUtil::Thread, public JdeRobotComm::LaserClient {
 public:
-	LaserIceClient(Ice::CommunicatorPtr ic, std::string prefix);
+	LaserIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 	virtual ~LaserIceClient();
 	virtual void run();
 

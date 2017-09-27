@@ -25,6 +25,7 @@
 #include <Ice/Ice.h>
 #include <jderobot/motors.h>
 #include <jderobot/types/cmdvel.h>
+#include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/motorsClient.hpp>
 
 namespace JdeRobotComm {
@@ -32,7 +33,7 @@ namespace JdeRobotComm {
 
 class MotorsIceClient: public JdeRobotComm::MotorsClient {
 public:
-	MotorsIceClient(Ice::CommunicatorPtr ic, std::string prefix);
+	MotorsIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix);
 	virtual ~MotorsIceClient();
 
 	virtual void sendVelocities(JdeRobotTypes::CMDVel vel);

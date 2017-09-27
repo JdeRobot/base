@@ -7,12 +7,11 @@
 namespace JdeRobotComm {
 
 Pose3dClient* 
-getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix){
+getPose3dClient(JdeRobotComm::Communicator* jdrc, std::string prefix){
 	Pose3dClient* client = 0;
-	Ice::PropertiesPtr prop = ic->getProperties();
 
 
-	int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
+	int server = jdrc->getConfig().asIntWithDefault(prefix+".Server", 0);
 	switch (server){
 		case 0:
 		{
@@ -23,7 +22,7 @@ getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix){
 		{
 			std::cout << "Receiving Pose3D from ICE interfaces" << std::endl;
 			Pose3dIceClient* cl;
-			cl = new Pose3dIceClient(ic, prefix);
+			cl = new Pose3dIceClient(jdrc, prefix);
 			cl->start();
 		    client = (JdeRobotComm::Pose3dClient*) cl;
 		    break;
@@ -33,9 +32,9 @@ getPose3dClient(Ice::CommunicatorPtr ic, std::string prefix){
 			#ifdef JDERROS
 				std::cout << "Receiving Pose3D from ROS messages" << std::endl;
 				std::string nodeName;
-				nodeName =  prop->getPropertyWithDefault(prefix+".Name","PoseNode");
+				nodeName =  jdrc->getConfig().asStringWithDefault(prefix+".Name", "PoseNode");
 				std::string topic;
-				topic = prop->getPropertyWithDefault(prefix+".Topic","");
+				topic = jdrc->getConfig().asStringWithDefault(prefix+".Topic", "");
 				ListenerPose* lc;
 				lc = new ListenerPose(0, nullptr, nodeName, topic);
 				lc->start();

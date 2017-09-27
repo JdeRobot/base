@@ -22,7 +22,6 @@
 
 #include <jderobot/types/image.h>
 #include <Ice/Communicator.h>
-#include <Ice/Properties.h>
 #include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/interfaces/cameraClient.hpp>
 

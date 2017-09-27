@@ -7,12 +7,10 @@
 namespace JdeRobotComm {
 
 LaserClient* 
-getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
+getLaserClient(JdeRobotComm::Communicator* jdrc, std::string prefix){
 	LaserClient* client = 0;
-	Ice::PropertiesPtr prop = ic->getProperties();
 
-
-	int server = prop->getPropertyAsIntWithDefault(prefix+".Server",0);
+	int server = jdrc->getConfig().asIntWithDefault(prefix+".Server", 0);
 	switch (server){
 		case 0:
 		{
@@ -23,7 +21,7 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
 		{
 			std::cout << "Receiving LaserData from ICE interfaces" << std::endl;
 			LaserIceClient* cl;
-			cl = new LaserIceClient(ic, prefix);
+			cl = new LaserIceClient(jdrc, prefix);
 			cl->start();
 		    client = (JdeRobotComm::LaserClient*) cl;
 		    break;
@@ -33,9 +31,9 @@ getLaserClient(Ice::CommunicatorPtr ic, std::string prefix){
             #ifdef JDERROS
                 std::cout << "Receiving LaserData from ROS messages" << std::endl;
                 std::string nodeName;
-                nodeName =  prop->getPropertyWithDefault(prefix+".Name","LaserNode");
-                std::string topic;
-                topic = prop->getPropertyWithDefault(prefix+".Topic","");
+                nodeName =  jdrc->getConfig().asStringWithDefault(prefix+".Name", "LaserNode");
+				std::string topic;
+				topic = jdrc->getConfig().asStringWithDefault(prefix+".Topic", "");
                 ListenerLaser* lc;
                 lc = new ListenerLaser(0, nullptr, nodeName, topic);
                 lc->start();

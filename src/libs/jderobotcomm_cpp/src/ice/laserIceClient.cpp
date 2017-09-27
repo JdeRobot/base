@@ -22,17 +22,17 @@
 
 namespace JdeRobotComm {
 
-LaserIceClient::LaserIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
+LaserIceClient::LaserIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix) {
 
 	this->prefix=prefix;
-	Ice::PropertiesPtr prop;
-	prop = ic->getProperties();
+	
 	this->refreshRate=0;
-	int fps=prop->getPropertyAsIntWithDefault(prefix+".Fps",10);
-	this->cycle=(float)(1/(float)fps)*1000000;
+	float fps=jdrc->getConfig().asFloatWithDefault(prefix+".Fps",10);
+	this->cycle=(1/fps)*1000000;
 
 
-	Ice::ObjectPrx baseLaser = ic->propertyToProxy(prefix+".Proxy");
+	std::string proxy = jdrc->getConfig().asString(prefix+".Proxy");
+	Ice::ObjectPrx baseLaser = jdrc->getIceComm()->stringToProxy(proxy);
 
 	if (0==baseLaser){
 		this->on = false;

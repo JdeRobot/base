@@ -21,17 +21,16 @@
 
 namespace JdeRobotComm {
 
-Pose3dIceClient::Pose3dIceClient(Ice::CommunicatorPtr ic, std::string prefix) {
+Pose3dIceClient::Pose3dIceClient(JdeRobotComm::Communicator* jdrc, std::string prefix) {
 
 	this->prefix=prefix;
-	Ice::PropertiesPtr prop;
-	prop = ic->getProperties();
+	
 
-	int fps=prop->getPropertyAsIntWithDefault(prefix+".Fps",30);
-	this->cycle=(float)(1/(float)fps)*1000000;
+	float fps=jdrc->getConfig().asFloatWithDefault(prefix+".Fps",30);
+	this->cycle=(1/fps)*1000000;
 
-
-	Ice::ObjectPrx basePose = ic->propertyToProxy(prefix+".Proxy");
+	std::string proxy = jdrc->getConfig().asString(prefix+".Proxy");
+	Ice::ObjectPrx basePose = jdrc->getIceComm()->stringToProxy(proxy);
 
 	if (0==basePose){
 		this->on = false;
