@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 import config
-import jderobotComm as comm
+import comm
 import sys
 import time
 import signal
@@ -13,10 +13,10 @@ from jderobotTypes import LaserData
 if __name__ == '__main__':
 
     cfg = config.load(sys.argv[1])
-    jdrc= comm.init(cfg)
+    jdrc= comm.init(cfg, "Test")
 
-    client = jdrc.getLaserClient("Laser")
-    client2 = jdrc.getLaserClient("Laser")
+    client = jdrc.getLaserClient("Test.Laser")
+    client2 = jdrc.getLaserClient("Test.Laser")
 
     for i in range (10):
         #print("client1", end=":")

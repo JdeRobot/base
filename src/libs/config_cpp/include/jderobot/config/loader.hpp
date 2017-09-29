@@ -26,7 +26,7 @@
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/exceptions.h>
 #include <jderobot/config/hardcodedlocations.h>
-#include <jderobot/config/class.hpp>
+#include <jderobot/config/properties.hpp>
 
 
 namespace jderobotconfig {

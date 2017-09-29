@@ -7,12 +7,13 @@
 #include <IceUtil/IceUtil.h>
 
 #include <jderobot/types/cmdvel.h>
+#include "jderobot/comm/communicator.hpp"
 #include <jderobot/comm/motorsClient.hpp>
 
 class Actuators
 {
 public:
-    Actuators(Ice::CommunicatorPtr ic);
+    Actuators(Comm::Communicator* jdrc);
     
     float getMotorV();
     float getMotorW();
@@ -28,10 +29,10 @@ private:
 
     QMutex mutex;
 
-    Ice::CommunicatorPtr ic;
+    Comm::Communicator* jdrc;
 
     // ICE INTERFACES
-    JdeRobotComm::MotorsClient* motorsClient;
+    Comm::MotorsClient* motorsClient;
 
 };
 #endif // ACTUATORS_H

@@ -1,10 +1,10 @@
 #include "actuators.h"
 
-Actuators::Actuators(Ice::CommunicatorPtr ic)
+Actuators::Actuators(Comm::Communicator* jdrc)
 {
-    this->ic = ic;
+    this->jdrc = jdrc;
 
-    this->motorsClient = JdeRobotComm::getMotorsClient(ic, "kobukiViewer.Motors");
+    this->motorsClient = Comm::getMotorsClient(jdrc, "kobukiViewer.Motors");
 
 }
 

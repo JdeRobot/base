@@ -31,7 +31,7 @@
 
 #include <yaml-cpp/yaml.h>
 #include <jderobot/config/loader.hpp>
-#include <jderobot/config/class.hpp>
+#include <jderobot/config/properties.hpp>
 
 namespace Config{
 
@@ -43,7 +43,7 @@ namespace Config{
  * @param filename
  * 
  *
- * @return config class with all propierties
+ * @return config class with all properties
  */
 inline
 Config::Properties load(int argc, char* argv[])

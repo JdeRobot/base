@@ -13,13 +13,13 @@ include_directories(
     ${resourcelocator_INCLUDE_DIRS}
     ${jderobottypes_INCLUDE_DIRS}
     ${jderobotcomm_INCLUDE_DIRS}
-    ${jderobotconfig_INCLUDE_DIRS}
+    ${config_INCLUDE_DIRS}
     ${roscpp_INCLUDE_DIRS}
 )
 link_directories(
 	${resourcelocator_LIBRARY_DIRS}
     ${jderobotcomm_LIBRARY_DIRS}
-    ${jderobotconfig_LIBRARY_DIRS}
+    ${config_LIBRARY_DIRS}
 )
 
 add_executable (cameraview ${SOURCE_FILES})
@@ -37,7 +37,7 @@ TARGET_LINK_LIBRARIES(cameraview
 	${resourcelocator_LIBRARIES}
     ${catkin_LIBRARIES}
     ${jderobotcomm_LIBRARIES}
-    ${jderobotconfig_LIBRARIES}
+    ${config_LIBRARIES}
 		${GLOG_LIBRARIES}
     JderobotInterfaces
         jderobotutil

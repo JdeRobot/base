@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(jderobotconfig)
+project(config)
 
 ### Project config
 include_directories(
@@ -17,13 +17,13 @@ set(HEADERS
     include/jderobot/config/config.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/jderobot/config/hardcodedlocations.h
     include/jderobot/config/loader.hpp
-    include/jderobot/config/class.hpp
+    include/jderobot/config/properties.hpp
     include/jderobot/config/stdutils.hpp
 )
 
 set(SOURCES
     src/loader.cpp
-    src/class.cpp
+    src/properties.cpp
 )
 
 

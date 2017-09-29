@@ -1,24 +1,24 @@
 #include "sensors.h"
 
-Sensors::Sensors(Ice::CommunicatorPtr ic)
+Sensors::Sensors(Comm::Communicator* jdrc)
 {
-    this-> ic = ic;
+    this-> jdrc = jdrc;
     
 
-    this->poseClient = JdeRobotComm::getPose3dClient(ic, "kobukiViewer.Pose3D");
+    this->poseClient = Comm::getPose3dClient(jdrc, "kobukiViewer.Pose3D");
 
 
     ////////////////////////////// CAMERA1 /////////////////////////////
 
-	this->camera1 = JdeRobotComm::getCameraClient(ic, "kobukiViewer.Camera1");
+	this->camera1 = Comm::getCameraClient(jdrc, "kobukiViewer.Camera1");
 
     ////////////////////////////// CAMERA2 /////////////////////////////
-	this->camera2 = JdeRobotComm::getCameraClient(ic, "kobukiViewer.Camera2");
+	this->camera2 = Comm::getCameraClient(jdrc, "kobukiViewer.Camera2");
 
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
 
-	this->laserClient = JdeRobotComm::getLaserClient(ic, "kobukiViewer.Laser");
+	this->laserClient = Comm::getLaserClient(jdrc, "kobukiViewer.Laser");
 }
 
 JdeRobotTypes::Image Sensors::getImage1()

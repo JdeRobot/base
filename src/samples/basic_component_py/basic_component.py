@@ -21,11 +21,11 @@
 
 import sys
 
-import jderobotComm as comm
+import comm
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt5.QtWidgets import QApplication
-import jderobotconfig as config
+import config
 
 import signal
 
@@ -34,13 +34,12 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 if __name__ == '__main__':
     cfg = config.load(sys.argv[1])
 
-
     #starting comm
-    jdrc= comm.init(cfg['basic_component'])
+    jdrc= comm.init(cfg, 'basic_component')
 
 
-    camera = jdrc.getCameraClient("Camera")
-    motors = jdrc.getMotorsClient("Motors")
+    camera = jdrc.getCameraClient("basic_component.Camera")
+    motors = jdrc.getMotorsClient("basic_component.Motors")
 
     app = QApplication(sys.argv)
     frame = MainWindow()

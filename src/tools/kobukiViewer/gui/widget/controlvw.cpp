@@ -27,13 +27,12 @@ controlVW::controlVW(QWidget *parent) :
 
 }
 
-void controlVW::setIC(Ice::CommunicatorPtr ic)
+void controlVW::setProps(Config::Properties props)
 {
-	this->ic = ic;
- 	Ice::PropertiesPtr prop = ic->getProperties();
+	this->props = props;
 
-    QString svmax = QString::fromUtf8(prop->getPropertyWithDefault("kobukiViewer.Vmax", "5").c_str());
-    QString swmax = QString::fromUtf8(prop->getPropertyWithDefault("kobukiViewer.Wmax", "0.5").c_str());
+    QString svmax = QString::fromUtf8(props.asStringWithDefault("kobukiViewer.Vmax", "5").c_str());
+    QString swmax = QString::fromUtf8(props.asStringWithDefault("kobukiViewer.Wmax", "0.5").c_str());
 
     this->v_max = svmax.toFloat();
     this->w_max = swmax.toFloat();

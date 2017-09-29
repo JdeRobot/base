@@ -34,7 +34,12 @@ class Properties:
 		return self._searchNode(self._config, names)
 
 	def getPropertyWithDefault(self, name, dataDefault):
-		return dataDefault
+
+		try:
+			return self.getProperty(name)
+		
+		except KeyError:
+			return dataDefault
 
 
 	def _searchNode(self, node, lst):
