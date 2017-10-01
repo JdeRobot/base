@@ -22,7 +22,7 @@ from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.transitiontype import TransitionType
 import os
 
-class PythonGenerator(Generator):
+class PythonRosGenerator(Generator):
     def __init__(self, libraries, config, interfaceHeaders, states):
         Generator.__init__(self)
         self.libraries = libraries
@@ -64,9 +64,9 @@ class PythonGenerator(Generator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
+        self.generateRosInterface(stringList, projectName)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
-        self.generateInterfaces(stringList)
         self.generateMain(stringList)
         sourceCode = ''.join(stringList)
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
@@ -82,15 +82,22 @@ class PythonGenerator(Generator):
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
 
-    def generateImports(self, headerStr):
+    def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys, threading, time
-import easyiceconfig as EasyIce
+import sys, threading, time, rospy
 '''
-        headerStr.append(mystr)
-        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
-        headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
+        importStr.append(mystr)
+        for topic in self.config.getTopics():
+            typeStr = topic['type']
+            if typeStr.find('/') >= 0:
+                types = typeStr.split('/')
+                importStr.append('from ' + types[0] + '.msg import ' + types[1] + '\n')
+            else:
+                importStr.append('import ' + typeStr + '\n')
+
+        importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
+        importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
         mystr = '''from codegen.python.state import State
 from codegen.python.temporaltransition import TemporalTransition
 from codegen.python.conditionaltransition import ConditionalTransition
@@ -98,23 +105,14 @@ from codegen.python.runtimegui import RunTimeGui
 from PyQt5.QtWidgets import QApplication
 
 '''
-        headerStr.append(mystr)
+        importStr.append(mystr)
         for lib in self.libraries:
-            headerStr.append('import ')
-            headerStr.append(lib)
-            headerStr.append('\n')
-        headerStr.append('\n')
+            importStr.append('import ')
+            importStr.append(lib)
+            importStr.append('\n')
+        importStr.append('\n')
 
-        # for cfg in self.configs:
-        #     headerStr.append('from jderobot import ')
-        #     headerStr.append(cfg['interface'])
-        #     headerStr.append('Prx\n')
-
-        headerStr.append('import jderobotComm as comm\n')
-
-        headerStr.append('\n')
-
-        return headerStr
+        return importStr
 
     def generateStateClasses(self, stateStr):
         for state in self.getAllStates():
@@ -125,9 +123,9 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, interfaces, cycleDuration, parent=None):\n')
+        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None):\n')
         stateStr.append('\t\tsuper(State, self).__init__(id, initial, cycleDuration, parent)\n')
-        stateStr.append('\t\tself.interfaces = interfaces\n')
+        stateStr.append('\t\tself.rosNode = rosNode\n')
 
         if len(state.getVariables()) > 0:
             for varLine in state.getVariables().split('\n'):
@@ -148,41 +146,43 @@ from PyQt5.QtWidgets import QApplication
                 stateStr.append('\t' + funcLine + '\n')
         stateStr.append('\n')
 
-    def generateInterfaces(self, interfaceStr):
-        mystr = '''class Interfaces():
-\tdef __init__(self):
-\t\tself.ice = None
-\t\tself.node = None
-'''
-        interfaceStr.append(mystr)
-        for cfg in self.configs:
-            interfaceStr.append('\t\tself.' + cfg['name'] + ' = None\n')
+    def generateRosInterface(self, rosNodeStr, projectName):
+        rosNodeStr.append('class RosNode():\n')
+        rosNodeStr.append('\tdef __init__(self):\n')
+        rosNodeStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
+        for topic in self.config.getTopics():
+            if topic['opType'] == 'pub':
+                typesStr = topic['type']
+                types = typesStr.split('/')
+                rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub = rospy.Publisher("' +
+                              topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
+            elif topic['opType'] == 'sub':
+                typesStr = topic['type']
+                types = typesStr.split('/')
+                rosNodeStr.append('\t\tself.' + topic['name'] + 'Sub = rospy.Subscriber("' +
+                                  topic['name'] + '", ' + types[1] + ', self.'+topic['name']+'Callback)\n')
+                rosNodeStr.append('\t\tself.' + topic['name'] + ' = None\n')
+        rosNodeStr.append('\t\t time.sleep(1) # wait for initialization of the node, subscriber, and publisher\n')
 
-        interfaceStr.append('\t\tself.connectProxies()\n\n')
+        rosNodeStr.append('\tdef stop(self):\n')
+        rosNodeStr.append('\t\tself.signal_shutdown("exit ROS node"\n\n')
 
-        interfaceStr.append('\tdef connectProxies(self):\n')
-        interfaceStr.append('\t\tself.ice = EasyIce.initialize(sys.argv)\n')
-        interfaceStr.append('\t\tself.ice, self.node = comm.init(self.ice)\n')
-
-        for cfg in self.configs:
-            interfaceStr.append('\t\tself.' + cfg['name'] + ' = comm.get'+ cfg['interface']+'Client(self.ice, "automata.' + cfg['name'] + '")\n')
-            interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
-            interfaceStr.append('\t\t\traise Exception("could not create client with name:' + cfg['name'] + '")\n')
-            interfaceStr.append('\t\tprint("' + cfg['name'] + ' is connected")\n')
-
-        interfaceStr.append('\n')
-
-        interfaceStr.append('\tdef destroyProxies(self):\n')
-        interfaceStr.append('\t\tif self.ice is not None:\n')
-        interfaceStr.append('\t\t\tself.ice.destroy()\n\n')
+        # define publisher methods and subscriber callbacks
+        for topic in self.config.getTopics():
+            if topic['opType'] == 'pub':
+                rosNodeStr.append('\tdef publish' + topic['name'] + '(self, ' + topic['name'] + '):\n')
+                rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub.publish(' + topic['name'] + ')\n\n')
+            elif topic['opType'] == 'sub':
+                rosNodeStr.append('\tdef ' + topic['name'] + 'Callback(self, ' + topic['name'] + '):\n')
+                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, interfaces)\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, rosNode)\n')
                 tranStr.append('\t\tsuper(Transition, self).__init__(id, destinationId)\n')
-                tranStr.append('\t\tself.interfaces = interfaces\n\n')
+                tranStr.append('\t\tself.rosNode = rosNode\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\t'):
                     tranStr.append('\t\t' + checkLine + '\n')
@@ -226,7 +226,7 @@ def runGui():
         mainStr.append(mystr)
 
         mainStr.append('if __name__ == "__main__":\n')
-        mainStr.append('\tinterfaces = Interfaces()\n\n')
+        mainStr.append('\trosNode = RosNode()\n\n')
         mainStr.append('\treadArgs()\n')
         mainStr.append('\tif displayGui:\n')
         mainStr.append('\t\tguiThread = threading.Thread(target=runGui)\n')
@@ -258,7 +258,7 @@ def runGui():
 
         for state in self.getAllStates():
             mainStr.append('\tstate' + str(state.id) + ' = State' + str(state.id) +
-                           '(' + str(state.id) + ', ' + str(state.initial) + ', interfaces, ' +
+                           '(' + str(state.id) + ', ' + str(state.initial) + ', rosNode, ' +
                            str(state.getTimeStep()))
             if state.parent is None:
                 mainStr.append(', None, gui)\n')
@@ -273,7 +273,7 @@ def runGui():
                                '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ')\n')
             elif tran.getType() == TransitionType.CONDITIONAL:
                 mainStr.append('\ttran' + str(tran.id) + ' = Tran' + str(tran.id) +
-                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', interfaces)\n')
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', rosNode)\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '.addTransition(tran' + str(tran.id) + ')\n\n')
 
@@ -285,7 +285,7 @@ def runGui():
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
 
-        mainStr.append('\t\tinterfaces.destroyProxies()\n')
+        mainStr.append('\t\trosNode.stop()\n')
         mainStr.append('\t\tsys.exit(0)\n')
         mainStr.append('\texcept:\n')
         for state in self.states:
@@ -296,5 +296,5 @@ def runGui():
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
-        mainStr.append('\t\tinterfaces.destroyProxies()\n')
+        mainStr.append('\t\trosNode.destroyProxies()\n')
         mainStr.append('\t\tsys.exit(1)\n')

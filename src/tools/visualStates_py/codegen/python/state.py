@@ -21,7 +21,7 @@ from threading import Thread
 import time, sys
 
 class State():
-    def __init__(self, id, initial, interfaces, cycleDuration, parent=None, gui=None):
+    def __init__(self, id, initial, cycleDuration, parent=None, gui=None):
         self.id = id
         self.active = False
         self.thread = None
@@ -29,7 +29,6 @@ class State():
         self.parent = parent
         self.currentState = None
         self.initial = initial
-        self.interfaces = interfaces
         self.displayGui = False
 
         self.cycleDuration = cycleDuration

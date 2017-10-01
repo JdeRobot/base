@@ -18,10 +18,9 @@
 
   '''
 class Transition():
-    def __init__(self, id, destinationId, interfaces=None):
+    def __init__(self, id, destinationId):
         self.id = id
         self.destinationId = destinationId
-        self.interfaces = interfaces
 
     def init(self):
         pass
