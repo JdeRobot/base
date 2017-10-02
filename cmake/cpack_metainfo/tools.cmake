@@ -10,7 +10,7 @@ SET(CPACK_COMPONENT_CAMERACALIBRATOR_DESCRIPTION
  Manual page http://jderobot.org/index.php/Tools#CameraCalibrator
  Home page https://jderobot.org")
 
- SET(CPACK_DEBIAN_COLORTUNER-PYTHON_PACKAGE_DEPENDS "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+ SET(CPACK_DEBIAN_COLORTUNER-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-comm-python, jderobot-easyice-python")
 SET(CPACK_COMPONENT_COLORTUNER-PYTHON_DESCRIPTION  
 "Tool for color filters and pixel treatment from multiple visual sources.
  Manual page http://jderobot.org/index.php/Tools#ColorTuner_.28Python.29
@@ -46,8 +46,8 @@ SET(CPACK_COMPONENT_NAMINGSERVICE_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_PANTILTTELEOP_PACKAGE_DEPENDS "jderobot-easyice, jderobot-parallelice, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
-SET(CPACK_COMPONENT_PANTILTTELEOP_DESCRIPTION  
+SET(CPACK_DEBIAN_PANTILTTELEOP-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-easyice-python")
+SET(CPACK_COMPONENT_PANTILTTELEOP-PYTHON_DESCRIPTION  
 "Teleoperator for IP cameras that allow movement (i.e. Sony EVI camera)
  Manual Page http://jderobot.org/index.php/Tools#NavigatorCamera
  Home page https://jderobot.org")
@@ -100,7 +100,7 @@ SET(CPACK_COMPONENT_UAV-VIEWER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Tools#UAV_Viewer
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_UAV-VIEWER-PYTHON_PACKAGE_DEPENDS "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+SET(CPACK_DEBIAN_UAV-VIEWER-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-easyice-python, jderobot-qfi")
 SET(CPACK_COMPONENT_UAV-VIEWER-PYTHON_DESCRIPTION  
 "Teleoperator for UAV drones real and simulated (Parrot ArDrone, 3DR SoloDrone, ...) for python
  Manual Page http://jderobot.org/index.php/Tools#UAV_Viewer

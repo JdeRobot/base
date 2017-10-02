@@ -89,7 +89,7 @@ MESSAGE("Dependencias: ${DEPS}")
 MESSAGE("Dependencias_dev: ${DEPS_DEV}")
 endif()
 
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+set(CPACK_DEBIAN_SETUP_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
