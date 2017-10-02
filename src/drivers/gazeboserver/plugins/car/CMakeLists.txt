@@ -33,9 +33,9 @@ target_link_libraries(carPose3D
 )
 
 
-INSTALL (TARGETS carMotors DESTINATION share/jderobot/gazebo/plugins/car/ COMPONENT core)
-INSTALL (TARGETS carPose3D DESTINATION share/jderobot/gazebo/plugins/car/ COMPONENT core)
+INSTALL (TARGETS carMotors DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/car/ COMPONENT gazeboserver)
+INSTALL (TARGETS carPose3D DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/car/ COMPONENT gazeboserver)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
+INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT gazeboserver)
 
 

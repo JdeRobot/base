@@ -17,12 +17,12 @@ set_target_properties(parallelIceshare PROPERTIES OUTPUT_NAME parallelIce)
 ### Install
 install(TARGETS parallelIce parallelIceshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT parallelice
 )
 
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/parallelIce/
-    COMPONENT core
+    COMPONENT parallelice
 )

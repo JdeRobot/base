@@ -23,4 +23,4 @@ endif()
 add_custom_target(jderobotcomm_py ALL)
 copy_to_binary_python(jderobotcomm_py jderobotComm)
 
-install_python(jderobotComm core)
+install_python(jderobotComm comm-python)

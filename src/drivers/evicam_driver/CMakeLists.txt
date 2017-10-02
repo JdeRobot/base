@@ -40,7 +40,7 @@ TARGET_LINK_LIBRARIES(testpt
 
 install(TARGETS ${PROJECT_NAME}
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
+          COMPONENT EVICamDriver
         )
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/evicam_driver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/evicam_driver.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT EVICamDriver)

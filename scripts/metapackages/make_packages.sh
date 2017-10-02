@@ -26,6 +26,7 @@
 
 build=.dpkg_pkgs
 mkdir -p $build
+mkdir -p debs
 post=../scripts/cmake/postinst
 for pkginfo in *.info
 do
@@ -37,6 +38,6 @@ do
 	cp $post  $target
 	chmod 555 $target/postinst
 	dpkg --build $build/$pkgname
-	cp $build/${pkgname}.deb .
+	cp $build/${pkgname}.deb ./debs
 done
 

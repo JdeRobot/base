@@ -67,10 +67,7 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
             )
     install(TARGETS kobukiViewer
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
+    COMPONENT kobukiviewer
     )
-
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT kobukiviewer)
 ENDIF()
-
-
