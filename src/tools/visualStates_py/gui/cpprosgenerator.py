@@ -94,8 +94,11 @@ class CppRosGenerator(CppGenerator):
             headers.append('>\n')
 
         # generate ros message headers
+        typeSet = {''} # create set
         for topic in self.config.getTopics():
-            headers.append('#include <' + topic['type'] + '.h>\n')
+            if topic['type'] not in typeSet:
+                headers.append('#include <' + topic['type'] + '.h>\n')
+                typeSet.add(topic['type'])
 
         headers.append('\n')
 

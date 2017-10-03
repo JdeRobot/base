@@ -92,13 +92,17 @@ class PythonRosGenerator(Generator):
 import sys, threading, time, rospy
 '''
         importStr.append(mystr)
+
+        typeSet = {''} # create set
         for topic in self.config.getTopics():
             typeStr = topic['type']
-            if typeStr.find('/') >= 0:
-                types = typeStr.split('/')
-                importStr.append('from ' + types[0] + '.msg import ' + types[1] + '\n')
-            else:
-                importStr.append('import ' + typeStr + '\n')
+            if typeStr not in typeSet:
+                if typeStr.find('/') >= 0:
+                    types = typeStr.split('/')
+                    importStr.append('from ' + types[0] + '.msg import ' + types[1] + '\n')
+                else:
+                    importStr.append('import ' + typeStr + '\n')
+                typeSet.add(typeStr)
 
         importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
         importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
