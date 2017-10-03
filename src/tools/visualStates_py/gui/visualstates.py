@@ -37,7 +37,7 @@ from gui.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
 from gui.cpprosgenerator import CppRosGenerator
-import os
+from gui.pythonrosgenerator import PythonRosGenerator
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):
@@ -296,7 +296,10 @@ class VisualStates(QMainWindow):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
-            generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+            if self.config.type == ROS:
+                generator = PythonRosGenerator(self.libraries, self.config, stateList)
+            elif self.config.type == JDEROBOTCOMM:
+                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:

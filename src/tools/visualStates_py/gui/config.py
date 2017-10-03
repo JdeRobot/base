@@ -42,7 +42,7 @@ class RosConfig(Config):
         self.buildDependencies = []
         dependStrs = dependencies.split('\n')
         for dStr in dependStrs:
-            if len(dStr.strip()) >= 0:
+            if len(dStr.strip()) > 0:
                 self.buildDependencies.append(dStr.strip())
 
     def getBuildDependencies(self):
@@ -60,7 +60,7 @@ class RosConfig(Config):
         self.runDependencies = []
         dependStrs = dependencies.split('\n')
         for dStr in dependStrs:
-            if len(dStr.strip()) >= 0:
+            if len(dStr.strip()) > 0:
                 self.runDependencies.append(dStr.strip())
 
     def getRunDependencies(self):

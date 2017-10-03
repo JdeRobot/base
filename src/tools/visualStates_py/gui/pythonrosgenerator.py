@@ -20,14 +20,14 @@
 from gui.generator import Generator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.transitiontype import TransitionType
+from xml.dom import minidom
 import os
 
 class PythonRosGenerator(Generator):
-    def __init__(self, libraries, config, interfaceHeaders, states):
+    def __init__(self, libraries, config, states):
         Generator.__init__(self)
         self.libraries = libraries
         self.config = config
-        self.interfaceHeaders = interfaceHeaders
         self.states = states
 
     def getAllStates(self):
@@ -72,15 +72,19 @@ class PythonRosGenerator(Generator):
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
         fp.write(sourceCode)
         fp.close()
-
-        stringList = []
-        self.generateCfg(stringList)
-        fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
-        fp.write(''.join(stringList))
-        fp.close()
-
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
+        stringList = []
+        self.generateCmake(stringList, projectName)
+        cmakeString = ''.join(stringList)
+        fp = open(projectPath + os.sep + 'CMakeLists.txt', 'w')
+        fp.write(cmakeString)
+        fp.close()
+
+        xmlDoc = self.generatePackageXml(self.config, projectName)
+        xmlStr = xmlDoc.toprettyxml(indent='  ')
+        with open(projectPath + os.sep + 'package.xml', 'w') as f:
+            f.write(xmlStr)
 
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
@@ -123,8 +127,8 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None):\n')
-        stateStr.append('\t\tsuper(State, self).__init__(id, initial, cycleDuration, parent)\n')
+        stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None, gui=None):\n')
+        stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.rosNode = rosNode\n')
 
         if len(state.getVariables()) > 0:
@@ -151,37 +155,39 @@ from PyQt5.QtWidgets import QApplication
         rosNodeStr.append('\tdef __init__(self):\n')
         rosNodeStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
         for topic in self.config.getTopics():
-            if topic['opType'] == 'pub':
+            if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
                 rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub = rospy.Publisher("' +
                               topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
-            elif topic['opType'] == 'sub':
+            elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
                 rosNodeStr.append('\t\tself.' + topic['name'] + 'Sub = rospy.Subscriber("' +
                                   topic['name'] + '", ' + types[1] + ', self.'+topic['name']+'Callback)\n')
                 rosNodeStr.append('\t\tself.' + topic['name'] + ' = None\n')
-        rosNodeStr.append('\t\t time.sleep(1) # wait for initialization of the node, subscriber, and publisher\n')
+        rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
         rosNodeStr.append('\tdef stop(self):\n')
-        rosNodeStr.append('\t\tself.signal_shutdown("exit ROS node"\n\n')
+        rosNodeStr.append('\t\trospy.signal_shutdown("exit ROS node")\n\n')
 
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
-            if topic['opType'] == 'pub':
+            if topic['opType'] == 'Publish':
                 rosNodeStr.append('\tdef publish' + topic['name'] + '(self, ' + topic['name'] + '):\n')
                 rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub.publish(' + topic['name'] + ')\n\n')
-            elif topic['opType'] == 'sub':
+            elif topic['opType'] == 'Subscribe':
                 rosNodeStr.append('\tdef ' + topic['name'] + 'Callback(self, ' + topic['name'] + '):\n')
                 rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
+                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
+            rosNodeStr.append('\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
                 tranStr.append('\tdef __init__(self, id, destinationId, rosNode)\n')
-                tranStr.append('\t\tsuper(Transition, self).__init__(id, destinationId)\n')
+                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.rosNode = rosNode\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\t'):
@@ -296,5 +302,59 @@ def runGui():
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
-        mainStr.append('\t\trosNode.destroyProxies()\n')
+        mainStr.append('\t\trosNode.stop()\n')
         mainStr.append('\t\tsys.exit(1)\n')
+
+    def generateCmake(self, cmakeStr, projectName):
+        cmakeStr.append('project(')
+        cmakeStr.append(projectName)
+        cmakeStr.append(')\n\n')
+
+        cmakeStr.append('cmake_minimum_required(VERSION 2.8.3)\n\n')
+
+        cmakeStr.append('find_package(catkin REQUIRED COMPONENTS\n')
+        for dep in self.config.getBuildDependencies():
+            cmakeStr.append('  ' + dep + '\n')
+        cmakeStr.append(')\n\n')
+        cmakeStr.append('catkin_package()\n')
+        cmakeStr.append('include_directories(${catkin_INCLUDE_DIRS})\n')
+        cmakeStr.append('install(PROGRAMS ' + projectName + '.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n')
+        return cmakeStr
+
+    def generatePackageXml(self, config, projectName):
+        doc = minidom.Document()
+        root = doc.createElement('package')
+        nameElement = doc.createElement('name')
+        nameElement.appendChild(doc.createTextNode(projectName))
+        root.appendChild(nameElement)
+        versionElement = doc.createElement('version')
+        versionElement.appendChild(doc.createTextNode('0.0.0'))
+        root.appendChild(versionElement)
+        descElement = doc.createElement('description')
+        descElement.appendChild(doc.createTextNode('The ' + projectName + ' package'))
+        root.appendChild(descElement)
+        maintainerElement = doc.createElement('maintainer')
+        maintainerElement.setAttribute('email', 'todo@todo.todo')
+        maintainerElement.appendChild(doc.createTextNode('todo'))
+        root.appendChild(maintainerElement)
+        licenseElement = doc.createElement('license')
+        licenseElement.appendChild(doc.createTextNode('TODO (choose one: BSD, MIT, GPLv2, GPLv3 LGPLv3)'))
+        root.appendChild(licenseElement)
+        btoolDepElement = doc.createElement('buildtool_depend')
+        btoolDepElement.appendChild(doc.createTextNode('catkin'))
+        root.appendChild(btoolDepElement)
+        for bdep in config.getBuildDependencies():
+            bdepElement = doc.createElement('build_depend')
+            bdepElement.appendChild(doc.createTextNode(bdep))
+            root.appendChild(bdepElement)
+
+        for rdep in config.getRunDependencies():
+            rdepElement = doc.createElement('run_depend')
+            rdepElement.appendChild(doc.createTextNode(rdep))
+            root.appendChild(rdepElement)
+
+        exportElement = doc.createElement('export')
+        root.appendChild(exportElement)
+        doc.appendChild(root)
+
+        return doc
