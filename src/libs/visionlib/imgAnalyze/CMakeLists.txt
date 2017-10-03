@@ -6,11 +6,11 @@ TARGET_LINK_LIBRARIES(imgAnalyze progeo cvfast)
 ### Install
 install(TARGETS imgAnalyze
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT imganalyze
 )
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visionlib/imgAnalyze
-    COMPONENT core
+    COMPONENT imganalyze
 )

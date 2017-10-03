@@ -60,9 +60,9 @@ configure_file(src/demo/demo.yml demo.yml)
 ### Install
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-embedded
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT config
 )
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT core
+    COMPONENT config
 )

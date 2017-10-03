@@ -1,0 +1,17 @@
+Package: ${PROJECT_NAME}-drivers
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Provides: ${PROJECT_NAME}-drivers
+Conflicts: ${PROJECT_NAME}-drivers
+Replaces: ${PROJECT_NAME}-drivers
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: jderobot-ardrone-server, jderobot-cameraserver, jderobot-gazeboserver, jderobot-kinect2server, jderobot-giraffeServer, jderobot-emSensorDriver, jderobot-laser-server, jderobot-MAVLinkServer, jderobot-openni1Server, jderobot-openniServer, jderobot-pclRGBDServer,jderobot-EVICamDriver
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that gathers all the drivers of JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/JdeRobot/JdeRobot.git
+

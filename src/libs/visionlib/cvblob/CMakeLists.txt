@@ -40,11 +40,11 @@ target_link_libraries(cvblob ${OPENGL_LIBRARIES})
 ### Install
 install(TARGETS cvblob
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT cvblob
 )
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visionlib/cvblob
-    COMPONENT core
+    COMPONENT cvblob
 )

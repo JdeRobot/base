@@ -187,13 +187,13 @@ list_subdirectories2( LIST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ 1)
 list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)
 
 # Install Deps cmake's tree
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot COMPONENT setup)
 
 # Install ROS Launch files
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot COMPONENT setup)
 
 # Install setup.bash
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.bash DESTINATION ${CMAKE_INSTALL_PREFIX})
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.bash DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT setup)
 
 
 
@@ -220,134 +220,5 @@ configure_file(
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
-#
-# Deb packages
-#
-
-# Determine current architecture
-macro(dpkg_arch VAR_NAME)
-        find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
-        if (DPKG_PROGRAM) 
-          execute_process(
-            COMMAND ${DPKG_PROGRAM} --print-architecture
-            OUTPUT_VARIABLE ${VAR_NAME}
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-          )
-        endif(DPKG_PROGRAM)
-endmacro(dpkg_arch)
-
-include (InstallRequiredSystemLibraries)
-SET (CPACK_GENERATOR "DEB")
-SET (CPACK_SOURCE_GENERATOR TGZ)
-SET (CPACK_SET_DESTDIR ON)
-SET (CPACK_DEB_COMPONENT_INSTALL OFF)
-SET (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-SET (CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-
-
-# CPack version numbers for release tarball name.
-SET (CPACK_PACKAGE_VERSION_MAJOR 5)
-SET (CPACK_PACKAGE_VERSION_MINOR 5)
-SET (CPACK_PACKAGE_VERSION_PATCH 2)
-SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-
-
-SET (CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
-SET (CPACK_DEBIAN_PACKAGE_SECTION "net")
-dpkg_arch(CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
-
-SET (CPACK_MONOLITHIC_INSTALL ON)
-#set(CPACK_COMPONENTS_ALL core deps)
-#set(CPACK_COMPONENT_NONAME_FOR core)
-#set(CPACK_COMPONENT_CORE_GROUP "Core")
-#set(CPACK_COMPONENT_DEPS_GROUP "Development")
-
-#SET (CPACK_DEBIAN_CORE_PACKAGE_SHLIBDEPS ON)
-#SET (CPACK_DEBIAN_DEPS_PACKAGE_SHLIBDEPS ON)
-
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${DEPS}")
-#set(CPACK_DEBIAN_CORE_PACKAGE_DEPENDS "${DEPS}")
-#set(CPACK_DEBIAN_DEPS_PACKAGE_DEPENDS "${DEPS_DEV}")
-
-if(DEFINED debug_deps)
-MESSAGE("Dependencias: ${DEPS}")
-MESSAGE("Dependencias_dev: ${DEPS_DEV}")
-endif()
-
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
-
-
-## Include Git HEAD into description (feature: traceback builds)
-execute_process(COMMAND git rev-parse HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_HEAD
-)
-string(STRIP "${GIT_HEAD}" GIT_HEAD)
-
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY
-"Software development suite for robotics and computer vision applications.")
-SET (CPACK_PACKAGE_DESCRIPTION
-"JdeRobot is a software development suite for robotics and computer vision applications. 
- The applications are made up of a collection of concurrent processes (named components) that
- interoperate among them. They exchange messages using ICE communication middleware. The components may 
- run in a distributed network of computers and may be written in several languages (C++, Python, JavaScript...). 
- JdeRobot includes a collection of drivers and tools.
- Get source from https://github.com/RoboticsURJC/JdeRobot
- Package created with revision ${GIT_HEAD}")
-
-## Patch: CPACK_PACKAGE_DESCRIPTION behavior is broken. Always use SUMMARY
-SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CPACK_PACKAGE_DESCRIPTION})
-
-SET (CPACK_PACKAGE_CONTACT "Roberto Calvo <rocapal@gsyc.urjc.es>")
-SET (CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_DEBIAN_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-
-
-## Metapackages (at cmake time)
-include(scripts/metapackages/FindMetapackages.cmake)
-
-SET (PACKAGE_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-set(PACKAGE_DEPENDS "${DEPS}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps.info.in     ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-deps_${PACKAGE_VERSION}_all.info)
-
-set(PACKAGE_DEPENDS "${DEPS_DEV}")
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-deps-dev_${PACKAGE_VERSION}_all.info)
-
-execute_process(
-    COMMAND ${MAKE_PACKAGE_EXECUTABLE}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-
-## Inject release roll up (incremental releases)
-# this step should be only for jderobot package
-#set(PROJECT_VERSION ${CPACK_DEBIAN_PACKAGE_VERSION})
-#include(scripts/incremental_releases/incremental-releases.cmake)
-#set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
-
-
-#SET (CPACK_COMPONENTS_ALL Libraries ApplicationData)
-include (CPack Documentation)
-
-
-
-
-SET(JdeRobot_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/jderobot )
-SET(ALL_LIBS  ${LIBS_NEEDED} ${LIBS_EXTRA})
-foreach (l ${ALL_LIBS} )
-	if (TARGET ${l})
-		SET(JdeRobot_LIBS_NAMES ${JdeRobot_LIBS_NAMES} ${l})
-	endif()
-endforeach()
-
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/JdeRobotInstallConfig.cmake.in "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake" @ONLY)
-install (SCRIPT "${PROJECT_BINARY_DIR}/JdeRobotInstallConfig.cmake")
-SET(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_PREFIX}/share/jderobot)
-install(FILES
-  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/JdeRobotConfig.cmake"
-  "${PROJECT_BINARY_DIR}/JdeRobotConfigVersion.cmake"
-  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
-
-
+# include cpack instructions
+include(${PROJECT_SOURCE_DIR}/cmake/cpackit.cmake)

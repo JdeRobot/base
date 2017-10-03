@@ -5,4 +5,4 @@ configure_module_python(config)
 add_custom_target(config_py ALL)
 copy_to_binary_python(config_py config)
 
-install_python(config core)
+install_python(config config-python)

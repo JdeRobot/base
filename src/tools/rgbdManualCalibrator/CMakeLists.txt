@@ -49,9 +49,9 @@ ${resourcelocator_LIBRARIES}
 
 install(TARGETS rgbdManualCalibrator
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
+    COMPONENT rgbdManualCalibrator
     )
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdManualCalibrator.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdManualCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cam1-mia.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdManualCalibrator.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT rgbdManualCalibrator)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdManualCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdManualCalibrator)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cam1-mia.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdManualCalibrator)

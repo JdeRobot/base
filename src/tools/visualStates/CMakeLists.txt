@@ -49,6 +49,7 @@ link_directories(
 )
 
 include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
     ${INTERFACES_CPP_DIR}
     ${LIBS_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -81,28 +82,33 @@ TARGET_LINK_LIBRARIES ( visualStateslib
 		${GLOG_LIBRARIES}
 		)
 
+configure_file(
+		cmakevars.hpp.in
+		cmakevars.hpp
+		@ONLY
+)
+
 add_custom_command(TARGET visualStates POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualStates>/gui)
-    
 
     install(TARGETS visualStates
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
-    )
+    COMPONENT tools)
+
+	install(TARGETS visualStateslib
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
+		COMPONENT tools)
 
 	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh 
       PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
 	  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
-	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade/visualStates)
-
     # Install Glade
 	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
-	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade/visualStates)
+	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
 
 	# install resources (jderobot logo)
 	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/jderobot.png DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/resources)
-
 
 	# Install C++ Headers
 	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -111,13 +117,8 @@ add_custom_command(TARGET visualStates POST_BUILD
 	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/popups/*.h")
 	INSTALL(FILES ${h_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visualStates/popups)
 
-
 	# Install Python Files
 	FILE(GLOB p_files "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 	INSTALL(FILES ${p_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/visualStates_py)
 
 ENDIF()
-
-
-
-

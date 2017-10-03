@@ -4,7 +4,7 @@
   <pose>0 0 0 0 0 0</pose>
   <static>true</static>
     <link name="city">
-    	<pose>0 0 0.749745 0 0 0</pose>
+    	<pose>0 0 0 0 0 0</pose>
       <collision name="collision">
             <geometry>
               <mesh>

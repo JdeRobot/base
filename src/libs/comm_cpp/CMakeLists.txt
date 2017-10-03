@@ -6,7 +6,7 @@ ELSE()
     SET(JDEROBOTCOM_ROS OFF)
 endif()
 
-project(jderobotcomm)
+project(comm)
 
 usePython(2)
 
@@ -123,10 +123,10 @@ set(${PROJECT_NAME}_LIBRARIES "${PROJECT_NAME}" CACHE STRINGS "Find(${PROJECT_NA
 ### Install
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-embedded
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT comm
 )
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT core
+    COMPONENT comm
 )
 

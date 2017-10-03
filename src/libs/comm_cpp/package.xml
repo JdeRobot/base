@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>jderobotcomm</name>
+  <name>comm</name>
   <version>0.0.1</version>
   <description>The jderobotcomm library</description>
 

@@ -4,6 +4,7 @@ from .laserClient import getLaserClient
 from .cameraClient import getCameraClient
 from .pose3dClient import getPose3dClient
 from .motorsClient import getMotorsClient
+from .ptMotorsClient import getPTMotorsClient
 
 
 class Communicator:
@@ -76,6 +77,17 @@ class Communicator:
 
 	    '''
 		return getMotorsClient(self, name)
+
+	def getPTMotorsClient(self, name):
+		'''
+	    Returns a PTMotors client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getPTMotorsClient(self, name)
 
 	def getPose3dClient(self, name):
 		'''

@@ -58,7 +58,7 @@ target_link_libraries(formula1plugin
         colorspacesmm
 )
 
-INSTALL (TARGETS formula1plugin DESTINATION share/jderobot/gazebo/plugins/formula1/ COMPONENT core)
+INSTALL (TARGETS formula1plugin DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/formula1/ COMPONENT gazeboserver)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/*.cfg)
-INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
+INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT gazeboserver)
 
