@@ -184,8 +184,8 @@ from PyQt5.QtWidgets import QApplication
                 tranStr.append('\t\tsuper(Transition, self).__init__(id, destinationId)\n')
                 tranStr.append('\t\tself.interfaces = interfaces\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
-                for checkLine in tran.getCondition().split('\t'):
-                    tranStr.append('\t\t' + checkLine + '\n')
+                for checkLine in tran.getCondition().split('\n'):
+                    tranStr.append('\t\treturn ' + checkLine + '\n')
                 tranStr.append('\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')

@@ -183,19 +183,18 @@ from PyQt5.QtWidgets import QApplication
             elif topic['opType'] == 'Subscribe':
                 rosNodeStr.append('\tdef ' + topic['name'] + 'Callback(self, ' + topic['name'] + '):\n')
                 rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
-                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
             rosNodeStr.append('\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, rosNode)\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, rosNode):\n')
                 tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.rosNode = rosNode\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
-                for checkLine in tran.getCondition().split('\t'):
-                    tranStr.append('\t\t' + checkLine + '\n')
+                for checkLine in tran.getCondition().split('\n'):
+                    tranStr.append('\t\treturn ' + checkLine + '\n')
                 tranStr.append('\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
