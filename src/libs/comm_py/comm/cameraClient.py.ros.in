@@ -39,7 +39,7 @@ def __getListenerCamera(jdrc, prefix):
     '''
     if (sys.version_info[0] == 2):
         print("Receiving " + prefix + " Image from ROS messages")
-        topic = jdrc.getConfig().getProperty(prefix+".topic")
+        topic = jdrc.getConfig().getProperty(prefix+".Topic")
         client = ListenerCamera(topic)
         return client
     else:
