@@ -26,4 +26,4 @@ INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gui DESTINATION share/jderobot/py
 
 # Install resources
 #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION share/jderobot/python/pantilt_teleop_py COMPONENT panTiltTeleop-python PATTERN .svn EXCLUDE)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/pantilt_teleop.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT panTiltTeleop-python)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/pantilt_teleop.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT panTiltTeleop-python)

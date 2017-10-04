@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-#include "easyiceconfig/EasyIce.h"
+#include <jderobot/config/properties.hpp>
 
 class controlVW : public QWidget
 {
@@ -15,7 +15,7 @@ public:
     explicit controlVW(QWidget *parent = 0);
     
     void Stop();
-    void setIC(Ice::CommunicatorPtr ic);
+    void setProps(Config::Properties props);
 	float getV();
 	float getW();
 
@@ -24,7 +24,7 @@ private:
     QImage qimage;
 
 	float v, w, v_max, w_max;
-	Ice::CommunicatorPtr ic;
+	Config::Properties props;
 
 protected:
     void paintEvent(QPaintEvent *);

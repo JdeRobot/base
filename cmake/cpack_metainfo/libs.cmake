@@ -8,14 +8,24 @@ SET(CPACK_COMPONENT_COLORSPACES_DESCRIPTION
 "Library for  
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_COMM_PACKAGE_DEPENDS "jderobot-types, jderobot-logger, jderobot-interfaces, jderobot-colorspaces, jderobot-setup")
-SET(CPACK_COMPONENT_COMM_DESCRIPTION  
-"Library for  
+SET(CPACK_DEBIAN_CONFIG_PACKAGE_DEPENDS "jderobot-setup")
+SET(CPACK_COMPONENT_CONFIG_DESCRIPTION  
+"Library for read Yaml config files
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_DEPENDS "jderobot-types-python, jderobot-setup")
+SET(CPACK_DEBIAN_CONFIG-PYTHON_PACKAGE_DEPENDS "jderobot-setup")
+SET(CPACK_COMPONENT_CONFIG-PYTHON_DESCRIPTION  
+"Library for read Yaml config files 
+ Home page https://jderobot.org")
+
+SET(CPACK_DEBIAN_COMM_PACKAGE_DEPENDS "jderobot-types, jderobot-config, jderobot-logger, jderobot-interfaces, jderobot-colorspaces, jderobot-setup")
+SET(CPACK_COMPONENT_COMM_DESCRIPTION  
+"Library for communications. You can use ROS or ICE 
+ Home page https://jderobot.org")
+
+SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_DEPENDS "jderobot-types-python,jderobot-config-python, jderobot-setup")
 SET(CPACK_COMPONENT_COMM-PYTHON_DESCRIPTION  
-"Library for  
+"Library for communications. You can use ROS or ICE 
  Home page https://jderobot.org")
 SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"

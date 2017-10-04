@@ -16,7 +16,7 @@ SET(CPACK_COMPONENT_COLORTUNER-PYTHON_DESCRIPTION
  Manual page http://jderobot.org/index.php/Tools#ColorTuner_.28Python.29
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_CAMERAVIEW_PACKAGE_DEPENDS "jderobot-easyice, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
+SET(CPACK_DEBIAN_CAMERAVIEW_PACKAGE_DEPENDS "jderobot-config, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
 SET(CPACK_COMPONENT_CAMERAVIEW_DESCRIPTION  
 "Generic viewer for cameras 
  Manual Page http://jderobot.org/index.php/Tools#CameraView
@@ -34,7 +34,7 @@ SET(CPACK_COMPONENT_GIRAFFECLIENT_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_KOBUKIVIEWER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-comm")
+SET(CPACK_DEBIAN_KOBUKIVIEWER_PACKAGE_DEPENDS "jderobot-config, jderobot-comm")
 SET(CPACK_COMPONENT_KOBUKIVIEWER_DESCRIPTION  
 "Teleoperator for vehicle-type robots, such as kobuki, pioneer, cars, etc. 
  Manual page http://jderobot.org/index.php/Tools#KobukiViewer
@@ -46,7 +46,7 @@ SET(CPACK_COMPONENT_NAMINGSERVICE_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_PANTILTTELEOP-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-easyice-python")
+SET(CPACK_DEBIAN_PANTILTTELEOP-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-comm-python, jderobot-config-python")
 SET(CPACK_COMPONENT_PANTILTTELEOP-PYTHON_DESCRIPTION  
 "Teleoperator for IP cameras that allow movement (i.e. Sony EVI camera)
  Manual Page http://jderobot.org/index.php/Tools#NavigatorCamera

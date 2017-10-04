@@ -1,24 +1,29 @@
 #include "robot/robot.h"
 #include "gui/threadupdategui.h"
 
-#include "easyiceconfig/EasyIce.h"
+#include "jderobot/config/config.h"
+#include "jderobot/comm/communicator.hpp"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    Ice::CommunicatorPtr ic;
 
     try {
-         //-----------------ICE----------------//
-         ic = EasyIce::initialize(argc, argv);
+
+        Config::Properties props = Config::load(argc, argv);
+
+
+
+         //-----------------Comm----------------//
+         Comm::Communicator* jdrc = new Comm::Communicator(props);
 
          // Variables Compartidas
          // Robot -> Sensores, navegacion, actuadores
-         Robot *robot = new Robot(ic);
+         Robot *robot = new Robot(jdrc);
 
 
-         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, ic);
+         ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(robot, props);
          thread_update_gui->start();
 
     } catch (const Ice::Exception& ex) {

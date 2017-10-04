@@ -34,16 +34,16 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${INTERFACES_CPP_DIR}
         ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${easyiceconfig_INCLUDE_DIRS}
+        ${config_INCLUDE_DIRS}
         ${jderobottypes_INCLUDE_DIRS}
-        ${jderobotcomm_INCLUDE_DIRS}
+        ${comm_INCLUDE_DIRS}
         ${roscpp_INCLUDE_DIRS}
         ${ZLIB_INCLUDE_DIRS}
     )
 
     link_directories(${JDE_LIBS}
         ${easyiceconfig_LIBRARY_DIRS}
-        ${jderobotcomm_LIBRARY_DIRS}
+        ${comm_LIBRARY_DIRS}
     )
 
     add_executable( kobukiViewer ${SOURCE} ${INTERFACES_CPP_DIR})
@@ -55,8 +55,8 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${Qt5OpenGL_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
         ${OpenCV_LIBRARIES}
-        ${easyiceconfig_LIBRARIES}
-        ${jderobotcomm_LIBRARIES}
+        ${config_LIBRARIES}
+        ${comm_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
         JderobotInterfaces
         jderobotutil
@@ -69,5 +69,6 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
     COMPONENT kobukiviewer
     )
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT kobukiviewer)
+
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT kobukiviewer)
 ENDIF()
