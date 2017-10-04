@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version='1.4'>
-	<world name='GrannyAnnie'>
+	<world name='Vacuum Cleaner'>
     	<include>
     	     <uri>model://roomba</uri>
     	  	 <pose>-1 1.5 0 0 0 0</pose>
@@ -10,7 +10,7 @@
     	  	 <pose>0 0 0 0 0 0</pose>
     	</include>
 		<include>
-    	     <uri>model://ground_plane</uri>
+    	     <uri>model://ground_plane_sincolor</uri>
     	</include>
     	
     	<light name='sun' type='directional'>
@@ -41,4 +41,3 @@
 		</gui>
   </world>
 </sdf>
-
