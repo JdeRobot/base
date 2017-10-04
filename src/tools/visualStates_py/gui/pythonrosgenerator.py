@@ -22,6 +22,7 @@ from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.transitiontype import TransitionType
 from xml.dom import minidom
 import os
+import shutil
 
 class PythonRosGenerator(Generator):
     def __init__(self, libraries, config, states):
@@ -86,6 +87,8 @@ class PythonRosGenerator(Generator):
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
 
+        self.copyRuntime(projectPath)
+
     def generateImports(self, importStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
@@ -104,8 +107,6 @@ import sys, threading, time, rospy
                     importStr.append('import ' + typeStr + '\n')
                 typeSet.add(typeStr)
 
-        importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
-        importStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n')
         mystr = '''from codegen.python.state import State
 from codegen.python.temporaltransition import TemporalTransition
 from codegen.python.conditionaltransition import ConditionalTransition
@@ -361,3 +362,12 @@ def runGui():
         doc.appendChild(root)
 
         return doc
+
+    def copyRuntime(self, projectPath):
+        if os.path.exists(projectPath + '/codegen'):
+            shutil.rmtree(projectPath + '/codegen')
+        if os.path.exists(projectPath + 'gui'):
+            shutil.rmtree(projectPath + '/gui')
+
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/codegen', projectPath + '/codegen')
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/gui', projectPath + '/gui')
