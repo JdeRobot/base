@@ -152,10 +152,10 @@ class Transition:
         for (name, value) in transitionElement.attributes.items():
             if name == 'id':
                 self.id = int(value)
-        self.type = int(transitionElement.getElementsByTagName('type')[0].childNodes[0].nodeValue)
-        if self.type == TransitionType.TEMPORAL:
+        self.transitionType = int(transitionElement.getElementsByTagName('type')[0].childNodes[0].nodeValue)
+        if self.transitionType == TransitionType.TEMPORAL:
             self.setTemporalTime(int(transitionElement.getElementsByTagName('time')[0].childNodes[0].nodeValue))
-        elif self.type == TransitionType.CONDITIONAL:
+        elif self.transitionType == TransitionType.CONDITIONAL:
             self.setCondition(transitionElement.getElementsByTagName('condition')[0].childNodes[0].nodeValue)
         self.name = transitionElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
         self.x = float(transitionElement.getElementsByTagName('posx')[0].childNodes[0].nodeValue)

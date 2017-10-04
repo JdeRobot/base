@@ -169,7 +169,7 @@ from PyQt5.QtWidgets import QApplication
                 types = typesStr.split('/')
                 rosNodeStr.append('\t\tself.' + topic['name'] + 'Sub = rospy.Subscriber("' +
                                   topic['name'] + '", ' + types[1] + ', self.'+topic['name']+'Callback)\n')
-                rosNodeStr.append('\t\tself.' + topic['name'] + ' = None\n')
+                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + types[1] + '()\n')
         rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
         rosNodeStr.append('\tdef stop(self):\n')

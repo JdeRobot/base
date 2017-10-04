@@ -88,7 +88,7 @@ class State():
                 for tran in self.currentState.transitions:
                     if tran.checkCondition():
                         tran.runCode()
-                        self.currentState = self.statesById[tran.destinationId]
+                        self.currentState = self.statesById[tran.getDestinationId()]
                         self.currentState.init()
                         initState = False
                         break

@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.transition import Transition
+from codegen.python.transition import Transition
 
 class ConditionalTransition(Transition):
 

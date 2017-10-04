@@ -17,7 +17,7 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-class Transition():
+class Transition(object):
     def __init__(self, id, destinationId):
         self.id = id
         self.destinationId = destinationId
@@ -30,3 +30,6 @@ class Transition():
 
     def checkCondition(self):
         return False
+
+    def getDestinationId(self):
+        return self.destinationId
