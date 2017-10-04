@@ -19,12 +19,12 @@
  *
  */
 
-#include "visualhfsm.h"
+#include "visualStates.h"
 
 /*************************************************************
  * CONSTRUCTOR
  *************************************************************/
-VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade )
+VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade )
 :   Gtk::Dialog(cobject),
     refBuilder(refGlade)
 {
@@ -63,52 +63,52 @@ VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     // ASSIGNING SIGNALS
     // Of the menu items
     this->imagemenuitem_new->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_new));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_new));
     this->imagemenuitem_open->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_open));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_open));
     this->imagemenuitem_save->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_save));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_save));
     this->imagemenuitem_saveas->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_save_as));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_save_as));
     this->imagemenuitem_quit->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_quit));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_quit));
     this->imagemenuitem_state->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_state));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_state));
     this->imagemenuitem_transition->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_transition));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_transition));
     this->imagemenuitem_timer->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_timer));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_timer));
     this->imagemenuitem_variables->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_variables));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_variables));
     this->imagemenuitem_libraries->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_libraries));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_libraries));
     this->imagemenuitem_configfile->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_configfile));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_configfile));
     this->imagemenuitem_generatecppcode->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_generate_cpp_code));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_generate_cpp_code));
     this->imagemenuitem_compile->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_compile));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_compile));
     this->imagemenuitem_generatepythoncode->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_generate_python_code));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_generate_python_code));
     this->imagemenuitem_about->signal_activate().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_menubar_clicked_about));
+                sigc::mem_fun(*this, &VisualStates::on_menubar_clicked_about));
 
     // Of the windows
     this->scrolledwindow_schema->signal_event().connect(
-                sigc::mem_fun(*this, &VisualHFSM::on_schema_event));
+                sigc::mem_fun(*this, &VisualStates::on_schema_event));
     this->pUpButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                        &VisualHFSM::on_up_button_clicked));
+                                        &VisualStates::on_up_button_clicked));
 
     // Create the canvas    
     this->canvas = Gtk::manage(new Goocanvas::Canvas());
     this->canvas->signal_item_created().connect(sigc::mem_fun(*this,
-                                        &VisualHFSM::on_item_created));
+                                        &VisualStates::on_item_created));
 
     // And the treeview's tree model
     this->refTreeModel = Gtk::TreeStore::create(this->m_Columns);
     this->treeview->set_model(this->refTreeModel);
     this->treeview->signal_row_activated().connect(
-                        sigc::mem_fun(*this, &VisualHFSM::on_row_activated));
+                        sigc::mem_fun(*this, &VisualStates::on_row_activated));
 
     //Add the TreeView's view columns:
     this->treeview->append_column("ID", this->m_Columns.m_col_id);
@@ -154,9 +154,9 @@ VisualHFSM::VisualHFSM ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 /*************************************************************
  * DESTRUCTOR
  *************************************************************/
-VisualHFSM::~VisualHFSM () {}
+VisualStates::~VisualStates () {}
 
-void VisualHFSM::getInterfaces() {
+void VisualStates::getInterfaces() {
     system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/slice > /tmp/allinterfaces.txt");
     std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
@@ -176,7 +176,7 @@ void VisualHFSM::getInterfaces() {
     }
 }
 
-void VisualHFSM::getJdeRobotCommInterfaces() {
+void VisualStates::getJdeRobotCommInterfaces() {
     system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/comm/interfaces > /tmp/allinterfaces.txt");
     std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
@@ -200,7 +200,7 @@ void VisualHFSM::getJdeRobotCommInterfaces() {
  * METHODS FOR SIGNALS
  *************************************************************/
 // Save the automata in the specified path
-void VisualHFSM::on_save_file ( std::string path ) {
+void VisualStates::on_save_file ( std::string path ) {
     if (this->lastButton == SAVE_AS) {
         std::string str(".xml");
         if (!this->hasEnding(path, str))
@@ -219,7 +219,7 @@ void VisualHFSM::on_save_file ( std::string path ) {
 }
 
 // Load the specified file
-void VisualHFSM::on_load_file ( std::string path ) {
+void VisualStates::on_load_file ( std::string path ) {
     this->filepath = std::string(path);
 
     delete this->lfdialog;
@@ -245,19 +245,19 @@ void VisualHFSM::on_load_file ( std::string path ) {
 }
 
 // Receive a list of interfaces for the automata
-void VisualHFSM::on_config_text ( std::list<IceInterface>& listInterfaces ) {
+void VisualStates::on_config_text ( std::list<IceInterface>& listInterfaces ) {
     this->listInterfaces = listInterfaces;
     delete this->cfdialog;
 }
 
 // Receive a list of libraries for the automata
-void VisualHFSM::on_additional_libraries ( std::list<std::string> listLibraries ) {
+void VisualStates::on_additional_libraries ( std::list<std::string> listLibraries ) {
     this->listLibraries = listLibraries;
     delete this->ldialog;
 }
 
 // Receive the signal of name changed in a state for changing it in the treeview
-void VisualHFSM::on_change_node_name ( int id, std::string name ) {
+void VisualStates::on_change_node_name ( int id, std::string name ) {
     this->changeNameInTreeView(id, name, this->refTreeModel->children());
 }
 
@@ -265,17 +265,17 @@ void VisualHFSM::on_change_node_name ( int id, std::string name ) {
  * INTERNAL METHODS
  *************************************************************/
 // Create a popup menu for transitions
-void VisualHFSM::create_menu_transition () {
+void VisualStates::create_menu_transition () {
     this->actionGroupTransition = Gtk::ActionGroup::create();
     this->actionGroupTransition->add(Gtk::Action::create("ContextMenu", "Context Menu"));
     this->actionGroupTransition->add(Gtk::Action::create("ContextRename", "Rename"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_transition_rename));
+                        sigc::mem_fun(this, &VisualStates::on_menu_transition_rename));
     this->actionGroupTransition->add(Gtk::Action::create("ContextEdit", "Edit"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_transition_edit));
+                        sigc::mem_fun(this, &VisualStates::on_menu_transition_edit));
     this->actionGroupTransition->add(Gtk::Action::create("ContextCode", "Code"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_transition_code));
+                        sigc::mem_fun(this, &VisualStates::on_menu_transition_code));
     this->actionGroupTransition->add(Gtk::Action::create("ContextRemove", "Remove"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_transition_remove));
+                        sigc::mem_fun(this, &VisualStates::on_menu_transition_remove));
 
     this->UIManagerTransition = Gtk::UIManager::create();
     this->UIManagerTransition->insert_action_group(this->actionGroupTransition);
@@ -303,19 +303,19 @@ void VisualHFSM::create_menu_transition () {
 }
 
 // Create a popup menu for states
-void VisualHFSM::create_menu_item () {
+void VisualStates::create_menu_item () {
     this->actionGroupItem = Gtk::ActionGroup::create();
     this->actionGroupItem->add(Gtk::Action::create("ContextMenu", "Context Menu"));
     this->actionGroupItem->add(Gtk::Action::create("ContextRename", "Rename"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_state_rename));
+                        sigc::mem_fun(this, &VisualStates::on_menu_state_rename));
     this->actionGroupItem->add(Gtk::Action::create("ContextEdit", "Edit"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_state_edit));
+                        sigc::mem_fun(this, &VisualStates::on_menu_state_edit));
     this->actionGroupItem->add(Gtk::Action::create("ContextMarkAsInitial", "Mark as initial"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_state_markasinitial));
+                        sigc::mem_fun(this, &VisualStates::on_menu_state_markasinitial));
     this->actionGroupItem->add(Gtk::Action::create("ContextCopy", "Copy"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_state_copy));
+                        sigc::mem_fun(this, &VisualStates::on_menu_state_copy));
     this->actionGroupItem->add(Gtk::Action::create("ContextRemove", "Remove"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_state_remove));
+                        sigc::mem_fun(this, &VisualStates::on_menu_state_remove));
 
     this->UIManagerItem = Gtk::UIManager::create();
     this->UIManagerItem->insert_action_group(this->actionGroupItem);
@@ -343,11 +343,11 @@ void VisualHFSM::create_menu_item () {
 }
 
 // Create a popup menu for paste states in the canvas
-void VisualHFSM::create_menu_paste () {
+void VisualStates::create_menu_paste () {
     this->actionGroupPaste = Gtk::ActionGroup::create();
     this->actionGroupPaste->add(Gtk::Action::create("ContextMenu", "Context Menu"));
     this->actionGroupPaste->add(Gtk::Action::create("ContextPaste", "Paste"),
-                        sigc::mem_fun(this, &VisualHFSM::on_menu_canvas_paste));
+                        sigc::mem_fun(this, &VisualStates::on_menu_canvas_paste));
 
     this->UIManagerPaste = Gtk::UIManager::create();
     this->UIManagerPaste->insert_action_group(this->actionGroupPaste);
@@ -372,7 +372,7 @@ void VisualHFSM::create_menu_paste () {
 }
 
 // Create a new state, receiving the ID of the subautomata son
-void VisualHFSM::create_new_state ( int idSubautomataSon ) {
+void VisualStates::create_new_state ( int idSubautomataSon ) {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Creating state with ID: " << this->idguinode << END_COLOR << std::endl;
 
@@ -407,7 +407,7 @@ void VisualHFSM::create_new_state ( int idSubautomataSon ) {
 }
 
 // Create a new transition between 'item' and 'lastItem'
-void VisualHFSM::create_new_transition ( const Glib::RefPtr<Goocanvas::Item>& item ) {
+void VisualStates::create_new_transition ( const Glib::RefPtr<Goocanvas::Item>& item ) {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Creating transition" << END_COLOR << std::endl;
 
@@ -449,7 +449,7 @@ void VisualHFSM::create_new_transition ( const Glib::RefPtr<Goocanvas::Item>& it
 }
 
 // Create a new transition when loading an xml file
-void VisualHFSM::create_new_transition ( Point origin, Point final, Point midpoint, int idTransition ) {
+void VisualStates::create_new_transition ( Point origin, Point final, Point midpoint, int idTransition ) {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Creating transition" << END_COLOR << std::endl;
 
@@ -487,22 +487,22 @@ void VisualHFSM::create_new_transition ( Point origin, Point final, Point midpoi
  * OF THE MENUS (TRANSITIONS)
  *************************************************************/
 // Rename the selected transition
-void VisualHFSM::on_menu_transition_rename () {
+void VisualStates::on_menu_transition_rename () {
     this->currentSubautomata->renameGuiTransition(this->selectedItem);
 }
 
 // Edit the selected transition
-void VisualHFSM::on_menu_transition_edit () {
+void VisualStates::on_menu_transition_edit () {
     this->currentSubautomata->editGuiTransition(this->selectedItem);
 }
 
 // Edit the code of the selected transition
-void VisualHFSM::on_menu_transition_code () {
+void VisualStates::on_menu_transition_code () {
     this->currentSubautomata->editGuiTransitionCode(this->selectedItem);
 }
 
 // Remove the selected transition
-void VisualHFSM::on_menu_transition_remove () {
+void VisualStates::on_menu_transition_remove () {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Removing transition..." << END_COLOR << std::endl;
 
@@ -525,7 +525,7 @@ void VisualHFSM::on_menu_transition_remove () {
  * OF THE MENUS (STATES)
  *************************************************************/
 // Rename a state
-void VisualHFSM::on_menu_state_rename () {
+void VisualStates::on_menu_state_rename () {
     this->copyPressed = false;
 
     std::list<GuiNode>* listGuinodes = this->currentSubautomata->getListGuiNodes();
@@ -541,31 +541,31 @@ void VisualHFSM::on_menu_state_rename () {
         this->rdialog = new RenameDialog(&*nodeListIterator);
         this->rdialog->init();
         this->rdialog->signal_change_node().connect(sigc::mem_fun(this,
-                                                &VisualHFSM::on_change_node_name));
+                                                &VisualStates::on_change_node_name));
     }
 }
 
 // Edit the code of a state
-void VisualHFSM::on_menu_state_edit () {
+void VisualStates::on_menu_state_edit () {
     this->copyPressed = false;
 
     this->currentSubautomata->editGuiNode(this->selectedItem);
 }
 
 // Mark the state as initial
-void VisualHFSM::on_menu_state_markasinitial () {
+void VisualStates::on_menu_state_markasinitial () {
     this->copyPressed = false;
 
     this->currentSubautomata->markGuiNodeAsInitial(this->selectedItem);
 }
 
 // Just put the 'copyPressed' variable to true
-void VisualHFSM::on_menu_state_copy () {
+void VisualStates::on_menu_state_copy () {
     this->copyPressed = true;
 }
 
 // Remove a state
-void VisualHFSM::on_menu_state_remove () {
+void VisualStates::on_menu_state_remove () {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Removing state..." << END_COLOR << std::endl;
     
@@ -584,7 +584,7 @@ void VisualHFSM::on_menu_state_remove () {
 }
 
 // Paste a state
-void VisualHFSM::on_menu_canvas_paste () {
+void VisualStates::on_menu_canvas_paste () {
     this->copyPressed = true;
     GuiNode* gnode = this->currentSubautomata->getGuiNode(this->selectedItem);
     this->nameNode = gnode->getName();
@@ -598,7 +598,7 @@ void VisualHFSM::on_menu_canvas_paste () {
  * OF THE TREEVIEW
  *************************************************************/
 // Fills the treeview with a new state
-bool VisualHFSM::fillTreeView ( std::string nameNode, Gtk::TreeModel::Children child, int idNodeFather ) {
+bool VisualStates::fillTreeView ( std::string nameNode, Gtk::TreeModel::Children child, int idNodeFather ) {
     bool cont = true;
     Gtk::TreeModel::Children::iterator iter = child.begin();
     while ( cont && (iter != child.end()) ) {
@@ -617,7 +617,7 @@ bool VisualHFSM::fillTreeView ( std::string nameNode, Gtk::TreeModel::Children c
     return cont;
 }
 
-bool VisualHFSM::clearTreeView (){
+bool VisualStates::clearTreeView (){
     
     Gtk::TreeModel::Children children = this->refTreeModel->children();
     Gtk::TreeModel::Children::iterator iter = children.begin();
@@ -631,7 +631,7 @@ bool VisualHFSM::clearTreeView (){
 }
 
 // Remove from the treeview
-bool VisualHFSM::removeFromTreeView ( int id, Gtk::TreeModel::Children child ) {
+bool VisualStates::removeFromTreeView ( int id, Gtk::TreeModel::Children child ) {
     bool cont = true;
     Gtk::TreeModel::Children::iterator iter = child.begin();
     while ( cont && (iter != child.end()) ) {
@@ -649,7 +649,7 @@ bool VisualHFSM::removeFromTreeView ( int id, Gtk::TreeModel::Children child ) {
 }
 
 // Change a name of a state in the treeview
-bool VisualHFSM::changeNameInTreeView ( int id, std::string nameNode, Gtk::TreeModel::Children child ) {
+bool VisualStates::changeNameInTreeView ( int id, std::string nameNode, Gtk::TreeModel::Children child ) {
     bool cont = true;
     Gtk::TreeModel::Children::iterator iter = child.begin();
     while ( cont && (iter != child.end()) ) {
@@ -671,7 +671,7 @@ bool VisualHFSM::changeNameInTreeView ( int id, std::string nameNode, Gtk::TreeM
  *************************************************************/
 // Schema events: create an state, goes up to the subautomata father
 // and shows the popup menu paste
-bool VisualHFSM::on_schema_event ( GdkEvent* event ) {
+bool VisualStates::on_schema_event ( GdkEvent* event ) {
     if ((event->button.x != 0) && (event->button.y != 0)) {
         this->event_x = event->button.x;
         this->event_y = event->button.y;
@@ -697,7 +697,7 @@ bool VisualHFSM::on_schema_event ( GdkEvent* event ) {
 }
 
 // Method called when an item is created, both states and transitions
-void VisualHFSM::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
+void VisualStates::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
                                    const Glib::RefPtr<Goocanvas::ItemModel>& /* model */) {
     if (this->state == NORMAL) {
         Glib::RefPtr<Goocanvas::Group> group = Glib::RefPtr<Goocanvas::Group>::cast_dynamic(item);
@@ -705,15 +705,15 @@ void VisualHFSM::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
             return;
             
         item->signal_button_press_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_button_press_event));
+                sigc::mem_fun(this, &VisualStates::on_item_button_press_event));
         item->signal_button_release_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_button_release_event));
+                sigc::mem_fun(this, &VisualStates::on_item_button_release_event));
         item->signal_motion_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_motion_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_item_motion_notify_event));
         item->signal_enter_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_enter_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_item_enter_notify_event));
         item->signal_leave_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_leave_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_item_leave_notify_event));
 
         if (DEBUG)
             std::cout << BEGIN_GREEN << VISUAL << "Item NORMAL created" << END_COLOR << std::endl;
@@ -725,7 +725,7 @@ void VisualHFSM::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
             return;
 
         item->signal_enter_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_item_enter_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_item_enter_notify_event));
 
         if (DEBUG)
             std::cout << BEGIN_GREEN << VISUAL << "Item INIT created" << END_COLOR << std::endl;
@@ -764,15 +764,15 @@ void VisualHFSM::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
             return;
 
         item->signal_button_press_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_transition_button_press_event));
+                sigc::mem_fun(this, &VisualStates::on_transition_button_press_event));
         item->signal_button_release_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_transition_button_release_event));
+                sigc::mem_fun(this, &VisualStates::on_transition_button_release_event));
         item->signal_motion_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_transition_motion_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_transition_motion_notify_event));
         item->signal_enter_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_transition_enter_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_transition_enter_notify_event));
         item->signal_leave_notify_event().connect(
-                sigc::mem_fun(this, &VisualHFSM::on_transition_leave_notify_event));
+                sigc::mem_fun(this, &VisualStates::on_transition_leave_notify_event));
 
         if (DEBUG)
             std::cout << BEGIN_GREEN << VISUAL << "Item TRANS_MIDPOINT created" << END_COLOR << std::endl;
@@ -785,7 +785,7 @@ void VisualHFSM::on_item_created ( const Glib::RefPtr<Goocanvas::Item>& item,
 
 // Button press events: goes deep to the subautomata child
 // or shows the popup menu for a state
-bool VisualHFSM::on_item_button_press_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_item_button_press_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                               GdkEventButton* event ) {
     if ((event->button == 1) && item) {
         if (event->type == GDK_2BUTTON_PRESS) {
@@ -836,7 +836,7 @@ bool VisualHFSM::on_item_button_press_event ( const Glib::RefPtr<Goocanvas::Item
 }
 
 // Release events: reset the drag and create a new transition (just in case)
-bool VisualHFSM::on_item_button_release_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_item_button_release_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                 GdkEventButton* event) {
     if ((event->button == 1)) {
         dragging.reset();
@@ -861,7 +861,7 @@ bool VisualHFSM::on_item_button_release_event ( const Glib::RefPtr<Goocanvas::It
 }
 
 // Notify event to move a state
-bool VisualHFSM::on_item_motion_notify_event (  const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_item_motion_notify_event (  const Glib::RefPtr<Goocanvas::Item>& item,
                                                 GdkEventMotion* event) {
     if (item && dragging && (item == dragging)) {
         double new_x = event->x;
@@ -875,7 +875,7 @@ bool VisualHFSM::on_item_motion_notify_event (  const Glib::RefPtr<Goocanvas::It
 }
 
 // Notify event when entering a state (change the state's width)
-bool VisualHFSM::on_item_enter_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_item_enter_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                               GdkEventCrossing* event) {
     if (item) {
         if (this->state == ALL) {
@@ -892,7 +892,7 @@ bool VisualHFSM::on_item_enter_notify_event ( const Glib::RefPtr<Goocanvas::Item
 }
 
 // Notify event when leaving a state (change the state's width)
-bool VisualHFSM::on_item_leave_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_item_leave_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                               GdkEventCrossing* event) {
     if (item) {
         if (DEBUG)
@@ -905,7 +905,7 @@ bool VisualHFSM::on_item_leave_notify_event ( const Glib::RefPtr<Goocanvas::Item
 }
 
 // Button press event for: start dragging or show the popup menu transition
-bool VisualHFSM::on_transition_button_press_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_transition_button_press_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                     GdkEventButton* event ) {
     if ((event->button == 1) && item && (event->type == GDK_BUTTON_PRESS)) {
         dragging = item;
@@ -928,7 +928,7 @@ bool VisualHFSM::on_transition_button_press_event ( const Glib::RefPtr<Goocanvas
 }
 
 // Release events: reset the drag
-bool VisualHFSM::on_transition_button_release_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_transition_button_release_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                       GdkEventButton* event) {
     if (event->button == 1)
         dragging.reset();
@@ -937,7 +937,7 @@ bool VisualHFSM::on_transition_button_release_event ( const Glib::RefPtr<Goocanv
 }
 
 // Notify event to move a transition
-bool VisualHFSM::on_transition_motion_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_transition_motion_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                      GdkEventMotion* event) {
     if (item && dragging && (item == dragging)) {
         double new_x = event->x;
@@ -950,7 +950,7 @@ bool VisualHFSM::on_transition_motion_notify_event ( const Glib::RefPtr<Goocanva
 }
 
 // Notify event when entering a transition (change the transition's width)
-bool VisualHFSM::on_transition_enter_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_transition_enter_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                     GdkEventCrossing* event) {
     if (item) {
         if (this->state == NONE) {
@@ -965,7 +965,7 @@ bool VisualHFSM::on_transition_enter_notify_event ( const Glib::RefPtr<Goocanvas
 }
 
 // Notify event when leaving a transition (change the transition's width)
-bool VisualHFSM::on_transition_leave_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
+bool VisualStates::on_transition_leave_notify_event ( const Glib::RefPtr<Goocanvas::Item>& item,
                                                      GdkEventCrossing* event) {
     if (item) {
         if (DEBUG)
@@ -981,7 +981,7 @@ bool VisualHFSM::on_transition_leave_notify_event ( const Glib::RefPtr<Goocanvas
  * OF THE MENU
  *************************************************************/
 // New automata, remove all
-void VisualHFSM::on_menubar_clicked_new () {
+void VisualStates::on_menubar_clicked_new () {
     this->removeAllGui();
     this->clearTreeView();
     this->removeAllSubautomata();
@@ -1000,7 +1000,7 @@ void VisualHFSM::on_menubar_clicked_new () {
 }
 
 // Open an automata previously saved
-void VisualHFSM::on_menubar_clicked_open () {
+void VisualStates::on_menubar_clicked_open () {
     lastButton = OPEN;
 
     if (DEBUG)
@@ -1009,11 +1009,11 @@ void VisualHFSM::on_menubar_clicked_open () {
     this->lfdialog = new LoadFileDialog();
     this->lfdialog->init();
     this->lfdialog->signal_path().connect(sigc::mem_fun(this,
-                                        &VisualHFSM::on_load_file));
+                                        &VisualStates::on_load_file));
 }
 
 // Save an automata
-void VisualHFSM::on_menubar_clicked_save () {
+void VisualStates::on_menubar_clicked_save () {
     lastButton = SAVE;
 
     if (DEBUG)
@@ -1026,7 +1026,7 @@ void VisualHFSM::on_menubar_clicked_save () {
 }
 
 // Save as (if you want to change the name and/or location)
-void VisualHFSM::on_menubar_clicked_save_as () {
+void VisualStates::on_menubar_clicked_save_as () {
     lastButton = SAVE_AS;
 
     if (DEBUG)
@@ -1035,16 +1035,16 @@ void VisualHFSM::on_menubar_clicked_save_as () {
     this->sfdialog = new SaveFileDialog();
     this->sfdialog->init();
     this->sfdialog->signal_path().connect(sigc::mem_fun(this,
-                                        &VisualHFSM::on_save_file));
+                                        &VisualStates::on_save_file));
 }
 
 // Close the application
-void VisualHFSM::on_menubar_clicked_quit () {
+void VisualStates::on_menubar_clicked_quit () {
     this->hide(); // hide() will cause main::run() to end
 }
 
 // New state to be generated
-void VisualHFSM::on_menubar_clicked_state () {
+void VisualStates::on_menubar_clicked_state () {
     lastButton = STATE;
 
     if (DEBUG)
@@ -1052,7 +1052,7 @@ void VisualHFSM::on_menubar_clicked_state () {
 }
 
 // New transition to be generated
-void VisualHFSM::on_menubar_clicked_transition () {
+void VisualStates::on_menubar_clicked_transition () {
     lastButton = TRANSITION;
     transitionsCounter = 0;
 
@@ -1061,7 +1061,7 @@ void VisualHFSM::on_menubar_clicked_transition () {
 }
 
 // Insert the timer for this automata
-void VisualHFSM::on_menubar_clicked_timer () {
+void VisualStates::on_menubar_clicked_timer () {
     lastButton = TIMER;
 
     if (DEBUG)
@@ -1072,7 +1072,7 @@ void VisualHFSM::on_menubar_clicked_timer () {
 }
 
 // Insert variables and functions for this automata
-void VisualHFSM::on_menubar_clicked_variables () {
+void VisualStates::on_menubar_clicked_variables () {
     lastButton = VARIABLES;
 
     if (DEBUG)
@@ -1083,7 +1083,7 @@ void VisualHFSM::on_menubar_clicked_variables () {
 }
 
 // Insert libraries for the project
-void VisualHFSM::on_menubar_clicked_libraries () {
+void VisualStates::on_menubar_clicked_libraries () {
     lastButton = LIBRARIES;
 
     if (DEBUG)
@@ -1092,11 +1092,11 @@ void VisualHFSM::on_menubar_clicked_libraries () {
     this->ldialog = new LibrariesDialog(this->listLibraries);
     this->ldialog->init();
     this->ldialog->signal_libraries().connect(sigc::mem_fun(this,
-                                        &VisualHFSM::on_additional_libraries));
+                                        &VisualStates::on_additional_libraries));
 }
 
 // Create a new config file for the project
-void VisualHFSM::on_menubar_clicked_configfile () {
+void VisualStates::on_menubar_clicked_configfile () {
     lastButton = VARIABLES;
 
     if (DEBUG)
@@ -1105,10 +1105,10 @@ void VisualHFSM::on_menubar_clicked_configfile () {
     this->cfdialog = new ConfigFileDialog(this->listInterfaces, this->mapInterfacesHeader);
     this->cfdialog->init();
     this->cfdialog->signal_config().connect(sigc::mem_fun(this,
-                                        &VisualHFSM::on_config_text));
+                                        &VisualStates::on_config_text));
 }
 
-int VisualHFSM::prepareGenerateCode(){
+int VisualStates::prepareGenerateCode(){
 
     if (this->filepath.compare(std::string("")) == 0){  // if it is not saved, save it please!
         std::cout << BEGIN_YELLOW << VISUAL << "You must save the project first" << END_COLOR << std::endl;
@@ -1131,7 +1131,7 @@ int VisualHFSM::prepareGenerateCode(){
 }
 
 // Generate the code for the project
-void VisualHFSM::on_menubar_clicked_generate_cpp_code () {
+void VisualStates::on_menubar_clicked_generate_cpp_code () {
     lastButton = GENERATE_CPP_CODE;    
 
     if (this->prepareGenerateCode() == 0){   
@@ -1168,7 +1168,7 @@ void VisualHFSM::on_menubar_clicked_generate_cpp_code () {
 }
 
 // Compile the project
-void VisualHFSM::on_menubar_clicked_compile () {
+void VisualStates::on_menubar_clicked_compile () {
     lastButton = COMPILE;
 
     std::string cpppath(this->filepath);
@@ -1209,7 +1209,7 @@ void VisualHFSM::on_menubar_clicked_compile () {
 
 }
 
-void VisualHFSM::on_menubar_clicked_generate_python_code (){
+void VisualStates::on_menubar_clicked_generate_python_code (){
     this->lastButton = GENERATE_PYTHON_CODE;
 
     if (this->prepareGenerateCode() == 0){   
@@ -1245,7 +1245,7 @@ void VisualHFSM::on_menubar_clicked_generate_python_code (){
     } 
 }
 
-void VisualHFSM::on_row_activated(const Gtk::TreeModel::Path& path,
+void VisualStates::on_row_activated(const Gtk::TreeModel::Path& path,
                                     Gtk::TreeViewColumn* /* column */){
     Gtk::TreeModel::iterator iter = this->refTreeModel->get_iter(path);
 
@@ -1269,7 +1269,7 @@ void VisualHFSM::on_row_activated(const Gtk::TreeModel::Path& path,
     }
 }
 
-GuiSubautomata* VisualHFSM::getSubautomataByNodeName(std::string name){
+GuiSubautomata* VisualStates::getSubautomataByNodeName(std::string name){
     std::list<GuiSubautomata>::iterator subIterator = this->subautomataList.begin();
     while (subIterator != this->subautomataList.end()){
 
@@ -1287,7 +1287,7 @@ GuiSubautomata* VisualHFSM::getSubautomataByNodeName(std::string name){
 
 // About
 // TODO: generate it
-void VisualHFSM::on_menubar_clicked_about () {
+void VisualStates::on_menubar_clicked_about () {
     lastButton = COMPILE;
 
     if (DEBUG)
@@ -1295,7 +1295,7 @@ void VisualHFSM::on_menubar_clicked_about () {
 }
 
 // Goes up to the upper level of the automata (pressing the middle button of the mouse)
-void VisualHFSM::on_menubar_clicked_up () { // Deprecated
+void VisualStates::on_menubar_clicked_up () { // Deprecated
     lastButton = UP;
 
     if (DEBUG)
@@ -1327,7 +1327,7 @@ void VisualHFSM::on_menubar_clicked_up () { // Deprecated
     }
 }
 
-void VisualHFSM::on_up_button_clicked (){
+void VisualStates::on_up_button_clicked (){
     int fatherId = this->currentSubautomata->getIdFather();
 
     if (fatherId != 0){
@@ -1356,7 +1356,7 @@ void VisualHFSM::on_up_button_clicked (){
  * IN GENERAL
  *************************************************************/
 // Get a specified subautomata
-GuiSubautomata* VisualHFSM::getSubautomata ( int idSubautomata ) {
+GuiSubautomata* VisualStates::getSubautomata ( int idSubautomata ) {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Getting subautomata with ID: " << idSubautomata << END_COLOR << std::endl;
 
@@ -1372,7 +1372,7 @@ GuiSubautomata* VisualHFSM::getSubautomata ( int idSubautomata ) {
 }
 
 // Get a specified subautomata with an idFather
-GuiSubautomata* VisualHFSM::getSubautomataWithIdFather ( int idFather ) {
+GuiSubautomata* VisualStates::getSubautomataWithIdFather ( int idFather ) {
     if (DEBUG)
         std::cout << BEGIN_GREEN << VISUAL << "Getting subautomata with ID father: " << idFather << END_COLOR << std::endl;
 
@@ -1388,7 +1388,7 @@ GuiSubautomata* VisualHFSM::getSubautomataWithIdFather ( int idFather ) {
 }
 
 // Load a subautomata
-int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
+int VisualStates::loadSubautomata ( std::list<SubAutomata> subList ) {
     int maxId = 0;
     int maxNodeId = 0;
     int maxTransId = 0;
@@ -1480,7 +1480,7 @@ int VisualHFSM::loadSubautomata ( std::list<SubAutomata> subList ) {
 }
 
 // Remove the GUI
-void VisualHFSM::removeAllGui () {
+void VisualStates::removeAllGui () {
     for ( std::list<GuiSubautomata>::iterator subListIterator = this->subautomataList.begin();
             subListIterator != this->subautomataList.end(); subListIterator++ ) {
         std::list<GuiNode>* nodeList = subListIterator->getListGuiNodes();
@@ -1503,7 +1503,7 @@ void VisualHFSM::removeAllGui () {
 }
 
 // Remove all subautomata
-void VisualHFSM::removeAllSubautomata () {
+void VisualStates::removeAllSubautomata () {
     for ( std::list<GuiSubautomata>::iterator subListIterator = this->subautomataList.begin();
             subListIterator != this->subautomataList.end(); subListIterator++ )
         subListIterator->removeAll();
@@ -1512,7 +1512,7 @@ void VisualHFSM::removeAllSubautomata () {
 }
 
 // Get an ID of a node with a specified subautomata
-int VisualHFSM::getIdNodeInSubautomata ( int subautomataId ) {
+int VisualStates::getIdNodeInSubautomata ( int subautomataId ) {
     std::list<GuiSubautomata>::iterator subListIterator = this->subautomataList.begin();
     while ( (subListIterator->getId() != subautomataId) &&
             (subListIterator != this->subautomataList.end()) )
@@ -1528,7 +1528,7 @@ int VisualHFSM::getIdNodeInSubautomata ( int subautomataId ) {
 }
 
 // Get an ID of a subautomata with a scpecified node
-int VisualHFSM::getIdSubautomataWithNode ( int idNode ) {
+int VisualStates::getIdSubautomataWithNode ( int idNode ) {
     int id = 0;
     std::list<GuiSubautomata>::iterator subListIterator = this->subautomataList.begin();
     while ( (id == 0) && (subListIterator != this->subautomataList.end()) ) {
@@ -1547,7 +1547,7 @@ int VisualHFSM::getIdSubautomataWithNode ( int idNode ) {
 }
 
 // Remove a node and its associated transitions
-void VisualHFSM::remove ( GuiSubautomata* guisub, GuiNode* gnode ) {
+void VisualStates::remove ( GuiSubautomata* guisub, GuiNode* gnode ) {
     root->remove_child(root->find_child(gnode->getEllipse()));
     root->remove_child(root->find_child(gnode->getEllipseInitial()));
     root->remove_child(root->find_child(gnode->getText()));
@@ -1568,7 +1568,7 @@ void VisualHFSM::remove ( GuiSubautomata* guisub, GuiNode* gnode ) {
 }
 
 // Removes a node recursively (including its subautomata children)
-void VisualHFSM::removeRecursively ( GuiSubautomata* guisub, GuiNode* gnode ) {
+void VisualStates::removeRecursively ( GuiSubautomata* guisub, GuiNode* gnode ) {
     int idSubautomataSon = gnode->getIdSubautomataSon();
     if (idSubautomataSon != 0) {
         GuiSubautomata* subautomata = this->getSubautomata(idSubautomataSon);
@@ -1583,7 +1583,7 @@ void VisualHFSM::removeRecursively ( GuiSubautomata* guisub, GuiNode* gnode ) {
 }
 
 // Check if a string has the specified ending (usually for .xml endings)
-bool VisualHFSM::hasEnding ( std::string const &fullString, std::string const &ending ) {
+bool VisualStates::hasEnding ( std::string const &fullString, std::string const &ending ) {
     if (fullString.length() >= ending.length()) {
         return (0 == fullString.compare (fullString.length() - ending.length(),
                                                         ending.length(), ending));
@@ -1593,7 +1593,7 @@ bool VisualHFSM::hasEnding ( std::string const &fullString, std::string const &e
 }
 
 // Replace in the 'str', 'from' to 'to'
-bool VisualHFSM::replace ( std::string& str, const std::string& from, const std::string& to) {
+bool VisualStates::replace ( std::string& str, const std::string& from, const std::string& to) {
     size_t start_pos = str.find(from);
     if (start_pos == std::string::npos)
         return false;
@@ -1604,7 +1604,7 @@ bool VisualHFSM::replace ( std::string& str, const std::string& from, const std:
 }
 
 // Replace in 'str', 'character' to 'to'
-bool VisualHFSM::replaceFile ( std::string& str, const std::string& character, std::string to ) {
+bool VisualStates::replaceFile ( std::string& str, const std::string& character, std::string to ) {
     size_t last_pos = str.find_last_of(character);
     if (last_pos == std::string::npos)
         return false;
@@ -1615,7 +1615,7 @@ bool VisualHFSM::replaceFile ( std::string& str, const std::string& character, s
 }
 
 // Check if it is all ok
-bool VisualHFSM::checkAll () {
+bool VisualStates::checkAll () {
     // The interfaces are all different
     for ( std::list<IceInterface>::iterator first = this->listInterfaces.begin();
             first != this->listInterfaces.end(); first++ ) {
