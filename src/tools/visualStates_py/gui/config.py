@@ -208,26 +208,32 @@ class JdeRobotConfig(Config):
         for interElement in interfacesElement.getElementsByTagName('interface'):
             interface = {}
             sTypeElement = interElement.getElementsByTagName('serverType')[0]
-            interface['serverType'] = sTypeElement.childNodes[0].nodeValue
+            interface['serverType'] = self.getNodeValue(sTypeElement)
 
             nameElement = interElement.getElementsByTagName('name')[0]
-            interface['name'] = nameElement.childNodes[0].nodeValue
+            interface['name'] = self.getNodeValue(nameElement)
 
             topicElement = interElement.getElementsByTagName('topic')[0]
-            interface['topic'] = topicElement.childNodes[0].nodeValue
+            interface['topic'] = self.getNodeValue(topicElement)
 
             proxyElement = interElement.getElementsByTagName('proxyName')[0]
-            interface['proxyName'] = proxyElement.childNodes[0].nodeValue
+            interface['proxyName'] = self.getNodeValue(proxyElement)
 
             ipElement = interElement.getElementsByTagName('ip')[0]
-            interface['ip'] = ipElement.childNodes[0].nodeValue
+            interface['ip'] = self.getNodeValue(ipElement)
 
             portElement = interElement.getElementsByTagName('port')[0]
-            interface['port'] = portElement.childNodes[0].nodeValue
+            interface['port'] = self.getNodeValue(portElement)
 
             iElement = interElement.getElementsByTagName('interfaceName')[0]
-            interface['interface'] = iElement.childNodes[0].nodeValue
+            interface['interface'] = self.getNodeValue(iElement)
 
             self.interfaces.append(interface)
+
+    def getNodeValue(self, element):
+        if len(element.childNodes) > 0:
+            return element.childNodes[0].nodeValue
+        else:
+            return ''
 
 

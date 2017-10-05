@@ -24,7 +24,7 @@ class Generator(object):
 
     def generateCfg(self, cfgStr):
         cfgStr.append('# 0 -> Deactivate, 1 -> Ice , 2 -> ROS\n')
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             proxyName = None
             if 'proxyName' not in cfg:
                 proxyName = cfg['interface']

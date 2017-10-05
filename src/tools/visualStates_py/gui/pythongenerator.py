@@ -85,7 +85,7 @@ class PythonGenerator(Generator):
     def generateImports(self, headerStr):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys, threading, time
+import sys, threading, time, signal
 import easyiceconfig as EasyIce
 '''
         headerStr.append(mystr)
@@ -125,8 +125,8 @@ from PyQt5.QtWidgets import QApplication
         stateStr.append(str(state.id))
         stateStr.append('(State):\n')
 
-        stateStr.append('\tdef __init__(self, id, initial, interfaces, cycleDuration, parent=None):\n')
-        stateStr.append('\t\tsuper(State, self).__init__(id, initial, cycleDuration, parent)\n')
+        stateStr.append('\tdef __init__(self, id, initial, interfaces, cycleDuration, parent=None, gui=None):\n')
+        stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
         stateStr.append('\t\tself.interfaces = interfaces\n')
 
         if len(state.getVariables()) > 0:
@@ -155,7 +155,7 @@ from PyQt5.QtWidgets import QApplication
 \t\tself.node = None
 '''
         interfaceStr.append(mystr)
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             interfaceStr.append('\t\tself.' + cfg['name'] + ' = None\n')
 
         interfaceStr.append('\t\tself.connectProxies()\n\n')
@@ -164,7 +164,7 @@ from PyQt5.QtWidgets import QApplication
         interfaceStr.append('\t\tself.ice = EasyIce.initialize(sys.argv)\n')
         interfaceStr.append('\t\tself.ice, self.node = comm.init(self.ice)\n')
 
-        for cfg in self.configs:
+        for cfg in self.config.getInterfaces():
             interfaceStr.append('\t\tself.' + cfg['name'] + ' = comm.get'+ cfg['interface']+'Client(self.ice, "automata.' + cfg['name'] + '")\n')
             interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
             interfaceStr.append('\t\t\traise Exception("could not create client with name:' + cfg['name'] + '")\n')
@@ -181,7 +181,7 @@ from PyQt5.QtWidgets import QApplication
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
                 tranStr.append('\tdef __init__(self, id, destinationId, interfaces)\n')
-                tranStr.append('\t\tsuper(Transition, self).__init__(id, destinationId)\n')
+                tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.interfaces = interfaces\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
@@ -202,8 +202,25 @@ from PyQt5.QtWidgets import QApplication
         mystr = '''displayGui = False
 guiThread = None
 gui = None
+'''
+        mainStr.append(mystr)
+        for state in self.states:
+            mainStr.append('state' + str(state.id) + ' = None\n')
+        mainStr.append('\n')
 
-def readArgs():
+        mystr = '''def signal_handler(signal, frame):
+\tglobal gui
+\tprint("SIGINT is captured. The program exits")
+\tif gui is not None:
+\t\tgui.close()
+'''
+        mainStr.append(mystr)
+        for state in self.states:
+            mainStr.append('\tglobal state' + str(state.id) + '\n')
+            mainStr.append('\tstate' + str(state.id) + '.stop()\n')
+        mainStr.append('\n')
+
+        mystr = '''def readArgs():
 \tglobal displayGui
 \tfor arg in sys.argv:
 \t\tsplitedArg = arg.split('=')
@@ -281,12 +298,16 @@ def runGui():
         # start threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.startThread()\n')
+        mainStr.append('\t\tsignal.signal(signal.SIGINT, signal_handler)\n')
+        mainStr.append('\t\tsignal.pause()\n')
         # join threads
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.join()\n')
 
+        mainStr.append('\t\tif displayGui:\n')
+        mainStr.append('\t\t\tguiThread.join()\n\n')
+
         mainStr.append('\t\tinterfaces.destroyProxies()\n')
-        mainStr.append('\t\tsys.exit(0)\n')
         mainStr.append('\texcept:\n')
         for state in self.states:
             mainStr.append('\t\tstate' + str(state.id) + '.stop()\n')
