@@ -1,7 +1,8 @@
 #include "gui/threadupdategui.h"
-#include "parallelIce/cameraClient.h"
-#include "parallelIce/motorsClient.h"
-#include "easyiceconfig/EasyIce.h"
+#include <jderobot/config/config.h> 
+#include <jderobot/comm/communicator.hpp>
+#include <jderobot/comm/cameraClient.hpp>
+#include <jderobot/comm/motorsClient.hpp>
 
 
 int main(int argc, char* argv[])
@@ -10,19 +11,21 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     int status;
-    Ice::CommunicatorPtr ic;
-    jderobot::cameraClient* camera;
-    jderobot::motorsClient* motors;
+    Comm::Communicator* jdrc;
+    Comm::CameraClient* camera;
+    Comm::MotorsClient* motors;
+
 
     try{
-        ic = EasyIce::initialize(argc,argv);
 
-        camera = new jderobot::cameraClient(ic,"basic_component.Camera.");
-        camera->start();
+        Config::Properties cfg = Config::load(argc, argv);
+        jdrc = new Comm::Communicator(cfg);
 
-        motors = new jderobot::motorsClient(ic, "basic_component.Motors.");
+        camera = Comm::getCameraClient(jdrc, "basic_component.Camera");
 
-        ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(ic, camera, motors);
+        motors = Comm::getMotorsClient(jdrc, "basic_component.Motors");
+
+        ThreadUpdateGUI* thread_update_gui = new ThreadUpdateGUI(jdrc, camera, motors);
         thread_update_gui->start();
 
     }catch (const Ice::Exception& ex) {
@@ -36,8 +39,7 @@ int main(int argc, char* argv[])
 
     app.exec();
 
-    if (ic)
-        ic->destroy();
+    delete jdrc;
 
     return status;
 }

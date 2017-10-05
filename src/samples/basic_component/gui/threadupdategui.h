@@ -11,7 +11,7 @@
 class ThreadUpdateGUI: public QThread
 {
 public:
-    ThreadUpdateGUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* cam, jderobot::motorsClient* motors);
+    ThreadUpdateGUI(Comm::Communicator* jdrc, Comm::CameraClient* camera, Comm::MotorsClient* motors);
 
 private:
     GUI* gui;

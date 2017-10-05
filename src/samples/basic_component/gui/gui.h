@@ -4,14 +4,15 @@
 #include <QtWidgets>
 #include "widget/controlvw.h"
 #include "widget/cameraswidget.h"
-#include "parallelIce/motorsClient.h"
+#include <jderobot/comm/motorsClient.hpp>
+#include <jderobot/types/cmdvel.h>
 
 class GUI:public QWidget
 {
     Q_OBJECT
 
 public:
-    GUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* camera, jderobot::motorsClient* motors);
+    GUI(Comm::Communicator* jdrc, Comm::CameraClient* camera, Comm::MotorsClient* motors);
     void updateThreadGUI();
 
 private:
@@ -26,8 +27,8 @@ private:
     QLabel* InfoCurrentV;
     QLabel* InfoCurrentW;
 
-    jderobot::cameraClient* camera;
-    jderobot::motorsClient* motors;
+    Comm::CameraClient* camera;
+    Comm::MotorsClient* motors;
 
 
 signals:

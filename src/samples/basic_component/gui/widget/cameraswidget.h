@@ -2,20 +2,21 @@
 #define CAMERASWIDGET_H
 
 #include <QtWidgets>
-#include "parallelIce/cameraClient.h"
+#include <jderobot/comm/cameraClient.hpp>
+#include <jderobot/types/image.h>
 
 class CamerasWidget: public QWidget
 {
     Q_OBJECT
 
 public:
-    CamerasWidget(jderobot::cameraClient* camera);
+    CamerasWidget(Comm::CameraClient* camera);
 
     void update();
 
 private:
     QLabel* labelImage;
-    jderobot::cameraClient* camera;
+    Comm::CameraClient* camera;
 };
 
 #endif // CAMERASWIDGET_H

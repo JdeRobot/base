@@ -1,6 +1,6 @@
 #include "gui.h"
 
-GUI::GUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* camera, jderobot::motorsClient* motors)
+GUI::GUI(Comm::Communicator* jdrc, Comm::CameraClient* camera, Comm::MotorsClient* motors)
 {
 
     this->camera = camera;
@@ -23,7 +23,7 @@ GUI::GUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* camera, jderobot::moto
 	currentW = new QLabel("0");
 
     canvasVW = new controlVW();
-    canvasVW->setIC(ic);
+    canvasVW->setjdrc(jdrc);
 
     layoutControl->addWidget(canvasVW, 0, 0);
 
@@ -62,9 +62,12 @@ void GUI::on_checks_changed()
 void GUI::on_update_canvas_recieved(float v, float w)
 {
 
-    this->motors->setV((float)v);
-    this->motors->setW((float)w);
-    this->motors->sendVelocities();
+    JdeRobotTypes::CMDVel vel;
+    vel.vx = v;
+    vel.az = w;
+    if (this->motors) {
+        this->motors->sendVelocities(vel);
+    }
 }
 
 void GUI::on_buttonStopRobot_clicked()

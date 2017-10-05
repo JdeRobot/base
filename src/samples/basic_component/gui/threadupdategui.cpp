@@ -1,8 +1,8 @@
 #include "threadupdategui.h"
 
-ThreadUpdateGUI::ThreadUpdateGUI(Ice::CommunicatorPtr ic, jderobot::cameraClient* cam, jderobot::motorsClient* motors)
+ThreadUpdateGUI::ThreadUpdateGUI(Comm::Communicator* jdrc, Comm::CameraClient* camera, Comm::MotorsClient* motors)
 {
-    gui = new GUI(ic, cam, motors);
+    gui = new GUI(jdrc, camera, motors);
     gui->show();
 }
 
