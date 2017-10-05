@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://stop_sign/meshes/stop_sign.dae</uri>
+    </include>
+    
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <model name="my_mesh">
+      <pose>0 0 0  0 0 0</pose>
+      <static>true</static>
+      <link name="body">
+        <visual name="visual">
+          <geometry>
+            <mesh><uri>file://my_mesh.dae</uri></mesh>
+          </geometry>
+        </visual>
+        <visual name="visual">
+            <pose>0 6 5 1.5708 0 0</pose>
+            <geometry>
+                <mesh><uri>file://stop_sign/meshes/stop_sign.dae</uri></mesh>
+            </geometry>
+        <material>
+          <script>
+            <uri>model://stop_sign/materials/scripts</uri>
+            <uri>model://stop_sign/materials/textures</uri>
+            <name>StopSign/Diffuse</name>
+          </script>
+        </material>
+        </visual> 
+      </link>
+    </model>
+  </world>
+</sdf>
