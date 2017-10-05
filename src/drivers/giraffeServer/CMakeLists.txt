@@ -24,10 +24,13 @@ TARGET_LINK_LIBRARIES(giraffeServer
     QtGui
 )
 
-install(TARGETS giraffeServer
+INSTALL(TARGETS giraffeServer
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
-        )
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/giraffeServer.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+          COMPONENT giraffeServer
+)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/giraffeServer.cfg 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf
+    COMPONENT giraffeServer
+)
 endif()
 

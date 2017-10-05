@@ -1,4 +1,5 @@
-list_subdirectories( LIST_LIBS ${CMAKE_CURRENT_SOURCE_DIR} 1)
+set (LIST_LIBS "config_cpp") #Adding library to be processed first
+list_subdirectories3( LIST_LIBS ${CMAKE_CURRENT_SOURCE_DIR} 1)
 
 FOREACH (lib ${LIST_LIBS})
 	if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${lib}/CMakeLists.txt)

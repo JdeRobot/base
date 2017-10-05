@@ -5,6 +5,8 @@
 
 #include "../robot/robot.h"
 
+#include <jderobot/config/properties.hpp>
+
 #include "widget/controlvw.h"
 #include "widget/cameraswidget.h"
 #include "widget/laserwidget.h"
@@ -14,7 +16,7 @@ class GUI:public QWidget
     Q_OBJECT
 
 public:
-    GUI(Robot* robot, Ice::CommunicatorPtr ic);
+    GUI(Robot* robot, Config::Properties props);
     void updateThreadGUI();
 
 private:

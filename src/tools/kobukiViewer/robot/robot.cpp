@@ -1,9 +1,9 @@
 #include "robot.h"
 
-Robot::Robot(Ice::CommunicatorPtr ic)
+Robot::Robot(Comm::Communicator* jdrc)
 {
-    sensors = new Sensors(ic);
-    actuators = new Actuators(ic);
+    sensors = new Sensors(jdrc);
+    actuators = new Actuators(jdrc);
 
     pthread_mutex_init (&mutex, NULL);
 

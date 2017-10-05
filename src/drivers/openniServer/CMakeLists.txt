@@ -100,12 +100,15 @@ IF(OPENNI2_LIB)
 		)
 	endif()
 
-	install(TARGETS openniServer
+	INSTALL(TARGETS openniServer
           DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
-        )
+          COMPONENT openniServer
+    )
 
 	FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-	INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT core)
+	INSTALL (FILES ${CFG_FILES} 
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf 
+		COMPONENT openniServer
+	)
 ENDIF()
 

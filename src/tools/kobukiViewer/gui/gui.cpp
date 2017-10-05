@@ -1,6 +1,6 @@
 #include "gui.h"
 
-GUI::GUI(Robot* robot, Ice::CommunicatorPtr ic)
+GUI::GUI(Robot* robot, Config::Properties props)
 {
 
     this->robot = robot;
@@ -22,7 +22,7 @@ GUI::GUI(Robot* robot, Ice::CommunicatorPtr ic)
 	currentW = new QLabel("0");
 
     canvasVW = new controlVW();
-    canvasVW->setIC(ic);
+    canvasVW->setProps(props);
     laserWidget =new LaserWidget();
 
 

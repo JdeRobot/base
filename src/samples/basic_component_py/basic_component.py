@@ -21,25 +21,25 @@
 
 import sys
 
-import jderobotComm as comm
+import comm
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt5.QtWidgets import QApplication
-import easyiceconfig as EasyIce
+import config
 
 import signal
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    ic = EasyIce.initialize(sys.argv)
+    cfg = config.load(sys.argv[1])
 
     #starting comm
-    ic, node = comm.init(ic)
+    jdrc= comm.init(cfg, 'basic_component')
 
 
-    camera = comm.getCameraClient(ic,"basic_component.Camera")
-    motors = comm.getMotorsClient(ic,"basic_component.Motors")
+    camera = jdrc.getCameraClient("basic_component.Camera")
+    motors = jdrc.getMotorsClient("basic_component.Motors")
 
     app = QApplication(sys.argv)
     frame = MainWindow()
