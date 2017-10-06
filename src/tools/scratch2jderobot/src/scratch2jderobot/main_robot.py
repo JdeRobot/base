@@ -11,8 +11,8 @@ __email__ = "raules@gmail.com"
 __status__ = "Development"
 
 
-import easyiceconfig as EasyIce
-import jderobotComm as comm
+import config
+import comm
 import os
 import scratch
 
@@ -21,16 +21,19 @@ from robot import Robot
 # get current working directory
 path = os.getcwd()
 open_path = path[:path.rfind('src')] + 'cfg/'
-filename = 'robot.cfg'
+filename = 'robot.yml'
 
 
 if __name__ == '__main__':
     # loading the ICE and ROS parameters
-    ic = EasyIce.initialize(['main_robot.py', open_path + filename])
-    ic, node = comm.init(ic)
+
+    cfg = config.load(open_path + filename)
+
+    #starting comm
+    jdrc= comm.init(cfg, 'robot')
 
     # creating the object
-    robot = Robot(ic, node)
+    robot = Robot(jdrc)
 
     # executing the scratch program
     scratch.execute(robot)

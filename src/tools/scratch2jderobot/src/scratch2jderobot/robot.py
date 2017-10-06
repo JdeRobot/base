@@ -11,7 +11,7 @@ __email__ = "raules@gmail.com"
 __status__ = "Development"
 
 
-import jderobotComm as comm
+import comm
 import time
 
 from jderobotTypes import CMDVel
@@ -23,20 +23,21 @@ class Robot():
     Robot class.
     """
 
-    def __init__(self, ic, node):
+    def __init__(self, jdrc):
         """
         Init method.
 
-        @param ic: 
-        @param node: 
+        @param jdrc: 
         """
 
         # variables
+
         self.__vel = CMDVel()
 
         # get clients
-        self.__motors_client = comm.getMotorsClient(ic, "robot.Motors", node)
-        self.__laser_client = comm.getLaserClient(ic, "robot.Laser", node)
+        self.__motors_client = jdrc.getMotorsClient("robot.Motors")
+        self.__laser_client = jdrc.getLaserClient("robot.Laser")
+
 
     def __publish(self, vel):
         """
