@@ -7,6 +7,29 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
 
+MAXRANGE = 8 #max length received from imageD
+MINRANGE = 0
+
+
+def depthToRGB8(float_img_buff):
+    '''
+    Translates from 32FC1 Image format to RGB. Inf values are represented by NaN, when converting to RGB, NaN passed to 0 
+
+    @param float_img_buff: ROS Image to translate
+
+    @type img: ros image
+
+    @return a Opencv RGB image
+
+    '''
+    float_img = np.zeros((float_img_buff.shape[0], float_img_buff.shape[1], 1), dtype = "float32")
+    float_img.data = float_img_buff.data
+
+
+    gray_image=cv2.convertScaleAbs(float_img, alpha=255/MAXRANGE)
+    cv_image = cv2.cvtColor(gray_image, cv2.COLOR_GRAY2RGB)
+
+    return cv_image
 
 
 def imageMsg2Image(img, bridge):
@@ -28,7 +51,12 @@ def imageMsg2Image(img, bridge):
     image.height = img.height
     image.format = "RGB8"
     image.timeStamp = img.header.stamp.secs + (img.header.stamp.nsecs *1e-9)
-    cv_image = bridge.imgmsg_to_cv2(img, "rgb8")
+    cv_image=0
+    if (img.encoding == "32FC1"):
+        gray_img_buff = bridge.imgmsg_to_cv2(img, "32FC1")
+        cv_image  = depthToRGB8(gray_img_buff)
+    else:
+        cv_image = bridge.imgmsg_to_cv2(img, "rgb8")
     image.data = cv_image
     return image
 

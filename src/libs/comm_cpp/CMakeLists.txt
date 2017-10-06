@@ -46,7 +46,9 @@ set(HEADERS
     include/jderobot/comm/motorsClient.hpp
     include/jderobot/comm/interfaces/motorsClient.hpp
     include/jderobot/comm/ice/motorsIceClient.hpp
-    include/jderobot/comm/ros/publisherMotors.hpp
+    include/jderobot/comm/rgbdClient.hpp
+    include/jderobot/comm/interfaces/rgbdClient.hpp
+    include/jderobot/comm/ice/rgbdIceClient.hpp
 )
 
 set(SOURCES
@@ -59,6 +61,8 @@ set(SOURCES
     src/ice/pose3dIceClient.cpp
     src/motorsClient.cpp
     src/ice/motorsIceClient.cpp
+    src/rgbdClient.cpp
+    src/ice/rgbdIceClient.cpp
 )
 
 
@@ -70,6 +74,7 @@ IF(JDEROBOTCOM_ROS)
         include/jderobot/comm/ros/listenerLaser.hpp
         include/jderobot/comm/ros/listenerCamera.hpp
         include/jderobot/comm/ros/listenerPose.hpp
+        include/jderobot/comm/ros/publisherMotors.hpp
     )
 
     set(SOURCES

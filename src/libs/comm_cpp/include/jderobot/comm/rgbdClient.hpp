@@ -1,5 +1,4 @@
 /*
- *
  *  Copyright (C) 1997-2017 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -14,30 +13,37 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *
- *  Author: Francisco Rivas <franciscomiguel [dot] rivas [at] urjc [dot] es>
- *
+ *  Authors :
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef RGBD_ICE
-#define RGBD_ICE
+#ifndef JDEROBOTCOMM_RGBDCLIENT_H
+#define JDEROBOTCOMM_RGBDCLIENT_H
 
-#include <jderobot/image.ice>
-
-module jderobot{
-    struct rgbData {
-        ImageData color;
-        ImageData depth;
-        Time timeStamp; 				/**< TimeStamp of Data */
-    };
-
-
-    interface rgbd{
-        idempotent rgbData getData();
-
-    };
-};
+#include <jderobot/types/rgbd.h>
+#include <Ice/Communicator.h>
+#include <jderobot/comm/communicator.hpp>
+#include <jderobot/comm/interfaces/rgbdClient.hpp>
 
 
 
-#endif
+
+
+namespace Comm {
+
+	/**
+	 * @brief make a RgbdClient using propierties
+	 *
+	 *
+	 * @param communicator that contains properties
+	 * @param prefix of client Propierties (example: "kobukiViewer.Rgbd")
+	 * 
+	 *
+	 * @return null if propierties are wrong
+	 */
+	RgbdClient* getRgbdClient(Comm::Communicator* jdrc, std::string prefix);
+
+
+} //NS
+
+#endif // JDEROBOTCOMM_RGBDCLIENT_H
