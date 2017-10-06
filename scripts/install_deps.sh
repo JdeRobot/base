@@ -7,7 +7,7 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C
 
 sudo apt-get update
 
-sudo apt install -y ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-opencv3
+sudo apt install -y ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-opencv3 ros-kinetic-kobuki-gazebo
 
 sudo apt-get install -y libpcl-dev
 
@@ -65,7 +65,7 @@ sudo apt-get install -y nodejs
 
 sudo apt install -y sophus
 
-sudo apt-get install -y kobukilib ardronelib
+sudo apt-get install -y kobukilib ardronelib libgoogle-glog-dev
 
 
 
