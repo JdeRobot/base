@@ -66,18 +66,17 @@ class PythonGenerator(Generator):
         self.generateImports(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
-        self.generateInterfaces(stringList)
+        self.generateInterfaces(stringList, projectName)
         self.generateMain(stringList)
         sourceCode = ''.join(stringList)
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
         fp.write(sourceCode)
         fp.close()
 
-        stringList = []
-        self.generateCfg(stringList)
-        fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
-        fp.write(''.join(stringList))
-        fp.close()
+        self.generateAndSaveCfgYaml(projectPath, projectName)
+        #fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
+        #fp.write(''.join(stringList))
+        #fp.close()
 
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
@@ -86,7 +85,6 @@ class PythonGenerator(Generator):
         mystr = '''#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys, threading, time, signal
-import easyiceconfig as EasyIce
 '''
         headerStr.append(mystr)
         headerStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7")\n')
@@ -96,7 +94,7 @@ from codegen.python.temporaltransition import TemporalTransition
 from codegen.python.conditionaltransition import ConditionalTransition
 from codegen.python.runtimegui import RunTimeGui
 from PyQt5.QtWidgets import QApplication
-
+import config, comm
 '''
         headerStr.append(mystr)
         for lib in self.libraries:
@@ -110,7 +108,7 @@ from PyQt5.QtWidgets import QApplication
         #     headerStr.append(cfg['interface'])
         #     headerStr.append('Prx\n')
 
-        headerStr.append('import jderobotComm as comm\n')
+        headerStr.append('import comm\n')
 
         headerStr.append('\n')
 
@@ -148,11 +146,10 @@ from PyQt5.QtWidgets import QApplication
                 stateStr.append('\t' + funcLine + '\n')
         stateStr.append('\n')
 
-    def generateInterfaces(self, interfaceStr):
+    def generateInterfaces(self, interfaceStr, projectName):
         mystr = '''class Interfaces():
 \tdef __init__(self):
-\t\tself.ice = None
-\t\tself.node = None
+\t\tself.jdrc = None
 '''
         interfaceStr.append(mystr)
         for cfg in self.config.getInterfaces():
@@ -161,11 +158,11 @@ from PyQt5.QtWidgets import QApplication
         interfaceStr.append('\t\tself.connectProxies()\n\n')
 
         interfaceStr.append('\tdef connectProxies(self):\n')
-        interfaceStr.append('\t\tself.ice = EasyIce.initialize(sys.argv)\n')
-        interfaceStr.append('\t\tself.ice, self.node = comm.init(self.ice)\n')
+        interfaceStr.append('\t\tcfg = config.load(sys.argv[1])\n')
+        interfaceStr.append('\t\tself.jdrc = comm.init(cfg, "' + projectName + '")\n')
 
         for cfg in self.config.getInterfaces():
-            interfaceStr.append('\t\tself.' + cfg['name'] + ' = comm.get'+ cfg['interface']+'Client(self.ice, "automata.' + cfg['name'] + '")\n')
+            interfaceStr.append('\t\tself.' + cfg['name'] + ' = self.jdrc.get'+ cfg['interface']+'Client("'+projectName+'.' + cfg['name'] + '")\n')
             interfaceStr.append('\t\tif not self.' + cfg['name'] + ':\n')
             interfaceStr.append('\t\t\traise Exception("could not create client with name:' + cfg['name'] + '")\n')
             interfaceStr.append('\t\tprint("' + cfg['name'] + ' is connected")\n')
@@ -173,8 +170,8 @@ from PyQt5.QtWidgets import QApplication
         interfaceStr.append('\n')
 
         interfaceStr.append('\tdef destroyProxies(self):\n')
-        interfaceStr.append('\t\tif self.ice is not None:\n')
-        interfaceStr.append('\t\t\tself.ice.destroy()\n\n')
+        interfaceStr.append('\t\tif self.jdrc is not None:\n')
+        interfaceStr.append('\t\t\tself.jdrc.destroy()\n\n')
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():

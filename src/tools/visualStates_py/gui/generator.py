@@ -17,53 +17,57 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
+import yaml
 class Generator(object):
 
     def __init__(self):
         pass
 
-    def generateCfg(self, cfgStr):
-        cfgStr.append('# 0 -> Deactivate, 1 -> Ice , 2 -> ROS\n')
+    def generateAndSaveCfgYaml(self, projectPath, projectName):
+        cfgYaml = {}
+        myInterfaces = {}
+        interfaceIndexes = {}
         for cfg in self.config.getInterfaces():
             proxyName = None
             if 'proxyName' not in cfg:
                 proxyName = cfg['interface']
             else:
                 proxyName = cfg['proxyName']
-            cfgStr.append('automata.')
-            cfgStr.append(cfg['name'])
-            cfgStr.append('.Server=')
+
+            serverType = 0
             if cfg['serverType'] == 'ice':
-                cfgStr.append('1')
+                serverType = 1
             elif cfg['serverType'] == 'ros':
-                cfgStr.append('2')
-            cfgStr.append('\n')
+                serverType = 2
 
-            cfgStr.append('automata.')
-            cfgStr.append(cfg['name'])
-            cfgStr.append('.Proxy=')
-            cfgStr.append(proxyName)
-            cfgStr.append(':default -h ')
-            cfgStr.append(cfg['ip'])
-            cfgStr.append(' -p ')
-            cfgStr.append(str(cfg['port']))
-            cfgStr.append('\n')
+            myInterfaceData = {}
+            myInterfaceData['Server'] = serverType
+            myInterfaceData['Proxy'] = proxyName + ':default -h ' + cfg['ip'] + ' -p ' + str(cfg['port'])
+            myInterfaceData['Topic'] = cfg['topic']
+            myInterfaceData['Name'] = cfg['name']
 
-            if 'topic' not in cfg:
-                cfg['topic'] = ''
-            cfgStr.append('automata.')
-            cfgStr.append(cfg['name'])
-            cfgStr.append('.Topic=')
-            cfgStr.append(cfg['topic'])
-            cfgStr.append('\n')
+            # TODO: remove this make sure that the interface lets user to enter these values
+            if cfg['interface'] == 'Motors':
+                myInterfaceData['maxW'] = 0.5
+                myInterfaceData['maxV'] = 5.0
+            elif cfg['interface'] == 'Camera':
+                myInterfaceData['Format'] = 'RGB8'
 
-            cfgStr.append('automata.')
-            cfgStr.append(cfg['name'])
-            cfgStr.append('.Name=')
-            cfgStr.append(cfg['name'])
-            cfgStr.append('\n')
+            # idx = 0
+            # if cfg['interface'] in interfaceIndexes:
+            #     interfaceIndexes[cfg['interface']] += 1
+            #     idx = interfaceIndexes[cfg['interface']]
+            # else:
+            #     interfaceIndexes[cfg['interface']] = idx
 
-        return cfgStr
+            # myInterfaces[cfg['interface'] + str(idx)] = myInterfaceData
+            myInterfaces[cfg['name']] = myInterfaceData
+
+        myInterfaces['NodeName'] = projectName
+
+        cfgYaml[projectName] = myInterfaces
+        with open(projectPath + '/' + projectName + '.yml', 'w') as outputFile:
+            yaml.safe_dump(cfgYaml, outputFile, default_flow_style=False)
 
 
     def generateUserFunctions(self, functionsStr):

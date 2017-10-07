@@ -115,7 +115,7 @@ class CppGenerator(Generator):
         self.generateHeadersForCpp(stringList, projectName)
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
-        self.generateProxies(stringList)
+        self.generateProxies(stringList, projectName)
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
@@ -132,12 +132,13 @@ class CppGenerator(Generator):
         # make runtime gui python file executable
         os.chmod(projectPath + os.sep + projectName + '_runtime.py', stat.S_IEXEC | stat.S_IXOTH | stat.S_IWRITE | stat.S_IREAD)
 
-        stringList = []
-        self.generateCfg(stringList)
-        cfgString = ''.join(stringList)
-        fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
-        fp.write(cfgString)
-        fp.close()
+        # stringList = []
+        # self.generateCfg(stringList)
+        # cfgString = ''.join(stringList)
+        # fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
+        # fp.write(cfgString)
+        # fp.close()
+        self.generateAndSaveCfgYaml(projectPath, projectName)
 
         stringList = []
         self.generateCmake(stringList, projectName)
@@ -165,6 +166,8 @@ class CppGenerator(Generator):
         for cfg in self.config.getInterfaces():
             if len(cfg['proxyName']) == 0:
                 cfg['proxyName'] = cfg['interface']
+            headers.append('#include <jderobot/config/config.h>\n')
+            headers.append('#include <jderobot/comm/communicator.hpp>\n')
             headers.append('#include <jderobot/comm/')
             headers.append(self.interfaceHeaders[cfg['proxyName']].strip('\n'))
             headers.append('.hpp>\n')
@@ -211,9 +214,9 @@ class CppGenerator(Generator):
     def generateInterfaceClasses(self, classStr):
         classStr.append('class Interfaces {\n')
         classStr.append('public:\n')
-        classStr.append('\tIce::CommunicatorPtr ice;\n')
+        classStr.append('\tComm::Communicator* jdrc;\n')
         for cfg in self.config.getInterfaces():
-            classStr.append('\tJdeRobotComm::' + cfg['interface'] + 'Client* ' + cfg['name'] + ';\n')
+            classStr.append('\tComm::' + cfg['interface'] + 'Client* ' + cfg['name'] + ';\n')
         classStr.append('\n')
         classStr.append('\tvirtual void connectProxies(int argc, char* argv[]);\n')
         classStr.append('\tvirtual void destroyProxies();\n')
@@ -255,25 +258,25 @@ class CppGenerator(Generator):
             tranStr.append('}\n\n')
 
 
-    def generateProxies(self, proxyStr):
+    def generateProxies(self, proxyStr, projectName):
         proxyStr.append('void Interfaces::connectProxies(int argc, char* argv[]) {\n')
-        proxyStr.append('\tice = EasyIce::initialize(argc, argv);\n\n')
+        proxyStr.append('\tConfig::Properties props = Config::load(argc, argv);\n')
+        proxyStr.append('\tjdrc = new Comm::Communicator(props);\n\n')
         for cfg in self.config.getInterfaces():
-            proxyStr.append('\t' + cfg['name'] + ' = JdeRobotComm::get' + cfg['interface'] + 'Client(ice, "automata.' + cfg['name'] + '");\n')
+            proxyStr.append('\t' + cfg['name'] + ' = Comm::get' + cfg['interface'] + 'Client(jdrc, "'+projectName+'.' + cfg['name'] + '");\n')
             proxyStr.append('\tif (' + cfg['name'] + ' == NULL) {\n')
-            proxyStr.append('\t\tthrow "invalid proxy automata.' + cfg['name'] + '";\n')
+            proxyStr.append('\t\tthrow "invalid proxy ' + cfg['name'] + '";\n')
             proxyStr.append('\t}\n')
             proxyStr.append('\tstd::cout << "' + cfg['name'] + ' is connected" << std::endl;\n')
         proxyStr.append('}\n\n')
 
         proxyStr.append('void Interfaces::destroyProxies() {\n')
-        proxyStr.append('\tif (ice != 0) {\n')
-        proxyStr.append('\t\tice->destroy();\n')
+        proxyStr.append('\tif (jdrc != 0) {\n')
         proxyStr.append('\t}\n}\n\n')
 
     def generateReadArgs(self, argStr, projectName):
         mystr = '''
-pthread_t guiThread;
+pthread_t guiThread;    
 RunTimeGui* runTimeGui = NULL;
 bool displayGui = false;
 
@@ -445,10 +448,9 @@ link_directories(
         cmakeStr.append(projectName)
         cmakeStr.append('\n')
 
-        mystr = '''
-    easyiceconfig
-    visualStatesRunTime
-    jderobotcomm
+        mystr = '''visualStatesRunTime
+    config
+    comm
     JderobotInterfaces
     jderobotutil
     colorspacesmm
