@@ -200,9 +200,9 @@ class VisualStates(QMainWindow):
             # set the active state as the loaded state
             self.automataScene.setActiveState(self.rootState)
             self.automataScene.setLastIndexes(self.rootState)
-            print(str(self.config))
-        else:
-            print('open is canceled')
+            # print(str(self.config))
+        # else:
+        #     print('open is canceled')
 
 
 
@@ -221,12 +221,12 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
             self.fileManager.save(self.rootState, self.config, self.libraries)
-        else:
-            print('file dialog canceled')
+        # else:
+        #     print('file dialog canceled')
 
 
     def quitAction(self):
-        print('Quit')
+        # print('Quit')
         self.close()
 
     def stateAction(self):
@@ -290,7 +290,8 @@ class VisualStates(QMainWindow):
 
 
     def compileCppAction(self):
-        print('compile cpp action')
+        # print('compile cpp action')
+        pass
 
     def generatePythonAction(self):
         stateList = []
@@ -306,7 +307,8 @@ class VisualStates(QMainWindow):
             self.showWarning('Python Generation', 'Please save the project before code generation.')
 
     def aboutAction(self):
-        print('about action')
+        pass
+        # print('about action')
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -366,7 +368,8 @@ class VisualStates(QMainWindow):
             self.treeModel.removeState(state.stateData)
 
     def transitionInserted(self, tran):
-        print('transition inserted:' + tran.transitionData.name)
+        # print('transition inserted:' + tran.transitionData.name)
+        pass
 
     def stateNameChanged(self, state):
         dataItem = self.treeModel.getByDataId(state.stateData.id)
@@ -376,7 +379,7 @@ class VisualStates(QMainWindow):
 
     def activeStateChanged(self):
         if self.automataScene.activeState != self.activeState:
-            print('visual states active state changed:' + self.automataScene.activeState.name)
+            # print('visual states active state changed:' + self.automataScene.activeState.name)
             self.activeState = self.automataScene.activeState
             if self.activeState == self.rootState:
                 self.treeView.selectionModel().clearSelection()
@@ -386,7 +389,7 @@ class VisualStates(QMainWindow):
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
-                print('parent name:' + self.activeState.parent.name)
+                # print('parent name:' + self.activeState.parent.name)
                 self.automataScene.setActiveState(self.activeState.parent)
 
 
@@ -402,7 +405,7 @@ class VisualStates(QMainWindow):
             return result
 
     def treeItemClicked(self, index):
-        print('clicked item.id:' + str(index.internalPointer().id))
+        # print('clicked item.id:' + str(index.internalPointer().id))
         state = self.getStateById(self.rootState, index.internalPointer().id)
         if state is not None:
             # set the active state as the loaded state

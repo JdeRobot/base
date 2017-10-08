@@ -110,7 +110,7 @@ class State:
                 self.initial = (value == 'True')
 
         self.name = stateElement.getElementsByTagName('name')[0].childNodes[0].nodeValue
-        print('read name:' + self.name)
+        # print('read name:' + self.name)
         self.x = float(stateElement.getElementsByTagName('posx')[0].childNodes[0].nodeValue)
         self.y = float(stateElement.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
 
@@ -133,7 +133,7 @@ class State:
                 if childNode.tagName == 'state':
                     childState = State(0, 'state', False, self)
                     transitionNodes = childState.parse(childNode)
-                    print('add child:' + childState.name + ' to parent:' + self.name)
+                    # print('add child:' + childState.name + ' to parent:' + self.name)
                     self.addChild(childState)
                     statesById[childState.id] = childState
                     allChildTransitions = allChildTransitions + transitionNodes

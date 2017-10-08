@@ -93,7 +93,7 @@ class State():
                         initState = False
                         break
 
-                print('current state:' + str(self.currentState.id))
+                # print('current state:' + str(self.currentState.id))
                 self.currentState.runCode()
 
             # control the cycle running time

@@ -365,7 +365,7 @@ class AutomataScene(QGraphicsScene):
             for tran in transitions:
                 self.addTransitionItem(tran.getGraphicsItem(), False)
 
-            print('set active state:' + self.activeState.name)
+            # print('set active state:' + self.activeState.name)
             self.activeStateChanged.emit()
 
 

@@ -108,7 +108,7 @@ class RunTimeGui(QMainWindow):
             self.states[id] = State(id, name, initial, self.states[parentId])
             self.states[parentId].addChild(self.states[id])
             parentItem = self.treeModel.getByDataId(parentId)
-            print('parent:' + str(parentItem))
+            # print('parent:' + str(parentItem))
         else:
             self.states[id] = State(id, name, initial, None)
         if id == 0:
@@ -121,11 +121,11 @@ class RunTimeGui(QMainWindow):
         self.transitions[id].setPos(x, y)
 
     def emitRunningStateById(self, id):
-        print('emit running state:' + str(id))
+        # print('emit running state:' + str(id))
         self.runningStateChanged.emit(id)
 
     def runningStateChangedHandle(self, id):
-        print('running state:' + str(id))
+        # print('running state:' + str(id))
         if id not in self.states:
             return
 
@@ -153,10 +153,10 @@ class RunTimeGui(QMainWindow):
                     tran.resetGraphicsItem()
 
         self.activeState = self.states[id]
-        print('set active state:' + str(id))
+        # print('set active state:' + str(id))
         self.scene.clear()
         for childState in self.activeState.getChildren():
-            print('add child to scene:' + str(childState.id))
+            # print('add child to scene:' + str(childState.id))
             qitem = childState.getGraphicsItem()
             qitem.setAcceptHoverEvents(False)
             qitem.setFlag(QGraphicsItem.ItemIsMovable, False)
@@ -164,7 +164,7 @@ class RunTimeGui(QMainWindow):
             self.setAcceptDrops(False)
             self.scene.addItem(qitem)
             for tran in childState.getOriginTransitions():
-                print('add transition:' + str(tran.id))
+                # print('add transition:' + str(tran.id))
                 qitem = tran.getGraphicsItem()
                 qitem.disableInteraction()
                 self.scene.addItem(qitem)
@@ -196,7 +196,8 @@ class RunTimeGui(QMainWindow):
             return result
 
     def treeItemClicked(self, index):
-        print('clicked item.id:' + str(index.internalPointer().id))
+        # print('clicked item.id:' + str(index.internalPointer().id))
+        pass
 
     def getStateList(self, state, stateList):
         if len(state.getChildren()) > 0:
@@ -209,7 +210,7 @@ class RunTimeGui(QMainWindow):
         while True:
             msg = self.getIPCMessage()
             if msg is not None:
-                print('msg received:' + msg)
+                # print('msg received:' + msg)
                 methodName = msg.split(' ')[0]
                 id = int(msg.split(' ')[1])
                 if methodName == 'emitRunningStateById':

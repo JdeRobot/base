@@ -143,13 +143,13 @@ class TransitionCodeDialog(QDialog):
         if (self.temporalButton.isChecked()):
             self.transitionGroupBox.setTitle('Temporal (number in ms)')
             self.transitionTypeCode.setPlainText(str(self.transition.getTemporalTime()))
-            print('temporal toggled')
+            # print('temporal toggled')
 
     def conditionalToggled(self):
         if (self.conditionalButton.isChecked()):
             self.transitionGroupBox.setTitle('Condition (evaluates to true or false)')
             self.transitionTypeCode.setPlainText(self.transition.getCondition())
-            print('conditional toggled')
+            # print('conditional toggled')
 
     def pythonClicked(self):
         fixedWidthFont = QFontDatabase.systemFont(QFontDatabase.FixedFont)

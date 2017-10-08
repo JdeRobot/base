@@ -73,4 +73,5 @@ class TreeNode(QTreeWidgetItem):
         del self.childItems[:]
 
     def myClicked(self, item, column):
-        print('clicked:' + str(item))
+        # print('clicked:' + str(item))
+        pass

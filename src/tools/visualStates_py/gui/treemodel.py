@@ -130,7 +130,7 @@ class TreeModel(QAbstractItemModel):
                 break
 
         if childToBeRemoved != None:
-            print('remove child.id:' + str(childToBeRemoved.id))
+            # print('remove child.id:' + str(childToBeRemoved.id))
             parent.removeChild(childToBeRemoved)
             self.layoutChanged.emit()
 
@@ -171,7 +171,7 @@ class TreeModel(QAbstractItemModel):
             self.setAllBackgroundByParentId(color, node.id)
 
     def setBackgroundById(self, id, color):
-        print('set bg color:' + str(id))
+        # print('set bg color:' + str(id))
         data = self.getByDataId(id)
         data.setColor(color)
         self.layoutChanged.emit()

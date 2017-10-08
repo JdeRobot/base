@@ -35,20 +35,20 @@ RunTimeGui::RunTimeGui() {
 
 void RunTimeGui::emitRunningStateById(int id) {
     std::stringstream strstream;
-    strstream << "emitRunningStateById " << id;
+//    strstream << "emitRunningStateById " << id;
     msgQueue.push(strstream.str());
-    std::cout << "running state:" << id << std::endl;
+//    std::cout << "running state:" << id << std::endl;
 }
 
 void RunTimeGui::emitLoadFromRoot() {
     std::stringstream strstream;
-    strstream << "emitLoadFromRoot";
+//    strstream << "emitLoadFromRoot";
     msgQueue.push(strstream.str());
 }
 
 void RunTimeGui::emitActiveStateById(int id) {
     std::stringstream strstream;
-    strstream << "emitActiveStateById " << id;
+//    strstream << "emitActiveStateById " << id;
     msgQueue.push(strstream.str());
 }
 
@@ -88,7 +88,7 @@ void RunTimeGui::createSharedMem() {
     }
 
     if (trial < numTrial) {
-        std::cout << "shmget works" << std::endl;
+//        std::cout << "shmget works" << std::endl;
     } else if (trial >= numTrial) {
         std::cerr << "we could not be able to get shared memory in " << numTrial << " trials." << std::endl;
         return;

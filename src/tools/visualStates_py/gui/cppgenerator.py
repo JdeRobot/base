@@ -62,42 +62,6 @@ class CppGenerator(Generator):
 
         return transitions
 
-    # def getVar(self, varLine):
-    #     varParts = varLine.strip(' ').split(' ')
-    #     i = 0
-    #     while varParts[i] == '' and i + 1 < len(varParts):
-    #         i += 1
-    #     myvar = varParts[i]
-    #     i += 1
-    #     while varParts[i] == '' and i + 1 < len(varParts):
-    #         i += 1
-    #     return (myvar, varParts[i])
-
-    # def getVariables(self, state):
-    #     myvars = []
-    #     for varLine in state.getVariables():
-    #         (mytype, myvarname) = self.getVar(varLine)
-    #         print('type:' + mytype + ' varname:' + myvarname)
-    #         myvars.append(mytype + ' ' + myvarname + ';')
-    #     return myvars
-
-    # def getFunctions(self, state):
-    #     functions = []
-    #     parCount = 0
-    #     for funcLine in state.getFunctions().strip(' ').strip('\n').split('\n'):
-    #         i = 0
-    #         for mychar in funcLine:
-    #             if mychar == '{':
-    #                 parCount += 1
-    #             elif mychar == '}':
-    #                 parCount -= 1
-    #
-    #             if mychar == '{' and parCount == 1:
-    #                 (mytype, varname) = self.getVar(funcLine[0:i])
-    #                 print('myfuncreturn:' + mytype + ' myfuncname' + varname + ';')
-    #                 functions.append(mytype + ' ' + varname + ';')
-    #             i += 1
-    #     return functions
 
     def generate(self, projectPath, projectName):
         stringList = []

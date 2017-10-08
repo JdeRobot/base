@@ -17,8 +17,9 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-# a class to discover JdeRobot and ROS interfaces
+
 import os
+# a class to discover JdeRobot and ROS interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 
 class Interfaces:
