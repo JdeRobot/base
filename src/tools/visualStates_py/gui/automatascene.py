@@ -374,7 +374,7 @@ class AutomataScene(QGraphicsScene):
         self.clear()
         if self.activeState != None:
             # reset all of the graphics item of the current active state
-            print('type:' + str(type(self.activeState)))
+            # print('type:' + str(type(self.activeState)))
             for child in self.activeState.getChildren():
                 child.resetGraphicsItem()
                 for tran in child.getOriginTransitions():
