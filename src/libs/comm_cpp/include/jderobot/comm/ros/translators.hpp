@@ -21,7 +21,7 @@
 #define JDEROBOTCOMM_TRANSLATORSROS_H_
 
 #include <ros/ros.h>
-
+#include <cv.h>
 
 #include <jderobot/types/laserData.h>
 #include <sensor_msgs/LaserScan.h>
@@ -56,7 +56,7 @@ namespace Comm {
 	JdeRobotTypes::LaserData translate_laser_messages(const sensor_msgs::LaserScanConstPtr& scan);
 
 	/**
-	 * @brief translate ROS Image messages to JdeRobot Iaage
+	 * @brief translate ROS Image messages to JdeRobot Image
 	 *
 	 *
 	 * @param ROS Image Message
@@ -67,13 +67,24 @@ namespace Comm {
 	JdeRobotTypes::Image translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg);
 
 	/**
+	 * @brief Translates from 32FC1 Image format to RGB. Inf values are represented by NaN, when converting to RGB, NaN passed to 0 
+	 *
+	 *
+	 * @param ROS Image Message
+	 * 
+	 *
+	 * @return Image translated from ROS Message 
+	 */
+	void depthToRGB(const cv::Mat& float_img, cv::Mat& rgb_img);
+	
+	/**
 	 * @brief translate Jderobot CMDVel to ROS Twist messages
 	 *
 	 *
-	 * @param Jderobot CMDVel type
+	 * @param float_img, image in 32FC1
+	 * @param rgb_img, container for image in RGB
 	 * 
 	 *
-	 * @return Twist message translated from JdeRobot CMDVel 
 	 */
 	geometry_msgs::Twist translate_twist_messages(JdeRobotTypes::CMDVel cmdvel );
 

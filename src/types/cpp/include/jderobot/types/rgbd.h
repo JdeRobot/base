@@ -1,6 +1,5 @@
 /*
- *
- *  Copyright (C) 1997-2017 JDE Developers Team
+ *  Copyright (C) 1997-2017 JDE JdeRobot Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,30 +13,26 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see http://www.gnu.org/licenses/.
- *
- *  Author: Francisco Rivas <franciscomiguel [dot] rivas [at] urjc [dot] es>
- *
+ *  Authors :
+ *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef RGBD_ICE
-#define RGBD_ICE
+#ifndef JDEROBOTTYPES_RGBD_H
+#define JDEROBOTTYPES_RGBD_H
 
-#include <jderobot/image.ice>
+#include <jderobot/types/image.h>
 
-module jderobot{
-    struct rgbData {
-        ImageData color;
-        ImageData depth;
-        Time timeStamp; 				/**< TimeStamp of Data */
-    };
+namespace JdeRobotTypes {
 
+	class Rgbd {
+	public:
 
-    interface rgbd{
-        idempotent rgbData getData();
-
-    };
-};
+	    Image color; /**< %color image */
+	    Image depth; /**< %depth image */
+	    double timeStamp = 0; /**< %Time stamp [s] */
+	};
 
 
+} //NS JdeRobotTypes
 
-#endif
+#endif // JDEROBOTTYPES_RGBD_H
