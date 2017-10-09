@@ -1,6 +1,6 @@
 #include "cameraswidget.h"
 
-CamerasWidget::CamerasWidget(jderobot::cameraClient* camera)
+CamerasWidget::CamerasWidget(Comm::CameraClient* camera)
 {
 
     this->camera = camera;
@@ -19,16 +19,20 @@ CamerasWidget::CamerasWidget(jderobot::cameraClient* camera)
 
 void CamerasWidget::update()
 {
-    cv::Mat frame1;
-    this->camera->getImage(frame1);
+    
 
-    //cv::resize(frame1, frame1, cv::Size(320, 240));
+    JdeRobotTypes::Image rgb;
+    rgb = this->camera->getImage();
 
-    QImage imageQt1 = QImage((const unsigned char*)(frame1.data),
+    cv::Mat frame1 = rgb.data;
+    if (!frame1.empty()){
+
+        QImage imageQt1 = QImage((const unsigned char*)(frame1.data),
                             frame1.cols,
                             frame1.rows,
                             frame1.step,
                             QImage::Format_RGB888);
 
-    labelImage->setPixmap(QPixmap::fromImage(imageQt1));
+        labelImage->setPixmap(QPixmap::fromImage(imageQt1));
+    }
 }

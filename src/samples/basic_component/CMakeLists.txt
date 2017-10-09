@@ -29,58 +29,50 @@ if (${QT5_COMPILE})
         ${OpenCV_INCLUDE_DIR}
         ${Ice_INCLUDE_DIR}
         ${INTERFACES_CPP_DIR}
-        ${LIBS_DIR}/
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${easyiceconfig_INCLUDE_DIRS}
-        ${ZLIB_INCLUDE_DIRS}
-            ${INTERFACES_CPP_DIR}
         ${LIBS_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${gtkmm_INCLUDE_DIRS}
-        ${libglademm_INCLUDE_DIRS}
-        ${gtkglextmm_INCLUDE_DIRS}
+        ${jderobottypes_INCLUDE_DIRS}
+        ${comm_INCLUDE_DIRS}
+        ${config_INCLUDE_DIRS}
+        ${roscpp_INCLUDE_DIRS}
         ${ZLIB_INCLUDE_DIRS}
-        ${resourcelocator_INCLUDE_DIRS}
-        ${easyiceconfig_INCLUDE_DIRS}
+    )
+
+    link_directories(
+        ${comm_LIBRARY_DIRS}
+        ${config_LIBRARY_DIRS}
     )
 
 
     add_executable( basic_component ${SOURCE} ${INTERFACES_CPP_DIR} ${qt_SRC})
                    
     target_link_libraries(basic_component
-        colorspacesmm
-        JderobotInterfaces
-        parallelIce
-        jderobotutil
+        
         ${Qt5Widgets_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Gui_LIBRARIES}
         ${Qt5OpenGL_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
-        ${OpenCV_LIBRARIES}
-        ${easyiceconfig_LIBRARIES}
         ${ZeroCIce_LIBRARIES}
         ${Ice_LIBRARIES}
         ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}
-        ${ZLIB_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
         ${OpenCV_LIBRARIES}
         ${OpenCVGUI_LIBRARIES}
-        ${gtkmm_LIBRARIES}
-        ${libglademm_LIBRARIES}
-        ${easyiceconfig_LIBRARIES}
-        ${ZeroCIce_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-        ${resourcelocator_LIBRARIES}
+        ${catkin_LIBRARIES}
+        ${comm_LIBRARIES}
+        ${config_LIBRARIES}
+        JderobotInterfaces
+        jderobotutil
+        colorspacesmm
         ${GLOG_LIBRARIES}
+        ${ZLIB_LIBRARIES}
     )
 
     install(TARGETS basic_component
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
     COMPONENT tools
     )
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
 ENDIF()
 
 
