@@ -1,4 +1,43 @@
 
+jderobot (5.6.0) unstable; urgency=low
+
+  * release 5.6.0
+  * [PR #780 #914] This is the main change in the installation process. We now offer atomic debian packages for the user to install the
+project. There is no more a monolithic package that install the whole project but there is now a bunch of packages (one for each tool, driver, and lib) and
+some extra themed metapackages. This is in beta phase yet, so the may contain some bugs. Also, there will be more metapackages in the future. (see issue 915 for
+further information).
+  * [PR #736] Added a more realistic Formula 1 car and plugin. Now the wheels move and the car moves by phyisics forces, not just by teleporting the model.
+  * [PR #797] Added options for generate only ice packages. For embedded systems (arm)
+  * [PR #802] Created launcher for webtools.
+  * [PR #810] Refactoring of replayer tool.
+  * [PR #812] RGBD images are now synchronized.
+  * [PR #813] RGBD Viewer now allows to use camera distances.
+  * [PR #822] New driver for the Sony EVI IP camera. 
+  * [PR #829] Refactor for recorder2 tool. Added ringed buffer.
+  * [PR #832] Added new holonomic cars for gazebo. They include their own plugins.
+  * [PR #844] Deleted obsolete interfaces to clean the project
+  * [PR #847] Stop support for Nao humanoid robot.
+  * [PR #851] Created a new tool for teleoperate IP cameras. PanTiltTeleop.
+  * [PR #852] Solved problem with maximum drone velocities in uav_viewer.
+  * [PR #859] Added a new cameraview tool in python only for ice. 
+  * [PR #863] Included optional horizontal flip for openniserver
+  * [PR #862] Jderobotcomm_py now installs ROS python clients if ROS_cpp is found.
+  * [PR #866] Added new model for gazebo of the arduino robot MBOT 
+  * [PR #873] Created a JdeRobot version of the ROS turtlebot model for gazebo.
+  * [PR #874] Renamed VisualHFSM to VisualStates
+  * [PR #877] Added samples folder and moved al examples to it.
+  * [PR #885] Updated Dockerfiles. 
+  * [PR #880] Moved installation of the project from /usr/local to /opt. This will let the system as clear as possible.
+  * [PR #899] Update the world and models of JdeRobot's Academy global_navigation practice.
+  * [PR #901] Added new tool. Scratch2JdeRobot, will let the users program complex robot behaviours using scratch.
+  * [PR #908] Added the infraestructure for a new JdeRobot Academy practice based on autonomous vehicles. Autopark.
+  * [PR #916] Created Config library for read Yaml config files. We are migrating from ICE config file, to a more generic library based on YAML.
+  * [PR #918] Added the infraestructure for a new JdeRobot Academy practice based on autonomous vehicles. Stop practice.
+  * [PR #921] Added support for RGBD sensors in Ice to JdeRobot Comm
+
+-- Francisco Perez <f.perez475@gmail.com>, Mon, 09 Oct 2017 20:30:00 +0100
+
+
 jderobot (5.5.2) unstable; urgency=low
 
   * release 5.5.2
