@@ -55,8 +55,10 @@ private:
 	Gtk::Dialog* dialog;
 	Gtk::Button *button_accept, *button_cancel, *button_confirm;
 	Gtk::Grid* grid;
-	Gtk::Entry *entry_name, *entry_proxyName, *entry_ip, *entry_port;
+	Gtk::Entry *entry_name, *entry_proxyName, *entry_topic, *entry_ip, *entry_port;
+    Gtk::Label *label_serverType, *label_name, *label_proxyName, *label_topic, *label_ip, *label_port, *label_interface;
 	Gtk::ComboBox* combobox_interface;
+    Gtk::ComboBox* combobox_serverType;
 
 	int row;
 	std::list<IceInterface> listInterfaces;
@@ -69,8 +71,16 @@ private:
         Gtk::TreeModelColumn<Glib::ustring> m_col_name;
     };
     ModelColumns m_Columns;
-
     Glib::RefPtr<Gtk::ListStore> refTreeModel;
+
+    class ServerTypeModelColumns : public Gtk::TreeModel::ColumnRecord {
+    public:
+        ServerTypeModelColumns() {add(colValue); add(colName);}
+        Gtk::TreeModelColumn<int> colValue;
+        Gtk::TreeModelColumn<Glib::ustring> colName;
+    };
+    ServerTypeModelColumns serverTypeColumns;
+    Glib::RefPtr<Gtk::ListStore> refServerTypeTreeModel;
 	
 	// Private methods
 	void on_button_confirm ();
@@ -78,7 +88,12 @@ private:
 	void on_button_accept ();
 	void on_button_cancel ();
 
+    void onServerTypeChanged();
+
 	type_signal m_signal;
+
+    void showRosLabels();
+    void showIceLabels();
 };
 
 #endif // CONFIGFILEDIALOG_H

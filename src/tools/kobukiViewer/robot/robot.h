@@ -6,6 +6,8 @@
 #include "sensors.h"
 #include "actuators.h"
 
+#include "jderobot/comm/communicator.hpp"
+
 #include <stdio.h>
 
 class Robot: public QObject
@@ -13,7 +15,7 @@ class Robot: public QObject
     Q_OBJECT
 
 public:
-    Robot(Ice::CommunicatorPtr ic);
+    Robot(Comm::Communicator* jdrc);
 
     void update();
 

@@ -47,8 +47,8 @@ TARGET_LINK_LIBRARIES(replayController
 
 install(TARGETS replayController
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
+    COMPONENT replayController
     )
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/replayControllerGui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/replayController.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/replayControllerGui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT replayController)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/replayController.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT replayController)

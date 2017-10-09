@@ -13,6 +13,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "jderobot/comm/communicator.hpp"
 #include <jderobot/comm/laserClient.hpp>
 #include <jderobot/comm/cameraClient.hpp>
 #include <jderobot/comm/pose3dClient.hpp>
@@ -20,7 +21,7 @@
 class Sensors
 {
 public:
-    Sensors(Ice::CommunicatorPtr ic);
+    Sensors(Comm::Communicator* jdrc);
 
     JdeRobotTypes::Pose3d getPose();
     JdeRobotTypes::LaserData getLaserData();
@@ -31,15 +32,15 @@ public:
 
 private:
 
-    Ice::CommunicatorPtr ic;
+    Comm::Communicator* jdrc;
 
     //LASER DATA
-    JdeRobotComm::LaserClient* laserClient;
+    Comm::LaserClient* laserClient;
 
-    JdeRobotComm::CameraClient* camera1;
-    JdeRobotComm::CameraClient* camera2;
+    Comm::CameraClient* camera1;
+    Comm::CameraClient* camera2;
 
-    JdeRobotComm::Pose3dClient* poseClient;
+    Comm::Pose3dClient* poseClient;
 
 
 

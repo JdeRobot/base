@@ -52,13 +52,13 @@ target_link_libraries(test_gladelocator ${binname})
 ### Install
 install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT resourcelocator
 )
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT core
+    COMPONENT resourcelocator
 )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/resourcelocator/gladelocator.hpp
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/resourcelocator/
-    COMPONENT core
+    COMPONENT resourcelocator
 )

@@ -23,7 +23,7 @@ target_link_libraries(geometry tinyxml GLU ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRA
 ### Install
 install(TARGETS geometry
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT geometry
 )
 
 
@@ -34,12 +34,12 @@ FOREACH(currentSourceFile ${GEOMETRY_HEADERS_FILES})
 string(REGEX REPLACE "(.*/).*.h" "\\1" new_source1 ${currentSourceFile})
 	install( FILES ${currentSourceFile}
     	DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/geometry/${new_source1}
-    	COMPONENT core
+    	COMPONENT geometry
 	)
 ENDFOREACH(currentSourceFile)
 
 install( FILES Dense.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/geometry/
-    COMPONENT core
+    COMPONENT geometry
 )
 

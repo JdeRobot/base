@@ -35,7 +35,7 @@ add_executable (cameraCalibrator  ${SOURCE_FILES})
 
 install(TARGETS cameraCalibrator
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
+    COMPONENT cameracalibrator
     )
     
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT cameracalibrator)

@@ -7,6 +7,6 @@ ENDFOREACH()
 
 install( FILES visionlib.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visionlib/
-    COMPONENT core
+    COMPONENT colorspaces
 )
 

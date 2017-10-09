@@ -4,7 +4,7 @@
     <model name='mesa_comedor'>
       <static>true</static>
       <link name='mesa_link'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0.3 0 0 0 -0 0</pose>
         <inertial>
           <pose>1.58603e-17 0 0.513571 0 -0 0</pose>
           <mass>70</mass>
@@ -1523,7 +1523,7 @@
     <model name='silla_1'>
       <static>true</static>
       <link name='silla_link'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0.3 0 0 -0 0</pose>
         <inertial>
           <pose>0.0215 0 0.353 0 -0 0</pose>
           <mass>20</mass>
@@ -1835,7 +1835,7 @@
     <model name='silla_2'>
       <static>true</static>
       <link name='silla_link'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0.3 0 0 -0 0</pose>
         <inertial>
           <pose>0.0215 0 0.353 0 -0 0</pose>
           <mass>20</mass>
@@ -2147,7 +2147,7 @@
     <model name='silla_3'>
       <static>true</static>
       <link name='silla_link'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 -0.3 0 0 -0 0</pose>
         <inertial>
           <pose>0.0215 0 0.353 0 -0 0</pose>
           <mass>20</mass>
@@ -2459,7 +2459,7 @@
     <model name='silla_4'>
       <static>true</static>
       <link name='silla_link'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 -0.3 0 0 -0 0</pose>
         <inertial>
           <pose>0.0215 0 0.353 0 -0 0</pose>
           <mass>20</mass>
@@ -3893,7 +3893,7 @@
           <pose>0 0 0.41 0 -0 0</pose>
           <geometry>
             <box>
-              <size>1 0.35 0.02</size>
+              <size>1 0.35 0.2</size>
             </box>
           </geometry>
           <surface>
@@ -4117,7 +4117,7 @@
           <pose>0 0 0.01 0 -0 0</pose>
           <geometry>
             <box>
-              <size>1 0.35 0.02</size>
+              <size>1 0.35 0.2</size>
             </box>
           </geometry>
           <material>
@@ -4529,7 +4529,7 @@
           <pose>0 0 0.01 0 -0 0</pose>
           <geometry>
             <box>
-              <size>1 0.35 0.02</size>
+              <size>1 0.35 0.2</size>
             </box>
           </geometry>
           <material>
@@ -4877,7 +4877,7 @@
           <pose>0 0 0.01 0 -0 0</pose>
           <geometry>
             <box>
-              <size>0.35 0.35 0.02</size>
+              <size>0.35 0.35 0.2</size>
             </box>
           </geometry>
           <material>
@@ -5301,7 +5301,7 @@
           <pose>0 0 0.01 0 -0 0</pose>
           <geometry>
             <box>
-              <size>0.35 0.35 0.02</size>
+              <size>0.35 0.35 0.2</size>
             </box>
           </geometry>
           <material>

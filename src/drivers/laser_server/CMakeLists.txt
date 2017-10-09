@@ -25,9 +25,12 @@ TARGET_LINK_LIBRARIES(${NAME}
     ${easyiceconfig_LIBRARIES}
 )
 
-install(TARGETS ${NAME}
-          DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-          COMPONENT drivers
-        )
+INSTALL(TARGETS ${NAME}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT laser-server
+)
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/laser_server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/laser_server.cfg 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf
+    COMPONENT laser-server
+)

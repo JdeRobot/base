@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualHFSM><SubAutomata id="1" idFather="0"><state initial="true" id="1"><posx>107.961</posx><posy>124.934</posy><name>GoStraight</name><idSubautomataSon>0</idSubautomataSon><code>self.my_motors.setV(0.2)
+self.my_motors.setW(0.0)</code></state><state initial="false" id="2"><posx>300.839</posx><posy>128.172</posy><name>TurnRight</name><idSubautomataSon>0</idSubautomataSon><code>self.my_motors.setV(0.0)
+self.my_motors.setW(-0.2)</code></state><state initial="false" id="3"><posx>457.271</posx><posy>131.618</posy><name>MoveLeft</name><idSubautomataSon>0</idSubautomataSon><code>self.my_motors.setV(0.15)
+self.my_motors.setW(0.15)</code></state><state initial="false" id="4"><posx>464.676</posx><posy>290.596</posy><name>MoveRight</name><idSubautomataSon>0</idSubautomataSon><code>self.my_motors.setV(0.15)
+self.my_motors.setW(-0.15)</code></state><transition id="1"><posx>190.141</posx><posy>59.4308</posy><origin>1</origin><destiny>2</destiny><transcode></transcode><name>close_enough</name><trans type="condition">self.get_min_distance() &lt; 700</trans></transition><transition id="2"><posx>369.701</posx><posy>59.4513</posy><origin>2</origin><destiny>3</destiny><transcode></transcode><name>wall_aligned</name><trans type="condition">self.get_left_distance() &lt; 750</trans></transition><transition id="4"><posx>553.106</posx><posy>205.632</posy><origin>3</origin><destiny>4</destiny><transcode></transcode><name>close_to_wall</name><trans type="condition">self.get_left_distance() &lt; 700</trans></transition><transition id="5"><posx>390.467</posx><posy>209.576</posy><origin>4</origin><destiny>3</destiny><transcode></transcode><name>away_from_wall</name><trans type="condition">self.get_left_distance() &gt; 700</trans></transition><iteration_time>100</iteration_time><variables></variables><functions>def get_min_distance(self):
+	laser_data = self.laser_sensor.getLaserData()
+	min_dist = 100000
+	for i in range(laser_data.numLaser):
+		if i &lt; 5:
+			continue
+		avg_dist = 0
+		for j in range(5):
+			avg_dist += laser_data.distanceData[i-j]
+		avg_dist = avg_dist / 5.0
+		if avg_dist &lt; min_dist:
+			min_dist = avg_dist
+	
+	print('min_dist:' + str(min_dist))
+	return min_dist
+
+
+def get_left_distance(self):
+	laser_data = self.laser_sensor.getLaserData()
+	avg_dist = 0
+	for i in range(10):
+		avg_dist += laser_data.distanceData[laser_data.numLaser-i]
+	avg_dist = avg_dist / 10.0
+	
+	print('avg_dist:'+str(avg_dist))
+	return avg_dist
+</functions></SubAutomata><libraries/><config><iceinterface><nameinterface>laser_sensor</nameinterface><nameproxy>Laser</nameproxy><ip>localhost</ip><port>9001</port><interface>Laser</interface></iceinterface><iceinterface><nameinterface>my_motors</nameinterface><nameproxy>Motors</nameproxy><ip>localhost</ip><port>9001</port><interface>Motors</interface></iceinterface></config></VisualHFSM>

@@ -14,4 +14,4 @@ Private-Original-Maintainer: Victor Arribas <v.arribas.urjc@gmail.com>
 Homepage: http://jderobot.org
 Description: Metapackage that gathers all library headers required to compile JdeRobot framework.
  Jderobot is a software development suite for robotics applications.
- Get it from https://github.com/RoboticsURJC/JdeRobot
+ Get it from https://github.com/JdeRobot/JdeRobot.git

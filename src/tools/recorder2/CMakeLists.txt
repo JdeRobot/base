@@ -58,10 +58,15 @@ TARGET_LINK_LIBRARIES(recorder2
 	${GLOG_LIBRARIES}
 )
 
-install(TARGETS recorder2
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
-    )
-
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/recordergui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/recorder.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+INSTALL(TARGETS recorder2 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ 
+    COMPONENT recorder2
+)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/recordergui.glade 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade 
+    COMPONENT recorder2
+)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/recorder.cfg 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf 
+    COMPONENT recorder2
+)

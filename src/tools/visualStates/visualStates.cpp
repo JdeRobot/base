@@ -58,7 +58,7 @@ VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
     // get the logo image
     refBuilder->get_widget("jderobotlogo", this->logo);
     //TODO: we assume a fixed installation path, we should get the installation path from CMAKE maybe
-    this->logo->set("/opt/jderobot/share/jderobot/resources/jderobot.png");
+    this->logo->set("/usr/local/share/jderobot/resources/jderobot.png");
 
     // ASSIGNING SIGNALS
     // Of the menu items
@@ -147,10 +147,20 @@ VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
     this->idguinode = 1;
     this->idguitransition = 1;
 
-    system("/opt/jderobot/bin/getinterfaces.sh /opt/jderobot/include/jderobot/slice > /tmp/allinterfaces.txt");
+    //getInterfaces();
+    getJdeRobotCommInterfaces();
+}
+
+/*************************************************************
+ * DESTRUCTOR
+ *************************************************************/
+VisualStates::~VisualStates () {}
+
+void VisualStates::getInterfaces() {
+    system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/slice > /tmp/allinterfaces.txt");
     std::ifstream infile("/tmp/allinterfaces.txt");
     std::string line;
-    while ( std::getline(infile, line) ) {
+    while (std::getline(infile, line)) {
         std::string buff;
         std::string interface;
         std::stringstream ss(line);
@@ -166,10 +176,25 @@ VisualStates::VisualStates ( BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
     }
 }
 
-/*************************************************************
- * DESTRUCTOR
- *************************************************************/
-VisualStates::~VisualStates () {}
+void VisualStates::getJdeRobotCommInterfaces() {
+    system("/usr/local/bin/getinterfaces.sh /usr/local/include/jderobot/comm/interfaces > /tmp/allinterfaces.txt");
+    std::ifstream infile("/tmp/allinterfaces.txt");
+    std::string line;
+    while (std::getline(infile, line)) {
+        std::string buff;
+        std::string interface;
+        std::stringstream ss(line);
+        int i = 0;
+        while (ss >> buff) {
+            if (i == 0) {   // getting the interface
+                interface = std::string(buff);
+            } else { // getting the file header
+                this->mapInterfacesHeader[interface] = buff;
+            }
+            i++;
+        }
+    }
+}
 
 /*************************************************************
  * METHODS FOR SIGNALS

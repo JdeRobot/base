@@ -5,4 +5,4 @@ configure_module_python(jderobotTypes)
 add_custom_target(jderobotTypes_py ALL)
 copy_to_binary_python(jderobotTypes_py jderobotTypes)
 
-install_python(jderobotTypes core)
+install_python(jderobotTypes types-python)
