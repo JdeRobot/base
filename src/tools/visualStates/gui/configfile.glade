@@ -72,7 +72,7 @@
                 <property name="label" translatable="yes">Name</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
+                <property name="left_attach">1</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -84,7 +84,30 @@
                 <property name="placeholder_text">Name</property>
               </object>
               <packing>
-                <property name="left_attach">0</property>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_topic">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Topic</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="entry_topic">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="placeholder_text">Topic</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -97,7 +120,7 @@
                 <property name="receives_default">True</property>
               </object>
               <packing>
-                <property name="left_attach">5</property>
+                <property name="left_attach">7</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -108,7 +131,7 @@
                 <property name="label" translatable="yes">Confirm</property>
               </object>
               <packing>
-                <property name="left_attach">5</property>
+                <property name="left_attach">7</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -119,7 +142,7 @@
                 <property name="label" translatable="yes">Interface</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
+                <property name="left_attach">6</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -130,7 +153,7 @@
                 <property name="label" translatable="yes">Port</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
+                <property name="left_attach">5</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -142,7 +165,7 @@
                 <property name="placeholder_text">Port</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
+                <property name="left_attach">5</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -153,7 +176,7 @@
                 <property name="label" translatable="yes">IP</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">4</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -165,7 +188,7 @@
                 <property name="placeholder_text">IP</property>
               </object>
               <packing>
-                <property name="left_attach">2</property>
+                <property name="left_attach">4</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -176,7 +199,7 @@
                 <property name="label" translatable="yes">Proxy Name</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">3</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
@@ -188,7 +211,7 @@
                 <property name="placeholder_text">Proxy Name</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
+                <property name="left_attach">3</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -199,7 +222,28 @@
                 <property name="model">liststore1</property>
               </object>
               <packing>
-                <property name="left_attach">4</property>
+                <property name="left_attach">6</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_serverType">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Server Type</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="combobox_serverType">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>

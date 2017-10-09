@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualHFSM><SubAutomata id="1" idFather="0"><state initial="true" id="1"><posx>166</posx><posy>183</posy><name>state</name><idSubautomataSon>0</idSubautomataSon><code>std::cout &lt;&lt; "numLaser:" &lt;&lt; laser_sensor-&gt;getLaserData()-&gt;numLaser &lt;&lt; std::endl;</code></state><iteration_time>100</iteration_time><variables></variables><functions>
+</functions></SubAutomata><libraries/><config><iceinterface><nameinterface>myLaser</nameinterface><nameproxy>Laser</nameproxy><ip>localhost</ip><port>9001</port><interface>Laser</interface></iceinterface></config></VisualHFSM>
