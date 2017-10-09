@@ -4,6 +4,18 @@ SET(CPACK_COMPONENT_3DVIEWER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Tools#3DViewer
  Home page https://jderobot.org")
 
+SET(CPACK_DEBIAN_BASIC-COMPONENT_PACKAGE_DEPENDS "jderobot-config, jderobot-comm")
+SET(CPACK_COMPONENT_BASIC-COMPONENT_DESCRIPTION  
+"Example of tool C++ 
+ Manual Page http://jderobot.org/
+ Home page https://jderobot.org")
+
+SET(CPACK_DEBIAN_BASIC-COMPONENT-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-comm-python, python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg")
+SET(CPACK_COMPONENT_BASIC-COMPONENT-PYTHON_DESCRIPTION  
+"Example of tool Python
+ Manual Page http://jderobot.org/
+ Home page https://jderobot.org")
+
 SET(CPACK_DEBIAN_CAMERACALIBRATOR_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-util, jderobot-parallelice, jderobot-colorspaces")
 SET(CPACK_COMPONENT_CAMERACALIBRATOR_DESCRIPTION  
 "Calibrator for extrinsics and intrinsics parameters of RGB cameras. 
@@ -105,3 +117,9 @@ SET(CPACK_COMPONENT_UAV-VIEWER-PYTHON_DESCRIPTION
 "Teleoperator for UAV drones real and simulated (Parrot ArDrone, 3DR SoloDrone, ...) for python
  Manual Page http://jderobot.org/index.php/Tools#UAV_Viewer
  Home page https://jderobot.org")
+
+ SET(CPACK_DEBIAN_VISUALSTATES-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-sysv-ipc, python-pyqt5, python-pyqt5-qsci, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-comm-python, jderobot-config-python, jderobot-comm, jderobot-config")
+SET(CPACK_DEBIAN_VISUALSTATES-PYTHON_DESCRIPTION  
+"VisualStates is a tool for the programming of robot behaviors using hierarchy finite state machines (C++ or python)
+ Manual Page http://jderobot.org/VisualStates
+ Home page http://jderobot.org/VisualStates")
