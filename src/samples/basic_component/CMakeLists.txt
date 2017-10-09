@@ -70,9 +70,10 @@ if (${QT5_COMPILE})
 
     install(TARGETS basic_component
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools
+    COMPONENT basic-component
     )
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_component.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf
+    COMPONENT basic-component)
 ENDIF()
 
 
