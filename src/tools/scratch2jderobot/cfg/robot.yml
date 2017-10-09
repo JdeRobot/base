@@ -1,0 +1,16 @@
+robot:
+  Motors:
+    Server: 2 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: "Motors:default -h localhost -p 9001"
+    Topic: "/mobile_base/commands/velocity"
+    Name: robotMotors
+    maxW: 0.7
+    maxV: 4
+  
+  Laser:
+    Server: 2 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: "Laser:tcp -h localhost -p 9001"
+    Topic: "/scan"
+    Name: robotLaser
+
+  NodeName: robot
