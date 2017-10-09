@@ -128,12 +128,10 @@ class CppGenerator(Generator):
 
         # generate interface headers
         for cfg in self.config.getInterfaces():
-            if len(cfg['proxyName']) == 0:
-                cfg['proxyName'] = cfg['interface']
             headers.append('#include <jderobot/config/config.h>\n')
             headers.append('#include <jderobot/comm/communicator.hpp>\n')
             headers.append('#include <jderobot/comm/')
-            headers.append(self.interfaceHeaders[cfg['proxyName']].strip('\n'))
+            headers.append(self.interfaceHeaders[cfg['interface']].strip('\n'))
             headers.append('.hpp>\n')
 
         headers.append('\n')
