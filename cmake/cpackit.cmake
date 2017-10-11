@@ -93,6 +93,10 @@ set(CPACK_DEBIAN_SETUP_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/postrm")
 
+SET(CPACK_DEBIAN_ZEROC-ICE-PYTHON_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
+
 
 ## Include Git HEAD into description (feature: traceback builds)
 execute_process(COMMAND git rev-parse HEAD
@@ -131,6 +135,7 @@ configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINA
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-libs.info.in ${CMAKE_BINARY_DIR}/jderobot-libs_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-tools.info.in ${CMAKE_BINARY_DIR}/jderobot-tools_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-drivers.info.in ${CMAKE_BINARY_DIR}/jderobot-drivers_${PACKAGE_VERSION}_all.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-zeroc-ice-python.info.in ${CMAKE_BINARY_DIR}/jderobot-zeroc-ice-python_${PACKAGE_VERSION}_all.info)
 
 execute_process(
     COMMAND ${MAKE_PACKAGE_EXECUTABLE}
