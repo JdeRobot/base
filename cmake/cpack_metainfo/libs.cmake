@@ -13,7 +13,7 @@ SET(CPACK_COMPONENT_CONFIG_DESCRIPTION
 "Library for read Yaml config files
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_CONFIG-PYTHON_PACKAGE_DEPENDS "jderobot-setup")
+SET(CPACK_DEBIAN_CONFIG-PYTHON_PACKAGE_DEPENDS "jderobot-setup, python-yaml")
 SET(CPACK_COMPONENT_CONFIG-PYTHON_DESCRIPTION  
 "Library for read Yaml config files 
  Home page https://jderobot.org")
@@ -23,13 +23,10 @@ SET(CPACK_COMPONENT_COMM_DESCRIPTION
 "Library for communications. You can use ROS or ICE 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_DEPENDS "jderobot-types-python,jderobot-config-python, jderobot-setup")
+SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_DEPENDS "jderobot-types-python,jderobot-config-python, jderobot-setup, jderobot-zeroc-ice-python")
 SET(CPACK_COMPONENT_COMM-PYTHON_DESCRIPTION  
 "Library for communications. You can use ROS or ICE 
  Home page https://jderobot.org")
-SET(CPACK_DEBIAN_COMM-PYTHON_PACKAGE_CONTROL_EXTRA
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
 
 SET(CPACK_DEBIAN_CVBLOB_PACKAGE_DEPENDS "jderobot-setup")
 SET(CPACK_COMPONENT_CVBLOB_DESCRIPTION  
@@ -51,13 +48,11 @@ SET(CPACK_COMPONENT_EASYICE_DESCRIPTION
 "Library for  
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_EASYICE-PYTHON_PACKAGE_DEPENDS "jderobot-setup")
+SET(CPACK_DEBIAN_EASYICE-PYTHON_PACKAGE_DEPENDS "jderobot-setup, jderobot-zeroc-ice-python")
 SET(CPACK_COMPONENT_EASYICE-PYTHON_DESCRIPTION  
 "Library for  
  Home page https://jderobot.org")
-SET(CPACK_DEBIAN_EASYICE-PYTHON_PACKAGE_CONTROL_EXTRA
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
+
 
 SET(CPACK_DEBIAN_FUZZYLIB_PACKAGE_DEPENDS "jderobot-setup")
 SET(CPACK_COMPONENT_FUZZYLIB_DESCRIPTION  
@@ -99,13 +94,10 @@ SET(CPACK_COMPONENT_PARALLELICE_DESCRIPTION
 "Library for  
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_PARALLELICE-PYTHON_PACKAGE_DEPENDS "jderobot-setup")
+SET(CPACK_DEBIAN_PARALLELICE-PYTHON_PACKAGE_DEPENDS "jderobot-setup, jderobot-zeroc-ice-python")
 SET(CPACK_COMPONENT_PARALLELICE-PYTHON_DESCRIPTION  
 "Library for  
  Home page https://jderobot.org")
-SET(CPACK_DEBIAN_PARALLELICE-PYTHON_PACKAGE_CONTROL_EXTRA
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
 
 SET(CPACK_DEBIAN_PIONEER_PACKAGE_DEPENDS "jderobot-setup")
 SET(CPACK_COMPONENT_PIONEER_DESCRIPTION  
