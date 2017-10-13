@@ -8,7 +8,7 @@ Section: net
 Priority: extra
 Size: 0
 Installed-Size: 0
-Depends: 
+Depends: libssl-dev, libbz2-dev, python-pip
 Maintainer: Francisco Perez <f.perez475@gmail.com>
 Homepage: http://jderobot.org
 Description: Metapackage that intalls with pip zeroc-ice.
