@@ -16,11 +16,11 @@ set_target_properties(colorspacesshare PROPERTIES OUTPUT_NAME colorspaces)
 ### Install
 install(TARGETS colorspaces colorspacesmm
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT colorspaces
 )
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visionlib/colorspaces
-    COMPONENT core
+    COMPONENT colorspaces
 )
