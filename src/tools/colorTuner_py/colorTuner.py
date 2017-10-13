@@ -20,9 +20,9 @@
 #
 
 import sys
-import easyiceconfig as EasyIce
+import config
 from gui.threadGUI import ThreadGUI
-import jderobotComm as comm
+import comm
 from sensors.cameraFilter import CameraFilter
 from gui.gui import MainWindow
 from PyQt5.QtWidgets import QApplication
@@ -35,12 +35,12 @@ import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    ic = EasyIce.initialize(sys.argv)
+    cfg = config.load(sys.argv[1])
 
     #starting comm
-    ic, node = comm.init(ic)
+    jdrc= comm.init(cfg, 'ColorTuner')
 
-    cameraCli = comm.getCameraClient(ic, "ColorTuner.Camera", True)
+    cameraCli = jdrc.getCameraClient("ColorTuner.Camera")
     camera = CameraFilter(cameraCli)
     
     app = QApplication(sys.argv)
