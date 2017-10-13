@@ -9,6 +9,12 @@ SET(CPACK_COMPONENT_CAMERASERVER_DESCRIPTION
 "Generic server for RGB cameras. 
  Manual Page http://jderobot.org/index.php/Drivers#cameraserver
  Home page https://jderobot.org")
+ 
+SET(CPACK_DEBIAN_EMSENSORDRIVER_PACKAGE_DEPENDS " jderobot-interfaces")
+SET(CPACK_COMPONENT_EMSENSORDRIVER_DESCRIPTION  
+"Driver for proximity sensor.
+ Manual page http://jderobot.org/index.php/Drivers#ardrone_server
+ Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_EVICAMDRIVER_PACKAGE_DEPENDS " jderobot-interfaces")
 SET(CPACK_COMPONENT_EVICAMDRIVER_DESCRIPTION  
