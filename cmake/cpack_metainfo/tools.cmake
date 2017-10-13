@@ -112,13 +112,13 @@ SET(CPACK_COMPONENT_UAV-VIEWER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Tools#UAV_Viewer
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_UAV-VIEWER-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-easyice-python, jderobot-qfi")
+SET(CPACK_DEBIAN_UAV-VIEWER-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-easyice-python, qfi")
 SET(CPACK_COMPONENT_UAV-VIEWER-PYTHON_DESCRIPTION  
 "Teleoperator for UAV drones real and simulated (Parrot ArDrone, 3DR SoloDrone, ...) for python
  Manual Page http://jderobot.org/index.php/Tools#UAV_Viewer
  Home page https://jderobot.org")
 
- SET(CPACK_DEBIAN_VISUALSTATES-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-sysv-ipc, python-pyqt5, python-pyqt5-qsci, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-comm-python, jderobot-config-python, jderobot-comm, jderobot-config")
+ SET(CPACK_DEBIAN_VISUALSTATES-PYTHON_PACKAGE_DEPENDS "python-matplotlib, python-sysv-ipc, python-pyqt5, python-pyqt5.qsci, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-comm-python, jderobot-config-python, jderobot-comm, jderobot-config")
 SET(CPACK_DEBIAN_VISUALSTATES-PYTHON_DESCRIPTION  
 "VisualStates is a tool for the programming of robot behaviors using hierarchy finite state machines (C++ or python)
  Manual Page http://jderobot.org/VisualStates
