@@ -17,15 +17,15 @@
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
 
-import .image
+from .image import Image
 
 
 class Rgbd:
 
     def __init__(self):
 
-        self.color = image.Image()
-        self.depth = image.Image()
+        self.color = Image()
+        self.depth = Image()
         self.timeStamp = 0 # Time stamp [s] */
 
 
