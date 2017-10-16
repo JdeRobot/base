@@ -1,0 +1,11 @@
+install_test:
+  path: install_test
+  run: True      
+
+update_test:
+  path: update_test
+  run: True  
+
+cameraview:
+  path: cameraview
+  run: True          
