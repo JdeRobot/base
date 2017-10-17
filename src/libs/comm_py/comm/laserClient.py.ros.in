@@ -75,9 +75,7 @@ def getLaserClient (jdrc, prefix):
     @return None if Laser is disabled
 
     '''
-    server = jdrc.getConfig().getProperty(prefix+".Server")
-    if not server:
-        server=0
+    server = jdrc.getConfig().getPropertyWithDefault(prefix+".Server", 0)
 
     cons = [__Laserdisabled, __getLaserIceClient, __getListenerLaser]
 

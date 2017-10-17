@@ -70,9 +70,7 @@ def getPTMotorsClient (jdrc, prefix):
     @return None if PTMotors is disabled
 
     '''
-    server = jdrc.getConfig().getProperty(prefix+".Server")
-    if not server:
-        server=0
+    server = jdrc.getConfig().getPropertyWithDefault(prefix+".Server", 0)
 
     cons = [__PTMotorsdisabled, __getPTMotorsIceClient, __getPublisherPTMotors]
 
