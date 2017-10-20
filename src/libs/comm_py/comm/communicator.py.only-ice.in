@@ -5,6 +5,10 @@ from .cameraClient import getCameraClient
 from .pose3dClient import getPose3dClient
 from .motorsClient import getMotorsClient
 from .ptMotorsClient import getPTMotorsClient
+from .rgbdClient import getRgbdClient
+from .ardroneextraClient import getArDroneExtraClient
+from .navdataClient import getNavdataClient
+from .cmdvelClient import getCMDVelClient
 
 
 class Communicator:
@@ -110,4 +114,48 @@ class Communicator:
 
 	    '''
 		return getLaserClient(self, name)
+
+	def getRgbdClient(self, name):
+		'''
+	    Returns a RGBD client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getRgbdClient(self, name)
+
+	def getCMDVelClient(self, name):
+		'''
+	    Returns a CMDVel client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getCMDVelClient(self, name)
+
+	def getNavdataClient(self, name):
+		'''
+	    Returns a Navdata client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getNavdataClient(self, name)
+
+	def getArDroneExtraClient(self, name):
+		'''
+	    Returns a ArDroneExtra client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getArDroneExtraClient(self, name)
 

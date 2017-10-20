@@ -27,16 +27,17 @@ from .threadSensor import ThreadSensor
 
 class PTMotors:
 
-    def __init__(self, ic, prefix):
+    def __init__(self, jdrc, prefix):
         self.lock = threading.Lock()
 
         self.data=jderobot.PTMotorsData()
         
         self.params=jderobot.PTMotorsParams()
-        prop = ic.getProperties()
+        ic = jdrc.getIc()
 
         try:
-            base = ic.propertyToProxy(prefix+".Proxy")
+            proxyStr = jdrc.getConfig().getProperty(prefix+".Proxy")
+            base = ic.stringToProxy(proxyStr)
             self.proxy = jderobot.PTMotorsPrx.checkedCast(base)
 
             if not self.proxy:
