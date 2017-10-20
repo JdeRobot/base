@@ -41,13 +41,13 @@ def __getPublisherMotors(jdrc, prefix):
         print("Publishing "+  prefix + " with ROS messages")
         topic = jdrc.getConfig().getProperty(prefix+".Topic")
 
-        maxW = jdrc.getConfig().getProperty(prefix+".maxW")
+        maxW = jdrc.getConfig().getPropertyWithDefault(prefix+".maxW", 0.5)
         if not maxW:
             maxW = 0.5
             print (prefix+".maxW not provided, the default value is used: "+ repr(maxW))
                 
 
-        maxV = jdrc.getConfig().getProperty(prefix+".maxV")
+        maxV = jdrc.getConfig().getPropertyWithDefault(prefix+".maxV", 5)
         if not maxV:
             maxV = 5
             print (prefix+".maxV not provided, the default value is used: "+ repr(maxV))
@@ -90,9 +90,7 @@ def getMotorsClient (jdrc, prefix):
     @return None if Motors is disabled
 
     '''
-    server = jdrc.getConfig().getProperty(prefix+".Server")
-    if not server:
-        server=0
+    server = jdrc.getConfig().getPropertyWithDefault(prefix+".Server", 0)
 
     cons = [__Motorsdisabled, __getMotorsIceClient, __getPublisherMotors]
 

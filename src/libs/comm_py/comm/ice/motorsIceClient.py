@@ -43,7 +43,7 @@ class MotorsIceClient:
         ic = jdrc.getIc()
         
         
-        maxWstr = jdrc.getConfig().getProperty(prefix+".maxW")
+        maxWstr = jdrc.getConfig().getPropertyWithDefault(prefix+".maxW", 0.5)
         if maxWstr:
             self.maxW = float(maxWstr)
         else:
@@ -51,7 +51,7 @@ class MotorsIceClient:
             print (prefix+".maxW not provided, the default value is used: "+ repr(self.maxW))
                 
 
-        maxVstr = jdrc.getConfig().getProperty(prefix+".maxV")
+        maxVstr = jdrc.getConfig().getPropertyWithDefault(prefix+".maxV", 5)
         if maxWstr:
             self.maxV = float(maxVstr)
         else:
