@@ -136,12 +136,12 @@ class NavdataIceClient:
         self.thread.start()
 
     def stop(self):
-         '''
+        '''
         Stops the client. If client is stopped you can not start again, Threading.Thread raised error
         '''
         self.kill_event.set()
 
-    def getNavdata(self):
+    def getNavData(self):
         return self.navdata.getNavdata()
 
     def hasproxy (self):

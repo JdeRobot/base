@@ -58,6 +58,11 @@ class ArDroneExtraIceClient:
             exit(-1)
 
 
+    def start(self):
+        pass
+    def stop(self):
+        pass
+
     def takeoff(self):
         if self.hasproxy():
             self.lock.acquire()

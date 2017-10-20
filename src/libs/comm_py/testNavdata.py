@@ -15,9 +15,9 @@ if __name__ == '__main__':
     cfg = config.load(sys.argv[1])
     jdrc= comm.init(cfg, "Test")
 
-    client = jdrc.getLaserClient("Test.Navdata")
+    client = jdrc.getNavdataClient("Test.Navdata")
 
-    data = client.getNavdataData()
+    data = client.getNavData()
     print (data)
 
     jdrc.destroy()

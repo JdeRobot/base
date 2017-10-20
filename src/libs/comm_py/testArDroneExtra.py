@@ -16,9 +16,8 @@ if __name__ == '__main__':
 
 
     client = jdrc.getArDroneExtraClient("Test.Extra")
-    for i in range (10):
-        client.takeoff()
-        time.sleep(4)
-        client.land()
+    client.takeoff()
+    time.sleep(4)
+    client.land()
 
     jdrc.destroy()
