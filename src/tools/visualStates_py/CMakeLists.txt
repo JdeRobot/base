@@ -39,17 +39,10 @@ INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/codegen/python/
 		PATTERN __pycache__ EXCLUDE )
 
 # install python runtime gui dependencies
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/state.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/transition.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/guitransition.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/guistate.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/idtextboxgraphicsitem.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/recthandlegraphicsitem.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/transitiontype.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/treemodel.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/treenode.py
-		${CMAKE_CURRENT_SOURCE_DIR}/gui/cmakevars.py
-		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/gui/ COMPONENT visualStates-python)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gui
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/ COMPONENT visualStates-python
+		FILES_MATCHING PATTERN "*.py"
+		)
 
 # install python module __init__.py
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
@@ -58,8 +51,6 @@ INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/ COMPONENT visualStates-python)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/python/ COMPONENT visualStates-python)
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
-		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/gui/ COMPONENT visualStates-python)
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/visualStates.py
 		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/ COMPONENT visualStates-python)
