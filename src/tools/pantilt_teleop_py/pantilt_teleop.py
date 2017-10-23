@@ -37,8 +37,8 @@ if __name__ == '__main__':
     #starting comm
     jdrc= comm.init(cfg, 'pantilt_teleop')
 
-    camera = jdrc.getCameraClient("PanTiltTeleop.Camera")
-    motors = jdrc.getMotorsClient("PanTiltTeleop.PTMotors")
+    camera = jdrc.getCameraClient("pantilt_teleop.Camera")
+    motors = jdrc.getPTMotorsClient("pantilt_teleop.PTMotors")
 
     app = QApplication(sys.argv)
     frame = MainWindow()
