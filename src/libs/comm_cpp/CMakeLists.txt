@@ -49,6 +49,15 @@ set(HEADERS
     include/jderobot/comm/rgbdClient.hpp
     include/jderobot/comm/interfaces/rgbdClient.hpp
     include/jderobot/comm/ice/rgbdIceClient.hpp
+    include/jderobot/comm/cmdvelClient.hpp
+    include/jderobot/comm/interfaces/cmdvelClient.hpp
+    include/jderobot/comm/ice/cmdvelIceClient.hpp
+    include/jderobot/comm/navdataClient.hpp
+    include/jderobot/comm/interfaces/navdataClient.hpp
+    include/jderobot/comm/ice/navdataIceClient.hpp
+    include/jderobot/comm/ardroneextraClient.hpp
+    include/jderobot/comm/interfaces/ardroneextraClient.hpp
+    include/jderobot/comm/ice/ardroneextraIceClient.hpp
 )
 
 set(SOURCES
@@ -63,6 +72,12 @@ set(SOURCES
     src/ice/motorsIceClient.cpp
     src/rgbdClient.cpp
     src/ice/rgbdIceClient.cpp
+    src/cmdvelClient.cpp
+    src/ice/cmdvelIceClient.cpp
+    src/ardroneextraClient.cpp
+    src/ice/ardroneextraIceClient.cpp
+    src/navdataClient.cpp
+    src/ice/navdataIceClient.cpp
 )
 
 

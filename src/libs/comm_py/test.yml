@@ -33,6 +33,18 @@ Test:
     Topic: "/scan"
     Name: testLaser
 
+  CMDVel:
+    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: "CMDVel:default -h 0.0.0.0 -p 9000"
+
+  Navdata:
+    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: Navdata:default -h 0.0.0.0 -p 9000
+
+  Extra:
+    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: Extra:default -h 0.0.0.0 -p 9000
+
   Vmax: 3
   Wmax: 0.7
   NodeName: JdeRobotCommTest
