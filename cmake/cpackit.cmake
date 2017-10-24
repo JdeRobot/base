@@ -135,7 +135,7 @@ configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINA
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-libs.info.in ${CMAKE_BINARY_DIR}/jderobot-libs_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-tools.info.in ${CMAKE_BINARY_DIR}/jderobot-tools_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-drivers.info.in ${CMAKE_BINARY_DIR}/jderobot-drivers_${PACKAGE_VERSION}_all.info)
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-examples.info.in ${CMAKE_BINARY_DIR}/jderobot-drivers_${PACKAGE_VERSION}_all.info)
+configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-examples.info.in ${CMAKE_BINARY_DIR}/jderobot-examples_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-zeroc-ice-python.info.in ${CMAKE_BINARY_DIR}/jderobot-zeroc-ice-python_${PACKAGE_VERSION}_all.info)
 
 execute_process(
