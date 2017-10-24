@@ -71,7 +71,7 @@ SET(CPACK_COMPONENT_NAVIGATORCAMERA_DESCRIPTION
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_OPENCVDEMO_PACKAGE_DEPENDS "jderobot-easyice, jderobot-parallelice, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
-SET(CPACK_COMPONENT_NAVIGATORCAMERA_DESCRIPTION  
+SET(CPACK_COMPONENT_OPENCVDEMO_DESCRIPTION  
 "An example of a tool made for image treatment using OpenCV.
  Manual Page http://jderobot.org/index.php/Tools#NavigatorCamera
  Home page https://jderobot.org")
