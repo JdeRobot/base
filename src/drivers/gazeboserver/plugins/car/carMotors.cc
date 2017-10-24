@@ -258,7 +258,7 @@ namespace gazebo
                 std::cerr << e << std::endl;
             }
         }
-
+        return NULL;
     }
     // Register this plugin with the simulator
     GZ_REGISTER_MODEL_PLUGIN(Motors)

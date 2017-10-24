@@ -143,4 +143,6 @@ void *mainLaser(void* v)
         }
     }
 
+    return NULL;
+
 }

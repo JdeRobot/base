@@ -45,8 +45,8 @@ namespace cvb
       int imgLabel_width = imgLabel->width;
       int imgLabel_height = imgLabel->height;
       int imgLabel_offset = 0;
-      int img_width = img->width;
-      int img_height = img->height;
+      // int img_width = img->width; // Unused but set
+      // int img_height = img->height; // Unused but set
       int img_offset = 0;
       if(imgLabel->roi)
       {
@@ -56,8 +56,8 @@ namespace cvb
       }
       if(img->roi)
       {
-	img_width = img->roi->width;
-	img_height = img->roi->height;
+	// img_width = img->roi->width;  // Unused but set
+	// img_height = img->roi->height;  //  Unused but set
 	img_offset = (img->nChannels * img->roi->xOffset) + (img->roi->yOffset * stepImg);
       }
 
@@ -99,6 +99,8 @@ namespace cvb
       return cvScalar(mr, mg, mb);
     }
     __CV_END__;
+    
+    return cvScalar(0, 0, 0); // Remove return warning
   }
 
 }

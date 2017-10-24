@@ -14,7 +14,7 @@ namespace hokuyo{
 		this->timeout = timeout;
         this->faceup = faceup;
 std::cout << "open: " << port << std::endl;
-		hokuyo:LaserConfig config;
+		LaserConfig config;
 		laser_.getConfig(config);
 std::cout<< "min_range: " << config.min_range << std::endl;
 std::cout<< "max_range: " << config.max_range << std::endl;
@@ -65,9 +65,9 @@ std::cout<< "range_res: " << config.range_res << std::endl;
             data->maxAngle = this->max_ang;
             
 	    hokuyo::LaserScan  scan;
-	    int res;
-	    mutex.lock();
-	    res = laser_.pollScan(scan,this->min_ang,this->max_ang,this->clustering,this->timeout);
+	    
+        mutex.lock();
+	    //res = laser_.pollScan(scan,this->min_ang,this->max_ang,this->clustering,this->timeout);
 	
 	    mutex.unlock();
 

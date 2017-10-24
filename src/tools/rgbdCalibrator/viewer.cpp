@@ -42,7 +42,8 @@ const std::string pathImage = "./images/";
 
 Viewer::Viewer()
 : gtkmain(0,0),frameCount(0),
-  intrinsicsEnable(0),contPhoto(1),hsvFilter(NULL), mFrameBlob(NULL), MAX_MAPS(25), handlerDepth(true) {
+  intrinsicsEnable(0), contPhoto(1), mFrameBlob(NULL), hsvFilter(NULL), 
+  MAX_MAPS(25), handlerDepth(true) {
 
 	std::cout << "Loading glade\n";
 
@@ -281,7 +282,7 @@ void Viewer::createImageHSV(const colorspaces::Image& imageDepth)
 	cvSmooth(threshy,threshy,CV_MEDIAN,7,7);
 
 	//Finding the blobs
-	unsigned int result=cvLabel(threshy,labelImg,blobs);
+	// unsigned int result=cvLabel(threshy,labelImg,blobs); // Unused
 
 	//Rendering the blobs
 	cvRenderBlobs(labelImg,blobs,mFrameBlob,mFrameBlob);
@@ -371,6 +372,7 @@ bool Viewer::on_eventbox_extrinsics_clicked(GdkEventButton * event)
 
 		pthread_mutex_unlock(&mutex);
 	}
+	return true;
 }
 
 bool Viewer::on_eventbox_clicked(GdkEventButton * event)

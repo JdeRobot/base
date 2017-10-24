@@ -99,31 +99,31 @@ bool xmlWriterParser::elementExists(std::string key){
 xmlpp::Element* xmlWriterParser::lookForKeyAndMakeway(std::string key){
 	std::vector<std::string> s;
 
-	splitString(key,s);
-	if (s.size()!=1){
+	splitString(key, s);
+	if (s.size() != 1){
 		std::string completeKey(s[0]);
 		std::string parentKey(s[0]);
-		for (int i=0; i!= s.size()-1; i++){
+		for (unsigned int i = 0; i != s.size() - 1; i++){
 			if (!elementExists(completeKey)){
-				if (i==0){
+				if (i == 0){
 					//we have to create the node under the parent document.
 					xmlpp::Element* n1= document.get_root_node();
 					xmlpp::Element* n2= n1->add_child(parentKey);
 					n2->set_child_text("");
 				}
 				else{
-					xmlpp::NodeSet ns1=document.get_root_node()->find(parentKey);
+					xmlpp::NodeSet ns1 = document.get_root_node()->find(parentKey);
 					xmlpp::Element* n1 = ns1[0]->add_child(s[i]);
 					n1->set_child_text("");
 				}
 			}
-			if (i!=s.size()-2)
-				completeKey+="/"+s[i+1];
-			if (i!=0)
-				parentKey+="/"+s[i];
+			if (i != s.size() - 2)
+				completeKey += "/" + s[i + 1];
+			if (i != 0)
+				parentKey += "/" + s[i];
 		}
-		xmlpp::NodeSet ns1=document.get_root_node()->find(parentKey);
-		xmlpp::Element* n1 = ns1[0]->add_child(s[s.size()-1]);
+		xmlpp::NodeSet ns1 = document.get_root_node()->find(parentKey);
+		xmlpp::Element* n1 = ns1[0]->add_child(s[s.size() - 1]);
 		return n1;
 	}
 	else{

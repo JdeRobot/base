@@ -62,8 +62,6 @@ void myprogeo::new_camera(){
 /* gets the calibration of the camera from a file */
 void myprogeo::load_cam(char *fich_in,int cam, int w, int h)
 {
-  FILE *entrada;
-  int i;
 	if (strlen(fich_in) ==0 ){
 		Eigen::Matrix3d K;
 		K(0,0) = 511;
@@ -102,7 +100,6 @@ void myprogeo::load_cam(char *fich_in,int cam, int w, int h)
 	}
 	else{
 		this->cameras[cam]->readFromFile(std::string(fich_in));
-		//this->cameras[cam]->updateKMatrix();
 		this->cameras[cam]->updateRTMatrix();
 	}
   this->cameras[cam]->displayCameraInfo();

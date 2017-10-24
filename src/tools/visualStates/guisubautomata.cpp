@@ -545,7 +545,6 @@ int GuiSubautomata::getIdSubautomataSon ( const Glib::RefPtr<Goocanvas::Item>& i
 
     while ( (!nodeListIterator->hasThisItem(item)) &&
             (nodeListIterator != this->nodeList.end()) ){
-        int id = nodeListIterator->getId();
         nodeListIterator++;
     }
        

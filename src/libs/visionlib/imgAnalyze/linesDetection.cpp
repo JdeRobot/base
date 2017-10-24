@@ -84,7 +84,7 @@ namespace visionLibrary {
 		cv::findContours(imgTmp2, vecContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 
 		/*Run through found coutours*/
-		for(int contour=0; contour<vecContours.size(); contour++) {
+		for(unsigned int contour = 0; contour < vecContours.size(); contour++) {
 
 			/*Check size*/
 			if(vecContours[contour].size() < min_size_contour)
@@ -93,14 +93,14 @@ namespace visionLibrary {
 			i = 0;
 			first = true;
 
-			while ((i < (vecContours[contour].size() - (i_jump-1)))) {
+			while ((static_cast<unsigned int>(i) < (vecContours[contour].size() - (i_jump - 1)))) {
 
 				counter++;
 
 				pstart.x = vecContours[contour][(int)i].x;
 				pstart.y = vecContours[contour][(int)i].y;
-				pend.x = vecContours[contour][(int)(i+i_jump-1)].x;
-				pend.y = vecContours[contour][(int)(i+i_jump-1)].y;
+				pend.x = vecContours[contour][(int)(i + i_jump - 1)].x;
+				pend.y = vecContours[contour][(int)(i + i_jump - 1)].y;
 
 				/*Calculate type*/
 				diff_x = pstart.x - pend.x;
@@ -222,7 +222,7 @@ namespace visionLibrary {
 		if(debug)
 			imgBlack.release();
 
-		for(int t1 = 0; t1<vecContours.size(); t1++)
+		for(unsigned int t1 = 0; t1 < vecContours.size(); t1++)
 			vecContours[t1].clear();
 		vecContours.clear();
 	}

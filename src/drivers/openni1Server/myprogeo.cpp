@@ -38,7 +38,6 @@ int myprogeo::load_cam_line(FILE *myfile,int cam)
     char word1[MAX_BUFFER],word2[MAX_BUFFER];
     int i=0;
     char buffer_file[MAX_BUFFER];
-    double roll;
 
     buffer_file[0]=fgetc(myfile);
     if (feof(myfile)) return EOF;
@@ -150,8 +149,7 @@ void myprogeo::load_cam(char *fich_in,int cam, int w, int h)
 {
 	this->w=w;
 	this->h=h;
-    FILE *entrada;
-    int i;
+    
     if (strlen(fich_in) ==0 ) {
         std::cout << w << ", " << h << std::endl;
         this->cameras[cam].fdistx=515;
