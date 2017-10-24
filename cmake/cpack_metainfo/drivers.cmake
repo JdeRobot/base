@@ -4,6 +4,11 @@ SET(CPACK_COMPONENT_ARDRONE-SERVER_DESCRIPTION
  Manual page http://jderobot.org/index.php/Drivers#ardrone_server
  Home page https://jderobot.org")
 
+SET(CPACK_DEBIAN_BASIC-SERVER_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-colorspaces")
+SET(CPACK_COMPONENT_BASIC-SERVER_DESCRIPTION  
+"An example of the most basic server made for JdeRobot based on ICE communications. 
+ Home page https://jderobot.org") 
+
 SET(CPACK_DEBIAN_CAMERASERVER_DEPENDS "jderobot-easyice, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
 SET(CPACK_COMPONENT_CAMERASERVER_DESCRIPTION  
 "Generic server for RGB cameras. 

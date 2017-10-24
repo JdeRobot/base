@@ -1,0 +1,17 @@
+Package: ${PROJECT_NAME}-examples
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Provides: ${PROJECT_NAME}-examples
+Conflicts: ${PROJECT_NAME}-examples
+Replaces: ${PROJECT_NAME}-examples
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: jderobot-basic-component, jderobot-basic-component-python, jderobot-basic-server, jderobot-opencvdemo
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that gathers all the examples of JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/JdeRobot/JdeRobot.git
+
