@@ -31,7 +31,7 @@ TARGET_LINK_LIBRARIES(basic_server
 
 install(TARGETS basic_server
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT samples
+    COMPONENT basic-server
     )
     
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT samples)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/basic_server.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT basic-server)
