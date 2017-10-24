@@ -122,10 +122,10 @@ namespace gazebo {
         this->cameraRight.encoder.tilt = this->cameraRight.camera_link_tilt->GetRelativePose().rot.GetAsEuler().y * 180.0 / M_PI;
         //std::cout << this->cameraRight.encoder.tilt << std::endl;
 
-        double setPanRight = -50;
-        double setPanLeft = -50;
-        double setTiltRight = -10;
-        double setTiltLeft = -10;
+        // double setPanRight = -50;
+        // double setPanLeft = -50;
+        // double setTiltRight = -10;
+        // double setTiltLeft = -10;
         //          ----------MOTORS----------
 
         
@@ -343,6 +343,7 @@ namespace gazebo {
             pose->cameraLeft.motor.tiltSpeed = data->tiltSpeed;            
             pthread_mutex_unlock(&pose->mutex);
 
+            return 0; // Remove return warning
         }        
         
         gazebo::Pose3DEncoders* pose;
@@ -411,6 +412,7 @@ namespace gazebo {
             pose->cameraRight.motor.tiltSpeed = data->tiltSpeed;            
             pthread_mutex_unlock(&pose->mutex);
 
+            return 0; // Remove return warning
         }        
         
         gazebo::Pose3DEncoders* pose;
@@ -489,7 +491,8 @@ namespace gazebo {
                 std::cerr << e << std::endl;
             }
         }
-
+        
+        return NULL;
     }
 
 

@@ -96,7 +96,7 @@ void KobukiManager::update()
 
     std::cout << "ir: " << ir.docking.size()<< std::endl;
 
-    for(int  i =0; i < ir.docking.size(); i++){
+    for(unsigned int i =0; i < ir.docking.size(); i++){
         std::cout << (unsigned char)ir.docking[i] << ", ";
     }
 

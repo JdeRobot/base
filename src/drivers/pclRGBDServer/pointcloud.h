@@ -21,8 +21,8 @@ namespace kinect{
 
             if(cloud.points.size()){
                KData->p.resize(cloud.points.size());
-               int index = 0;
-               for(int i = 0; i < cloud.points.size(); i++){
+               unsigned int index = 0;
+               for(unsigned int i = 0; i < cloud.points.size(); i++){
                   KData->p[index].x = cloud.points[i].x;
                   KData->p[index].y = cloud.points[i].y;
                   KData->p[index].z = cloud.points[i].z;

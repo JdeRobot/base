@@ -8,7 +8,7 @@ Pose3D::Pose3D(KobukiManager *kobuki)
 int Pose3D::setPose3DData(const jderobot::Pose3DDataPtr&  pose3dData,
                              const Ice::Current&)
 {
-
+    return 0;
 }
 
 

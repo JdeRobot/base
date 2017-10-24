@@ -36,9 +36,13 @@ namespace rgbdCalibrator
 
   bool GeoUtils::Line3D::isPointInLine (HPoint3D p)
   {
-    return ((p.X - point.X)/vector.X) == 
-      ((p.Y - point.Y)/vector.Y) ==
-      ((p.Z - point.Z)/vector.Z);
+    return (
+        ((p.X - point.X)/vector.X) ==
+        ( 
+            ((p.Y - point.Y)/vector.Y) ==
+            ((p.Z - point.Z)/vector.Z)
+        )
+    );
   }
 
   HPoint3D GeoUtils::Line3D::getPointByZ (float z)

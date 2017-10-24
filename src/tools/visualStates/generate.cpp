@@ -401,7 +401,7 @@ void Generate::generateSubautomatas () {
 					transListIterator != transList.end(); transListIterator++ ) {
 				if (transListIterator->getIdOrigin() == idNode) {
 					int idDestiny = transListIterator->getIdDestiny();
-					int idOrigin = transListIterator->getIdOrigin();
+					//int idOrigin = transListIterator->getIdOrigin();
 					if (transListIterator->getType().compare("condition") == 0) {
 						this->fs << "\t\t\t\tif (" << transListIterator->getCodeTrans().c_str() << ") {" << std::endl;
 						this->fs << "\t\t\t\t\tsub_" << id << " = " << subListIterator->getNodeName(idDestiny) << ";" << std::endl;
@@ -834,25 +834,25 @@ void Generate::generateVariables_py(){
 }
 
 int Generate::getIdNodeFather(int subId, int subFatherId){
-	if (subFatherId == 0){
-		return 0;
-	}
 
-	for (std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
-		subListIterator != this->subautomataList.end(); subListIterator++ ){
+	if (subFatherId != 0){
+    	for (std::list<SubAutomata>::iterator subListIterator = this->subautomataList.begin();
+	    	subListIterator != this->subautomataList.end(); subListIterator++ ){
 
-		if (subListIterator->getId() == subFatherId){
-			std::list<Node> nodeList = subListIterator->getNodeList();
-			std::list<Node>::iterator nodeListIterator = nodeList.begin();
-			while(nodeListIterator != nodeList.end()){
-				if (nodeListIterator->getIdSubautomataSon() == subId){
-					return nodeListIterator->getId();
-				}
-				nodeListIterator++;
-			}
-			return 0;
-		}
-	}
+		    if (subListIterator->getId() == subFatherId){
+			    std::list<Node> nodeList = subListIterator->getNodeList();
+    			std::list<Node>::iterator nodeListIterator = nodeList.begin();
+	    		while(nodeListIterator != nodeList.end()){
+		    		if (nodeListIterator->getIdSubautomataSon() == subId){
+			    		return nodeListIterator->getId();
+    				}
+	    			nodeListIterator++;
+    			}
+	    		return 0;
+    		}
+    	}
+    }
+    return 0;
 }
 
 void Generate::generateCreateGuiSubautomataList_py(){

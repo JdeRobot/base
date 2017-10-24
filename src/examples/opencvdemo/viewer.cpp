@@ -1100,7 +1100,7 @@ void Viewer::harris( Mat image )
 				    img_rgb8.step);*/
 
 	Size img_mat_size=img_mat.size();
-	Size imagesize = image.size();
+	//Size imagesize = image.size();
 
 	//std::cout << img_mat_size.height << std::endl;
 	//std::cout << img_mat_size.width << std::endl;
