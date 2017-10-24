@@ -34,12 +34,12 @@ class ControlWidget(QWidget):
         super(ControlWidget, self).__init__()
         self.winParent=winParent
 
-        self.rgbdwn = RGBMIN
-        self.rgbup = RGBMAX
-        self.hsvdwn = HSVMIN
-        self.hsvup = HSVMAX
-        self.yuvdwn = YUVMIN
-        self.yuvup = YUVMAX
+        self.rgbdwn = list(RGBMIN)
+        self.rgbup = list(RGBMAX)
+        self.hsvdwn = list(HSVMIN)
+        self.hsvup = list(HSVMAX)
+        self.yuvdwn = list(YUVMIN)
+        self.yuvup = list(YUVMAX)
         self.initUI()
         
     def initUI(self):
@@ -221,7 +221,6 @@ class ControlWidget(QWidget):
 
             rmin,gmin,bmin = RGBMIN
             rmax,gmax,bmax = RGBMAX
-            print(RGBMAX)
             rd, gd, bd = self.rgbdwn
             ru, gu, bu = self.rgbup
             self.hminLabel.setText('Rmin')
@@ -550,7 +549,6 @@ class ControlWidget(QWidget):
             self.winParent.getCamera().getFilter(filt).setUpLimit(h,s,v)
         elif self.rgbButton.isChecked():
             h, s, v = self.rgbup
-            print "max", h,s,v
             self.winParent.getCamera().getFilter(filt).setUpLimit(h,s,v)
         elif self.yuvButton.isChecked():
             h, s, v = self.yuvup
@@ -564,7 +562,6 @@ class ControlWidget(QWidget):
             self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
         elif self.rgbButton.isChecked():
             h, s, v = self.rgbdwn
-            print "min", h,s,v
             self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
         elif self.yuvButton.isChecked():
             h, s, v = self.yuvdwn

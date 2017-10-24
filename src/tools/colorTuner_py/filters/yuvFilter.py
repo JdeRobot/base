@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 
 '''Max Values supported by OpenCV'''
-YUVMAX = [255,255,255]
-YUVMIN = [0,0,0]
+YUVMAX = (255,255,255)
+YUVMIN = (0,0,0)
 
 
 
@@ -19,8 +19,8 @@ class YuvFilter:
         self.MAX = YUVMAX
         self.MIN = YUVMIN
 
-        self.uLimit = self.MAX
-        self.dLimit = self.MIN
+        self.uLimit = list(YUVMAX)
+        self.dLimit = list(YUVMIN)
 
     def getName(self):
         return 'YUV'
