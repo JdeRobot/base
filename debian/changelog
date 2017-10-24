@@ -1,4 +1,17 @@
 
+jderobot (5.6.1) unstable; urgency=low
+
+  * release 5.6.1
+  * Solved several bugs in packages generation and tools. 
+  * [PR #886] Fixed some compilation warnings
+  * [PR #928] Added support for comm in colorTuner tool
+  * [PR #933] Created test for packages intallation.
+  * [PR #937] Added support for ardrone interfaces in jderobot comm.
+  * [PR #942] Renamed samples folder to examples and added a metapackage for them.
+
+-- Francisco Perez <f.perez475@gmail.com>, Tue, 24 Oct 2017 13:30:00 +0100
+
+
 jderobot (5.6.0) unstable; urgency=low
 
   * release 5.6.0
