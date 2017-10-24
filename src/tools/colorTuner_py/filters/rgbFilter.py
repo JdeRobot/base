@@ -5,8 +5,8 @@ import numpy as np
 
 
 '''Max Values supported by OpenCV'''
-RGBMAX = [255,255,255]
-RGBMIN = [0,0,0]
+RGBMAX = (255,255,255)
+RGBMIN = (0,0,0)
 
 
 class RgbFilter:
@@ -18,8 +18,8 @@ class RgbFilter:
         self.MAX = RGBMAX
         self.MIN = RGBMIN
 
-        self.uLimit = self.MAX
-        self.dLimit = self.MIN
+        self.uLimit = list(RGBMAX)
+        self.dLimit = list(RGBMIN)
 
     def getName(self):
         return 'RGB'

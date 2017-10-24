@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 
 '''Max Values supported by OpenCV'''
-HSVMAX = [179,255,255]
-HSVMIN = [0,0,0]
+HSVMAX = (179,255,255)
+HSVMIN = (0,0,0)
 
 
 class HsvFilter:
@@ -17,8 +17,8 @@ class HsvFilter:
         self.MAX = HSVMAX
         self.MIN = HSVMIN
 
-        self.uLimit = self.MAX
-        self.dLimit = self.MIN
+        self.uLimit = list(HSVMAX)
+        self.dLimit = list(HSVMIN)
 
     def getName(self):
         return 'HSV'
