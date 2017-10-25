@@ -1,7 +1,7 @@
 import sys
 import Ice
 import rospy
-from .ice.cameraIceClient import RgbdIceClient
+from .ice.rgbdIceClient import RgbdIceClient
 
 #if (sys.version_info[0] == 2):
 #    from .ros.listenerRgbd import ListenerRgbd
