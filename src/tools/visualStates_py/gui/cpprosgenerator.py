@@ -22,13 +22,19 @@ from gui.cppgenerator import CppGenerator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.cppparser import CPPParser
 from xml.dom import minidom
-import os, stat
+import os, stat, shutil
 
 class CppRosGenerator(CppGenerator):
     def __init__(self, libraries, config, interfaceHeaders, states):
         CppGenerator.__init__(self, libraries, config, interfaceHeaders, states)
 
     def generate(self, projectPath, projectName):
+        # create src folder in the projects
+        if os.path.exists(projectPath + '/src'):
+            shutil.rmtree(projectPath + '/src')
+
+        os.mkdir(projectPath + '/src')
+
         stringList = []
         self.generateHeaders(stringList, projectName)
         self.generateRosNodeClass(stringList, self.config)
@@ -77,6 +83,8 @@ class CppRosGenerator(CppGenerator):
         xmlStr = xmlDoc.toprettyxml(indent='  ')
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
+
+        self.copyRunTime(projectPath)
 
 
     def generateHeaders(self, headers, projectName):
@@ -195,7 +203,8 @@ class CppRosGenerator(CppGenerator):
         headerStr.append('#include <iostream>\n')
         headerStr.append('#include <string>\n')
         headerStr.append('#include <signal.h>\n')
-        headerStr.append('#include <runtimegui.h>\n\n')
+        headerStr.append('#include <runtimegui.h>\n')
+        headerStr.append('#include <ros/package.h>\n\n');
 
 
     def generateRosMethods(self, rosStr, config):
@@ -296,7 +305,9 @@ void readArgs(int *argc, char* argv[]) {
 '''
         argStr.append(mystr)
         argStr.append('void* runGui(void*) {\n')
-        argStr.append('\tsystem("./' + projectName + '_runtime.py");\n')
+        argStr.append('\tstd::string path = ros::package::getPath("' + projectName + '");\n')
+        argStr.append('\tpath.append("/'+projectName+'_runtime.py");\n')
+        argStr.append('\tsystem(path.c_str());\n')
         argStr.append('}\n\n')
 
     def parentString(self, state):
@@ -360,7 +371,6 @@ void signalCallback(int signum)
         guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
         guiStr.append('import sys\n')
-        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n\n')
 
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
         guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
@@ -406,30 +416,22 @@ void signalCallback(int signum)
         cmakeStr.append('find_package(catkin REQUIRED COMPONENTS\n')
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
+        cmakeStr.append('  roslib\n')
         cmakeStr.append(')\n\n')
         cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
         myStr = '''
-SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
-SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
-SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
-SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/visualstates_py)
-
 include_directories(
     ${catkin_INCLUDE_DIRS}
-    ${JDEROBOT_INCLUDE_DIR}
-    ${VISUALSTATE_RUNTIME_INCLUDE_DIR}
+    src
 )
 
-link_directories(
-    ${JDEROBOT_LIBS_DIR}
-    ${VISUALSTATE_RUNTIME_LIBS_DIR}
-)
 '''
         cmakeStr.append(myStr)
 
         cmakeStr.append('catkin_package()\n')
-        cmakeStr.append('add_executable(' + projectName + ' src/' + projectName + '.cpp)\n')
-        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES} visualStatesRunTime)\n')
+        cmakeStr.append('add_executable(' + projectName + '\n  src/' + projectName + '.cpp\n  src/runtimegui.cpp\n  \
+            src/state.cpp\n  src/temporaltransition.cpp\n  src/transition.cpp\n )\n')
+        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES})\n')
         cmakeStr.append('install(TARGETS ' + projectName + ' RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n\n')
         return cmakeStr
 
@@ -460,16 +462,55 @@ link_directories(
             bdepElement.appendChild(doc.createTextNode(bdep))
             root.appendChild(bdepElement)
 
+        bdepElement = doc.createElement('build_depend')
+        bdepElement.appendChild(doc.createTextNode('roslib'))
+        root.appendChild(bdepElement)
+
         for rdep in config.getRunDependencies():
             rdepElement = doc.createElement('run_depend')
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
+
+        rdepElement = doc.createElement('run_depend')
+        rdepElement.appendChild(doc.createTextNode('roslib'))
+        root.appendChild(rdepElement)
 
         exportElement = doc.createElement('export')
         root.appendChild(exportElement)
         doc.appendChild(root)
 
         return doc
+
+
+    def copyRunTime(self, projectPath):
+        if os.path.exists(projectPath + '/codegen'):
+            shutil.rmtree(projectPath + '/codegen')
+        if os.path.exists(projectPath + '/gui'):
+            shutil.rmtree(projectPath + '/gui')
+
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/codegen', projectPath + '/codegen')
+        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/gui', projectPath + '/gui')
+
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/conditionaltransition.h',
+                    projectPath + '/src/conditionaltransition.h')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/runtimegui.h',
+                    projectPath + '/src/runtimegui.h')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/runtimegui.cpp',
+                    projectPath + '/src/runtimegui.cpp')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/state.h',
+                    projectPath + '/src/state.h')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/state.cpp',
+                    projectPath + '/src/state.cpp')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/temporaltransition.h',
+                    projectPath + '/src/temporaltransition.h')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/temporaltransition.cpp',
+                    projectPath + '/src/temporaltransition.cpp')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/transition.h',
+                    projectPath + '/src/transition.h')
+        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/transition.cpp',
+                    projectPath + '/src/transition.cpp')
+
+
 
 
 

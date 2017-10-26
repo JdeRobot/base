@@ -35,7 +35,7 @@ RunTimeGui::RunTimeGui() {
 
 void RunTimeGui::emitRunningStateById(int id) {
     std::stringstream strstream;
-//    strstream << "emitRunningStateById " << id;
+    strstream << "emitRunningStateById " << id;
     msgQueue.push(strstream.str());
 //    std::cout << "running state:" << id << std::endl;
 }
@@ -74,7 +74,7 @@ void RunTimeGui::createSharedMem() {
     key_t fkey;
     int shmid;
     int mode;
-    int numTrial = 10;
+    int numTrial = 15;
     int trial = 0;
 
     while (trial < numTrial) {

@@ -209,8 +209,7 @@ class RunTimeGui(QMainWindow):
     def loopIPC(self):
         while True:
             msg = self.getIPCMessage()
-            if msg is not None:
-                # print('msg received:' + msg)
+            if msg is not None and len(msg) > 0:
                 methodName = msg.split(' ')[0]
                 id = int(msg.split(' ')[1])
                 if methodName == 'emitRunningStateById':

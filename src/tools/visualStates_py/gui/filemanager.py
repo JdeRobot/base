@@ -41,7 +41,8 @@ class FileManager():
         doc.appendChild(root)
 
         # save config data
-        root.appendChild(config.createNode(doc))
+        if config is not None:
+            root.appendChild(config.createNode(doc))
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -69,15 +70,16 @@ class FileManager():
 
         # parse configs
         config = None
-        configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
-        if configElement.getAttribute('type') == str(ROS):
-            config = RosConfig()
-            config.loadNode(configElement)
-            config.type = ROS
-        elif configElement.getAttribute('type') == str(JDEROBOTCOMM):
-            config = JdeRobotConfig()
-            config.loadNode(configElement)
-            config.type = JDEROBOTCOMM
+        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')) > 0:
+            configElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('config')[0]
+            if configElement.getAttribute('type') == str(ROS):
+                config = RosConfig()
+                config.loadNode(configElement)
+                config.type = ROS
+            elif configElement.getAttribute('type') == str(JDEROBOTCOMM):
+                config = JdeRobotConfig()
+                config.loadNode(configElement)
+                config.type = JDEROBOTCOMM
 
         libraries = []
 
