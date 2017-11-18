@@ -31,15 +31,20 @@ GENERAL = [
 ]
 
 ROBOTICS = [
+
+    # movement blocks
     ['move robot {}', 'robot.move("%s")'],
-    ['move drone {}', 'robot.move("%s")'],
+    ['move drone {} speed {}', 'robot.move("%s", %s)'],
     ['move robot {} speed {}', 'robot.move("%s", %s)'],
     ['stop robot-drone', 'robot.stop()'],
-    ['turn robot-drone {}', 'robot.turn("%s")'],
+    ['turn drone {} speed {}', 'robot.turn("%s", %s)'],
     ['turn robot {} speed {}', 'robot.turn("%s", %s)'],
     ['take off drone', 'robot.take_off()'],
     ['land drone', 'robot.land()'],
+    ['move robot {} meters {}', 'robot.move_meters("%s", %s)'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
+    ['get {} of object {}', 'robot.get_object("%s","%s")'],
+    ['get pose3d {}', 'robot.get_pose3d("%s")'],
 ]
 
 
@@ -63,7 +68,7 @@ def similar(a, b):
 
     @param a: First sentence.
     @param b: Second sentence.
-    @return: The ratio of the similarity. 
+    @return: The ratio of the similarity.
     """
 
     return SequenceMatcher(None, a, b).ratio()
@@ -88,6 +93,7 @@ def sentence_mapping(sentence, threshold=None):
             options.append(elem)
             found = True
 
+
     # then look for robotics blocks
     for elem in ROBOTICS:
         if elem[0][:3] == sentence.replace('    ', '').replace('(', '')[:3]:
@@ -101,20 +107,21 @@ def sentence_mapping(sentence, threshold=None):
         if threshold and score < threshold:
             return None, None
 
+
         # extract arguments
         p = compile(original)
 
         args = p.parse(sentence.replace('    ', ''))
+
 
         if args:
             args_aux = list(args)
 
             # look for more blocks
             for idx in range(len(args_aux)):
-                new_ori, new_trans = sentence_mapping(args_aux[idx], 0.8)
-
+                new_ori, new_trans = sentence_mapping(args_aux[idx]) #sentence_mapping(args_aux[idx],0.8) --old
                 if new_trans != None:
-                    args_aux[idx] = args_aux[idx].replace(new_ori, new_trans)
+                    args_aux[idx] = args_aux[idx].replace(new_ori, new_trans) #replace(args_aux[idx], new_trans)
 
             translation = translation % tuple(args_aux)
 
@@ -129,15 +136,49 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 2:
         # template creation
+
         template = "\
 #!/usr/bin/env python\n\
 # -*- coding: utf-8 -*-\n\n\
-import time\n\n\
+import time\n\
+import config\n\
+import sys\n\
+import comm\n\
+import os\n\
+import yaml\n\n\
+from drone import Drone\n\
+from robot import Robot\n\n\
 def execute(robot):\n\
 \ttry:\n\
 \t%s\
 except KeyboardInterrupt:\n\
-\t\traise\n\
+\t\traise\n\n\
+if __name__ == '__main__':\n\
+\tif len(sys.argv) == 2:\n\
+\t\tpath = os.getcwd()\n\
+\t\topen_path = path[:path.rfind('src')] + 'cfg/'\n\
+\t\tfilename = sys.argv[1]\n\n\
+\telse:\n\
+\t\tsys.exit(\"ERROR: Example:python my_generated_script.py cfgfile.yml\")\n\n\
+\t# loading the ICE and ROS parameters\n\
+\tcfg = config.load(open_path + filename)\n\
+\tstream = open(open_path + filename, \"r\")\n\
+\tyml_file = yaml.load(stream)\n\n\
+\tfor section in yml_file:\n\
+\t\tif section == 'drone':\n\
+\t\t\t#starting comm\n\
+\t\t\tjdrc = comm.init(cfg,'drone')\n\n\
+\t\t\t# creating the object\n\
+\t\t\trobot = Drone(jdrc)\n\n\
+\t\t\tbreak\n\
+\t\telif section == 'robot':\n\
+\t\t\t#starting comm\n\
+\t\t\tjdrc = comm.init(cfg,'robot')\n\n\
+\t\t\t# creating the object\n\
+\t\t\trobot = Robot(jdrc)\n\n\
+\t\t\tbreak\n\
+\t# executing the scratch program\n\
+\texecute(robot)\n\n\
 "
 
         # load the scratch project
@@ -170,7 +211,6 @@ except KeyboardInterrupt:\n\
             # pre-processing if there is a condition (operators and types)
             if is_conditional(s):
                 s = s.replace("'", "").replace("=", "==")
-
             # mapping
             original, translation = sentence_mapping(s)
 
@@ -190,8 +230,9 @@ except KeyboardInterrupt:\n\
         cprint(file_text, 'green')
         print("-------------------\n")
 
-        # save the code in a python file
-        f = open(save_path + "scratch.py", "w")
+        # save the code in a python file with the same name as sb2 file
+        file_name = sys.argv[1].replace('.sb2','.py')
+        f = open(save_path + file_name, "w")
         f.write(file_text)
         f.close()
 
