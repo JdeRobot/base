@@ -31,22 +31,16 @@ GENERAL = [
 ]
 
 ROBOTICS = [
-
-    # movement blocks
     ['move robot {}', 'robot.move("%s")'],
-    ['move drone {} speed {}', 'robot.move("%s", %s)'],
+    ['move drone {}', 'robot.move("%s")'],
     ['move robot {} speed {}', 'robot.move("%s", %s)'],
     ['stop robot-drone', 'robot.stop()'],
-    ['turn drone {} speed {}', 'robot.turn("%s", %s)'],
+    ['turn robot-drone {}', 'robot.turn("%s")'],
     ['turn robot {} speed {}', 'robot.turn("%s", %s)'],
     ['take off drone', 'robot.take_off()'],
     ['land drone', 'robot.land()'],
-    ['move robot {} meters {}', 'robot.move_meters("%s", %s)'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
-    ['get {} of object {}', 'robot.get_object("%s","%s")'],
-    ['get pose3d {}', 'robot.get_pose3d("%s")'],
 ]
-
 
 def is_conditional(sentence):
     """
@@ -93,13 +87,11 @@ def sentence_mapping(sentence, threshold=None):
             options.append(elem)
             found = True
 
-
     # then look for robotics blocks
     for elem in ROBOTICS:
         if elem[0][:3] == sentence.replace('    ', '').replace('(', '')[:3]:
             options.append(elem)
             found = True
-
     if found:
         # select the option that better fits
         l = [(m[0], m[1], similar(sentence, m[0])) for m in options]
@@ -107,13 +99,9 @@ def sentence_mapping(sentence, threshold=None):
         if threshold and score < threshold:
             return None, None
 
-
         # extract arguments
         p = compile(original)
-
         args = p.parse(sentence.replace('    ', ''))
-
-
         if args:
             args_aux = list(args)
 
@@ -122,9 +110,7 @@ def sentence_mapping(sentence, threshold=None):
                 new_ori, new_trans = sentence_mapping(args_aux[idx]) #sentence_mapping(args_aux[idx],0.8) --old
                 if new_trans != None:
                     args_aux[idx] = args_aux[idx].replace(new_ori, new_trans) #replace(args_aux[idx], new_trans)
-
             translation = translation % tuple(args_aux)
-
     return original, translation
 
 
@@ -190,27 +176,23 @@ if __name__ == '__main__':\n\
                 # exclude definition scripts
                 if "define" not in script.blocks[0].stringify():
                     s = script
-
-        print
         print("Stringify:")
         sentences = []
         for b in s.blocks:
             print(b.stringify())
             sentences += b.stringify().split('\n')
-        print
-
         tab_seq = "\t"
         python_program = ""
 
         for s in sentences:
             # count number of tabs
             num_tabs = s.replace('    ', tab_seq).count(tab_seq)
-
             python_program += tab_seq * (num_tabs + 1)
 
             # pre-processing if there is a condition (operators and types)
             if is_conditional(s):
                 s = s.replace("'", "").replace("=", "==")
+
             # mapping
             original, translation = sentence_mapping(s)
 
@@ -219,7 +201,6 @@ if __name__ == '__main__':\n\
                 python_program += translation
             else:
                 cprint("[WARN] Block <%s> not included yet" % s, 'yellow')
-
             python_program += "\n" + tab_seq
 
         # join the template with the code and replace the tabs
