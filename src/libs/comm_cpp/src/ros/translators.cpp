@@ -47,6 +47,22 @@ namespace Comm {
 	}
 
 
+	JdeRobotTypes::BumperData 
+	translate_bumper_messages(const kobuki_msgs::BumperEventConstPtr& bump)
+	{
+		JdeRobotTypes::BumperData data;
+
+		data.state = bump->state;
+		data.bumper = bump->bumper;
+		
+		//data.timeStamp = scan->header.stamp.sec + (scan->header.stamp.nsec *1e-9);
+
+
+		return data;
+
+	}
+
+
 
 
 	JdeRobotTypes::Image 

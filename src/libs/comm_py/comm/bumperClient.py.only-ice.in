@@ -1,0 +1,73 @@
+import sys
+import Ice
+from .ice.bumperIceClient import BumperIceClient
+
+
+def __getBumperIceClient(jdrc, prefix):
+    '''
+    Returns a Bumper Ice Client. This function should never be used. Use getBumperClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return Bumper Ice Client
+
+    '''
+    print("Receiving " + prefix + " BumperData from ICE interfaces")
+    client = BumperIceClient(jdrc, prefix)
+    client.start()
+    return client
+
+def __getListenerBumper(jdrc, prefix):
+    '''
+    Returns a Bumper ROS Subscriber. This function should never be used. Use getBumperClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return Bumper ROS Subscriber
+
+    '''
+    print(prefix + ": ROS msg are diabled")
+    return None
+
+def __Bumperdisabled(jdrc, prefix):
+    '''
+    Prints a warning that the client is disabled. This function should never be used. Use getBumperClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return None
+
+    '''
+    print( prefix + " Disabled")
+    return None
+
+def getBumperClient (jdrc, prefix):
+    '''
+    Returns a Bumper Client.
+
+    @param jdrc: Comm Communicator
+    @param name: name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type name: String
+
+    @return None if Bumper is disabled
+
+    '''
+    server = jdrc.getConfig().getPropertyWithDefault(prefix+".Server", 0)
+
+    cons = [__Bumperdisabled, __getBumperIceClient, __getListenerBumper]
+
+    return cons[server](jdrc, prefix)

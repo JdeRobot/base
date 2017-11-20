@@ -58,6 +58,9 @@ set(HEADERS
     include/jderobot/comm/ardroneextraClient.hpp
     include/jderobot/comm/interfaces/ardroneextraClient.hpp
     include/jderobot/comm/ice/ardroneextraIceClient.hpp
+    include/jderobot/comm/bumperClient.hpp
+    include/jderobot/comm/interfaces/bumperClient.hpp
+    include/jderobot/comm/ice/bumperIceClient.hpp
 )
 
 set(SOURCES
@@ -78,6 +81,8 @@ set(SOURCES
     src/ice/ardroneextraIceClient.cpp
     src/navdataClient.cpp
     src/ice/navdataIceClient.cpp
+    src/bumperClient.cpp
+    src/ice/bumperIceClient.cpp
 )
 
 
@@ -90,6 +95,7 @@ IF(JDEROBOTCOM_ROS)
         include/jderobot/comm/ros/listenerCamera.hpp
         include/jderobot/comm/ros/listenerPose.hpp
         include/jderobot/comm/ros/publisherMotors.hpp
+        include/jderobot/comm/ros/listenerBumper.hpp
     )
 
     set(SOURCES
@@ -99,6 +105,7 @@ IF(JDEROBOTCOM_ROS)
         src/ros/listenerCamera.cpp
         src/ros/listenerPose.cpp
         src/ros/publisherMotors.cpp
+        src/ros/listenerBumper.cpp
     )
 
 ENDIF()

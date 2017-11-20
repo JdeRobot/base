@@ -9,6 +9,7 @@ from .rgbdClient import getRgbdClient
 from .ardroneextraClient import getArDroneExtraClient
 from .navdataClient import getNavdataClient
 from .cmdvelClient import getCMDVelClient
+from .bumperClient import getBumperClient
 
 
 class Communicator:
@@ -158,4 +159,16 @@ class Communicator:
 
 	    '''
 		return getArDroneExtraClient(self, name)
+
+
+	def getBumperClient(self, name):
+		'''
+	    Returns a Bumper client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getBumperClient(self, name)
 
