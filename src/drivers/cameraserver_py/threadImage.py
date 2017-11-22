@@ -22,9 +22,6 @@ import time
 from datetime import datetime
 import cv2
 
-#Number of frames to throw away while the camera adjusts to light levels
-ramp_frames = 30
-
 
 class ThreadImage(threading.Thread):
 
@@ -37,8 +34,7 @@ class ThreadImage(threading.Thread):
         threading.Thread.__init__(self, args=self._kill_event)
         self._kill_event.clear()
 
-        for i in xrange(ramp_frames):
-            self.__read_image()
+        self.__read_image()
 
     def run(self):
         while (not self._kill_event.is_set()):
