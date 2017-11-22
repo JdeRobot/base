@@ -56,7 +56,6 @@ class ThreadImage(threading.Thread):
 
     def __read_image(self):
         retval, img = self.camera.read()
-        cv2.imshow("image", img)
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self._lock.acquire()
         self._image = imgRGB

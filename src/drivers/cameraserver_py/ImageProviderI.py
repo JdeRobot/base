@@ -26,23 +26,24 @@ class Job(object):
 		self.cb = cb
 		self.format = format
 		self.camera = camera
-		self.imageDescription = jderobot.ImageData()
+		self.imageData = jderobot.ImageData()
 	
 	def execute(self):
 		if not self.getData():
 			print "No data"
 			return
-		self.cb.ice_response(self.imageDescription)
+		self.cb.ice_response(self.imageData)
 
 	def getData(self):
 		img = self.camera.get_image()
-		self.imageDescription = jderobot.ImageData()
-		self.imageDescription.width = img.shape[1]
-		self.imageDescription.height = img.shape[0]
-		self.imageDescription.format = 'RGB8'
+		self.imageData = jderobot.ImageData()
+		self.imageData.description = jderobot.ImageDescription()
+		self.imageData.description.width = img.shape[1]
+		self.imageData.description.height = img.shape[0]
+		self.imageData.description.format = 'RGB8'
 		self.pixelData = np.getbuffer(img)
 
-		self.imageDescription.pixelData = self.pixelData
+		self.imageData.pixelData = self.pixelData
 
 		return True
 
