@@ -17,6 +17,7 @@ if __name__== "__main__":
 		endpoint = cfg.getProperty("cameraServer.Proxy")
 		fps = cfg.getPropertyWithDefault("cameraServer.FrameRate",12)
 		uri = cfg.getProperty("cameraServer.Uri")
+		name = cfg.getProperty("cameraServer.Name")
 
 		camera = cv2.VideoCapture(uri)
 		
@@ -30,10 +31,10 @@ if __name__== "__main__":
 
 		adapter = ic.createObjectAdapterWithEndpoints("youtubeServer",endpoint) #Properties
 		object = ImageProviderI(workQueue, imageThread)
-		adapter.add(object, Ice.stringToIdentity("cameraA"))
+		adapter.add(object, Ice.stringToIdentity(name))
 		adapter.activate()
 		workQueue.join()
-		print endpoint
+		print name, ":", endpoint
 		ic.waitForShutdown()
 	except KeyboardInterrupt:
 		imageThread.stop()
