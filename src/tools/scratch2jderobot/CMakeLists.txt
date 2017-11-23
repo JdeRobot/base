@@ -1,4 +1,5 @@
 IF (ENABLE_ROS)
+    project(scratch2jderobot)
 	## Find catkin macros and libraries
 	find_package(catkin REQUIRED COMPONENTS
 	    rospy
