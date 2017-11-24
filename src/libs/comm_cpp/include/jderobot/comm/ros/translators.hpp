@@ -41,6 +41,9 @@
 #include <jderobot/types/cmdvel.h>
 #include <geometry_msgs/Twist.h>
 
+#include <kobuki_msgs/BumperEvent.h>
+#include <jderobot/types/bumperData.h>
+
 
 namespace Comm {
 
@@ -54,6 +57,17 @@ namespace Comm {
 	 * @return LaserData translated from ROS Message 
 	 */
 	JdeRobotTypes::LaserData translate_laser_messages(const sensor_msgs::LaserScanConstPtr& scan);
+
+	/**
+	 * @brief translate ROS BumperEvent messages to JdeRobot BumperData
+	 *
+	 *
+	 * @param ROS kobuki Bumper Event Message
+	 * 
+	 *
+	 * @return BumperData translated from ROS Message 
+	 */
+	JdeRobotTypes::BumperData translate_bumper_messages(const kobuki_msgs::BumperEventConstPtr& bump);
 
 	/**
 	 * @brief translate ROS Image messages to JdeRobot Image

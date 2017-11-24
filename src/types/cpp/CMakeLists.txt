@@ -14,6 +14,7 @@ set(HEADERS
     include/jderobot/types/rgbd.h
     include/jderobot/types/navdataData.h
     include/jderobot/types/cmdvel.h
+    include/jderobot/types/bumperData.h
 )
 
 

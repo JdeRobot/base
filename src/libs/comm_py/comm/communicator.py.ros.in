@@ -10,6 +10,7 @@ from .ardroneextraClient import getArDroneExtraClient
 from .navdataClient import getNavdataClient
 from .cmdvelClient import getCMDVelClient
 from .ptMotorsClient import getPTMotorsClient
+from .bumperClient import getBumperClient
 
 
 class Communicator:
@@ -166,4 +167,15 @@ class Communicator:
 
 	    '''
 		return getPTMotorsClient(self, name)
+
+	def getBumperClient(self, name):
+		'''
+	    Returns a Bumper client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getBumperClient(self, name)
 
