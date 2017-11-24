@@ -1,4 +1,4 @@
-find_package(yaml-cpp)
+find_package(yaml-cpp REQUIRED)
 
 if (YAML_CPP_INCLUDE_DIR)
 	message("***YAML-CPP FOUND: ${YAML_CPP_INCLUDE_DIR}")
