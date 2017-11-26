@@ -64,6 +64,7 @@ class RunTimeGui(QMainWindow):
 
         self.memory = None
         self.ipcThread = None
+        self.semaphore = None
 
     def createTreeView(self):
         dockWidget = QDockWidget()
@@ -210,37 +211,39 @@ class RunTimeGui(QMainWindow):
         while True:
             msg = self.getIPCMessage()
             if msg is not None:
-                # print('msg received:' + msg)
-                methodName = msg.split(' ')[0]
-                id = int(msg.split(' ')[1])
-                if methodName == 'emitRunningStateById':
-                    self.emitRunningStateById(id)
-                else:
-                    print('unknown method name')
+                if len(msg) > 0:
+                    msg = msg.strip()
+                    methodName = msg.split(' ')[0]
+                    id = int(msg.split(' ')[1])
+                    if methodName == 'emitRunningStateById':
+                        self.emitRunningStateById(id)
+                    else:
+                        print('unknown method name')
 
-            time.sleep(1.0/1000)
+            # time.sleep(1.0/1000)
 
     def activateIPC(self):
         try:
-            self.memory = sysv_ipc.SharedMemory(123456, sysv_ipc.IPC_CREX)
+            self.memory = sysv_ipc.SharedMemory(123456, flags=sysv_ipc.IPC_CREAT, size = 1024)
         except:
-            # if memory exists just open shared memory
-            self.memory = sysv_ipc.SharedMemory(123456)
+            print('cannot create or open share mem with id 123456')
+            return
+
+        # create sempahore
+        try:
+            self.semaphore = sysv_ipc.Semaphore(9, flags=sysv_ipc.IPC_CREAT, initial_value=0)
+        except:
+            print('cannot create or open semaphore with id 9')
+            self.memory.remove()
+            return
 
         self.ipcThread = Thread(target=self.loopIPC)
         self.ipcThread.start()
 
     def getIPCMessage(self):
-        if self.memory is not None:
-            data = self.memory.read().decode()
-            if data[0] != '0':
-                self.memory.write('0'.encode())
-                i = data.find('\0')
-                if i != -1:
-                    data = data[:i]
-                return data
-
-        return None
+        self.semaphore.acquire()
+        data = self.memory.read().decode()
+        return data
 
 
 

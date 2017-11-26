@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<VisualStates>
+  <config type="0">
+    <interfaces>
+      <interface>
+        <serverType>ice</serverType>
+        <name>pose3d</name>
+        <topic></topic>
+        <proxyName>pose3d</proxyName>
+        <ip>localhost</ip>
+        <port>9001</port>
+        <interfaceName>Pose3d</interfaceName>
+      </interface>
+    </interfaces>
+  </config>
+  <libraries/>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
+    <functions></functions>
+    <timestep>100</timestep>
+    <state id="1" initial="True">
+      <posx>903.0</posx>
+      <posy>922.0</posy>
+      <name>state 1</name>
+      <code></code>
+      <functions></functions>
+      <timestep>100</timestep>
+      <transition id="1">
+        <type>0</type>
+        <time>1000</time>
+        <posx>1025.0</posx>
+        <posy>954.0</posy>
+        <name>transition 1</name>
+        <originid>1</originid>
+        <destinationid>2</destinationid>
+        <code></code>
+      </transition>
+    </state>
+    <state id="2" initial="False">
+      <posx>1031.0</posx>
+      <posy>1096.0</posy>
+      <name>state 2</name>
+      <code></code>
+      <functions></functions>
+      <timestep>100</timestep>
+      <transition id="2">
+        <type>0</type>
+        <time>1000</time>
+        <posx>860.0</posx>
+        <posy>1054.0</posy>
+        <name>transition 2</name>
+        <originid>2</originid>
+        <destinationid>1</destinationid>
+        <code></code>
+      </transition>
+    </state>
+  </state>
+</VisualStates>

@@ -100,8 +100,15 @@ class State:
         copy.y = self.y
         return copy
 
-    def parse(self, stateElement):
+    def parseElement(self, elementName, parentElement):
+        elements = parentElement.getElementsByTagName(elementName)
+        if len(elements) > 0:
+            if len(elements[0].childNodes) > 0:
+                return elements[0].childNodes[0].nodeValue
+        return ''
 
+
+    def parse(self, stateElement):
         # parse attributes of the state
         for (name, value) in stateElement.attributes.items():
             if name == 'id':
@@ -114,15 +121,10 @@ class State:
         self.x = float(stateElement.getElementsByTagName('posx')[0].childNodes[0].nodeValue)
         self.y = float(stateElement.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
 
-        # optinal state tags
-        if len(stateElement.getElementsByTagName('code')[0].childNodes) > 0:
-            self.code = stateElement.getElementsByTagName('code')[0].childNodes[0].nodeValue
-
-        if len(stateElement.getElementsByTagName('functions')[0].childNodes) > 0:
-            self.functions = stateElement.getElementsByTagName('functions')[0].childNodes[0].nodeValue
-
-        if len(stateElement.getElementsByTagName('timestep')[0].childNodes) > 0:
-            self.timeStepDuration = int(stateElement.getElementsByTagName('timestep')[0].childNodes[0].nodeValue)
+        self.code = self.parseElement('code', stateElement)
+        self.functions = self.parseElement('functions', stateElement)
+        self.variables = self.parseElement('variables', stateElement)
+        self.timeStepDuration = int((self.parseElement('timestep', stateElement)))
 
         # recursive child state parsing
         allChildTransitions = []
@@ -148,6 +150,7 @@ class State:
         # return transitions of the state to be able to wire after all states are created
         return stateTransitions
 
+
     def createElement(self, doc, parentElement=None):
         stateElement = doc.createElement('state')
         stateElement.setAttribute('initial', str(self.initial))
@@ -167,6 +170,9 @@ class State:
         functionsElement = doc.createElement('functions')
         functionsElement.appendChild(doc.createTextNode(self.functions))
         stateElement.appendChild(functionsElement)
+        varElement = doc.createElement('variables')
+        varElement.appendChild(doc.createTextNode(self.variables))
+        stateElement.appendChild(varElement)
         timeElement = doc.createElement('timestep')
         timeElement.appendChild(doc.createTextNode(str(self.timeStepDuration)))
         stateElement.appendChild(timeElement)

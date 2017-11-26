@@ -20,8 +20,8 @@
 from codegen.python.transition import Transition
 from time import time
 
-class TemporalTransition(Transition, object):
-    def __init__(self, id, destinationId, elapsedTime):
+class TemporalTransition(Transition):
+    def __init__(self, id,  destinationId, elapsedTime):
         super(TemporalTransition, self).__init__(id, destinationId)
         # elapsed time in milliseconds
         self.elapsedTime = elapsedTime

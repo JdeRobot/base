@@ -20,6 +20,8 @@
 #ifndef TRANSITION_H
 #define TRANSITION_H
 
+class State;
+
 class Transition {
 protected:
     int id;

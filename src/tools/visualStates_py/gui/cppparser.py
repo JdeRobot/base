@@ -42,11 +42,11 @@ class CPPParser():
             firstCurlyIndex = None
             lastCurlyIndex = None
             for i, ch in enumerate(funcStr):
-
                 if ch == '{':
                     curlyCounter += 1
-                    firstCurlyFound = True
-                    firstCurlyIndex = i
+                    if not firstCurlyFound:
+                        firstCurlyFound = True
+                        firstCurlyIndex = i
                 elif ch == '}':
                     curlyCounter -= 1
 
@@ -70,6 +70,34 @@ class CPPParser():
         return returnTypes, funcNames, codes
 
 
+    @staticmethod
+    def parseVariables(variableStr):
+        types = []
+        varNames = []
+        initialValues = []
+        variableStr = variableStr.strip()
+        variableLines = variableStr.split(';')
+        for varLine in variableLines:
+            varLine = varLine.strip()
+            if len(varLine) == 0:
+                continue
+
+            varType = varLine[0:varLine.find(' ')]
+            varName = None
+            initalValue = None
+            if varLine.find('=') >= 0:
+                # if there is initial value
+                varName = varLine[varLine.find(' ')+1:varLine.find('=')].strip()
+                initialValue = varLine[varLine.find('=')+1:].strip()
+            else:
+                varName = varLine[varLine.find(' ')+1:].strip()
+
+            types.append(varType)
+            varNames.append(varName)
+            initialValues.append(initialValue)
+
+        return types, varNames, initialValues
+
 
 if __name__ == '__main__':
     sampleCode = '''
@@ -83,6 +111,9 @@ void myF2 ( int b ){
     c = 10;
     d = 12;
     a = c*d*b;
+    if ( a == 2) {
+        b = 3;
+    }
     return a;
     }
     
@@ -93,12 +124,27 @@ void myF2 ( int b ){
         int b = 324;
         int c = 0;
         c = a + b;
+        for (int i = 0; i < 10; i++) {
+            c = a + b;
+        }
     }
 '''
 
-    returnTypes, funcNames, codes = CPPParser.parseFunctions(sampleCode)
-    for i in range(len(returnTypes)):
-        print(returnTypes[i])
-        print(funcNames[i])
-        print(codes[i])
+    # returnTypes, funcNames, codes = CPPParser.parseFunctions(sampleCode)
+    # for i in range(len(returnTypes)):
+    #     print(returnTypes[i])
+    #     print(funcNames[i])
+    #     print(codes[i])
     # print(returnType, funcName)
+
+    sampleVariables = '''
+    int a = 12; int b = 23;
+    float myVar; float myVar2 = 12.2;
+    '''
+
+    types, varNames, initialValues = CPPParser.parseVariables(sampleVariables)
+    for i in range(len(types)):
+        print(types[i])
+        print(varNames[i])
+        print(initialValues[i])
+

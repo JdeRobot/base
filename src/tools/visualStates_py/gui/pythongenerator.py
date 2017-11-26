@@ -74,9 +74,6 @@ class PythonGenerator(Generator):
         fp.close()
 
         self.generateAndSaveCfgYaml(projectPath, projectName)
-        #fp = open(projectPath + os.sep + projectName + '.cfg', 'w')
-        #fp.write(''.join(stringList))
-        #fp.close()
 
         os.system('chmod +x ' + projectPath + os.sep + projectName + '.py')
 
@@ -108,8 +105,6 @@ import config, comm
         #     headerStr.append(cfg['interface'])
         #     headerStr.append('Prx\n')
 
-        headerStr.append('import comm\n')
-
         headerStr.append('\n')
 
         return headerStr
@@ -125,13 +120,7 @@ import config, comm
 
         stateStr.append('\tdef __init__(self, id, initial, interfaces, cycleDuration, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
-        stateStr.append('\t\tself.interfaces = interfaces\n')
-
-        if len(state.getVariables()) > 0:
-            for varLine in state.getVariables().split('\n'):
-                stateStr.append('\t\t' + varLine + '\n')
-            stateStr.append('\n')
-        stateStr.append('\n')
+        stateStr.append('\t\tself.interfaces = interfaces\n\n')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -141,10 +130,6 @@ import config, comm
             stateStr.append('\t\tpass\n')
         stateStr.append('\n')
 
-        if len(state.getFunctions()) > 0:
-            for funcLine in state.getFunctions().split('\n'):
-                stateStr.append('\t' + funcLine + '\n')
-        stateStr.append('\n')
 
     def generateInterfaces(self, interfaceStr, projectName):
         mystr = '''class Interfaces():
@@ -154,6 +139,15 @@ import config, comm
         interfaceStr.append(mystr)
         for cfg in self.config.getInterfaces():
             interfaceStr.append('\t\tself.' + cfg['name'] + ' = None\n')
+
+        for state in self.getAllStates():
+            if len(state.getVariables()) > 0:
+                for varLine in state.getVariables().split('\n'):
+                    varLine = varLine.strip()
+                    if len(varLine) > 0:
+                        interfaceStr.append('\t\t' + varLine + '\n')
+
+        interfaceStr.append('\n')
 
         interfaceStr.append('\t\tself.connectProxies()\n\n')
 
@@ -173,20 +167,25 @@ import config, comm
         interfaceStr.append('\t\tif self.jdrc is not None:\n')
         interfaceStr.append('\t\t\tself.jdrc.destroy()\n\n')
 
+        for state in self.getAllStates():
+            if len(state.getFunctions()) > 0:
+                for funcLine in state.getFunctions().split('\n'):
+                    interfaceStr.append('\t' + funcLine + '\n')
+                interfaceStr.append('\n')
+
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
                 tranStr.append('class Tran' + str(tran.id) + '(ConditionalTransition):\n')
-                tranStr.append('\tdef __init__(self, id, destinationId, interfaces)\n')
+                tranStr.append('\tdef __init__(self, id, destinationId, interfaces):\n')
                 tranStr.append('\t\tConditionalTransition.__init__(self, id, destinationId)\n')
                 tranStr.append('\t\tself.interfaces = interfaces\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
-                    tranStr.append('\t\treturn ' + checkLine + '\n')
+                    tranStr.append('\t\t' + checkLine + '\n')
                 tranStr.append('\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
-
             tranStr.append('\tdef runCode(self):\n')
             if len(tran.getCode()) > 0:
                 for codeLine in tran.getCode().split('\n'):

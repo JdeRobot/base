@@ -29,6 +29,10 @@ class CppRosGenerator(CppGenerator):
         CppGenerator.__init__(self, libraries, config, interfaceHeaders, states)
 
     def generate(self, projectPath, projectName):
+        # create source dir if not exists
+        if not os.path.exists(projectPath + os.sep + 'src'):
+            os.makedirs(projectPath + os.sep + 'src')
+
         stringList = []
         self.generateHeaders(stringList, projectName)
         self.generateRosNodeClass(stringList, self.config)
@@ -48,10 +52,6 @@ class CppRosGenerator(CppGenerator):
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
-
-        # create source dir if not exists
-        if not os.path.exists(projectPath + os.sep + 'src'):
-            os.makedirs(projectPath + os.sep + 'src')
 
         fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.cpp', 'w')
         fp.write(sourceCode)
@@ -112,7 +112,9 @@ class CppRosGenerator(CppGenerator):
         classStr.append('\tpthread_t thread;\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
 
             if topic['opType'] == 'Publish':
                 classStr.append('\tros::Publisher ' + varName + 'Pub;\n')
@@ -136,7 +138,9 @@ class CppRosGenerator(CppGenerator):
         classStr.append('\tvoid join();\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
 
             if topic['opType'] == 'Subscribe':
                 type = topic['type']
@@ -153,6 +157,17 @@ class CppRosGenerator(CppGenerator):
                 else:
                     classStr.append('\tvoid publish' + varName + '(' + type + '& ' + varName + ');\n')
         classStr.append('\n')
+
+        for state in self.getAllStates():
+            # define variables
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
+            classStr.append('\n')
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+
         classStr.append('};\n\n')
 
     def generateStateClasses(self, classStr):
@@ -160,14 +175,9 @@ class CppRosGenerator(CppGenerator):
             classStr.append('class State' + str(state.id) + ' : public State {\n')
             classStr.append('public:\n')
             classStr.append('\tRosNode* node;\n')
-            classStr.append(state.getVariables())
             classStr.append('\tState' + str(state.id) + '(int id, bool initial, RosNode* node, int cycleDuration, State* parent, RunTimeGui* gui):\n')
             classStr.append('\t\tState(id, initial, cycleDuration, parent, gui) {this->node = node;}\n')
             classStr.append('\tvirtual void runCode();\n')
-
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
 
             classStr.append('};\n\n')
 
@@ -201,7 +211,10 @@ class CppRosGenerator(CppGenerator):
     def generateRosMethods(self, rosStr, config):
         rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
+
             type = topic['type']
             types = type.split('/')
             if topic['opType'] == 'Publish':
@@ -212,6 +225,14 @@ class CppRosGenerator(CppGenerator):
                         'name'] + '", 10);\n')
             elif topic['opType'] == 'Subscribe':
                 rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &RosNode::'+varName+'Callback, this);\n')
+
+        # set inital values of variables
+        for state in self.getAllStates():
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                if initialValues[i] is not None:
+                    rosStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
+
         rosStr.append('}\n\n')
 
         rosStr.append('void* RosNode::threadRunner(void* owner) {\n')
@@ -234,7 +255,10 @@ class CppRosGenerator(CppGenerator):
         rosStr.append('}\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
+
             if topic['opType'] == 'Subscribe':
                 type = topic['type']
                 types = type.split('/')
@@ -263,6 +287,12 @@ class CppRosGenerator(CppGenerator):
                 rosStr.append('\t' + varName + 'Pub.publish(' + varName + ');\n')
                 rosStr.append('}\n\n')
 
+        for state in self.getAllStates():
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                rosStr.append(returnTypes[i] + ' RosNode::' + funcNames[i] + '\n')
+                rosStr.append(codes[i])
+                rosStr.append('\n\n')
 
 
     def generateReadArgs(self, argStr, projectName):
@@ -350,7 +380,7 @@ void signalCallback(int signum)
             mainStr.append('\tstate' + str(state.id) + '->startThread();\n')
         mainStr.append('\n')
 
-        mainStr.append('signal(SIGINT, signalCallback);\n')
+        mainStr.append('\tsignal(SIGINT, signalCallback);\n')
 
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->join();\n')
