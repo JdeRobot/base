@@ -171,7 +171,7 @@ class PublisherMotors:
 
         '''
         self.lock.acquire()
-        self.data.vz = vz
+        self.data.vz = az
         self.lock.release()
 
 
