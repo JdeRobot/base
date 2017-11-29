@@ -39,6 +39,7 @@ with open(yamlFile, 'r') as stream:
 
 for image in images:
   if images[image]["build"]:
+    print "Building " + image 
     build_image(images[image]["path"], images[image]["tag"])
   if images[image]["push"]:
     push_image(images[image]["tag"])
