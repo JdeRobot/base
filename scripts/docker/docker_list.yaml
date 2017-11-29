@@ -7,8 +7,8 @@ ubuntu_base:
 official:
   path: jderobot/official
   tag: "jderobot/jderobot"
-  build: False
-  push: False
+  build: True
+  push: True
 
 ###### DEVELOPMENT #######
 dev-only-ice:

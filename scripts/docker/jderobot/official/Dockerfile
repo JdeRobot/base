@@ -33,6 +33,11 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv B0E7F58E82C8091DF945A045
 
 ########## Install JdeRobot ##############
 RUN apt-get update && apt-get -y  install \
+    python-pip \
+    libssl-dev libbz2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get -y  install \
 	jderobot \
 	xvfb \
 	nano \
@@ -60,11 +65,7 @@ RUN apt-get update && apt-get install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-######## Adding source commads to bashrc #######
-RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc 
-RUN cat /usr/local/share/jderobot/gazebo/gazebo-setup.sh >> /root/.bashrc 
-    
-    
+
 ####### clone gzweb #######
 RUN hg clone https://bitbucket.org/aitormf/gzweb ~/gzweb
 
@@ -133,7 +134,7 @@ RUN cd /videos && \
 RUN cd /videos && \
     wget http://jderobot.org/store/amartinflorido/uploads/curso/drone2.mp4
 
-COPY ./turtlebotplugin.cfg /usr/local/share/jderobot/conf
+COPY ./turtlebotplugin.cfg /opt/jderobot/share/jderobot/conf
 
 
 

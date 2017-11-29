@@ -3,6 +3,6 @@
 cameraserver cameraserver.cfg &
 
 wd=$(pwd)
-cd /usr/local/share/jderobot/webtools/cameraviewjs
+cd /opt/jderobot/share/jderobot/webtools/cameraviewjs
 nodejs run.js
 cd $wd

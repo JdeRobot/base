@@ -117,7 +117,7 @@ RUN apt update && apt install -q -y \
 # ICE PYTHON
 RUN apt update && apt install -q -y \
     libssl-dev libbz2-dev \
-    && pip2 install zeroc-ice \
+    && pip2 install zeroc-ice==3.6.3 \
     && rm -rf /var/lib/apt/lists/*
 
 # OPENNI 2
@@ -160,6 +160,14 @@ RUN apt update && apt install -q -y \
     libgoogle-glog-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# KURT
+RUN apt update && apt install -q -y \
+    kurt-jderobot \
+    && rm -rf /var/lib/apt/lists/*
+
+# SCRTACH2JDEROBOT DEPS
+RUN  pip2 install termcolor==1.1.0 parse==1.8.2 imutils==0.4.3
+
 
 COPY ./testPR /bin/
 
@@ -168,7 +176,6 @@ RUN git config --global user.name "JdeRobot" && git config --global user.email j
 
 WORKDIR /root
 
-RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc 
 
 
 CMD ["bash"]
