@@ -22,18 +22,16 @@ from gui.cppgenerator import CppGenerator
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from gui.cppparser import CPPParser
 from xml.dom import minidom
-import os, stat, shutil
+import os, stat
 
 class CppRosGenerator(CppGenerator):
     def __init__(self, libraries, config, interfaceHeaders, states):
         CppGenerator.__init__(self, libraries, config, interfaceHeaders, states)
 
     def generate(self, projectPath, projectName):
-        # create src folder in the projects
-        if os.path.exists(projectPath + '/src'):
-            shutil.rmtree(projectPath + '/src')
-
-        os.mkdir(projectPath + '/src')
+        # create source dir if not exists
+        if not os.path.exists(projectPath + os.sep + 'src'):
+            os.makedirs(projectPath + os.sep + 'src')
 
         stringList = []
         self.generateHeaders(stringList, projectName)
@@ -54,10 +52,6 @@ class CppRosGenerator(CppGenerator):
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
-
-        # create source dir if not exists
-        if not os.path.exists(projectPath + os.sep + 'src'):
-            os.makedirs(projectPath + os.sep + 'src')
 
         fp = open(projectPath + os.sep + 'src' + os.sep + projectName + '.cpp', 'w')
         fp.write(sourceCode)
@@ -83,8 +77,6 @@ class CppRosGenerator(CppGenerator):
         xmlStr = xmlDoc.toprettyxml(indent='  ')
         with open(projectPath + os.sep + 'package.xml', 'w') as f:
             f.write(xmlStr)
-
-        self.copyRunTime(projectPath)
 
 
     def generateHeaders(self, headers, projectName):
@@ -120,7 +112,9 @@ class CppRosGenerator(CppGenerator):
         classStr.append('\tpthread_t thread;\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
 
             if topic['opType'] == 'Publish':
                 classStr.append('\tros::Publisher ' + varName + 'Pub;\n')
@@ -144,7 +138,9 @@ class CppRosGenerator(CppGenerator):
         classStr.append('\tvoid join();\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
 
             if topic['opType'] == 'Subscribe':
                 type = topic['type']
@@ -161,6 +157,17 @@ class CppRosGenerator(CppGenerator):
                 else:
                     classStr.append('\tvoid publish' + varName + '(' + type + '& ' + varName + ');\n')
         classStr.append('\n')
+
+        for state in self.getAllStates():
+            # define variables
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
+            classStr.append('\n')
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+
         classStr.append('};\n\n')
 
     def generateStateClasses(self, classStr):
@@ -168,14 +175,9 @@ class CppRosGenerator(CppGenerator):
             classStr.append('class State' + str(state.id) + ' : public State {\n')
             classStr.append('public:\n')
             classStr.append('\tRosNode* node;\n')
-            classStr.append(state.getVariables())
             classStr.append('\tState' + str(state.id) + '(int id, bool initial, RosNode* node, int cycleDuration, State* parent, RunTimeGui* gui):\n')
             classStr.append('\t\tState(id, initial, cycleDuration, parent, gui) {this->node = node;}\n')
             classStr.append('\tvirtual void runCode();\n')
-
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
 
             classStr.append('};\n\n')
 
@@ -203,14 +205,16 @@ class CppRosGenerator(CppGenerator):
         headerStr.append('#include <iostream>\n')
         headerStr.append('#include <string>\n')
         headerStr.append('#include <signal.h>\n')
-        headerStr.append('#include <runtimegui.h>\n')
-        headerStr.append('#include <ros/package.h>\n\n');
+        headerStr.append('#include <runtimegui.h>\n\n')
 
 
     def generateRosMethods(self, rosStr, config):
         rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
+
             type = topic['type']
             types = type.split('/')
             if topic['opType'] == 'Publish':
@@ -221,6 +225,14 @@ class CppRosGenerator(CppGenerator):
                         'name'] + '", 10);\n')
             elif topic['opType'] == 'Subscribe':
                 rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &RosNode::'+varName+'Callback, this);\n')
+
+        # set inital values of variables
+        for state in self.getAllStates():
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                if initialValues[i] is not None:
+                    rosStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
+
         rosStr.append('}\n\n')
 
         rosStr.append('void* RosNode::threadRunner(void* owner) {\n')
@@ -243,7 +255,10 @@ class CppRosGenerator(CppGenerator):
         rosStr.append('}\n\n')
 
         for topic in config.getTopics():
-            varName = topic['name'].replace('/', '-')
+            varName = topic['name'].replace('/', '_')
+            if varName[0] == '_':
+                varName = varName[1:]
+
             if topic['opType'] == 'Subscribe':
                 type = topic['type']
                 types = type.split('/')
@@ -272,6 +287,12 @@ class CppRosGenerator(CppGenerator):
                 rosStr.append('\t' + varName + 'Pub.publish(' + varName + ');\n')
                 rosStr.append('}\n\n')
 
+        for state in self.getAllStates():
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                rosStr.append(returnTypes[i] + ' RosNode::' + funcNames[i] + '\n')
+                rosStr.append(codes[i])
+                rosStr.append('\n\n')
 
 
     def generateReadArgs(self, argStr, projectName):
@@ -305,9 +326,7 @@ void readArgs(int *argc, char* argv[]) {
 '''
         argStr.append(mystr)
         argStr.append('void* runGui(void*) {\n')
-        argStr.append('\tstd::string path = ros::package::getPath("' + projectName + '");\n')
-        argStr.append('\tpath.append("/'+projectName+'_runtime.py");\n')
-        argStr.append('\tsystem(path.c_str());\n')
+        argStr.append('\tsystem("./' + projectName + '_runtime.py");\n')
         argStr.append('}\n\n')
 
     def parentString(self, state):
@@ -361,7 +380,7 @@ void signalCallback(int signum)
             mainStr.append('\tstate' + str(state.id) + '->startThread();\n')
         mainStr.append('\n')
 
-        mainStr.append('signal(SIGINT, signalCallback);\n')
+        mainStr.append('\tsignal(SIGINT, signalCallback);\n')
 
         for state in self.states:
             mainStr.append('\tstate' + str(state.id) + '->join();\n')
@@ -371,6 +390,7 @@ void signalCallback(int signum)
         guiStr.append('#!/usr/bin/python\n')
         guiStr.append('# -*- coding: utf-8 -*-\n')
         guiStr.append('import sys\n')
+        guiStr.append('sys.path.append("' + CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py")\n\n')
 
         guiStr.append('from PyQt5.QtWidgets import QApplication\n')
         guiStr.append('from codegen.python.runtimegui import RunTimeGui\n\n')
@@ -416,22 +436,30 @@ void signalCallback(int signum)
         cmakeStr.append('find_package(catkin REQUIRED COMPONENTS\n')
         for dep in config.getBuildDependencies():
             cmakeStr.append('  ' + dep + '\n')
-        cmakeStr.append('  roslib\n')
         cmakeStr.append(')\n\n')
         cmakeStr.append('SET(JDEROBOT_INSTALL_PATH ' + CMAKE_INSTALL_PREFIX + ')\n')
         myStr = '''
+SET(JDEROBOT_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include)
+SET(VISUALSTATE_RUNTIME_INCLUDE_DIR ${JDEROBOT_INSTALL_PATH}/include/visualstates_py)
+SET(JDEROBOT_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib)
+SET(VISUALSTATE_RUNTIME_LIBS_DIR ${JDEROBOT_INSTALL_PATH}/lib/visualstates_py)
+
 include_directories(
     ${catkin_INCLUDE_DIRS}
-    src
+    ${JDEROBOT_INCLUDE_DIR}
+    ${VISUALSTATE_RUNTIME_INCLUDE_DIR}
 )
 
+link_directories(
+    ${JDEROBOT_LIBS_DIR}
+    ${VISUALSTATE_RUNTIME_LIBS_DIR}
+)
 '''
         cmakeStr.append(myStr)
 
         cmakeStr.append('catkin_package()\n')
-        cmakeStr.append('add_executable(' + projectName + '\n  src/' + projectName + '.cpp\n  src/runtimegui.cpp\n  \
-            src/state.cpp\n  src/temporaltransition.cpp\n  src/transition.cpp\n )\n')
-        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES})\n')
+        cmakeStr.append('add_executable(' + projectName + ' src/' + projectName + '.cpp)\n')
+        cmakeStr.append('target_link_libraries(' + projectName + ' ${catkin_LIBRARIES} visualStatesRunTime)\n')
         cmakeStr.append('install(TARGETS ' + projectName + ' RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})\n\n')
         return cmakeStr
 
@@ -462,55 +490,16 @@ include_directories(
             bdepElement.appendChild(doc.createTextNode(bdep))
             root.appendChild(bdepElement)
 
-        bdepElement = doc.createElement('build_depend')
-        bdepElement.appendChild(doc.createTextNode('roslib'))
-        root.appendChild(bdepElement)
-
         for rdep in config.getRunDependencies():
             rdepElement = doc.createElement('run_depend')
             rdepElement.appendChild(doc.createTextNode(rdep))
             root.appendChild(rdepElement)
-
-        rdepElement = doc.createElement('run_depend')
-        rdepElement.appendChild(doc.createTextNode('roslib'))
-        root.appendChild(rdepElement)
 
         exportElement = doc.createElement('export')
         root.appendChild(exportElement)
         doc.appendChild(root)
 
         return doc
-
-
-    def copyRunTime(self, projectPath):
-        if os.path.exists(projectPath + '/codegen'):
-            shutil.rmtree(projectPath + '/codegen')
-        if os.path.exists(projectPath + '/gui'):
-            shutil.rmtree(projectPath + '/gui')
-
-        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/codegen', projectPath + '/codegen')
-        shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/gui', projectPath + '/gui')
-
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/conditionaltransition.h',
-                    projectPath + '/src/conditionaltransition.h')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/runtimegui.h',
-                    projectPath + '/src/runtimegui.h')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/runtimegui.cpp',
-                    projectPath + '/src/runtimegui.cpp')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/state.h',
-                    projectPath + '/src/state.h')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/state.cpp',
-                    projectPath + '/src/state.cpp')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/temporaltransition.h',
-                    projectPath + '/src/temporaltransition.h')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/temporaltransition.cpp',
-                    projectPath + '/src/temporaltransition.cpp')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/transition.h',
-                    projectPath + '/src/transition.h')
-        shutil.copy(CMAKE_INSTALL_PREFIX + '/share/visualstates_py/transition.cpp',
-                    projectPath + '/src/transition.cpp')
-
-
 
 
 

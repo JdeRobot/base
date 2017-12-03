@@ -134,13 +134,7 @@ from PyQt5.QtWidgets import QApplication
 
         stateStr.append('\tdef __init__(self, id, initial, rosNode, cycleDuration, parent=None, gui=None):\n')
         stateStr.append('\t\tState.__init__(self, id, initial, cycleDuration, parent, gui)\n')
-        stateStr.append('\t\tself.rosNode = rosNode\n')
-
-        if len(state.getVariables()) > 0:
-            for varLine in state.getVariables().split('\n'):
-                stateStr.append('\t\t' + varLine + '\n')
-            stateStr.append('\n')
-        stateStr.append('\n')
+        stateStr.append('\t\tself.rosNode = rosNode\n\n')
 
         stateStr.append('\tdef runCode(self):\n')
         if len(state.getCode()) > 0:
@@ -148,12 +142,7 @@ from PyQt5.QtWidgets import QApplication
                 stateStr.append('\t\t' + codeLine + '\n')
         else:
             stateStr.append('\t\tpass\n')
-        stateStr.append('\n')
-
-        if len(state.getFunctions()) > 0:
-            for funcLine in state.getFunctions().split('\n'):
-                stateStr.append('\t' + funcLine + '\n')
-        stateStr.append('\n')
+        stateStr.append('\n\n')
 
     def generateRosInterface(self, rosNodeStr, projectName):
         rosNodeStr.append('class RosNode():\n')
@@ -163,14 +152,22 @@ from PyQt5.QtWidgets import QApplication
             if topic['opType'] == 'Publish':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub = rospy.Publisher("' +
+                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub = rospy.Publisher("' +
                               topic['name'] + '", ' + types[1] + ', queue_size=10)\n')
             elif topic['opType'] == 'Subscribe':
                 typesStr = topic['type']
                 types = typesStr.split('/')
-                rosNodeStr.append('\t\tself.' + topic['name'] + 'Sub = rospy.Subscriber("' +
-                                  topic['name'] + '", ' + types[1] + ', self.'+topic['name']+'Callback)\n')
-                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + types[1] + '()\n')
+                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Sub = rospy.Subscriber("' +
+                                  topic['name'] + '", ' + types[1] + ', self.'+self.getVarName(topic['name'])+'Callback)\n')
+                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
+
+        # add state variables as part of ros node
+        for state in self.getAllStates():
+            if len(state.getVariables()) > 0:
+                for varLine in state.getVariables().split('\n'):
+                    rosNodeStr.append('\t\t' + varLine + '\n')
+                rosNodeStr.append('\n')
+
         rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
         rosNodeStr.append('\tdef stop(self):\n')
@@ -179,12 +176,20 @@ from PyQt5.QtWidgets import QApplication
         # define publisher methods and subscriber callbacks
         for topic in self.config.getTopics():
             if topic['opType'] == 'Publish':
-                rosNodeStr.append('\tdef publish' + topic['name'] + '(self, ' + topic['name'] + '):\n')
-                rosNodeStr.append('\t\tself.' + topic['name'] + 'Pub.publish(' + topic['name'] + ')\n\n')
+                rosNodeStr.append('\tdef publish' + self.getVarName(topic['name']) + '(self, ' + self.getVarName(topic['name']) + '):\n')
+                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + 'Pub.publish(' + self.getVarName(topic['name']) + ')\n\n')
             elif topic['opType'] == 'Subscribe':
-                rosNodeStr.append('\tdef ' + topic['name'] + 'Callback(self, ' + topic['name'] + '):\n')
-                rosNodeStr.append('\t\tself.' + topic['name'] + ' = ' + topic['name'] + '\n')
+                rosNodeStr.append('\tdef ' + self.getVarName(topic['name']) + 'Callback(self, ' + self.getVarName(topic['name']) + '):\n')
+                rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + self.getVarName(topic['name']) + '\n')
             rosNodeStr.append('\n\n')
+
+        # define user functions as part of rosnode
+        for state in self.getAllStates():
+            if len(state.getFunctions()) > 0:
+                for funcLine in state.getFunctions().split('\n'):
+                    rosNodeStr.append('\t' + funcLine + '\n')
+                rosNodeStr.append('\n\n')
+
 
     def generateTransitionClasses(self, tranStr):
         for tran in self.getAllTransitions():
@@ -195,7 +200,7 @@ from PyQt5.QtWidgets import QApplication
                 tranStr.append('\t\tself.rosNode = rosNode\n\n')
                 tranStr.append('\tdef checkCondition(self):\n')
                 for checkLine in tran.getCondition().split('\n'):
-                    tranStr.append('\t\treturn ' + checkLine + '\n')
+                    tranStr.append('\t\t' + checkLine + '\n')
                 tranStr.append('\n')
             elif tran.getType() == TransitionType.TEMPORAL:
                 tranStr.append('class Tran' + str(tran.id) + '(TemporalTransition):\n\n')
@@ -366,8 +371,15 @@ def runGui():
     def copyRuntime(self, projectPath):
         if os.path.exists(projectPath + '/codegen'):
             shutil.rmtree(projectPath + '/codegen')
-        if os.path.exists(projectPath + 'gui'):
+        if os.path.exists(projectPath + '/gui'):
             shutil.rmtree(projectPath + '/gui')
 
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/codegen', projectPath + '/codegen')
         shutil.copytree(CMAKE_INSTALL_PREFIX + '/lib/python2.7/visualStates_py/gui', projectPath + '/gui')
+
+
+    def getVarName(self, varName):
+        varName = varName.replace('/', '_')
+        if varName[0] == '_':
+            varName = varName[1:]
+        return varName

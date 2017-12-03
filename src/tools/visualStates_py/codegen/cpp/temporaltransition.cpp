@@ -20,7 +20,8 @@
 #include "temporaltransition.h"
 #include <sys/time.h>
 
-TemporalTransition::TemporalTransition(int id, int destinationId, int elapsedTime):Transition(id, destinationId) {
+TemporalTransition::TemporalTransition(int id, int destinationId, int elapsedTime):
+        Transition(id, destinationId) {
     this->elapsedTime = elapsedTime;
 }
 

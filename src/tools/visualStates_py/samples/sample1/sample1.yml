@@ -1,0 +1,7 @@
+sample1:
+  NodeName: sample1
+  myMotors:
+    Name: myMotors
+    Proxy: Motors:default -h localhost -p 9001
+    Server: 1
+    Topic: ''

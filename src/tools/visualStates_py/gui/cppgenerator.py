@@ -66,7 +66,7 @@ class CppGenerator(Generator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateHeaders(stringList, projectName)
-        self.generateInterfaceClasses(stringList)
+        self.generateInterfaceClass(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
@@ -79,7 +79,7 @@ class CppGenerator(Generator):
         self.generateHeadersForCpp(stringList, projectName)
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
-        self.generateProxies(stringList, projectName)
+        self.generateInterfaceMethods(stringList, projectName)
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
@@ -143,16 +143,11 @@ class CppGenerator(Generator):
             classStr.append('class State' + str(state.id) + ' : public State {\n')
             classStr.append('public:\n')
             classStr.append('\tInterfaces* interfaces;\n')
-            classStr.append(state.getVariables())
             classStr.append('\tState' + str(state.id) + '(int id, bool initial, Interfaces* interfaces, int cycleDuration, State* parent, RunTimeGui* gui):\n')
             classStr.append('\t\tState(id, initial, cycleDuration, parent, gui) {this->interfaces = interfaces;}\n')
             classStr.append('\tvirtual void runCode();\n')
-
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
-
             classStr.append('};\n\n')
+
 
     def generateTransitionClasses(self, classStr):
         for tran in self.getAllTransitions():
@@ -169,11 +164,13 @@ class CppGenerator(Generator):
             elif tran.getType() == TransitionType.TEMPORAL:
                 classStr.append('class Tran' + str(tran.id) + ' : public TemporalTransition {\n')
                 classStr.append('\tpublic:\n')
-                classStr.append('\tTran' + str(tran.id) + '(int id, int destId, int elapsedTime):TemporalTransition(id, destId, elapsedTime) {}\n')
+                classStr.append('\tTran' + str(tran.id) + '(int id, int destId, int elapsedTime):\n')
+                classStr.append('TemporalTransition(id, destId, elapsedTime) {}\n')
                 classStr.append('\tvirtual void runCode();\n')
                 classStr.append('};\n\n')
 
-    def generateInterfaceClasses(self, classStr):
+
+    def generateInterfaceClass(self, classStr):
         classStr.append('class Interfaces {\n')
         classStr.append('public:\n')
         classStr.append('\tComm::Communicator* jdrc;\n')
@@ -182,7 +179,17 @@ class CppGenerator(Generator):
         classStr.append('\n')
         classStr.append('\tvirtual void connectProxies(int argc, char* argv[]);\n')
         classStr.append('\tvirtual void destroyProxies();\n')
+        for state in self.getAllStates():
+            # define variables
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
+            classStr.append('\n')
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
         classStr.append('};\n\n')
+
 
     def generateHeadersForCpp(self, headerStr, projectName):
         headerStr.append('#include "' + projectName + '.h"\n')
@@ -197,11 +204,6 @@ class CppGenerator(Generator):
                 stateStr.append('\t' + codeLine + '\n')
             stateStr.append('}\n\n')
 
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                stateStr.append(returnTypes[i] + ' State' + str(state.id) + '::' + funcNames[i] + '\n')
-                stateStr.append(codes[i])
-                stateStr.append('\n\n')
 
     def generateTranMethods(self, tranStr):
         for tran in self.getAllTransitions():
@@ -209,7 +211,7 @@ class CppGenerator(Generator):
                 #todo: currently user does not provide init method
                 tranStr.append('void Tran' + str(tran.id) + '::init() {\n')
                 tranStr.append('}\n\n')
-                tranStr.append('void Tran' + str(tran.id) + '::checkCondition() {\n')
+                tranStr.append('bool Tran' + str(tran.id) + '::checkCondition() {\n')
                 for codeLine in tran.getCondition().split('\n'):
                     tranStr.append('\t' + codeLine + '\n')
                 tranStr.append('}\n')
@@ -220,7 +222,7 @@ class CppGenerator(Generator):
             tranStr.append('}\n\n')
 
 
-    def generateProxies(self, proxyStr, projectName):
+    def generateInterfaceMethods(self, proxyStr, projectName):
         proxyStr.append('void Interfaces::connectProxies(int argc, char* argv[]) {\n')
         proxyStr.append('\tConfig::Properties props = Config::load(argc, argv);\n')
         proxyStr.append('\tjdrc = new Comm::Communicator(props);\n\n')
@@ -229,12 +231,28 @@ class CppGenerator(Generator):
             proxyStr.append('\tif (' + cfg['name'] + ' == NULL) {\n')
             proxyStr.append('\t\tthrow "invalid proxy ' + cfg['name'] + '";\n')
             proxyStr.append('\t}\n')
-            proxyStr.append('\tstd::cout << "' + cfg['name'] + ' is connected" << std::endl;\n')
+            proxyStr.append('\tstd::cout << "' + cfg['name'] + ' is connected" << std::endl;\n\n')
+
+        # set inital values of variables
+        for state in self.getAllStates():
+            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
+            for i in range(len(types)):
+                if initialValues[i] is not None:
+                    proxyStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
+
         proxyStr.append('}\n\n')
 
         proxyStr.append('void Interfaces::destroyProxies() {\n')
         proxyStr.append('\tif (jdrc != 0) {\n')
         proxyStr.append('\t}\n}\n\n')
+
+        for state in self.getAllStates():
+            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
+            for i in range(len(returnTypes)):
+                proxyStr.append(returnTypes[i] + ' Interfaces::' + funcNames[i] + '\n')
+                proxyStr.append(codes[i])
+                proxyStr.append('\n\n')
+
 
     def generateReadArgs(self, argStr, projectName):
         mystr = '''
@@ -308,11 +326,11 @@ void readArgs(int *argc, char* argv[]) {
         # create transition instances
         for tran in self.getAllTransitions():
             if tran.getType() == TransitionType.CONDITIONAL:
-                mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
-                           ', ' + str(tran.destination.id) + ', &interfaces);\n')
+                mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) +
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', &interfaces);\n')
             elif tran.getType() == TransitionType.TEMPORAL:
-                mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) + '(' + str(tran.id) +
-                               ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');\n')
+                mainStr.append('\tTransition* tran' + str(tran.id) + ' = new Tran' + str(tran.id) +
+                               '(' + str(tran.id) + ', ' + str(tran.destination.id) + ', ' + str(tran.getTemporalTime()) + ');\n')
 
             mainStr.append('\tstate' + str(tran.origin.id) + '->addTransition(tran' + str(tran.id) + ');\n')
         mainStr.append('\n')

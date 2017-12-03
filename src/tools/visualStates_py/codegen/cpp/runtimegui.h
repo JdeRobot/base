@@ -27,10 +27,11 @@
 class RunTimeGui {
 protected:
     pthread_t threadIPC;
+    int sem_id;
     std::queue<std::string> msgQueue;
     char* ipcData;
 
-    void createSharedMem();
+    void createSharedMemAndSemaphore();
 
 public:
     RunTimeGui();
