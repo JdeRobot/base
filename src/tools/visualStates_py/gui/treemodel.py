@@ -124,12 +124,12 @@ class TreeModel(QAbstractItemModel):
         if parent is None:
             parent = self.rootNode
         childToBeRemoved = None
-        for s in parent.getChildren(self.rootNode):
+        for s in parent.getChildren():
             if s.id == state.id:
                 childToBeRemoved = s
                 break
 
-        if childToBeRemoved != None:
+        if childToBeRemoved is not None:
             # print('remove child.id:' + str(childToBeRemoved.id))
             parent.removeChild(childToBeRemoved)
             self.layoutChanged.emit()
