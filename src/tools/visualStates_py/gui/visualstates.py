@@ -181,6 +181,8 @@ class VisualStates(QMainWindow):
 
     def newAction(self):
         self.automataScene.clearScene()
+        self.treeModel.removeAll()
+
         # create new root state
         self.rootState = State(0, 'root', True)
         self.automataScene.setActiveState(self.rootState)
