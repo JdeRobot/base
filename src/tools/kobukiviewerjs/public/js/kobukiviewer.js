@@ -43,6 +43,8 @@ function KobukiViewer (config){
    this.maxv=config.maxv;
    this.maxw=config.maxw;
 
+
+
    
    
    
@@ -129,6 +131,8 @@ function KobukiViewer (config){
    /*********** WebGL ******/
    var initControl = function (){
       control = new GUI.Control ({id:self.controlid});
+      maxv=this.maxv;
+      maxw=this.maxw;
       
       lastW=0;
       lastV=0;
@@ -137,14 +141,15 @@ function KobukiViewer (config){
          control.onPointerMDefault(event);
          var distSend = 2;
          var pos = control.position;
+
          
          if (calcDist(pos.x,lastW)>=distSend){
-            motors.setW(pos.x*this.maxw/control.WIDTH);
+            motors.setW(pos.x*self.maxw/control.WIDTH);
             lastW = pos.x;
          }
          
          if (calcDist(pos.z,lastV)>=distSend){
-            motors.setV(pos.z*this.maxv/control.HEIGHT);
+            motors.setV(pos.z*self.maxv/control.HEIGHT);
             lastV = pos.z;
          } 
       };
@@ -254,6 +259,7 @@ function KobukiViewer (config){
    
    this.setConfig = function(conf){
 
+      
 
       this.motorserv=conf.motorserv || this.motorserv;
       this.camleftserv=conf.camleftserv || this.camleftserv;
