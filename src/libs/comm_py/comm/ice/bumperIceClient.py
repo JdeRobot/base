@@ -91,7 +91,7 @@ class Bumper:
         return None
 
 class BumperIceClient:
-    def __init__(self,jdrc,prefix, start = False):
+    def __init__(self,ic,prefix, start = False):
         self.bumper = Bumper(ic,prefix)
 
         self.kill_event = threading.Event()
