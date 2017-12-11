@@ -22,7 +22,6 @@
 import sys
 import config
 import comm
-from MyAlgorithm import MyAlgorithm
 import easyiceconfig as EasyIce
 from gui.threadGUI import ThreadGUI
 from parallelIce.cameraClient import CameraClient
