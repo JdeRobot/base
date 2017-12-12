@@ -1,0 +1,6 @@
+UAVViewer:
+  Camera: "default -h 0.0.0.0 -p 9999"
+  Pose3D: "default -h 0.0.0.0 -p 9999"
+  Navdata: "default -h 0.0.0.0 -p 9999"
+  CMDVel: "default -h 0.0.0.0 -p 9999"
+  Extra: "default -h 0.0.0.0 -p 9999"
