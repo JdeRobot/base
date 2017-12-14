@@ -14,6 +14,12 @@ SET(CPACK_COMPONENT_CAMERASERVER_DESCRIPTION
 "Generic server for RGB cameras. 
  Manual Page http://jderobot.org/index.php/Drivers#cameraserver
  Home page https://jderobot.org")
+
+ SET(CPACK_DEBIAN_CAMERASERVER-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-interfaces")
+SET(CPACK_COMPONENT_BASIC-COMPONENT-PYTHON_DESCRIPTION  
+"Example of tool Python
+ Manual Page http://jderobot.org/
+ Home page https://jderobot.org")
  
 SET(CPACK_DEBIAN_EMSENSORDRIVER_PACKAGE_DEPENDS " jderobot-interfaces")
 SET(CPACK_COMPONENT_EMSENSORDRIVER_DESCRIPTION  
@@ -49,12 +55,6 @@ SET(CPACK_DEBIAN_PCLRGBDSERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-util,
 SET(CPACK_COMPONENT_PCLRGBDSERVER_DESCRIPTION  
 "Server for RGBD cameras. 
  Manual Page 
- Home page https://jderobot.org")
-
-SET(CPACK_DEBIAN_KOBUKI-DRIVER_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-colorspaces")
-SET(CPACK_COMPONENT_KOBUKI-DRIVER_DESCRIPTION  
-"Driver for the Yujin Robot Kobuki
- Manual page http://jderobot.org/index.php/Drivers#kobuki_driver
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_MAVLINKSERVER_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-colorspaces")
