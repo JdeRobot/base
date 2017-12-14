@@ -1,5 +1,5 @@
 
-#[[find_package(catkin QUIET COMPONENTS
+find_package(catkin QUIET COMPONENTS
 	      rplidar_ros
 	      urg_node
 	    )
@@ -15,5 +15,5 @@ if(urg_node_FOUND)
 else()
  message("*** HOKUYO NOT FOUND")
 endif()
-]]
+
 list(APPEND DEPS ros-kinetic-rplidar-ros ros-kinetic-urg-node)

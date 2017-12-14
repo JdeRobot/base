@@ -11,7 +11,6 @@ if (ENABLE_ROS)
 	
 	    usePython(2)
 	    set (CATKIN_BUILD_BINARY_PACKAGE 1) #doesn't add ROS environment files to package
-	
 
 	    find_package(catkin REQUIRED COMPONENTS
 	      roscpp
@@ -24,13 +23,10 @@ if (ENABLE_ROS)
 	
 		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs )
 
-		list_subdirectories( LIST_ROS ${CMAKE_CURRENT_SOURCE_DIR} 1)
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/laser)
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/kobuki-real)
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/kobuki-sim)
 
-		FOREACH (driver ${LIST_ROS})
-			if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${driver}/CMakeLists.txt)
-				ADD_SUBDIRECTORY (${driver})
-			endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${driver}/CMakeLists.txt)
-		ENDFOREACH()
 
 	#	list(APPEND DEPS_DEV )
 	else()
