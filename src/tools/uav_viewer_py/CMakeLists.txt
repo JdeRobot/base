@@ -25,4 +25,4 @@ ENDFOREACH(header)
 INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gui DESTINATION share/jderobot/python/uav_viewer_py COMPONENT uav-viewer-python PATTERN .svn EXCLUDE)
 
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/uav_viewer_py.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT uav-viewer-python)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/uav_viewer_py.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT uav-viewer-python)
