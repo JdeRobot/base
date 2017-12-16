@@ -14,7 +14,7 @@ TARGET_LINK_LIBRARIES(colorspacesmm ${OpenCV_LIBRARIES} ${OpenCVGUI_LIBRARIES})
 JDEROBOT_RENAME_GENERATED_LIB(colorspacesshare colorspaces)
 
 ### Install
-install(TARGETS colorspaces colorspacesmm
+install(TARGETS colorspaces colorspacesmm colorspacesshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     COMPONENT colorspaces
 )
