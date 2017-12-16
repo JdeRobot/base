@@ -223,7 +223,6 @@ add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 # include cpack instructions
-PRINT_TARGETS()
 JDEROBOT_GENERATE_INSTALL_FILES_BY_TARGET()
 include(${PROJECT_SOURCE_DIR}/cmake/cpackit.cmake)
 
