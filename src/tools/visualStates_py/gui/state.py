@@ -27,8 +27,6 @@ class State:
         self.id = id
         self.name = name
         self.code = ''
-        self.functions = ''
-        self.variables = ''
         self.timeStepDuration = 100
         self.x = 0
         self.y = 0
@@ -122,8 +120,6 @@ class State:
         self.y = float(stateElement.getElementsByTagName('posy')[0].childNodes[0].nodeValue)
 
         self.code = self.parseElement('code', stateElement)
-        self.functions = self.parseElement('functions', stateElement)
-        self.variables = self.parseElement('variables', stateElement)
         self.timeStepDuration = int((self.parseElement('timestep', stateElement)))
 
         # recursive child state parsing
@@ -167,12 +163,6 @@ class State:
         codeElement = doc.createElement('code')
         codeElement.appendChild(doc.createTextNode(self.code))
         stateElement.appendChild(codeElement)
-        functionsElement = doc.createElement('functions')
-        functionsElement.appendChild(doc.createTextNode(self.functions))
-        stateElement.appendChild(functionsElement)
-        varElement = doc.createElement('variables')
-        varElement.appendChild(doc.createTextNode(self.variables))
-        stateElement.appendChild(varElement)
         timeElement = doc.createElement('timestep')
         timeElement.appendChild(doc.createTextNode(str(self.timeStepDuration)))
         stateElement.appendChild(timeElement)
@@ -195,18 +185,6 @@ class State:
 
     def setCode(self, code):
         self.code = code
-
-    def getFunctions(self):
-        return self.functions
-
-    def setFunctions(self, functions):
-        self.functions = functions
-
-    def getVariables(self):
-        return self.variables
-
-    def setVariables(self, vars):
-        self.variables = vars
 
     def getTimeStep(self):
         return self.timeStepDuration

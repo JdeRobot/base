@@ -64,6 +64,8 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.config = None
+        self.functions = ''
+        self.variables = ''
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -134,10 +136,10 @@ class VisualStates(QMainWindow):
         generateCppAction.setStatusTip('Generate C++ code')
         generateCppAction.triggered.connect(self.generateCppAction)
 
-        compileCppAction = QAction('&Compile C++', self)
-        compileCppAction.setShortcut('Ctrl+P')
-        compileCppAction.setStatusTip('Compile generated C++ code')
-        compileCppAction.triggered.connect(self.compileCppAction)
+        # compileCppAction = QAction('&Compile C++', self)
+        # compileCppAction.setShortcut('Ctrl+P')
+        # compileCppAction.setStatusTip('Compile generated C++ code')
+        # compileCppAction.triggered.connect(self.compileCppAction)
 
         generatePythonAction = QAction('&Generate Python', self)
         generatePythonAction.setShortcut('Ctrl+Y')
@@ -172,7 +174,7 @@ class VisualStates(QMainWindow):
         actionsMenu.addAction(librariesAction)
         actionsMenu.addAction(configFileAction)
         actionsMenu.addAction(generateCppAction)
-        actionsMenu.addAction(compileCppAction)
+        # actionsMenu.addAction(compileCppAction)
         actionsMenu.addAction(generatePythonAction)
 
         helpMenu = menubar.addMenu('&Help')
@@ -188,6 +190,11 @@ class VisualStates(QMainWindow):
         self.automataScene.setActiveState(self.rootState)
         self.automataScene.resetIndexes()
 
+        self.libraries = []
+        self.config = None
+        self.functions = ''
+        self.variables = ''
+
     def openAction(self):
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Open VisualStates File")
@@ -196,7 +203,7 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.config, self.libraries) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
             # set the active state as the loaded state
@@ -212,7 +219,7 @@ class VisualStates(QMainWindow):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState, self.config, self.libraries)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
@@ -222,7 +229,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState, self.config, self.libraries)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
         # else:
         #     print('file dialog canceled')
 
@@ -244,20 +251,14 @@ class VisualStates(QMainWindow):
             timerDialog.exec_()
 
     def variablesAction(self):
-        if self.activeState is not None:
-            variablesDialog = CodeDialog('Variables', self.activeState.getVariables())
-            variablesDialog.codeChanged.connect(self.variablesChanged)
-            variablesDialog.exec_()
-        else:
-            self.showWarning('Choose a state', 'You can create variables only for a selected state')
+        variablesDialog = CodeDialog('Variables', self.variables)
+        variablesDialog.codeChanged.connect(self.variablesChanged)
+        variablesDialog.exec_()
 
     def functionsAction(self):
-        if self.activeState is not None:
-            functionsDialog = CodeDialog('Functions', self.activeState.getFunctions())
-            functionsDialog.codeChanged.connect(self.functionsChanged)
-            functionsDialog.exec_()
-        else:
-            self.showWarning('Choose a state', 'You can create functions only for a selected state')
+        functionsDialog = CodeDialog('Functions', self.functions)
+        functionsDialog.codeChanged.connect(self.functionsChanged)
+        functionsDialog.exec_()
 
     def librariesAction(self):
         librariesDialog = LibrariesDialog('Libraries', self.libraries)
@@ -281,9 +282,9 @@ class VisualStates(QMainWindow):
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config.type == ROS:
-                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+                generator = CppRosGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.functions, self.variables)
             elif self.config.type == JDEROBOTCOMM:
-                generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+                generator = CppGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.functions, self.variables)
 
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('C++ Code Generation', 'C++ code generation is successful.')
@@ -291,18 +292,18 @@ class VisualStates(QMainWindow):
             self.showWarning('C++ Generation', 'Please save the project before code generation.')
 
 
-    def compileCppAction(self):
-        # print('compile cpp action')
-        pass
+    # def compileCppAction(self):
+    #     # print('compile cpp action')
+    #     pass
 
     def generatePythonAction(self):
         stateList = []
         if self.fileManager.hasFile():
             self.getStateList(self.rootState, stateList)
             if self.config.type == ROS:
-                generator = PythonRosGenerator(self.libraries, self.config, stateList)
+                generator = PythonRosGenerator(self.libraries, self.config, stateList, self.functions, self.variables)
             elif self.config.type == JDEROBOTCOMM:
-                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList)
+                generator = PythonGenerator(self.libraries, self.config, self.interfaceHeaderMap, stateList, self.functions, self.variables)
             generator.generate(self.fileManager.getPath(), self.fileManager.getFileName())
             self.showInfo('Python Code Generation', 'Python code generation is successful.')
         else:
@@ -418,12 +419,10 @@ class VisualStates(QMainWindow):
             self.activeState.setTimeStep(duration)
 
     def variablesChanged(self, variables):
-        if self.activeState is not None:
-            self.activeState.setVariables(variables)
+            self.variables = variables
 
     def functionsChanged(self, functions):
-        if self.activeState is not None:
-            self.activeState.setFunctions(functions)
+        self.functions = functions
 
     def librariesChanged(self, libraries):
         self.libraries = libraries

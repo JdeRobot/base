@@ -49,6 +49,10 @@ class State():
         if self.gui is not None:
             self.gui.emitRunningStateById(self.id)
 
+        # also init children
+        if self.currentState is not None:
+            self.currentState.init()
+
     def runCode(self):
         pass
 

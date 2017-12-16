@@ -25,11 +25,13 @@ import os
 import shutil
 
 class PythonRosGenerator(Generator):
-    def __init__(self, libraries, config, states):
+    def __init__(self, libraries, config, states, functions, variables):
         Generator.__init__(self)
         self.libraries = libraries
         self.config = config
         self.states = states
+        self.functions = functions
+        self.variables = variables
 
     def getAllStates(self):
         addedStates = {}
@@ -65,7 +67,7 @@ class PythonRosGenerator(Generator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateImports(stringList)
-        self.generateRosInterface(stringList, projectName)
+        self.generateRosInterface(stringList, projectName, self.functions, self.variables)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         self.generateMain(stringList)
@@ -144,7 +146,7 @@ from PyQt5.QtWidgets import QApplication
             stateStr.append('\t\tpass\n')
         stateStr.append('\n\n')
 
-    def generateRosInterface(self, rosNodeStr, projectName):
+    def generateRosInterface(self, rosNodeStr, projectName, functions, variables):
         rosNodeStr.append('class RosNode():\n')
         rosNodeStr.append('\tdef __init__(self):\n')
         rosNodeStr.append('\t\trospy.init_node("' + projectName + '", anonymous=True)\n\n')
@@ -162,11 +164,10 @@ from PyQt5.QtWidgets import QApplication
                 rosNodeStr.append('\t\tself.' + self.getVarName(topic['name']) + ' = ' + types[1] + '()\n')
 
         # add state variables as part of ros node
-        for state in self.getAllStates():
-            if len(state.getVariables()) > 0:
-                for varLine in state.getVariables().split('\n'):
-                    rosNodeStr.append('\t\t' + varLine + '\n')
-                rosNodeStr.append('\n')
+        if len(variables) > 0:
+            for varLine in variables.split('\n'):
+                rosNodeStr.append('\t\t' + varLine + '\n')
+            rosNodeStr.append('\n')
 
         rosNodeStr.append('\t\ttime.sleep(1) # wait for initialization of the node, subscriber, and publisher\n\n')
 
@@ -184,11 +185,10 @@ from PyQt5.QtWidgets import QApplication
             rosNodeStr.append('\n\n')
 
         # define user functions as part of rosnode
-        for state in self.getAllStates():
-            if len(state.getFunctions()) > 0:
-                for funcLine in state.getFunctions().split('\n'):
-                    rosNodeStr.append('\t' + funcLine + '\n')
-                rosNodeStr.append('\n\n')
+        if len(functions) > 0:
+            for funcLine in functions.split('\n'):
+                rosNodeStr.append('\t' + funcLine + '\n')
+            rosNodeStr.append('\n\n')
 
 
     def generateTransitionClasses(self, tranStr):

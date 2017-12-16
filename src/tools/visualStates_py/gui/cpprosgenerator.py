@@ -25,8 +25,8 @@ from xml.dom import minidom
 import os, stat
 
 class CppRosGenerator(CppGenerator):
-    def __init__(self, libraries, config, interfaceHeaders, states):
-        CppGenerator.__init__(self, libraries, config, interfaceHeaders, states)
+    def __init__(self, libraries, config, interfaceHeaders, states, functions, variables):
+        CppGenerator.__init__(self, libraries, config, interfaceHeaders, states, functions, variables)
 
     def generate(self, projectPath, projectName):
         # create source dir if not exists
@@ -35,7 +35,7 @@ class CppRosGenerator(CppGenerator):
 
         stringList = []
         self.generateHeaders(stringList, projectName)
-        self.generateRosNodeClass(stringList, self.config)
+        self.generateRosNodeClass(stringList, self.config, self.functions, self.variables)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
@@ -46,7 +46,7 @@ class CppRosGenerator(CppGenerator):
 
         stringList = []
         self.generateHeadersForCpp(stringList, projectName)
-        self.generateRosMethods(stringList, self.config)
+        self.generateRosMethods(stringList, self.config, self.functions, self.variables)
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
         self.generateReadArgs(stringList, projectName)
@@ -104,7 +104,7 @@ class CppRosGenerator(CppGenerator):
 
         return headers
 
-    def generateRosNodeClass(self, classStr, config):
+    def generateRosNodeClass(self, classStr, config, functions, variables):
         classStr.append('class RosNode {\n')
         classStr.append('private:\n')
         classStr.append('\tros::NodeHandle nh;\n')
@@ -158,15 +158,17 @@ class CppRosGenerator(CppGenerator):
                     classStr.append('\tvoid publish' + varName + '(' + type + '& ' + varName + ');\n')
         classStr.append('\n')
 
-        for state in self.getAllStates():
-            # define variables
-            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
-            for i in range(len(types)):
-                classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
-            classStr.append('\n')
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+        # define variables
+        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        for i in range(len(types)):
+            classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
+        classStr.append('\n')
+
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        for i in range(len(returnTypes)):
+            classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+
+
 
         classStr.append('};\n\n')
 
@@ -208,7 +210,7 @@ class CppRosGenerator(CppGenerator):
         headerStr.append('#include <runtimegui.h>\n\n')
 
 
-    def generateRosMethods(self, rosStr, config):
+    def generateRosMethods(self, rosStr, config, functions, variables):
         rosStr.append('RosNode::RosNode(int nodeRate):rate(nodeRate) {\n')
         for topic in config.getTopics():
             varName = topic['name'].replace('/', '_')
@@ -227,11 +229,10 @@ class CppRosGenerator(CppGenerator):
                 rosStr.append('\t' + varName + 'Sub = nh.subscribe("' + topic['name'] + '", 10, &RosNode::'+varName+'Callback, this);\n')
 
         # set inital values of variables
-        for state in self.getAllStates():
-            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
-            for i in range(len(types)):
-                if initialValues[i] is not None:
-                    rosStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
+        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        for i in range(len(types)):
+            if initialValues[i] is not None:
+                rosStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
 
         rosStr.append('}\n\n')
 
@@ -287,12 +288,11 @@ class CppRosGenerator(CppGenerator):
                 rosStr.append('\t' + varName + 'Pub.publish(' + varName + ');\n')
                 rosStr.append('}\n\n')
 
-        for state in self.getAllStates():
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                rosStr.append(returnTypes[i] + ' RosNode::' + funcNames[i] + '\n')
-                rosStr.append(codes[i])
-                rosStr.append('\n\n')
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        for i in range(len(returnTypes)):
+            rosStr.append(returnTypes[i] + ' RosNode::' + funcNames[i] + '\n')
+            rosStr.append(codes[i])
+            rosStr.append('\n\n')
 
 
     def generateReadArgs(self, argStr, projectName):
