@@ -35,7 +35,7 @@ set(SOURCES
 
 set_property(SOURCE src/resourcelocator.cpp PROPERTY COMPILE_FLAGS "-std=c++0x")
 
-add_library(${binname} SHARED ${SOURCES})
+JDEROBOT_ADD_LIBRARY(${binname} SHARED ${SOURCES})
 target_link_libraries(${binname} ${LIBRARIES})
 
 ## Options

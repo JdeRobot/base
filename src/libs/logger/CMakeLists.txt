@@ -18,7 +18,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 endif()
 
-ADD_LIBRARY(logger SHARED ${SRC_FILES})
+JDEROBOT_ADD_LIBRARY(logger SHARED ${SRC_FILES})
 
 target_link_libraries(logger ${Boost_LIBRARIES})
 

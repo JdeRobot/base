@@ -10,7 +10,7 @@ include_directories(
         ${CMAKE_CURRENT_LIST_DIR}/cpp/jderobot
         ${CMAKE_CURRENT_LIST_DIR}/cpp/
 )
-add_library (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
+JDEROBOT_ADD_LIBRARY (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
 TARGET_LINK_LIBRARIES(JderobotInterfaces ${ice2_LIBRARIES})
 
 else()
@@ -117,7 +117,7 @@ unset(SLICE_DIRECTORY)
 ### CPP
 if (build_interfaces_cpp)
     include_directories(${SLICE_CPP_DIR})
-    add_library (JderobotInterfaces SHARED ${SLICE_CPP_GENERATED})
+    JDEROBOT_ADD_LIBRARY (JderobotInterfaces SHARED ${SLICE_CPP_GENERATED})
     target_link_libraries(JderobotInterfaces ${ice2_LIBRARIES})
 endif()
 

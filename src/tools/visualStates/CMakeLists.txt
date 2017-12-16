@@ -61,7 +61,7 @@ include_directories (
 )
 
 add_executable (visualStates ${SOURCE_FILES_VISUALSTATES})
-add_library(visualStateslib ${SOURCE_FILES_RUNTIMEGUI})
+JDEROBOT_ADD_LIBRARY(visualStateslib ${SOURCE_FILES_RUNTIMEGUI})
 
 TARGET_LINK_LIBRARIES ( visualStates
     ${gtkmm3_LIBRARIES}
