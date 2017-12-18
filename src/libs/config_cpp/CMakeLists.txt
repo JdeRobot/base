@@ -28,12 +28,12 @@ set(SOURCES
 
 
 ## Adding shared library for common usage
-add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${YAML_CPP_LIBRARIES})
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
-add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME}-embedded  ${YAML_CPP_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 

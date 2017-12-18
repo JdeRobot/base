@@ -111,7 +111,7 @@ IF(JDEROBOTCOM_ROS)
 ENDIF()
 
 ## Adding shared library for common usage
-add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 
 add_dependencies(${PROJECT_NAME} ${config_LIBRARIES})
 
@@ -125,7 +125,7 @@ target_link_libraries(${PROJECT_NAME}
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
-add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
 
 target_link_libraries(${PROJECT_NAME}-embedded 
     ${ZeroCIce_LIBRARIES} 

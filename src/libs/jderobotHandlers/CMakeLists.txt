@@ -7,14 +7,14 @@ include_directories( ${LIBS_DIR}/)
 
 SET (jderobotHandlers_SOURCES common/CommonHandler ReplayControlerClientHDL)
 
-add_library (jderobotHandlers STATIC ${jderobotHandlers_SOURCES} )
+JDEROBOT_ADD_LIBRARY (jderobotHandlers STATIC ${jderobotHandlers_SOURCES} )
 #TARGET_LINK_LIBRARIES(jderobotHandlers colorspacesmm logger ${Boost_LIBRARIES})
 
-add_library (jderobotHandlersshare SHARED ${jderobotHandlers_SOURCES})
+JDEROBOT_ADD_LIBRARY (jderobotHandlersshare SHARED ${jderobotHandlers_SOURCES})
 TARGET_LINK_LIBRARIES(jderobotHandlersshare ${Boost_LIBRARIES} ${Ice_LIBRARIES})
 
 
-set_target_properties(jderobotHandlersshare PROPERTIES OUTPUT_NAME jderobotHandlers)
+JDEROBOT_RENAME_GENERATED_LIB(jderobotHandlersshare jderobotHandlers)
 
 ### Install
 install(TARGETS jderobotHandlers jderobotHandlersshare

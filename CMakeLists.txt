@@ -13,7 +13,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX /opt/jderobot CACHE PATH "default install path" FORCE)
 endif()
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.3)
 
 # build presents
 if (EXISTS buildpresets_userdefined.cmake)
@@ -21,6 +21,8 @@ if (EXISTS buildpresets_userdefined.cmake)
 endif()
 include(buildpresets.cmake)
 
+#include jderobot macros
+include(cmake/jderobot.cmake)
 
 # include Modules 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
@@ -221,4 +223,7 @@ add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 # include cpack instructions
+JDEROBOT_GENERATE_INSTALL_FILES_BY_TARGET()
 include(${PROJECT_SOURCE_DIR}/cmake/cpackit.cmake)
+
+
