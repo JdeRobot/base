@@ -14,6 +14,12 @@ SET(CPACK_COMPONENT_CAMERASERVER_DESCRIPTION
 "Generic server for RGB cameras. 
  Manual Page http://jderobot.org/index.php/Drivers#cameraserver
  Home page https://jderobot.org")
+
+ SET(CPACK_DEBIAN_CAMERASERVER-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-interfaces")
+SET(CPACK_COMPONENT_BASIC-COMPONENT-PYTHON_DESCRIPTION  
+"Example of tool Python
+ Manual Page http://jderobot.org/
+ Home page https://jderobot.org")
  
 SET(CPACK_DEBIAN_EMSENSORDRIVER_PACKAGE_DEPENDS " jderobot-interfaces")
 SET(CPACK_COMPONENT_EMSENSORDRIVER_DESCRIPTION  
@@ -33,12 +39,6 @@ SET(CPACK_COMPONENT_GAZEBOSERVER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Drivers (sections 3-9)
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_LASER-SERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-viewer, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
-SET(CPACK_COMPONENT_LASER-SERVER_DESCRIPTION  
-"Server for Hokuyo and RPLidar lasers. 
- Manual Page http://jderobot.org/index.php/Drivers#Laser_Server
- Home page https://jderobot.org")
-
 SET(CPACK_DEBIAN_OPENNISERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
 SET(CPACK_COMPONENT_OPENNISERVER_DESCRIPTION  
 "Server for RGBD cameras (ASUS Xtion, Microsoft Kinect, Orbecc, ...) 
@@ -49,12 +49,6 @@ SET(CPACK_DEBIAN_PCLRGBDSERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-util,
 SET(CPACK_COMPONENT_PCLRGBDSERVER_DESCRIPTION  
 "Server for RGBD cameras. 
  Manual Page 
- Home page https://jderobot.org")
-
-SET(CPACK_DEBIAN_KOBUKI-DRIVER_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-colorspaces")
-SET(CPACK_COMPONENT_KOBUKI-DRIVER_DESCRIPTION  
-"Driver for the Yujin Robot Kobuki
- Manual page http://jderobot.org/index.php/Drivers#kobuki_driver
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_MAVLINKSERVER_PACKAGE_DEPENDS "jderobot-easyice,  jderobot-interfaces, jderobot-colorspaces")

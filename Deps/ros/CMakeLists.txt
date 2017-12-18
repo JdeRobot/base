@@ -1,7 +1,7 @@
 OPTION(ENABLE_ROS "Enable ROS compatibility modules" ON)
 
 if (ENABLE_ROS)
-	find_package(roscpp QUIET)
+	find_package(roscpp REQUIRED)
 	
 	if(roscpp_FOUND)
 	
@@ -11,7 +11,7 @@ if (ENABLE_ROS)
 	
 	    usePython(2)
 	    set (CATKIN_BUILD_BINARY_PACKAGE 1) #doesn't add ROS environment files to package
-	
+
 	    find_package(catkin REQUIRED COMPONENTS
 	      roscpp
 	      std_msgs
@@ -19,10 +19,14 @@ if (ENABLE_ROS)
 	      image_transport
 	      nav_msgs
 	      geometry_msgs
-	      kobuki_gazebo
 	    )
 	
-		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-kobuki-gazebo)
+		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs )
+
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/laser)
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/kobuki-real)
+		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/kobuki-sim)
+
 
 	#	list(APPEND DEPS_DEV )
 	else()

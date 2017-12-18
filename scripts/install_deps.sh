@@ -65,7 +65,7 @@ sudo apt-get install -y nodejs
 
 sudo apt install -y sophus
 
-sudo apt-get install -y kobukilib ardronelib libgoogle-glog-dev
+sudo apt-get install -y ardronelib libgoogle-glog-dev
 
 
 
