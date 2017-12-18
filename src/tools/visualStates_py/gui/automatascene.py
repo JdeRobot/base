@@ -345,7 +345,6 @@ class AutomataScene(QGraphicsScene):
         self.prevOperationType = self.operationType
         self.operationType = None
         self.stateTextEditingStarted = True
-        print('text editing started')
 
     def stateTextEditFinished(self):
         # after text edit finishes restore operation type

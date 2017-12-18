@@ -70,11 +70,5 @@ class Generator(object):
             yaml.safe_dump(cfgYaml, outputFile, default_flow_style=False)
 
 
-    def generateUserFunctions(self, functionsStr):
-        for state in self.states:
-            functionsStr.append(state.getFunctions())
-            functionsStr.append('\n')
-        return functionsStr
-
     def sanitizeVar(self, var):
         return var.replace(' ', '_')

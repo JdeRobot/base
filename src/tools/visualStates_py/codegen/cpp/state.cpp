@@ -29,6 +29,7 @@ State::State(int id, bool initial, int cycleDuration, State* parent, RunTimeGui*
     this->parent = parent;
     this->gui = gui;
     running = true;
+    currentState = NULL;
 
     if (parent != NULL) {
         parent->addState(this);
@@ -42,6 +43,10 @@ void State::init() {
 
     if (gui != NULL) {
         gui->emitRunningStateById(id);
+    }
+
+    if (currentState != NULL) {
+        currentState->init();
     }
 }
 

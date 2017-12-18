@@ -35,7 +35,7 @@ class FileManager():
             path += '.xml'
         self.fullPath = path
 
-    def save(self, rootState, config, libraries):
+    def save(self, rootState, config, libraries, functions, variables):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
@@ -43,6 +43,16 @@ class FileManager():
         # save config data
         if config is not None:
             root.appendChild(config.createNode(doc))
+
+        # save functions
+        functionsElement = doc.createElement('functions')
+        functionsElement.appendChild(doc.createTextNode(functions))
+        root.appendChild(functionsElement)
+
+        # save variables
+        variablesElement = doc.createElement('variables')
+        variablesElement.appendChild(doc.createTextNode(variables))
+        root.appendChild(variablesElement)
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -90,7 +100,21 @@ class FileManager():
             for libElement in libraryElements:
                 libraries.append(libElement.childNodes[0].nodeValue)
 
-        return (rootState, config, libraries)
+        # get functions
+        functions = ''
+        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')) > 0:
+            functionsElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')[0]
+            if len(functionsElement.childNodes) > 0:
+                functions = functionsElement.childNodes[0].nodeValue
+
+        # get variables
+        variables = ''
+        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')) > 0:
+            variablesElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')[0]
+            if len(variablesElement.childNodes) > 0:
+                variables = variablesElement.childNodes[0].nodeValue
+
+        return rootState, config, libraries, functions, variables
 
     def hasFile(self):
         return len(self.fullPath) > 0

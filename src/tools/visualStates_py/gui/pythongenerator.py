@@ -23,12 +23,14 @@ from gui.transitiontype import TransitionType
 import os
 
 class PythonGenerator(Generator):
-    def __init__(self, libraries, config, interfaceHeaders, states):
+    def __init__(self, libraries, config, interfaceHeaders, states, functions, variables):
         Generator.__init__(self)
         self.libraries = libraries
         self.config = config
         self.interfaceHeaders = interfaceHeaders
         self.states = states
+        self.functions = functions
+        self.variables = variables
 
     def getAllStates(self):
         addedStates = {}
@@ -66,7 +68,7 @@ class PythonGenerator(Generator):
         self.generateImports(stringList)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
-        self.generateInterfaces(stringList, projectName)
+        self.generateInterfaces(stringList, projectName, self.functions, self.variables)
         self.generateMain(stringList)
         sourceCode = ''.join(stringList)
         fp = open(projectPath + os.sep + projectName + '.py', 'w')
@@ -131,7 +133,7 @@ import config, comm
         stateStr.append('\n')
 
 
-    def generateInterfaces(self, interfaceStr, projectName):
+    def generateInterfaces(self, interfaceStr, projectName, functions, variables):
         mystr = '''class Interfaces():
 \tdef __init__(self):
 \t\tself.jdrc = None
@@ -140,12 +142,11 @@ import config, comm
         for cfg in self.config.getInterfaces():
             interfaceStr.append('\t\tself.' + cfg['name'] + ' = None\n')
 
-        for state in self.getAllStates():
-            if len(state.getVariables()) > 0:
-                for varLine in state.getVariables().split('\n'):
-                    varLine = varLine.strip()
-                    if len(varLine) > 0:
-                        interfaceStr.append('\t\t' + varLine + '\n')
+        if len(variables) > 0:
+            for varLine in variables.split('\n'):
+                varLine = varLine.strip()
+                if len(varLine) > 0:
+                    interfaceStr.append('\t\t' + varLine + '\n')
 
         interfaceStr.append('\n')
 
@@ -167,10 +168,9 @@ import config, comm
         interfaceStr.append('\t\tif self.jdrc is not None:\n')
         interfaceStr.append('\t\t\tself.jdrc.destroy()\n\n')
 
-        for state in self.getAllStates():
-            if len(state.getFunctions()) > 0:
-                for funcLine in state.getFunctions().split('\n'):
-                    interfaceStr.append('\t' + funcLine + '\n')
+        if len(functions) > 0:
+            for funcLine in functions.split('\n'):
+                interfaceStr.append('\t' + funcLine + '\n')
                 interfaceStr.append('\n')
 
     def generateTransitionClasses(self, tranStr):

@@ -24,12 +24,14 @@ from gui.cppparser import CPPParser
 import os, stat
 
 class CppGenerator(Generator):
-    def __init__(self, libraries, config, interfaceHeaders, states):
+    def __init__(self, libraries, config, interfaceHeaders, states, functions, variables):
         Generator.__init__(self)
         self.libraries = libraries
         self.config = config
         self.interfaceHeaders = interfaceHeaders
         self.states = states
+        self.functions = functions
+        self.variables = variables
 
     def getAllStates(self):
         addedStates = {}
@@ -66,7 +68,7 @@ class CppGenerator(Generator):
     def generate(self, projectPath, projectName):
         stringList = []
         self.generateHeaders(stringList, projectName)
-        self.generateInterfaceClass(stringList)
+        self.generateInterfaceClass(stringList, self.functions, self.variables)
         self.generateStateClasses(stringList)
         self.generateTransitionClasses(stringList)
         stringList.append('#endif')
@@ -79,7 +81,7 @@ class CppGenerator(Generator):
         self.generateHeadersForCpp(stringList, projectName)
         self.generateStateMethods(stringList)
         self.generateTranMethods(stringList)
-        self.generateInterfaceMethods(stringList, projectName)
+        self.generateInterfaceMethods(stringList, projectName, self.functions, self.variables)
         self.generateReadArgs(stringList, projectName)
         self.generateMain(stringList, projectName)
         sourceCode = ''.join(stringList)
@@ -170,7 +172,7 @@ class CppGenerator(Generator):
                 classStr.append('};\n\n')
 
 
-    def generateInterfaceClass(self, classStr):
+    def generateInterfaceClass(self, classStr, functions, variables):
         classStr.append('class Interfaces {\n')
         classStr.append('public:\n')
         classStr.append('\tComm::Communicator* jdrc;\n')
@@ -179,15 +181,15 @@ class CppGenerator(Generator):
         classStr.append('\n')
         classStr.append('\tvirtual void connectProxies(int argc, char* argv[]);\n')
         classStr.append('\tvirtual void destroyProxies();\n')
-        for state in self.getAllStates():
-            # define variables
-            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
-            for i in range(len(types)):
-                classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
-            classStr.append('\n')
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+        # define variables
+        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        for i in range(len(types)):
+            classStr.append('\t' + types[i] + ' ' + varNames[i] + ';\n')
+        classStr.append('\n')
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        for i in range(len(returnTypes)):
+            classStr.append('\t' + returnTypes[i] + ' ' + funcNames[i] + ';\n')
+
         classStr.append('};\n\n')
 
 
@@ -222,7 +224,7 @@ class CppGenerator(Generator):
             tranStr.append('}\n\n')
 
 
-    def generateInterfaceMethods(self, proxyStr, projectName):
+    def generateInterfaceMethods(self, proxyStr, projectName, functions, variables):
         proxyStr.append('void Interfaces::connectProxies(int argc, char* argv[]) {\n')
         proxyStr.append('\tConfig::Properties props = Config::load(argc, argv);\n')
         proxyStr.append('\tjdrc = new Comm::Communicator(props);\n\n')
@@ -234,11 +236,10 @@ class CppGenerator(Generator):
             proxyStr.append('\tstd::cout << "' + cfg['name'] + ' is connected" << std::endl;\n\n')
 
         # set inital values of variables
-        for state in self.getAllStates():
-            types, varNames, initialValues = CPPParser.parseVariables(state.getVariables())
-            for i in range(len(types)):
-                if initialValues[i] is not None:
-                    proxyStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
+        types, varNames, initialValues = CPPParser.parseVariables(variables)
+        for i in range(len(types)):
+            if initialValues[i] is not None:
+                proxyStr.append('\t' + varNames[i] + ' = ' + initialValues[i] + ';\n')
 
         proxyStr.append('}\n\n')
 
@@ -246,12 +247,11 @@ class CppGenerator(Generator):
         proxyStr.append('\tif (jdrc != 0) {\n')
         proxyStr.append('\t}\n}\n\n')
 
-        for state in self.getAllStates():
-            returnTypes, funcNames, codes = CPPParser.parseFunctions(state.getFunctions())
-            for i in range(len(returnTypes)):
-                proxyStr.append(returnTypes[i] + ' Interfaces::' + funcNames[i] + '\n')
-                proxyStr.append(codes[i])
-                proxyStr.append('\n\n')
+        returnTypes, funcNames, codes = CPPParser.parseFunctions(functions)
+        for i in range(len(returnTypes)):
+            proxyStr.append(returnTypes[i] + ' Interfaces::' + funcNames[i] + '\n')
+            proxyStr.append(codes[i])
+            proxyStr.append('\n\n')
 
 
     def generateReadArgs(self, argStr, projectName):
