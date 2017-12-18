@@ -39,12 +39,6 @@ SET(CPACK_COMPONENT_GAZEBOSERVER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Drivers (sections 3-9)
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_LASER-SERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-viewer, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
-SET(CPACK_COMPONENT_LASER-SERVER_DESCRIPTION  
-"Server for Hokuyo and RPLidar lasers. 
- Manual Page http://jderobot.org/index.php/Drivers#Laser_Server
- Home page https://jderobot.org")
-
 SET(CPACK_DEBIAN_OPENNISERVER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
 SET(CPACK_COMPONENT_OPENNISERVER_DESCRIPTION  
 "Server for RGBD cameras (ASUS Xtion, Microsoft Kinect, Orbecc, ...) 
