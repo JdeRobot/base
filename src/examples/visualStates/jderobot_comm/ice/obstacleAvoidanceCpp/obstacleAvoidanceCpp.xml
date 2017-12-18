@@ -22,13 +22,7 @@
       </interface>
     </interfaces>
   </config>
-  <libraries/>
-  <state id="0" initial="True">
-    <posx>0.0</posx>
-    <posy>0.0</posy>
-    <name>root</name>
-    <code></code>
-    <functions>void calculate_obstacle() {
+  <functions>void calculate_obstacle() {
 	JdeRobotTypes::LaserData laserData = myLaser-&gt;getLaserData();
 	for (int i = 0; i &lt; laserData.values.size(); i++) {
 		if (laserData.values[i] &lt; obstacle_threshold) {
@@ -38,8 +32,14 @@
 	}
 	is_obstacle = false;
 }</functions>
-    <variables>float obstacle_threshold = 0.4;
+  <variables>float obstacle_threshold = 0.4;
 bool is_obstacle = false;</variables>
+  <libraries/>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
     <timestep>100</timestep>
     <state id="1" initial="True">
       <posx>845.0</posx>
@@ -47,8 +47,6 @@ bool is_obstacle = false;</variables>
       <name>move</name>
       <code>interfaces-&gt;myMotors-&gt;sendV(0.4);
 interfaces-&gt;myMotors-&gt;sendW(0);</code>
-      <functions></functions>
-      <variables></variables>
       <timestep>100</timestep>
       <transition id="1">
         <type>1</type>
@@ -68,8 +66,6 @@ return interfaces-&gt;is_obstacle;</condition>
       <name>avoid</name>
       <code>interfaces-&gt;myMotors-&gt;sendV(0);
 interfaces-&gt;myMotors-&gt;sendW(0.1);</code>
-      <functions></functions>
-      <variables></variables>
       <timestep>100</timestep>
       <transition id="2">
         <type>1</type>

@@ -24,22 +24,22 @@
       </topic>
     </topics>
   </config>
-  <libraries/>
-  <state id="0" initial="True">
-    <posx>0.0</posx>
-    <posy>0.0</posy>
-    <name>root</name>
-    <code></code>
-    <functions>def calculate_obstacle(self):
+  <functions>def calculate_obstacle(self):
 	laserData = self.turtlebotROS_laser_scan
 	for val in laserData.ranges:
 		if val &lt; self.obstacle_threshold:
 			self.is_obstacle = True
 			return
 	self.is_obstacle = False</functions>
-    <variables>self.obstacle_threshold = 0.4
+  <variables>self.obstacle_threshold = 0.4
 self.is_obstacle = False
 </variables>
+  <libraries/>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
     <timestep>100</timestep>
     <state id="1" initial="True">
       <posx>845.0</posx>
@@ -49,8 +49,6 @@ self.is_obstacle = False
 velCommand.linear.x = 0.3
 velCommand.angular.z = 0.0
 self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
-      <functions></functions>
-      <variables></variables>
       <timestep>100</timestep>
       <transition id="1">
         <type>1</type>
@@ -72,8 +70,6 @@ return self.rosNode.is_obstacle;</condition>
 velCommand.linear.x = 0.0
 velCommand.angular.z = 0.1
 self.rosNode.publishturtlebotROS_mobile_base_commands_velocity(velCommand)</code>
-      <functions></functions>
-      <variables></variables>
       <timestep>100</timestep>
       <transition id="2">
         <type>1</type>
