@@ -10,7 +10,7 @@ class processVideo():
 
 		self.url = URL
 		self.liveBroadcast = liveBroadcast
-		self.endDownloading = True
+		self.endDownloading = False
 		self.getImages = True
 		self.setFileList()
 
@@ -22,19 +22,22 @@ class processVideo():
 			command = shlex.split('youtube-dl -f 18 -g ' + self.url)
 		process= Popen(command,stdout=PIPE,stderr=PIPE)
 		stdout, sterr = process.communicate()
-		process.terminate()
+		if process.poll() is None:
+			process.terminate()
 		self.fileList = stdout
 
 	def getImage(self,init_time,end_time):
 
 		init_time = datetime.strftime(init_time,'%H:%M:%S')
 		end_time = datetime.strftime(end_time,'%H:%M:%S')
-		command = shlex.split("ffmpeg -i output.ts -start_number 0 -vf fps=25 -ss " + init_time + " -to " + end_time + " -f image2 -updatefirst 1 temp.jpg")
+		command = shlex.split("ffmpeg -i output.ts -start_number 0 -vf fps=24 -ss " + init_time + " -to " + end_time + " -f image2 -updatefirst 1 temp.jpg")
 		process= Popen(command,stdout=PIPE,stderr=PIPE)
 		code = process.poll()
 		while (code == None):
 			code = process.poll()
-		process.terminate()
+		if process.poll() is None:
+			print 'a'
+			process.terminate()
 	
 	def downloadVideo(self):
 		try:
@@ -52,13 +55,14 @@ class processVideo():
 			while (code == None):
 				code = process.poll()
 
-			print "Download finish"
+			print "*** Download finished ***"
 			self.endDownloading = True
 		except:
 			print "Can't download video"
 			print sys.exc_info[0]
 		finally:
-			process.terminate()
+			if process.poll() is None:
+				process.terminate()
 			
 	def changeName(self):
 		if os.path.isfile('./temp.jpg'):
@@ -73,11 +77,12 @@ class processVideo():
 				time = time.decode('utf-8')
 				time = time.split('\n')[1].split('=')[1]
 				time = datetime.strptime(time.split('.')[0],'%H:%M:%S')
+
 			else:
 				time = datetime.strptime('00:00:01', '%H:%M:%S')
 		except:
 			time = datetime.strptime('00:00:01', '%H:%M:%S')
 		finally:
-			process.terminate()
-
+			if process.poll() is None:
+				process.terminate()
 		return time

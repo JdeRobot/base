@@ -2,7 +2,6 @@ import threading,time
 import os
 from datetime import timedelta,datetime
 
-
 class ThreadImage(threading.Thread):
 	
 	def __init__(self,dataFlow,liveBroadcast):
@@ -13,16 +12,18 @@ class ThreadImage(threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		print "Getting Images"
+		print "Getting Images..."
 		_run = True
 		while not os.path.isfile('./output.ts'):
 			time.sleep(1)
 			
 		while(_run == True):
 			self.end_time = self.dataFlow.getVideoDuration()
+
 			if (self.end_time == self.init_time) and (self.dataFlow.endDownloading):
 				_run  = False
-			self.dataFlow.getImage(self.init_time,self.end_time)
+			if not(self.end_time == self.init_time):
+				self.dataFlow.getImage(self.init_time,self.end_time)
 			self.init_time = self.end_time
 
 class ThreadDownload(threading.Thread):
@@ -32,7 +33,7 @@ class ThreadDownload(threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		print("Download Started")
+		print("*** Download Started ***")
 		self.dataFlow.downloadVideo()
 
 class ThreadChangeName(threading.Thread):

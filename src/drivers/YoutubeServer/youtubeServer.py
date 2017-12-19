@@ -33,6 +33,11 @@ if __name__== "__main__":
 		imageThread = ThreadImage(dataFlow,liveBroadcast)
 		nameThread = ThreadChangeName(dataFlow,lock)
 
+		downloadThread.daemon = True
+		imageThread.daemon = True
+		nameThread.daemon = True
+		workQueue.daemon = True
+
 		downloadThread.start()
 		imageThread.start()
 		nameThread.start()
@@ -43,7 +48,7 @@ if __name__== "__main__":
 		adapter.add(object, Ice.stringToIdentity("youtubeServer"))
 		adapter.activate()
 		workQueue.join()
-		print('esperar a cierre')
 		ic.waitForShutdown()
 	except KeyboardInterrupt:
-		sys.exit()        
+		print 'Killing...'
+		sys.exit(0)        

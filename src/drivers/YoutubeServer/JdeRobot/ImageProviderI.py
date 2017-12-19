@@ -39,7 +39,8 @@ class Job(object):
 
 		self.imageDescription = jderobot.ImageData()
 		self.lock.acquire()
-		self.imageDescription.description = ImageProviderI.getImageDescription(self)
+		self.imageP = ImageProviderI(self)
+		self.imageDescription.description = self.imageP.getImageDescription()
 		if os.path.isfile('./image.jpg'):
 			try:
 				self.im = Image.open('./image.jpg','r')
