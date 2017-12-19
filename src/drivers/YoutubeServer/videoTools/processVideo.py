@@ -6,12 +6,15 @@ import threading
 
 class processVideo():
 
-	def __init__(self,URL,liveBroadcast):
+	def __init__(self,URL,liveBroadcast, outdir, fps, ydlFormat):
 
 		self.url = URL
 		self.liveBroadcast = liveBroadcast
 		self.endDownloading = False
 		self.getImages = True
+		self.outdir = outdir
+		self.fps = fps
+		self.fmt = ydlFormat
 		self.setFileList()
 
 	def setFileList(self):
@@ -19,7 +22,8 @@ class processVideo():
 		if self.liveBroadcast:
 			command = shlex.split('youtube-dl -f 92 -g ' + self.url)
 		else:
-			command = shlex.split('youtube-dl -f 18 -g ' + self.url)
+			command = shlex.split('youtube-dl -f '+ self.fmt +' -g ' + self.url)
+		print command
 		process= Popen(command,stdout=PIPE,stderr=PIPE)
 		stdout, sterr = process.communicate()
 		if process.poll() is None:
@@ -30,7 +34,8 @@ class processVideo():
 
 		init_time = datetime.strftime(init_time,'%H:%M:%S')
 		end_time = datetime.strftime(end_time,'%H:%M:%S')
-		command = shlex.split("ffmpeg -i output.ts -start_number 0 -vf fps=24 -ss " + init_time + " -to " + end_time + " -f image2 -updatefirst 1 temp.jpg")
+		command = shlex.split("ffmpeg -i "+ self.outdir +"output.ts -start_number 0 -vf fps="+ self.fps + " -ss " + init_time + " -to " + end_time + " -f image2 -updatefirst 1 "+ self.outdir +"temp.jpg")
+		print command
 		process= Popen(command,stdout=PIPE,stderr=PIPE)
 		code = process.poll()
 		while (code == None):
@@ -41,15 +46,16 @@ class processVideo():
 	
 	def downloadVideo(self):
 		try:
-			if os.path.isfile('output.ts'):
-				os.remove("./output.ts")
+			if os.path.isfile(self.outdir + 'output.ts'):
+				os.remove(self.outdir + "output.ts")
 				
 			data = self.fileList.splitlines()
 			data= data[0].decode('utf-8')
 			if self.liveBroadcast:
-				command=shlex.split('ffmpeg -i ' + data + ' -c copy output.ts')
+				command=shlex.split('ffmpeg -i ' + data + ' -c copy ' + self.outdir +'output.ts')
 			else:
-				command=shlex.split('ffmpeg -r 24 -i ' + data + ' -r 24 output.ts')
+				command=shlex.split('ffmpeg -r '+ self.fps +' -i ' + data + ' -r '+ self.fps +' ' + self.outdir + 'output.ts')
+			print command
 			process= Popen(command,stdout=PIPE,stderr=PIPE)
 			code = process.poll()
 			while (code == None):
@@ -65,13 +71,14 @@ class processVideo():
 				process.terminate()
 			
 	def changeName(self):
-		if os.path.isfile('./temp.jpg'):
-			os.rename("temp.jpg","image.jpg")
+		if os.path.isfile(self.outdir + 'temp.jpg'):
+			os.rename(self.outdir + "temp.jpg",self.outdir + "image.jpg")
 
 	def getVideoDuration(self):
 		try:
-			if os.path.isfile('output.ts'):
-				command = shlex.split('ffprobe -show_entries format=duration -sexagesimal output.ts') 
+			if os.path.isfile(self.outdir + 'output.ts'):
+				command = shlex.split('ffprobe -show_entries format=duration -sexagesimal '+ self.outdir + 'output.ts') 
+				print command
 				process = Popen(command ,stdout=PIPE,stderr=PIPE)
 				time,stderr = process.communicate()
 				time = time.decode('utf-8')

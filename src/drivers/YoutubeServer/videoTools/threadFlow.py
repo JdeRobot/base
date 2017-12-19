@@ -4,17 +4,18 @@ from datetime import timedelta,datetime
 
 class ThreadImage(threading.Thread):
 	
-	def __init__(self,dataFlow,liveBroadcast):
+	def __init__(self,dataFlow,liveBroadcast, outdir):
 		self.dataFlow = dataFlow
 		self.format_time = '%H:%M:%S'
 		self.init_time = datetime.strptime('00:00:00',self.format_time)
 		self.liveBroadcast = liveBroadcast
+		self.outdir = outdir
 		threading.Thread.__init__(self)
 
 	def run(self):
 		print "Getting Images..."
 		_run = True
-		while not os.path.isfile('./output.ts'):
+		while not os.path.isfile(self.outdir + 'output.ts'):
 			time.sleep(1)
 			
 		while(_run == True):

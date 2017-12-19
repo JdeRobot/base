@@ -22,11 +22,12 @@ class WorkQueue(threading.Thread):
 
 class Job(object):
 	
-	def __init__(self,cb,formato,lock):
+	def __init__(self,cb,formato,lock, outdir):
 		self.cb = cb
 		self.format = formato
 		self.imageDescription = jderobot.ImageData()
 		self.lock = lock
+		self.outdir = outdir
 	
 	def execute(self):
 		if not self.getData():
@@ -39,11 +40,11 @@ class Job(object):
 
 		self.imageDescription = jderobot.ImageData()
 		self.lock.acquire()
-		self.imageP = ImageProviderI(self)
+		self.imageP = ImageProviderI(self, self.outdir)
 		self.imageDescription.description = self.imageP.getImageDescription()
-		if os.path.isfile('./image.jpg'):
+		if os.path.isfile(self.outdir + 'image.jpg'):
 			try:
-				self.im = Image.open('./image.jpg','r')
+				self.im = Image.open(self.outdir + 'image.jpg','r')
 				self.lock.release()
 				self.im = self.im.convert('RGB')
 				self.imRGB = list(self.im.getdata())
@@ -65,8 +66,9 @@ class Job(object):
 
 class ImageProviderI(jderobot.Camera):
 
-	def __init__(self,workQueue):
+	def __init__(self,workQueue, outdir):
 		self.workQueue = workQueue
+		self.outdir = outdir
 
 	def getCameraDescription(self):
 		return 0
@@ -86,9 +88,9 @@ class ImageProviderI(jderobot.Camera):
 	def getImageDescription(self,current=None):
 
 		self.imageData = jderobot.ImageDescription() 
-		if os.path.isfile('./image.jpg'):
+		if os.path.isfile(self.outdir + 'image.jpg'):
 			try:
-				self.image= Image.open('./image.jpg','r')
+				self.image= Image.open(self.outdir + 'image.jpg','r')
 				self.imageData.width = self.image.width
 				self.imageData.height = self.image.height
 				self.image.close()
@@ -100,5 +102,5 @@ class ImageProviderI(jderobot.Camera):
 			return self.imageData
 
 	def getImageData_async(self,cb,formato,curren=None):
-		job = Job(cb,formato,self.workQueue.lock)
+		job = Job(cb,formato,self.workQueue.lock, self.outdir)
 		return self.workQueue.add(job)
