@@ -1,7 +1,0 @@
-sample2:
-  NodeName: sample2
-  pose3d:
-    Name: pose3d
-    Proxy: pose3d:default -h localhost -p 9001
-    Server: 1
-    Topic: ''
