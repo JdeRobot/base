@@ -56,3 +56,9 @@ SET(CPACK_COMPONENT_MAVLINKSERVER_DESCRIPTION
 "Driver for MAVLink based air drones and planes
  Manual page http://jderobot.org/index.php/Drivers#ardrone_server
  Home page https://jderobot.org")
+
+ SET(CPACK_DEBIAN_YOUTUBESERVER-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-interfaces, youtube-dl")
+SET(CPACK_COMPONENT_YOUTUBESERVER-PYTHON_DESCRIPTION  
+"Driver for get videos from youtube as images server
+ Manual page http://jderobot.org/index.php/Drivers#ardrone_server
+ Home page https://jderobot.org")

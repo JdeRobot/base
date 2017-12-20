@@ -1,4 +1,24 @@
 
+jderobot (5.6.2) unstable; urgency=low
+
+  * release 5.6.2
+  * Solved some bugs and updated to even ROS update packages due to opencv package stopped working.
+  * Added some little improvements in some tools. 
+  * [PR #963] Scratch2JdeRobot: generation of output node in a single step
+  * [PR #966] Added suppor for bumper sensor in comm.
+  * [PR #969] Added new server for cameras in python using openCV instead our visionlib
+  * [PR #973] Added examples for visualStates
+  * [PR #974] Improvements in visualStates.
+  * [PR #975] Added new interface for pause, stop, resume, etc.
+  * [PR #979] Webtools are operative again.
+  * [PR #982] Migrated uav_viewer to make it compatible with python 2.7
+  * [PR #988] Deleted kobuki_driver and laser_server and added ros drivers for kobuki and lasers.
+  * [PR #950] [PR #1001] Added new server: Youtube server. Now we can have another source of video.
+  * [PR #1006] Final and fully functional version of visualStates.
+
+-- Francisco Perez <f.perez475@gmail.com>, Wed, 20 Dec 2017 17:06:00 +0100
+
+
 jderobot (5.6.1) unstable; urgency=low
 
   * release 5.6.1

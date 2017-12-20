@@ -1,0 +1,14 @@
+obstacleAvoidancePython:
+  NodeName: obstacleAvoidancePython
+  myLaser:
+    Name: myLaser
+    Proxy: Laser:default -h localhost -p 9001
+    Server: 1
+    Topic: ''
+  myMotors:
+    Name: myMotors
+    Proxy: Motors:default -h localhost -p 9001
+    Server: 1
+    Topic: ''
+    maxV: 5.0
+    maxW: 0.5
