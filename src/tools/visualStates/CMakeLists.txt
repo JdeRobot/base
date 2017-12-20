@@ -1,124 +1,73 @@
-IF (goocanvasmm_INCLUDE_DIRS)
+cmake_minimum_required(VERSION 2.8)
 
-SET( SOURCE_FILES_VISUALSTATES
-	iceinterface.cpp
-	point.cpp
-	node.cpp
-	transition.cpp
-	guinode.cpp
-	subautomata.cpp
-	guitransition.cpp
-	guisubautomata.cpp
-	generate.cpp
-	popups/configfiledialog.cpp
-	popups/editnodedialog.cpp
-	popups/edittransitiondialog.cpp
-    popups/edittransitioncodedialog.cpp
-	popups/funvardialog.cpp
-	popups/librariesdialog.cpp
-	popups/loadfiledialog.cpp
-	popups/renamedialog.cpp
-	popups/renametransitiondialog.cpp
-	popups/savefiledialog.cpp
-	popups/timerdialog.cpp
-	savefile.cpp
-	xmlparser.cpp
-	visualStates.cpp
-	main.cpp
-)
+# set the cmake variables to be used in the source code
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/cmakevars.py.in ${CMAKE_CURRENT_SOURCE_DIR}/gui/cmakevars.py)
 
 
-SET( SOURCE_FILES_RUNTIMEGUI
-		automatagui.cpp
-		point.cpp
-		node.cpp
-		transition.cpp
-		subautomata.cpp
-		guinode.cpp
-		guitransition.cpp
-		guisubautomata.cpp
-		popups/editnodedialog.cpp
-		popups/edittransitiondialog.cpp
-		popups/edittransitioncodedialog.cpp
-		popups/renamedialog.cpp
-		popups/renametransitiondialog.cpp
-)
-
-link_directories(
-	${resourcelocator_LIBRARY_DIRS}
-)
-
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
-    ${INTERFACES_CPP_DIR}
-    ${LIBS_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${gtkmm3_INCLUDE_DIRS}
-    ${goocanvasmm_INCLUDE_DIRS}
-    ${gtk3_INCLUDE_DIRS}
-    ${libxmlpp_INCLUDE_DIRS}
-    ${resourcelocator_INCLUDE_DIRS}
-)
-
-add_executable (visualStates ${SOURCE_FILES_VISUALSTATES})
-JDEROBOT_ADD_LIBRARY(visualStateslib ${SOURCE_FILES_RUNTIMEGUI})
-
-TARGET_LINK_LIBRARIES ( visualStates
-    ${gtkmm3_LIBRARIES}
-    ${goocanvasmm_LIBRARIES}
-    ${gtk3_LIBRARIES}
-    ${libxmlpp_LIBRARIES}
-    ${resourcelocator_LIBRARIES}
-		${GLOG_LIBRARIES}
-
-		)
-
-TARGET_LINK_LIBRARIES ( visualStateslib
-		${gtkmm3_LIBRARIES}
-		${goocanvasmm_LIBRARIES}
-		${gtk3_LIBRARIES}
-		${libxmlpp_LIBRARIES}
-		${resourcelocator_LIBRARIES}
-		${GLOG_LIBRARIES}
-		)
 
 configure_file(
-		cmakevars.hpp.in
-		cmakevars.hpp
-		@ONLY
+    visualStates_py.in
+    visualStates_py
+    @ONLY
 )
 
-add_custom_command(TARGET visualStates POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/gui $<TARGET_FILE_DIR:visualStates>/gui)
 
-    install(TARGETS visualStates
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT tools)
+SET(SOURCE_CPP_RUNTIME
+	codegen/cpp/state.cpp
+	codegen/cpp/transition.cpp
+	codegen/cpp/temporaltransition.cpp
+    codegen/cpp/runtimegui.cpp
+)
 
-	install(TARGETS visualStateslib
-		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
-		COMPONENT tools)
+INCLUDE_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/include)
+LINK_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/lib)
 
-	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh 
-      PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
-	  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+ADD_LIBRARY(visualStatesRunTime SHARED ${SOURCE_CPP_RUNTIME})
+TARGET_LINK_LIBRARIES(visualStatesRunTime easyiceconfig Ice JderobotInterfaces IceUtil pthread)
 
-    # Install Glade
-	FILE(GLOB_RECURSE GLADE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gui/*.glade)
-	INSTALL (FILES ${GLADE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade)
+INSTALL(TARGETS visualStatesRunTime DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/visualstates_py/ COMPONENT visualStates-python)
 
-	# install resources (jderobot logo)
-	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/jderobot.png DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/resources)
+#install runtime headers
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/codegen/cpp/
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/include/visualstates_py/ COMPONENT visualStates-python
+		FILES_MATCHING PATTERN "*.h")
 
-	# Install C++ Headers
-	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-	INSTALL(FILES ${h_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visualStates)
+# install cpp sources for ros node generation
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/codegen/cpp/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/visualstates_py/ COMPONENT visualState-python)
 
-	FILE(GLOB h_files "${CMAKE_CURRENT_SOURCE_DIR}/popups/*.h")
-	INSTALL(FILES ${h_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/visualStates/popups)
+#install python runtime dependencies
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/codegen/python/
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/python/
+		COMPONENT visualStates-python
+		PATTERN __pycache__ EXCLUDE )
 
-	# Install Python Files
-	FILE(GLOB p_files "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
-	INSTALL(FILES ${p_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/visualStates_py)
+# install python runtime gui dependencies
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gui
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/ COMPONENT visualStates-python
+		FILES_MATCHING PATTERN "*.py"
+		)
 
-ENDIF()
+# install python module __init__.py
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/ COMPONENT visualStates-python)
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/ COMPONENT visualStates-python)
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/codegen/python/ COMPONENT visualStates-python)
+
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/visualStates.py
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python2.7/visualStates_py/ COMPONENT visualStates-python)
+
+# install getinterfaces.sh bash script to be able to get the interfaces
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/getinterfaces.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ PERMISSIONS
+OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE COMPONENT visualStates-python)
+
+
+# Install launcher
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/visualStates_py
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+    DESTINATION bin
+    COMPONENT visualStates-python
+)
