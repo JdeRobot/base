@@ -18,6 +18,8 @@
 #       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
 #
 
+import time
+
 import traceback
 import jderobot
 import threading
@@ -83,6 +85,7 @@ class PTMotors:
     def sendPTMotorsData(self):
         if self.hasproxy():
             self.lock.acquire()
+            self.data.timeStamp = time.time()
             self.proxy.setPTMotorsData(self.data)
             self.lock.release()
 
