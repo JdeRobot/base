@@ -35,6 +35,7 @@ module jderobot{
 		float panSpeed;
 		float tilt;
 		float tiltSpeed;
+		long timeStamp;
 	};
 
 	/** 
