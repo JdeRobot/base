@@ -3,8 +3,8 @@ import Ice
 import rospy
 from .ice.rgbdIceClient import RgbdIceClient
 
-#if (sys.version_info[0] == 2):
-#    from .ros.listenerRgbd import ListenerRgbd
+if (sys.version_info[0] == 2):
+    from .ros.listenerRgbd import ListenerRgbd
 
 def __getRgbdIceClient(jdrc, prefix):
     '''
@@ -38,12 +38,13 @@ def __getListenerRgbd(jdrc, prefix):
 
     '''
     if (sys.version_info[0] == 2):
-        #print("Receiving " + prefix + " Rgbd from ROS messages")
-        #topic = jdrc.getConfig().getProperty(prefix+".Topic")
-        #client = ListenerRgbd(topic)
-        #return client
-        print(prefix + ": This Interface doesn't support ROS msg")
-        return None
+        print("Receiving " + prefix + " Rgbd from ROS messages")
+        topicrgb = jdrc.getConfig().getProperty(prefix+".Topicrgb")
+        topicd = jdrc.getConfig().getProperty(prefix+".Topicd")
+        client = ListenerRgbd(topicrgb, topicd)
+        return client
+        #print(prefix + ": This Interface doesn't support ROS msg")
+        #return None
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
         return None

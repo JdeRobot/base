@@ -37,6 +37,8 @@
 #include "cv_bridge/cv_bridge.h"
 #include "sensor_msgs/image_encodings.h"
 
+#include <jderobot/types/rgbd.h>
+
 
 #include <jderobot/types/cmdvel.h>
 #include <geometry_msgs/Twist.h>
@@ -79,6 +81,19 @@ namespace Comm {
 	 * @return Image translated from ROS Message 
 	 */
 	JdeRobotTypes::Image translate_image_messages(const sensor_msgs::ImageConstPtr& image_msg);
+
+
+	/**
+	 * @brief translate ROS images messages to JdeRobot Rgbd
+	 *
+	 *
+	 * @param ROS Image Message
+	 * @param ROS Image Message
+	 * 
+	 *
+	 * @return Rgbd translated from ROS Messages 
+	 */
+	JdeRobotTypes::Rgbd translate_rgbd(const sensor_msgs::ImageConstPtr& rgb,const sensor_msgs::ImageConstPtr& d);
 
 	/**
 	 * @brief Translates from 32FC1 Image format to RGB. Inf values are represented by NaN, when converting to RGB, NaN passed to 0 

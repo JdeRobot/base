@@ -99,6 +99,17 @@ namespace Comm {
 		return img;
 	}
 
+
+	JdeRobotTypes::Rgbd 
+	translate_rgbd(const sensor_msgs::ImageConstPtr& rgb,const sensor_msgs::ImageConstPtr& d){
+		JdeRobotTypes::Rgbd rgbd;
+		rgbd.timeStamp = rgb->header.stamp.sec + (rgb->header.stamp.nsec *1e-9);
+		rgbd.color = translate_image_messages(rgb);
+		rgbd.depth = translate_image_messages(d);
+		return rgbd;
+
+	}
+
 	geometry_msgs::Twist 
 	translate_twist_messages(JdeRobotTypes::CMDVel cmdvel ){
 		geometry_msgs::Twist vel;

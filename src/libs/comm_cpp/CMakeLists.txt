@@ -96,6 +96,7 @@ IF(JDEROBOTCOM_ROS)
         include/jderobot/comm/ros/listenerPose.hpp
         include/jderobot/comm/ros/publisherMotors.hpp
         include/jderobot/comm/ros/listenerBumper.hpp
+        include/jderobot/comm/ros/listenerRgbd.hpp
     )
 
     set(SOURCES
@@ -106,6 +107,7 @@ IF(JDEROBOTCOM_ROS)
         src/ros/listenerPose.cpp
         src/ros/publisherMotors.cpp
         src/ros/listenerBumper.cpp
+        src/ros/listenerRgbd.cpp
     )
 
 ENDIF()
