@@ -34,7 +34,6 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     jderobotutil
     progeo
 	geometry
-    pioneer
     ${gsl_LIBRARIES}
     ${easyiceconfig_LIBRARIES} 
     ${ZeroCIce_LIBRARIES}
