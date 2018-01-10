@@ -15,13 +15,13 @@
     <!-- Stop signs -->
     <include>
       <static>true</static>
-      <uri>model://gazebo/models/stop_sign</uri>
+      <uri>model://stop_sign</uri>
       <pose>3.5 -3.5 0 0 0 0</pose>
     </include>
     
     <include>
       <static>true</static>
-      <uri>model://gazebo/models/stop_sign</uri>
+      <uri>model://stop_sign</uri>
       <pose>-3 3 0 0 0 3.15</pose>
     </include>
     
@@ -29,12 +29,12 @@
     <!-- Houses -->
     <include>
       <uri>model://house_1</uri>
-      <pose>-9.5 8.5 0 0 0 0</pose>
+      <pose>-12 12 0 0 0 0</pose>
     </include>
     
     <include>
       <uri>model://house_2</uri>
-      <pose>-25 7.5 0 0 0 0</pose>
+      <pose>-32 9 0 0 0 0</pose>
     </include>
     
     <include>
