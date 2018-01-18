@@ -1,5 +1,4 @@
-<?xml version='1.0'?>
-<sdf version="1.5">
+<?xml version='1.0'?> <sdf version='1.6'> 
 <model name="mbot">
     <link name="chasis">
     	<pose>0 0 0 0 0 0</pose>
@@ -20,6 +19,7 @@
               <uri>model://mbot/meshes/chasis.dae</uri>
           	</mesh>
           </geometry>
+		
        	</collision>
       	<visual name="visual">
           <geometry>
@@ -28,6 +28,161 @@
             </mesh>
           </geometry>
       	</visual>
+    </link>
+
+    <link name="us">
+    	<pose>0 0 0 0 0 0</pose>
+    	<inertial>
+          	<mass>0.05</mass>
+          <inertia>
+            <ixx>1</ixx>
+          	<ixy>0</ixy>
+          	<iyy>1</iyy>
+          	<ixz>0</ixz>
+          	<iyz>0</iyz>
+          	<izz>1</izz>
+          </inertia>
+      	</inertial>
+      	<collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/us_sensor.dae</uri>
+          	</mesh>
+          </geometry>
+		
+       	</collision>
+      	<visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/us_sensor.dae</uri>
+            </mesh>
+          </geometry>
+      	</visual>
+	<sensor name="sonar" type="sonar">
+          <pose>0.083 -0.004 0.058 0 -1.5707 0</pose>
+          <sonar>
+            <min>0.03</min>
+            <max>4.00</max>
+            <radius>0.01</radius>
+          </sonar>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+        </sensor>
+    </link>
+
+    <link name="picam">
+    	<pose>0 0 0 0 0 0</pose>
+    	<inertial>
+          	<mass>0.05</mass>
+          <inertia>
+            <ixx>1</ixx>
+          	<ixy>0</ixy>
+          	<iyy>1</iyy>
+          	<ixz>0</ixz>
+          	<iyz>0</iyz>
+          	<izz>1</izz>
+          </inertia>
+      	</inertial>
+      	<collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/picam.dae</uri>
+          	</mesh>
+          </geometry>
+		
+       	</collision>
+      	<visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/picam.dae</uri>
+            </mesh>
+          </geometry>
+      	</visual>
+        <sensor name='picam' type='camera'>
+          <pose>0.072 -0.007 0.083 0 0 0</pose>	
+          <camera>
+            <!--<save enabled="true">
+              <path>/tmp/camera_save_tutorial</path>
+            </save>-->
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>10</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <update_rate>30</update_rate>
+        </sensor>
+    </link>
+
+    <link name="ir">
+    	<pose>0 0 0 0 0 0</pose>
+    	<inertial>
+          	<mass>0.05</mass>
+          <inertia>
+            <ixx>1</ixx>
+          	<ixy>0</ixy>
+          	<iyy>1</iyy>
+          	<ixz>0</ixz>
+          	<iyz>0</iyz>
+          	<izz>1</izz>
+          </inertia>
+      	</inertial>
+      	<collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/ir_sensor.dae</uri>
+          	</mesh>
+          </geometry>
+		
+       	</collision>
+      	<visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://mbot/meshes/ir_sensor.dae</uri>
+            </mesh>
+          </geometry>
+      	</visual>
+        <sensor name='irLeft' type='camera'>
+          <pose>0.090 0.002 0.010 0 1.5707 0</pose>	
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>2</width>
+              <height>2</height>
+            </image>
+            <clip>
+              <near>0.0001</near>
+              <far>0.2</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <update_rate>30</update_rate>
+        </sensor>
+        <sensor name='irRight' type='camera'>
+          <pose>0.090 -0.0011 0.010 0 1.5707 0</pose>	
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>2</width>
+              <height>2</height>
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>0.2</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <update_rate>30</update_rate>
+        </sensor>
     </link>
 
     <link name="right_wheel">
@@ -104,6 +259,30 @@
       <axis>
         <xyz>0 1 0</xyz>
       </axis>
+    </joint>
+    <joint type="revolute" name="us_fix">
+        <pose>0 0 0 0 0 0</pose>
+        <child>us</child>
+        <parent>chasis</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+        </axis>
+    </joint>
+    <joint type="revolute" name="ir_fix">
+        <pose>0 0 0 0 0 0</pose>
+        <child>ir</child>
+        <parent>chasis</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+        </axis>
+    </joint>
+    <joint type="revolute" name="picam_fix">
+        <pose>0 0 0 0 0 0</pose>
+        <child>picam</child>
+        <parent>chasis</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+        </axis>
     </joint>
 
 <plugin name="carMotors" filename="libholoCarMotors.so"/>
