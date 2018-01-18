@@ -357,7 +357,7 @@ Viewer::displayFrameRate()
 
 bool Viewer::on_eventbox_extrinsics_clicked(GdkEventButton * event)
 {
-
+	std::cout << "Included clicked pixel to compute calibration" << std::endl;
 	if (mCalibration){
 
 		pthread_mutex_lock(&mutex);
