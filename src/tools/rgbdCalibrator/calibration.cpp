@@ -22,8 +22,6 @@
 #include <calibration.h>
 #include <iostream> 
 
-#include <progeo/progeo.h>
-
 
 
 
@@ -36,7 +34,6 @@ namespace rgbdCalibrator{
 // You can see in OpenCV samples:
 //     - samples/cpp/tutorial_code/calib3d/camera_calibration/
 
-TPinHoleCamera myCamA;
 
 Calibration::Calibration(): mProgeo(NULL)
 {
@@ -171,30 +168,6 @@ double Calibration::computeReprojectionErrors( const vector<vector<Point3f> >& o
 	}
 
 	return std::sqrt(totalErr/totalPoints);
-}
-
-void progeo_old_test ()
-{
-
-	xmlReader(&myCamA, "./cameraB.xml");
-	display_camerainfo(myCamA);
-
-	update_camera_matrix(&myCamA);
-	display_camerainfo(myCamA);
-
-	HPoint2D pixel;
-	pixel.x =180.;
-	pixel.y =59.;
-	pixel.h = 1.;
-
-	std::cout << pixel.x << " , " << pixel.y << std::endl;
-
-	HPoint3D p3D;
-
-	backproject(&p3D, pixel, myCamA);
-
-	std::cout << p3D.X << " , " << p3D.Y << " , " << p3D.Z << std::endl;
-
 }
 
 
