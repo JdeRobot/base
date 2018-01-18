@@ -664,26 +664,40 @@ void Calibration::saveFile(std::string fileName, Eigen::Vector4d offset)
 
 void Calibration::test(Eigen::Vector3d pixel, std::vector<colorspaces::Image> depthVector)
 {
-	std::cout << "====== TEST ====== " << std::endl;
+	try {
+		std::cout << "====== TEST ====== " << std::endl;
 
-	Eigen::Vector4d pCamera(0.,0.,1000000.,0.);
-	Eigen::Vector3d pixelGraphic;
-	colorspaces::Image depthData;
+		Eigen::Vector4d pCamera(0., 0., 1000000., 0.);
+		Eigen::Vector3d pixelGraphic;
+		colorspaces::Image depthData;
 
-	getBestDepth(pixel, depthVector, depthData, pCamera, pixelGraphic);
+		getBestDepth(pixel, depthVector, depthData, pCamera, pixelGraphic);
 
-	//getRealPoint(pixelGraphic, depthData, pCamera);
+		if ((pCamera(0) ==0) and (pCamera(1) == 0)){
+			std::cout << "Error getting information: " << std::endl;
+			return;
+		}
 
-	std::cout << "Pto ref Cámara: (" << pCamera(0) << "," << pCamera(1) << "," << pCamera(2) << ")  - ";
-	std::cout << "Dist: " << sqrt( (pCamera(0)*pCamera(0)) + (pCamera(1)*pCamera(1)) + (pCamera(2)*pCamera(2))) << std::endl;
 
-	Eigen::Vector4d s = mRTsolution * pCamera;
-	std::cout << "Pto ref Patron: (" << s(0) << "," << s(1) << "," << s(2) << ")  - ";
+			//getRealPoint(pixelGraphic, depthData, pCamera);
 
-	std::cout << "Dist: " << sqrt( (s(0)*s(0)) + (s(1)*s(1)) + (s(2)*s(2))) << std::endl;
+		std::cout << "Point using camera reference: (" << pCamera(0) << "," << pCamera(1) << "," << pCamera(2)
+				  << ")  - ";
+		std::cout << "Dist: " << sqrt((pCamera(0) * pCamera(0)) + (pCamera(1) * pCamera(1)) + (pCamera(2) * pCamera(2)))
+				  << std::endl;
 
-	float depth = (int)depthData.data[((depthData.cols*(int)pixel(1))+(int)pixel(0))*3+1]<<8 | (int)depthData.data[((depthData.cols*(int)pixel(1))+(int)pixel(0))*3+2];
-	std::cout << "Real Dist Xtion: " << depth << std::endl;
+		Eigen::Vector4d s = mRTsolution * pCamera;
+		std::cout << "Point using pattern reference: (" << s(0) << "," << s(1) << "," << s(2) << ")  - ";
+
+		std::cout << "Dist: " << sqrt((s(0) * s(0)) + (s(1) * s(1)) + (s(2) * s(2))) << std::endl;
+
+		float depth = (int) depthData.data[((depthData.cols * (int) pixel(1)) + (int) pixel(0)) * 3 + 1] << 8 |
+					  (int) depthData.data[((depthData.cols * (int) pixel(1)) + (int) pixel(0)) * 3 + 2];
+		std::cout << "Real Dist Xtion: " << depth << std::endl;
+	}
+	catch (...){
+		std::cout << "Error while estimating 3D point" << std::endl;
+	}
 }
 
 void Calibration::LSO()
