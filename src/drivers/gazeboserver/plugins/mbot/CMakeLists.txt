@@ -48,7 +48,17 @@ target_link_libraries(camera_dumpMBOT ${GAZEBO_libraries}
 	${easyiceconfig_LIBRARIES}
 )
 
-INSTALL (TARGETS motorsMBOT sonarMBOT pose3dMBOT camera_dumpMBOT
+add_library(irMBOT SHARED ir.cc)
+target_link_libraries(irMBOT ${GAZEBO_libraries} 
+	CameraPlugin 	
+	${GAZEBO_libraries} 
+	${ZeroCIce_LIBRARIES} 
+	colorspacesmm
+	JderobotInterfaces
+	${easyiceconfig_LIBRARIES}
+)
+ 
+INSTALL (TARGETS motorsMBOT sonarMBOT pose3dMBOT camera_dumpMBOT irMBOT
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/mbot/ 
 	COMPONENT gazeboserver)
 

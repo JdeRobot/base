@@ -54,11 +54,11 @@ namespace gazebo
             robotMotors.targetRightSteerPos=robotMotors.targetLeftSteerPos=0;
 
             count++;
-            //std::string name = this->model->GetName();
+            std::string name = this->model->GetName();
             //std::cout << "Model name " << name << std::endl;
 
-            //nameMotors = std::string("--Ice.Config=" + name +"motors.cfg");
-            nameMotors = std::string("--Ice.Config=holoCarMotors.cfg");
+            nameMotors = std::string("--Ice.Config=" + name +"Motors.cfg");
+            //nameMotors = std::string("--Ice.Config=holoCarMotors.cfg");
             pthread_t thr_gui;
             pthread_create(&thr_gui, NULL, &motorsICE, (void*) this);
 
