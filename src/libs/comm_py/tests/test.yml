@@ -33,6 +33,12 @@ Test:
     Topic: "/turtlebotROS/laser/scan"
     Name: testLaser
 
+  Sonar:
+    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Proxy: "Sonar:default -h localhost -p 8993"
+    Topic: "/turtlebotROS/laser/scan"
+    Name: testSonar
+
   CMDVel:
     Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
     Proxy: "CMDVel:default -h 0.0.0.0 -p 9000"
