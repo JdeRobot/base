@@ -10,13 +10,13 @@ namespace gazebo {
         pthread_mutex_init(&mutex, NULL);
         pthread_mutex_init(&mutexPose3D, NULL);
         count = 0;
-        //exit(1);
-        std::cout << "-----------------constructor Pose3D" << std::endl;
     }
 
     void Pose3D::Load(physics::ModelPtr _parent, sdf::ElementPtr) {
 
         model = _parent;
+        std::cout << "Load: " << model->GetName()<< std::endl;
+
         this->updateConnection = event::Events::ConnectWorldUpdateBegin(
                 boost::bind(&Pose3D::OnUpdate, this));
     }
@@ -31,7 +31,6 @@ namespace gazebo {
         if (count == 0) {
             count++;
             std::string name = this->model->GetName();
-            std::cout << "GetName() Pose3D: " << name << std::endl;
             namePose3D = std::string("--Ice.Config=" + name + "Pose3D.cfg");
             pthread_t thr_gui;
             pthread_create(&thr_gui, NULL, &Pose3DICE, (void*) this);
@@ -87,7 +86,6 @@ namespace gazebo {
         virtual jderobot::Pose3DDataPtr getPose3DData(const Ice::Current&) {
             pthread_mutex_lock(&pose->mutex);
 
-            //std::cout << "theta: " << pose->robotPose3D.theta << std::endl;
 
             Pose3DData->x = pose->robotPose3D.x * 1000;
             Pose3DData->y = pose->robotPose3D.y * 1000;

@@ -68,6 +68,7 @@
           <always_on>1</always_on>
           <update_rate>30</update_rate>
           <visualize>true</visualize>
+          <plugin name='camera_dump' filename='libsonarMBOT.so'/>
         </sensor>
     </link>
 
@@ -116,7 +117,7 @@
             </clip>
           </camera>
           <always_on>1</always_on>
-          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <plugin name='camera_dump' filename='libcamera_dumpMBOT.so'/>
           <update_rate>30</update_rate>
         </sensor>
     </link>
@@ -163,7 +164,7 @@
             </clip>
           </camera>
           <always_on>1</always_on>
-          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <plugin name='camera_dump' filename='libcamera_dumpMBOT.so'/>
           <update_rate>30</update_rate>
         </sensor>
         <sensor name='irRight' type='camera'>
@@ -180,7 +181,7 @@
             </clip>
           </camera>
           <always_on>1</always_on>
-          <plugin name='camera_dump' filename='libcamera_dumpF1.so'/>
+          <plugin name='camera_dump' filename='libcamera_dumpMBOT.so'/>
           <update_rate>30</update_rate>
         </sensor>
     </link>
@@ -285,8 +286,8 @@
         </axis>
     </joint>
 
-<plugin name="carMotors" filename="libholoCarMotors.so"/>
-<!--<plugin name="pose3d" filename="libcarPose3D.so"/>-->
+<plugin name="carMotors" filename="libmotorsMBOT.so"/>
+<plugin name="pose3d" filename="libpose3DMBOT.so"/>
             
   </model>
 </sdf>

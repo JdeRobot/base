@@ -6,7 +6,6 @@ namespace gazebo
     
 	Sonar::Sonar() : SonarPlugin()
 	{
-		std::cout << "Sonar Constructor" <<std::endl;
 		count = 0;
 		pthread_mutex_init (&mutex, NULL);	
 	}
@@ -15,6 +14,7 @@ namespace gazebo
 	{
 	  // Don't forget to load the camera plugin
 	  SonarPlugin::Load(_parent,_sdf);
+      //std::cout << "Load: " << this->parentSensor->Name()<< std::endl;
 	  this->parentSensor =  std::dynamic_pointer_cast<sensors::SonarSensor>(_parent);
 	  this->updateConnection = event::Events::ConnectWorldUpdateBegin(
             boost::bind(&Sonar::OnUpdate, this));
@@ -49,7 +49,6 @@ namespace gazebo
 
 		pthread_mutex_lock (&mutex); 
 		sonarData = data;
-		std::cout << data.range << std::endl;
 		pthread_mutex_unlock (&mutex); 
 	}
 

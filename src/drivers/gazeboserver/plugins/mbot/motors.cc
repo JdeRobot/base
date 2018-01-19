@@ -17,7 +17,6 @@ namespace gazebo
         pthread_mutex_init(&mutex, NULL);
         pthread_mutex_init(&mutexMotor, NULL);
         count = 0;
-        std::cout << "constructor motors" << std::endl;
         //this->motorspeed[FRONTLEFT] = this->motorspeed[FRONTRIGHT] =  0;
         this->motorsteer = 0;
         this->motorspeed = 0;
@@ -25,6 +24,7 @@ namespace gazebo
     void Motors::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     {
         this->model = _model;
+        std::cout << "Load: " << this->model->GetName()<< std::endl;
         this->node = transport::NodePtr(new transport::Node());
         this->node->Init(this->model->GetWorld()->GetName());
 
@@ -109,9 +109,8 @@ namespace gazebo
 #endif
             count++;
             std::string name = this->model->GetName();
-            std::cout << "Model name " << name << std::endl;
 
-            nameMotors = std::string("--Ice.Config=" + name +"motors.cfg");
+            nameMotors = std::string("--Ice.Config=" + name +"Motors.cfg");
             //nameMotors = std::string("--Ice.Config=Motors.cfg");
             pthread_t thr_gui;
             pthread_create(&thr_gui, NULL, &motorsICE, (void*) this);
@@ -227,7 +226,6 @@ namespace gazebo
         Ice::CommunicatorPtr ic;
         int argc = 1;
         char* name = (char*) base->nameMotors.c_str();
-        std::cout << name << "\n";
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
 

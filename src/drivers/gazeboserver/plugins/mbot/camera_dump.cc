@@ -37,7 +37,7 @@ namespace gazebo
     {
       // Don't forget to load the camera plugin
       CameraPlugin::Load(_parent,_sdf);
-      std::cout << "Load: " <<n << " " <<  this->parentSensor->Camera()->Name()<< std::endl;
+      std::cout << "Load: " << this->parentSensor->Camera()->Name()<< std::endl;
     } 
 
     // Update the controller
@@ -45,18 +45,12 @@ namespace gazebo
         unsigned int _width, unsigned int _height, unsigned int _depth, 
         const std::string &_format)
     {
-      //std::cout << "OnNewFrame: " <<n << " " <<  this->parentSensor->GetCamera()->GetName()<< std::endl;
 		if(count==0){
 
 			std::string name = this->parentSensor->Camera()->Name();
-
-
-			std::cout <<" camera: " << name  << std::endl;
 		
 			std::vector<std::string> strs;
 			boost::split(strs, name, boost::is_any_of("::"));
-		
-
 
 			nameConfig = std::string("--Ice.Config=" + strs[4] + ".cfg");
 			nameCamera = std::string(strs[4]);
@@ -97,8 +91,6 @@ class CameraI: virtual public jderobot::Camera {
 		CameraI(std::string propertyPrefix, gazebo::CameraDump* camera)
 			   : prefix(propertyPrefix), cameraI(camera) {
 		
-			std::cout << "Constructor CameraI" << std::endl;
-
 			imageDescription = (new jderobot::ImageDescription());
 			cameraDescription = (new jderobot::CameraDescription());
 			cameraDescription->name = "camera Introrob";
@@ -162,8 +154,6 @@ class CameraI: virtual public jderobot::Camera {
 			public:
 				ReplyTask(CameraI* camera){
                     mycamera = camera;
-
-				   	std::cout << "safeThread" << std::endl;
 				}
 
 				void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
@@ -200,8 +190,6 @@ class CameraI: virtual public jderobot::Camera {
 							reply->description = mycamera->imageDescription;
 							count++;
 						}
-
-						//std::cout << nameGlobal<< std::endl;
 									
 						gettimeofday(&a,NULL);
 						totala=a.tv_sec*1000000+a.tv_usec;
@@ -231,8 +219,6 @@ class CameraI: virtual public jderobot::Camera {
 
 						diff = (totalb-totala)/1000;
 						diff = cycle-diff;
-
-						//std::cout << "Gazeboserver takes " << diff << " ms " << mycamera->fileName << std::endl;
 
 						if(diff < 33)
 							diff = 33;
