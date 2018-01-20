@@ -155,8 +155,8 @@
           <camera>
             <horizontal_fov>1.047</horizontal_fov>
             <image>
-              <width>2</width>
-              <height>2</height>
+              <width>640</width>
+              <height>480</height>
             </image>
             <clip>
               <near>0.0001</near>
@@ -172,8 +172,8 @@
           <camera>
             <horizontal_fov>1.047</horizontal_fov>
             <image>
-              <width>2</width>
-              <height>2</height>
+              <width>640</width>
+              <height>480</height>
             </image>
             <clip>
               <near>0.01</near>
@@ -245,6 +245,92 @@
         </visual>
     </link>
 
+    <link name="palm">
+            <pose>0 0 0 0 0 0</pose>
+            <inertial>
+                <inertia>
+                    <ixx>0.01</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.01</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.01</izz>
+                </inertia>
+                <mass>0.5</mass>
+            </inertial>
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/palm_grip.dae</uri>
+		    </mesh>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/palm_grip.dae</uri>
+		    </mesh>
+                </geometry>
+            </visual>
+        </link>
+        <link name="left_finger">
+            <pose>0 0 0 0 0 0</pose>
+            <inertial>
+                <inertia>
+                    <ixx>0.01</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.01</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.01</izz>
+                </inertia>
+                <mass>0.1</mass>
+            </inertial>
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/left_grip.dae</uri>
+		    </mesh>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/left_grip.dae</uri>
+		    </mesh>
+                </geometry>
+	    </visual>
+        </link>
+        <link name="right_finger">
+            <pose>0 0 0 0 0 0</pose>
+            <inertial>
+                <inertia>
+                    <ixx>0.01</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.01</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.01</izz>
+                </inertia>
+                <mass>0.1</mass>
+            </inertial>
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/right_grip.dae</uri>
+		    </mesh>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+			<uri>model://mbot/meshes/right_grip.dae</uri>
+		    </mesh>
+                </geometry>
+	    </visual>
+        </link>
+
+
     <joint type="revolute" name="right_wheel_hinge">
         <pose>0 0 0 0 0 0</pose>
         <child>right_wheel</child>
@@ -285,6 +371,45 @@
           <xyz>0 0 0</xyz>
         </axis>
     </joint>
+
+
+    <joint name="palm_left_finger" type="revolute">
+            <pose>0.120 0.036 0.039 0 0 0</pose>
+            <child>left_finger</child>
+            <parent>palm</parent>
+            <axis>
+                <limit>
+                    <lower>-0.4</lower>
+                    <upper>0.4</upper>
+                </limit>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <joint name="palm_right_finger" type="revolute">
+            <pose>0.120 -0.043 0.039 0 0 0</pose>
+            <child>right_finger</child>
+            <parent>palm</parent>
+            <axis>
+                <limit>
+                    <lower>-0.4</lower>
+                    <upper>0.4</upper>
+                </limit>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <joint name="palm_riser" type="prismatic">
+            <child>palm</child>
+            <parent>chasis</parent>
+            <axis>
+                <limit>
+                    <lower>0</lower>
+                    <upper>0</upper>
+                </limit>
+                <xyz>0 0 0</xyz>
+            </axis>
+        </joint>
 
 <plugin name="carMotors" filename="libmotorsMBOT.so"/>
 <plugin name="pose3d" filename="libpose3dMBOT.so"/>
