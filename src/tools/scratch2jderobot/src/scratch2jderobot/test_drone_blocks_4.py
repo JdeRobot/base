@@ -10,21 +10,35 @@ import yaml
 
 from drone import Drone
 from robot import Robot
+from mylist import MyList
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
+        robot.take_off()
+        time.sleep(1)
+        robot.move("up", 2)
+        time.sleep(3)
         robot.stop()
         time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
+        robot.move("down", 1)
+        time.sleep(3)
         robot.stop()
+        time.sleep(1)
+        robot.move("left", 1)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.move("forward", 1)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.land()
         time.sleep(1)
     except KeyboardInterrupt:
         raise
 
 if __name__ == '__main__':
+    mylist=MyList()
     if len(sys.argv) == 2:
         path = os.getcwd()
         open_path = path[:path.rfind('src')] + 'cfg/'

@@ -13,14 +13,23 @@ from robot import Robot
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
+        while True:
+            boolean = '0'
+            if ((boolean) == "Hello"):
+                for i in range(10):
+                    print('Hello World')
+                    time.sleep(1)
+                
+            
+            if ((boolean) > 0):
+                print('Hello World')
+            else:
+                print('Hello World')
+            
+            if ((boolean) == 1):
+                print('Hello World')
+            
+        
     except KeyboardInterrupt:
         raise
 

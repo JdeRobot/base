@@ -18,7 +18,6 @@ from difflib import SequenceMatcher
 from parse import parse, compile
 from termcolor import cprint
 
-
 GENERAL = [
     ['end', ''],
     ['forever', 'while True:'],
@@ -28,18 +27,25 @@ GENERAL = [
     ['say {}', 'print(%s)'],
     ['set {} to {}', '%s = %s'],
     ['wait {} secs', 'time.sleep(%s)'],
+    ['add {} to {}', 'mylist.add(%s,%s)'],
+    ['item {} of {}', 'mylist.returnItem(%s,%s)']
 ]
 
 ROBOTICS = [
     ['move robot {}', 'robot.move("%s")'],
     ['move drone {}', 'robot.move("%s")'],
+    ['move drone {} speed {}', 'robot.move("%s", %s)'],
     ['move robot {} speed {}', 'robot.move("%s", %s)'],
     ['stop robot-drone', 'robot.stop()'],
-    ['turn robot-drone {}', 'robot.turn("%s")'],
+    ['turn drone {} speed {}', 'robot.turn("%s", %s)'],
     ['turn robot {} speed {}', 'robot.turn("%s", %s)'],
     ['take off drone', 'robot.take_off()'],
     ['land drone', 'robot.land()'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
+    ['color detection {}', 'robot.detect_object("%s")'],
+    ['size of object', 'robot.get_size_object()'],
+    ['x position of object', 'robot.get_x_position()'],
+    ['y position of object', 'robot.get_y_position()'],
 ]
 
 def is_conditional(sentence):
@@ -64,7 +70,6 @@ def similar(a, b):
     @param b: Second sentence.
     @return: The ratio of the similarity.
     """
-
     return SequenceMatcher(None, a, b).ratio()
 
 
@@ -101,6 +106,7 @@ def sentence_mapping(sentence, threshold=None):
 
         # extract arguments
         p = compile(original)
+        print p
         args = p.parse(sentence.replace('    ', ''))
         if args:
             args_aux = list(args)
@@ -110,7 +116,9 @@ def sentence_mapping(sentence, threshold=None):
                 new_ori, new_trans = sentence_mapping(args_aux[idx]) #sentence_mapping(args_aux[idx],0.8) --old
                 if new_trans != None:
                     args_aux[idx] = args_aux[idx].replace(new_ori, new_trans) #replace(args_aux[idx], new_trans)
+
             translation = translation % tuple(args_aux)
+
     return original, translation
 
 
@@ -133,13 +141,15 @@ import comm\n\
 import os\n\
 import yaml\n\n\
 from drone import Drone\n\
-from robot import Robot\n\n\
+from robot import Robot\n\
+from mylist import MyList\n\n\
 def execute(robot):\n\
 \ttry:\n\
 \t%s\
 except KeyboardInterrupt:\n\
 \t\traise\n\n\
 if __name__ == '__main__':\n\
+\tmylist=MyList()\n\
 \tif len(sys.argv) == 2:\n\
 \t\tpath = os.getcwd()\n\
 \t\topen_path = path[:path.rfind('src')] + 'cfg/'\n\
@@ -195,7 +205,7 @@ if __name__ == '__main__':\n\
 
             # mapping
             original, translation = sentence_mapping(s)
-
+            print original, translation
             # set the code
             if translation != None:
                 python_program += translation

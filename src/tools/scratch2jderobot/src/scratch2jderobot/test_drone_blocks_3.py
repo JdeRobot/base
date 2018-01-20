@@ -10,21 +10,30 @@ import yaml
 
 from drone import Drone
 from robot import Robot
+from mylist import MyList
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
+        robot.take_off()
+        while True:
+            size = (robot.get_size_object())
+            xpos = (robot.get_x_position())
+            ypos = (robot.get_y_position())
+            if ((size) < 10):
+                robot.take_off()
+            
+            if ((xpos) < 150):
+                robot.turn("left", 1)
+            
+            if ((ypos) < 200):
+                robot.move("back")
+            
+        
     except KeyboardInterrupt:
         raise
 
 if __name__ == '__main__':
+    mylist=MyList()
     if len(sys.argv) == 2:
         path = os.getcwd()
         open_path = path[:path.rfind('src')] + 'cfg/'
