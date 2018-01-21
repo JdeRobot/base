@@ -10,12 +10,13 @@ import yaml
 
 from drone import Drone
 from robot import Robot
+from mylist import MyList
 
 def execute(robot):
     try:
         while True:
-            laser_data = (robot.get_laser_distance())
-            if ((laser_data) < 1.5):
+            laser_data = robot.get_laser_distance()
+            if laser_data < 1.5:
                 robot.turn("left", 1)
             else:
                 robot.move("forward")
@@ -25,6 +26,7 @@ def execute(robot):
         raise
 
 if __name__ == '__main__':
+    mylist=MyList()
     if len(sys.argv) == 2:
         path = os.getcwd()
         open_path = path[:path.rfind('src')] + 'cfg/'

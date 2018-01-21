@@ -14,8 +14,8 @@ from mylist import MyList
 
 def execute(robot):
     try:
-        mylist.add((color detection red),lista)
-        if ((item 2 of lista) >   300):
+        lista.append(robot.detect_object("red"))
+        if lista[0][2] >   300:
             robot.move("forward", 1)
         
     except KeyboardInterrupt:

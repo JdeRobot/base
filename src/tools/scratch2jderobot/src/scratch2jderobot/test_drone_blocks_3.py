@@ -16,16 +16,16 @@ def execute(robot):
     try:
         robot.take_off()
         while True:
-            size = (robot.get_size_object())
-            xpos = (robot.get_x_position())
-            ypos = (robot.get_y_position())
-            if ((size) < 10):
+            size = robot.get_size_object()
+            xpos = robot.get_x_position()
+            ypos = robot.get_y_position()
+            if size < 10:
                 robot.take_off()
             
-            if ((xpos) < 150):
+            if xpos < 150:
                 robot.turn("left", 1)
             
-            if ((ypos) < 200):
+            if ypos < 200:
                 robot.move("back")
             
         

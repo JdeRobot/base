@@ -10,6 +10,7 @@ import yaml
 
 from drone import Drone
 from robot import Robot
+from mylist import MyList
 
 def execute(robot):
     try:
@@ -29,6 +30,7 @@ def execute(robot):
         raise
 
 if __name__ == '__main__':
+    mylist=MyList()
     if len(sys.argv) == 2:
         path = os.getcwd()
         open_path = path[:path.rfind('src')] + 'cfg/'
