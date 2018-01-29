@@ -26,7 +26,7 @@
 #include <iostream>
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
-//#include <jderobot/pointcloud.h>
+#include <jderobot/pointcloud.h>
 #include <rgbd.h>
 #include <jderobotutil/utils/CameraUtils.h>
 #include "rgbdViewergui.h"
@@ -83,6 +83,8 @@ void *gui_thread(void* arg){
 				if (camDEPTH){
 					JdeRobotTypes::Image di = camDEPTH->getImage();
 					depth = di.data;
+					std::cout<< di.format << std::endl;
+
 				}
 			}
 			/*if (pcClient)
@@ -103,7 +105,7 @@ void *gui_thread(void* arg){
 			}
 			if (((IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()) > rgbdViewergui_ptx->getCycle() )){
 				if (debug)
-					std::cout<<"-------- rgbdViewer: timeout-" << std::endl;
+					;//std::cout<<"-------- rgbdViewer: timeout-" << std::endl;
 			}
 			else{
 				usleep(rgbdViewergui_ptx->getCycle() - (IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()));
@@ -233,7 +235,7 @@ int main(int argc, char** argv){
 	}
 	else {
 		if (rgbCamSelected) {
-			while (rgbSize == cv::Size(0, 0)) {
+			while (rgbSize == cv::Size(0, 0) || rgbSize == cv::Size(3, 3)) {
 				temp = camRGB->getImage();
 				rgbSize = temp.data.size();
 
@@ -241,15 +243,18 @@ int main(int argc, char** argv){
 		}
 		//depth
 		if (depthCamSelected) {
-			while (depthSize == cv::Size(0, 0)) {
+			while (depthSize == cv::Size(0, 0) || depthSize == cv::Size(3, 3)) {
 				temp = camDEPTH->getImage();
-				depthSize = temp.data.size();;
+				depthSize = temp.data.size();
+				//depthSize = cv::Size(temp.width, temp.height);
 
 			}
 		}
 	}
 
 
+
+	std::cout << std::endl<< std::endl<< std::endl<< depthSize << "  " <<  rgbSize << std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
 	debug=cfg.asIntWithDefault("rgbdViewer.Debug",320);
 	int fps=cfg.asIntWithDefault("rgbdViewer.Fps",0);
 	float cycle=(float)(1/(float)fps)*1000000;

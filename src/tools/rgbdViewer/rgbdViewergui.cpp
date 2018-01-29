@@ -185,13 +185,19 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
         cv::split(imageDEPTH, layers);
 
         cv::cvtColor(layers[0],colorDepth,CV_GRAY2RGB);
-//        cv::imshow("color", colorDepth);
-//        cv::waitKey(1);
+        //cv::imshow("color", colorDepth);
+        //cv::waitKey(1);
 
         this->m_distance.lock();
+        //this->distance = new cv::Mat(imageDEPTH.size(),CV_32FC1,cv::Scalar(0,0,0));
+        //cv::resize(*distance, *distance, imageDEPTH.size());
         for (int x=0; x< layers[1].cols ; x++) {
             for (int y=0; y<layers[1].rows; y++) {
-                distance->at<float>(y,x) = ((int)layers[1].at<unsigned char>(y,x)<<8)|(int)layers[2].at<unsigned char>(y,x);
+                //std::cout << distance->cols << "  " <<  distance->rows << std::endl;
+                //std::cout << layers[1].cols << "  " <<  layers[1].rows << std::endl;
+                distance->at<float>(y,x) = (((int)layers[1].at<unsigned char>(y,x)<<8)|(int)layers[2].at<unsigned char>(y,x))/1000;
+                //std::cout << (int)layers[1].at<unsigned char>(y,x) << "  " << (int)layers[2].at<unsigned char>(y,x) << std::endl;
+                //std::cout << (((int)layers[1].at<unsigned char>(y,x)<<8)|(int)layers[2].at<unsigned char>(y,x)) << std::endl; 
 
             }
         }
@@ -482,6 +488,7 @@ void rgbdViewergui::add_cameras_position() {
 
 void
 rgbdViewergui::on_reconstruct_depth() {
+    std::cout << std::endl<< std::endl<< std::endl<< w_reconstruct->get_active() << std::endl<< std::endl<< std::endl<< std::endl;
     if (w_reconstruct->get_active()) {
         reconstruct_depth_activate=true;
         world->draw_kinect_points=true;
@@ -558,10 +565,16 @@ rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
 
 
                 if (w_realDistance->get_active()){
-                	world->add_kinect_point(t*ux + camx,t*uy+ camy,t*uz + camz,color(0),color(1),color(2));
+                	//world->add_kinect_point(t*ux + camx,t*uy+ camy,t*uz + camz,color(0),color(1),color(2));
+                    for (float i=0; i< 1000000; i+=1){
+                    world->add_kinect_point(1,1,i,0,0,0);
+                }
                 }
                 else{
-                	world->add_kinect_point(d*ux + camx,d*uy+ camy,d*uz + camz,color(0),color(1),color(2));
+                	//world->add_kinect_point(d*ux + camx,d*uy+ camy,d*uz + camz,color(0),color(1),color(2));
+                    for (float i=0; i< 1000000; i+=1){
+                    world->add_kinect_point(1,1,i,0,0,0);
+                }
                 }
 
             }

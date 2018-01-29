@@ -33,8 +33,6 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     ${libglademm_LIBRARIES}
     ${gtkglextmm_LIBRARIES}
     colorspacesmm
-    JderobotInterfaces
-    jderobotutil
     progeo
 	geometry
     pioneer
@@ -45,6 +43,8 @@ TARGET_LINK_LIBRARIES(rgbdViewer
 	${GLOG_LIBRARIES}
     ${comm_LIBRARIES}
     ${config_LIBRARIES}
+    JderobotInterfaces
+    jderobotutil
 	)
 
 INSTALL (TARGETS rgbdViewer DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ COMPONENT rgbdViewer)
