@@ -14,14 +14,14 @@ from mylist import MyList
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
+        while True:
+            laser_data = robot.get_laser_distance()
+            if laser_data < 1.5:
+                robot.turn("left", 1)
+            else:
+                robot.move("forward")
+            
+        
     except KeyboardInterrupt:
         raise
 

@@ -26,11 +26,4 @@ robot:
     Topic: "/cameraL/image_raw"
     Name: robotCamera1
 
-  Camera2:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
-    Proxy: "CameraR:default -h localhost -p 9001"
-    Format: RGB8
-    Topic: "/cameraR/image_raw"
-    Name: robotCamera2
-
   NodeName: robot

@@ -14,14 +14,24 @@ from mylist import MyList
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
+        while True:
+            robot.move("forward", 2)
+            time.sleep(5)
+            robot.stop()
+            time.sleep(1)
+            robot.move("back", 2)
+            time.sleep(5)
+            robot.stop()
+            time.sleep(1)
+            robot.turn("left", 0.5)
+            time.sleep(2)
+            robot.stop()
+            time.sleep(1)
+            robot.turn("right", 0.5)
+            time.sleep(2)
+            robot.stop()
+            time.sleep(1)
+        
     except KeyboardInterrupt:
         raise
 

@@ -14,14 +14,10 @@ from mylist import MyList
 
 def execute(robot):
     try:
-        robot.move("forward")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(5)
-        robot.stop()
-        time.sleep(1)
+        lista.append(robot.detect_object("red"))
+        if lista[0][2] >   300:
+            robot.move("forward", 1)
+        
     except KeyboardInterrupt:
         raise
 

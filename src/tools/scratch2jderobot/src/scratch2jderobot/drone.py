@@ -1,16 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = "Raul Perula-Martinez"
-__copyright__ = "JdeRobot project"
-__credits__ = ["Raul Perula-Martinez"]
-__license__ = "GPL v3"
-__version__ = "0.0.0"
-__maintainer__ = "Raul Perula-Martinez"
-__email__ = "raules@gmail.com"
-__status__ = "Development"
-
-
 import math
 import time
 import imutils
@@ -27,6 +17,22 @@ GREEN_RANGE = ((29, 86, 6), (64, 255, 255))
 RED_RANGE = ((139, 0, 0), (255, 160, 122))
 BLUE_RANGE = ((0, 128, 128), (65, 105, 225))
 
+import math
+import time
+import imutils
+import cv2
+import comm
+import numpy as np
+
+from jderobotTypes import CMDVel
+from jderobotTypes import Pose3d
+from jderobotTypes import Image
+
+# define the lower and upper boundaries of the basic colors
+GREEN_RANGE = ((29, 86, 6), (64, 255, 255))
+RED_RANGE = ((139, 0, 0), (255, 160, 122))
+BLUE_RANGE = ((0, 128, 128), (65, 105, 225))
+
 
 class Drone():
 
@@ -34,85 +40,108 @@ class Drone():
     Drone class.
     """
 
-    def __init__(self, ic, node=None):
+    def __init__(self, jdrc):
         """
         Init method.
-
-        @param ic: The ICE controller.
-        @param node: The ROS node controller.
+        @param jdrc:
         """
 
-        self.camera = CameraClient(ic, "drone.Camera", True)
-        self.cmdvel = CMDVel(ic, "drone.CMDVel")
-        self.extra = Extra(ic, "drone.Extra")
-        self.navdata = NavDataClient(ic, "drone.Navdata", True)
-        self.pose = Pose3DClient(ic, "drone.Pose3D", True)
+    	#variables
+
+    	#get clients
+        self.__pose3d_client = jdrc.getPose3dClient("drone.Pose3D")
+        self.__camera_client = jdrc.getCameraClient("drone.Camera1")
+        self.__cmdvel_client = jdrc.getCMDVelClient("drone.CMDVel")
+        self.__extra_client = jdrc.getArDroneExtraClient("drone.Extra")
+        self.__navdata_client = jdrc.getNavdataClient("drone.Navdata")
 
     def close(self):
         """
         Close communications with servers.
         """
 
-        self.camera.stop()
-        self.navdata.stop()
-        self.pose.stop()
+        self.__camera_client.stop()
+        self.__navdata_client.stop()
+        self.__pose3d_client.stop()
 
-    def color_object_centroid(self):
+
+    def detect_object(self, color):
         """
-        Return the x,y centroid of a colorful object in the camera.
+        Detect an object using the camera.
 
-        @return: The (x,y) centroid of the object or None if not found.
+        @param color: color to detect
+
+        @return: size and center of the object detected in the frame
         """
+        # define the lower and upper boundaries of the basic colors
+        GREEN_RANGE = ((29, 86, 6), (64, 255, 255))
+        RED_RANGE = ((139, 0, 0), (255, 160, 122))
+        BLUE_RANGE = ((0, 128, 128), (65, 105, 225))
 
-        # FIXME: set color (manual)
-        color = BLUE_RANGE
+        # initialize the values in case there is no object
+        x_position = 0
+        y_position = 0
+        size = 0
 
-        # get image from camera
-        frame = self.camera.getImage()
+        # chose the color to find
+        if color == "red":
+            color_range = RED_RANGE
+        if color == "green":
+            color_range = GREEN_RANGE
+        if color == "blue":
+            color_range = BLUE_RANGE
 
-        # resize the frame
-        frame = imutils.resize(frame, width=600)
+        # get image type from camera
+        image = self.__camera_client.getImage()
 
-        # convert to the HSV color space
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        # apply color filters to the image
+        filtered_image = cv2.inRange(image.data, color_range[0], color_range[1])
+        rgb = cv2.cvtColor(image.data, cv2.COLOR_BGR2RGB)
 
-        # construct a mask for the color specified
-        # then perform a series of dilations and erosions
-        # to remove any small blobs left in the mask
-        mask = cv2.inRange(hsv, color[0], color[1])
-        mask = cv2.erode(mask, None, iterations=2)
-        mask = cv2.dilate(mask, None, iterations=2)
 
-        # find contours in the mask and
-        # initialize the current center
-        cnts = cv2.findContours(
-            mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-        center = None
-
-        # only proceed if at least one contour was found
-        if len(cnts) > 0:
-            # find the largest contour in the mask, then use
-            # it to compute the minimum enclosing circle and
-            # centroid
-            c = max(cnts, key=cv2.contourArea)
-            ((x, y), radius) = cv2.minEnclosingCircle(c)
-            M = cv2.moments(c)
-            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
-            # only proceed if the radius meets a minimum size
-            if radius > 10:
-                # draw the circle border
-                cv2.circle(
-                    frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-
-                # and the centroid
-                cv2.circle(frame, center, 5, (0, 0, 255), -1)
+        # Apply threshold to the masked image
+        ret,thresh = cv2.threshold(filtered_image,127,255,0)
+        im,contours,hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        # Find the index of the largest contour
+        for c in contours:
+            if c.any != 0:
+                areas = [cv2.contourArea(c) for c in contours]
+                max_index = np.argmax(areas)
+                cnt=contours[max_index]
+                if max(areas) > 0.0:
+                    x,y,w,h = cv2.boundingRect(cnt)
+                    cv2.rectangle(rgb,(x,y),(x+w,y+h),(0,255,0),2)
+                    x_position = (w/2)+x
+                    y_position = (h/2)+y
+                    size = w*h
 
         # show the frame to our screen
-        cv2.imshow("Frame", frame)
+        cv2.imshow("Frame", rgb)
         key = cv2.waitKey(1) & 0xFF
 
-        return center
+        return size, x_position, y_position
+
+        # if position == "x position":
+        #     return x_position
+        # if position == "y position":
+        #     return y_position
+        # else:
+        #     return size
+
+    def get_size_object(self):
+
+        size, _, _ = self.detect_object(red")
+        return size
+
+    def get_x_position(self):
+
+        _, x_position, _ = self.detect_object(red")
+        return x_position
+
+    def get_y_position(self):
+
+        _, _, y_position = self.detect_object("red")
+        return y_position
 
     def go_up_down(self, direction):
         """
@@ -122,82 +151,85 @@ class Drone():
         """
 
         # set default velocity (m/s)
-        vz = 1.0
+        vz = 2.0
 
         if direction == "down":
             vz = -vz
 
         # assign velocity
-        self.cmdvel.setVZ(vz)
+        self.__cmdvel_client.setVZ(vz)
 
         # publish movement
-        self.cmdvel.sendVelocities()
+        self.__cmdvel_client.sendVelocities()
 
-    def move(self, direction):
+
+    def move(self, direction, vel=None):
         """
         Set the horizontal movement of the drone.
 
         @param direction: direction of the move. Options: forward (default), back.
+        @param vel: a number with the velocity in m/s. Default: 1 m/s.
         """
 
-        # set default velocities (m/s)
-        vx = 5.0
-        vy = 0.0
-
+        if vel == None:
+            vel = 1
         # set different direction
         if direction == "back":
-            vx = -vx
+            self.__cmdvel_client.setVX(-vel)
+        elif direction == "forward":
+            self.__cmdvel_client.setVX(vel)
         elif direction == "left":
-            vy = float(vx)
-            vx = 0.0
+            self.__cmdvel_client.setVY(vel)
         elif direction == "right":
-            vy = float(-vx)
-            vx = 0.0
-
-        # assign velocities
-        self.cmdvel.setVX(vx)
-        self.cmdvel.setVY(vy)
+            self.__cmdvel_client.setVY(-vel)
+        elif direction == "down":
+            self.__cmdvel_client.setVZ(-vel)
+        elif direction == "up":
+            self.__cmdvel_client.setVZ(vel)
+        print direction
 
         # publish movement
-        self.cmdvel.sendVelocities()
+        self.__cmdvel_client.sendVelocities()
 
-    def turn(self, direction):
+    def turn(self, direction, vel=None):
         """
         Set the angular velocity.
 
         @param direction: direction of the move. Options: left (default), right.
+        @param vel: a number with the velocity in m/s. Default: 1 m/s.
         """
-
+        if vel == None:
+            vel = 0.5
         # set default velocity (m/s)
-        yaw = 5.0 * math.pi
+        yaw = vel * math.pi
 
         if direction == "right":
             yaw = -yaw
 
         # assign velocity
-        self.cmdvel.setYaw(yaw)
+        self.__cmdvel_client.setYaw(yaw)
 
         # publish movement
-        self.cmdvel.sendVelocities()
+        self.__cmdvel_client.sendVelocities()
 
     def stop(self):
         """
         Set all velocities to zero.
         """
 
-        self.cmdvel.setVX(0)
-        self.cmdvel.setVY(0)
-        self.cmdvel.setVZ(0)
-        self.cmdvel.setYaw(0)
+        self.__cmdvel_client.setVX(0)
+        self.__cmdvel_client.setVY(0)
+        self.__cmdvel_client.setVZ(0)
+        self.__cmdvel_client.setYaw(0)
 
-        self.cmdvel.sendVelocities()
+        self.__cmdvel_client.sendVelocities()
 
     def take_off(self):
         """
         Send the take off command.
         """
 
-        self.extra.takeoff()
+        self.__extra_client.takeoff()
         time.sleep(1)
 
     def land(self):
@@ -205,5 +237,5 @@ class Drone():
         Send the land command.
         """
 
-        self.extra.land()
+        self.__extra_client.land()
         time.sleep(1)
