@@ -45,7 +45,7 @@ rgbdViewer:
   NodeName: rgbdViewer
   #camRGB: "./config/joseMaria/CameraAEsquina.xml"
   #camIR: "./config/joseMaria/CameraAEsquina.xml"
-  WorldFile: "./config/fempsa/fempsa.cfg"
+  #WorldFile: "./config/fempsa/fempsa.cfg"
   Width: 640
   Height: 480
   Fps: 15

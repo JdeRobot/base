@@ -254,14 +254,14 @@ int main(int argc, char** argv){
 
 
 
-	std::cout << std::endl<< std::endl<< std::endl<< depthSize << "  " <<  rgbSize << std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
 	debug=cfg.asIntWithDefault("rgbdViewer.Debug",320);
 	int fps=cfg.asIntWithDefault("rgbdViewer.Fps",0);
 	float cycle=(float)(1/(float)fps)*1000000;
 
-	std::string worldfile = cfg.asString("rgbdViewer.WorldFile");
-	std::string camRGBFile = cfg.asString("rgbdViewer.camRGB");
-	std::string camIRFile = cfg.asString("rgbdViewer.camIR");
+	std::string worldfile = cfg.asStringWithDefault("rgbdViewer.WorldFile", "");
+	std::string camRGBFile = cfg.asStringWithDefault("rgbdViewer.camRGB", "");
+	std::string camIRFile = cfg.asStringWithDefault("rgbdViewer.camIR", "");
+
 
 	rgbdViewergui_ptx = new rgbdViewer::rgbdViewergui(rgbCamSelected,depthCamSelected, pointCloudSelected, worldfile, camRGBFile, camIRFile,rgbSize,depthSize, cycle);
 	
