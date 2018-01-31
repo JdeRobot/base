@@ -20,14 +20,14 @@
 #include <jderobot/laser.h>
 
 
-class SonarD
+class LaserD
 {
 public:
-    float range;
-    double minAngle = 0.01;
-    double maxAngle = 0.01;
-    double minRange = 0.03;
-    double maxRange = 4.0; //4 m
+    std::vector<float> values;
+    double minAngle = 0;
+    double maxAngle = 3.1416;
+    double minRange = 0;
+    double maxRange = 10; //10 m
 };
 
 void *mainLaser(void* v);
