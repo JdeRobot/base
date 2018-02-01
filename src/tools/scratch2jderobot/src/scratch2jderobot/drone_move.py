@@ -13,14 +13,26 @@ from robot import Robot
 
 def execute(robot):
     try:
-        while True:
-            laser_data = robot.get_laser_distance()
-            if laser_data < 1.5:
-                robot.turn("left", 1)
-            else:
-                robot.move("forward")
-            
-        
+        robot.take_off()
+        time.sleep(1)
+        robot.move("forward")
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.move("left")
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.move("back")
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.move("right")
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.land()
+        time.sleep(1)
     except KeyboardInterrupt:
         raise
 
