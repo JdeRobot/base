@@ -3,7 +3,7 @@ rgbdViewer:
     Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
     Proxy: "cameraA:tcp -h localhost -p 9999"
     Format: RGB8
-    Topic: "/TurtlebotROS/cameraL/image_raw"
+    Topic: "/camera/rgb/image_raw"
     Name: cameraA
     Fps: 30
 
@@ -11,7 +11,7 @@ rgbdViewer:
     Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
     Proxy: "cameraB:tcp -h localhost -p 9999"
     Format: RGB8
-    Topic: "/TurtlebotROS/cameraL/image_raw"
+    Topic: "/camera/depth_registered/image_raw"
     Name: cameraB
     Fps: 30
 
