@@ -19,3 +19,4 @@ src/interfaces/python/
 # Python
 __pycache__/
 *.py[cod]
+/build/
