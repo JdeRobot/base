@@ -130,12 +130,12 @@ class Drone():
 
     def get_size_object(self):
 
-        size, _, _ = self.detect_object(red")
+        size, _, _ = self.detect_object("red")
         return size
 
     def get_x_position(self):
 
-        _, x_position, _ = self.detect_object(red")
+        _, x_position, _ = self.detect_object("red")
         return x_position
 
     def get_y_position(self):

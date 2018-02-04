@@ -158,7 +158,7 @@ import comm\n\
 import os\n\
 import yaml\n\n\
 from drone import Drone\n\
-from robot import Robot\n\
+from robot import Robot\n\n\
 def execute(robot):\n\
 \ttry:\n\
 \t%s\
@@ -239,6 +239,7 @@ if __name__ == '__main__':\n\
         # save the code in a python file with the same name as sb2 file
         file_name = sys.argv[1].replace('.sb2','.py')
         f = open(save_path + file_name, "w")
+        os.chmod(save_path + file_name, 0775)
         f.write(file_text)
         f.close()
 
