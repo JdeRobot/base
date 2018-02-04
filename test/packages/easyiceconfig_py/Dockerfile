@@ -32,13 +32,13 @@ RUN wget -qO - www.jderobot.org/aptest/aptest.key | apt-key add -
 
 ########## Install JdeRobot ##############
 RUN apt-get update && apt-get -y  install --only-upgrade\
-    jderobot-cameraview \
+    jderobot-easyice-python \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./search_file.sh /
-COPY ./files.txt /
+COPY ./easyiceconfig_py.txt /
 
-RUN ./search_file.sh files.txt
+RUN ./search_file.sh easyiceconfig_py.txt
 
 
 
