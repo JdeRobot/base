@@ -27,6 +27,7 @@ from controlWidget import  ControlWidget
 from logoWidget import  LogoWidget
 import resources_rc
 import sys
+import cv2
 
 class MainWindow(QMainWindow):
 
@@ -133,11 +134,11 @@ class MainWindow(QMainWindow):
         zoompixGroupBox = QGroupBox("Zoom x" + str(self.ZOOM_X))
         grid3 = QGridLayout()
         self.crop = MyLabel(self, True)
-        self.crop.setFixedSize(200,200)
+        self.crop.setFixedSize(150,150)
 
         self.tootippixel = QLabel(self)
         self.pixel = QLabel(self)
-        self.pixel.setFixedSize(75,75)  
+        self.pixel.setFixedSize(50,50)  
         self.rgbVal = QLabel("RGB")
 
         grid3.addWidget(self.crop,0,0)
@@ -151,10 +152,23 @@ class MainWindow(QMainWindow):
         grid4.addWidget(controlWidget)
         slidersGroupBox.setLayout(grid4)
 
+        filtGroupBox = QGroupBox("Color Space")
+        image = cv2.imread("resources/HLSColorSpace.png")
+        self.colorSpace = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        self.colorSpaceLabel = QLabel(self)
+        #filtImg.setScaledContents(True)
+        d = QImage(self.colorSpace.data, self.colorSpace.shape[1], self.colorSpace.shape[0], self.colorSpace.shape[1] * self.colorSpace.shape[2], QImage.Format_RGB888).scaled(200, 200, Qt.KeepAspectRatio)
+        self.colorSpaceLabel.setFixedSize(200,200)
+        self.colorSpaceLabel.setPixmap(QPixmap.fromImage(d))
+        gridf = QGridLayout()
+        gridf.addWidget(self.colorSpaceLabel)
+        filtGroupBox.setLayout(gridf)
+
         imagesLayout.addWidget(sourceGroupBox,0)
         imagesLayout.addWidget(filterGroupBox,1)
         controlLayout.addWidget(zoompixGroupBox,0)
-        controlLayout.addStretch(10)
+        #controlLayout.addStretch(10)
+        controlLayout.addWidget(filtGroupBox,0)
         controlLayout.addWidget(slidersGroupBox,0)
         mainLayout.addLayout(imagesLayout,0,0)
         mainLayout.addLayout(controlLayout,0,1)
@@ -177,9 +191,14 @@ class MainWindow(QMainWindow):
 
         filt = self.getFilterName()
         img = self.camera.getFilteredImage(filt)
+        if (filt is not "Orig"):
+            disc2 = self.camera.getFilter(filt).apply(self.colorSpace)
+            imgDisc = QImage(disc2.data, disc2.shape[1], disc2.shape[0], disc2.shape[1] * disc2.shape[2], QImage.Format_RGB888).scaled(200, 200)
+            self.colorSpaceLabel.setPixmap(QPixmap.fromImage(imgDisc))
         if img is not None:
             self.imageF = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
             self.filterImg.setPixmap(QPixmap.fromImage(self.imageF))
+            
 
         #print "update"
         pos = self.sourceImg.getMousePos()
