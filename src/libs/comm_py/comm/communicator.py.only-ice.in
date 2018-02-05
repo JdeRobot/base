@@ -10,6 +10,8 @@ from .ardroneextraClient import getArDroneExtraClient
 from .navdataClient import getNavdataClient
 from .cmdvelClient import getCMDVelClient
 from .bumperClient import getBumperClient
+from .sonarClient import getSonarClient
+
 
 
 class Communicator:
@@ -171,4 +173,15 @@ class Communicator:
 
 	    '''
 		return getBumperClient(self, name)
+
+	def getSonarClient(self, name):
+		'''
+	    Returns a Sonar client with the configration indicated by the name
+
+	    @param name: name of the client in the config
+	    
+	    @type name: String
+
+	    '''
+		return getSonarClient(self, name)
 
