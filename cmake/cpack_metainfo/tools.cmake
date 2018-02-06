@@ -106,7 +106,7 @@ SET(CPACK_COMPONENT_RGBDMANUALCALIBRATOR_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_RGBDVIEWER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-parallelice, jderobot-pioneer, jderobot-progeo, jderobot-resourcelocator, jderobot-colorspaces")
+SET(CPACK_DEBIAN_RGBDVIEWER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-parallelice, jderobot-progeo, jderobot-resourcelocator, jderobot-colorspaces")
 SET(CPACK_COMPONENT_RGBDVIEWER_DESCRIPTION  
 "Generic viewer for RGBD cameras. Included an openGL viewer for pointcloud representation. 
  Manual Page http://jderobot.org/index.php/Tools#RGBDViewer
