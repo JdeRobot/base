@@ -112,6 +112,12 @@ SET(CPACK_COMPONENT_RGBDVIEWER_DESCRIPTION
  Manual Page http://jderobot.org/index.php/Tools#RGBDViewer
  Home page https://jderobot.org")
 
+SET(CPACK_DEBIAN_SCRACTCH2JDEROBOT_PACKAGE_DEPENDS "python-parse, python-termcolor, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-comm-python, kurt-jderobot")
+SET(CPACK_COMPONENT_SCRATCH2JDEROBOT_DESCRIPTION  
+"Tool for programing robots using scracth language and then translate it to python. 
+ Manual Page http://jderobot.org/
+ Home page https://jderobot.org")
+
 SET(CPACK_DEBIAN_UAV-VIEWER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-util, jderobot-interfaces, jderobot-colorspaces")
 SET(CPACK_COMPONENT_UAV-VIEWER_DESCRIPTION  
 "Teleoperator for UAV drones real and simulated (Parrot ArDrone, 3DR SoloDrone, ...) 

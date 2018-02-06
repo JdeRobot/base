@@ -96,6 +96,10 @@ SET(CPACK_DEBIAN_ZEROC-ICE-PYTHON_PACKAGE_CONTROL_EXTRA
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
 
+SET(CPACK_DEBIAN_SCRATCH2JDEROBOT_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postinst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ice/postrm")
+
 
 ## Include Git HEAD into description (feature: traceback builds)
 execute_process(COMMAND git rev-parse HEAD
