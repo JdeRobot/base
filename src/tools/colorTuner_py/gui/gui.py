@@ -28,6 +28,7 @@ from logoWidget import  LogoWidget
 import resources_rc
 import sys
 import cv2
+import os
 
 class MainWindow(QMainWindow):
 
@@ -152,8 +153,15 @@ class MainWindow(QMainWindow):
         grid4.addWidget(controlWidget)
         slidersGroupBox.setLayout(grid4)
 
+
+
+
+        # Get path of the current dir, then use it to create paths:
+        CURRENT_DIR = os.path.dirname(__file__)
+        
+        file_path = os.path.join(CURRENT_DIR, '../resources/HLSColorSpace.png')
         filtGroupBox = QGroupBox("Color Space")
-        image = cv2.imread("resources/HLSColorSpace.png")
+        image = cv2.imread(file_path)
         self.colorSpace = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         self.colorSpaceLabel = QLabel(self)
         #filtImg.setScaledContents(True)

@@ -30,6 +30,8 @@ from PyQt5 import QtGui
 import qdarkstyle
 
 
+
+
 import signal
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)

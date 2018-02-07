@@ -66,4 +66,6 @@ IF (ENABLE_ROS)
 	#endif()
 
 	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/robot.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
+
+	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/drone.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
 ENDIF()
