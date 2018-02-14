@@ -66,16 +66,6 @@ class Drone():
         self.__navdata_client.stop()
         self.__pose3d_client.stop()
 
-    def run_once(self,f):
-        def wrapper(*args, **kwargs):
-            if not wrapper.has_run:
-                wrapper.has_run = True
-                return f(*args, **kwargs)
-
-        wrapper.has_run = False
-        return wrapper
-
-
     def toggleCam(self):
         self.frontalCamera = True
         self.__extra_client.toggleCam()
