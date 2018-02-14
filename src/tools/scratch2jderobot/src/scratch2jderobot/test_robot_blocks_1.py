@@ -10,6 +10,7 @@ import yaml
 
 from drone import Drone
 from robot import Robot
+
 def execute(robot):
     try:
         robot.move("forward")

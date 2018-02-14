@@ -6,6 +6,7 @@ import time
 import imutils
 import cv2
 
+
 from parallelIce.cameraClient import CameraClient
 from parallelIce.cmdvel import CMDVel
 from parallelIce.extra import Extra
@@ -47,6 +48,7 @@ class Drone():
         """
 
     	#variables
+        self.frontalCamera = False
 
     	#get clients
         self.__pose3d_client = jdrc.getPose3dClient("drone.Pose3D")
@@ -64,6 +66,20 @@ class Drone():
         self.__navdata_client.stop()
         self.__pose3d_client.stop()
 
+    def run_once(self,f):
+        def wrapper(*args, **kwargs):
+            if not wrapper.has_run:
+                wrapper.has_run = True
+                return f(*args, **kwargs)
+
+        wrapper.has_run = False
+        return wrapper
+
+
+    def toggleCam(self):
+        self.frontalCamera = True
+        self.__extra_client.toggleCam()
+
 
     def detect_object(self, color):
         """
@@ -73,6 +89,9 @@ class Drone():
 
         @return: size and center of the object detected in the frame
         """
+
+        if not self.frontalCamera:
+            self.toggleCam()
         # define the lower and upper boundaries of the basic colors
         GREEN_RANGE = ((29, 86, 6), (64, 255, 255))
         RED_RANGE = ((139, 0, 0), (255, 160, 122))

@@ -60,9 +60,23 @@ def is_conditional(sentence):
     @param sentence: The sentence to check.
     @return: True if it has a conditional, False otherwise.
     """
-
     if "if" in sentence:
         return True
+
+    return False
+   
+
+def is_list(sentence):
+    """
+    Returns if a sentence use list or not.
+
+    @param sentence: The sentence to check.
+    @return: True if it has a list, False otherwise.
+    """
+    if "insert" in sentence:
+        return True
+    if "add" in sentence:
+	return True
 
     return False
 
@@ -210,18 +224,24 @@ if __name__ == '__main__':\n\
         python_program = ""
 
         for s in sentences:
-            # count number of tabs
-            num_tabs = s.replace('    ', tab_seq).count(tab_seq)
-            python_program += tab_seq * (num_tabs + 1)
-
             # pre-processing if there is a condition (operators and types)
             if is_conditional(s):
                 s = s.replace("'", "").replace("=", "==")
-
             # mapping
             original, translation = sentence_mapping(s)
-            # print original, translation
-            # set the code
+
+            # count number of tabs
+            num_tabs = s.replace('    ', tab_seq).count(tab_seq)
+            
+            # check if there is list
+            
+            if is_list(s):
+	        python_program += tab_seq * (num_tabs + 1)
+	        python_program += translation.split(".")[0]+" = []\n\t"
+
+            python_program += tab_seq * (num_tabs + 1)
+
+            # set the code		
             if translation != None:
                 python_program += translation
             else:

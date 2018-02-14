@@ -14,25 +14,33 @@ from robot import Robot
 def execute(robot):
     try:
         robot.take_off()
-        time.sleep(1)
-        robot.move("up", 2)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("down", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("left", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("forward", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.land()
-        time.sleep(1)
+        while True:
+            mylist = []
+            mylist.insert(0, robot.detect_object("red"))
+            size = mylist[0][0]
+            x = mylist[0][1]
+            y = mylist[0][2]
+            if size > 0:
+                if size > 700:
+                    robot.move("back", 2)
+                else:
+                    robot.move("forward", 2)
+                
+                if x > 165:
+                    robot.turn("right", 2)
+                else:
+                    robot.turn("left", 2)
+                
+                if y > 110:
+                    robot.move("down", 1)
+                else:
+                    robot.move("up", 1)
+                
+            else:
+                robot.stop()
+                robot.turn("left", 2)
+            
+        
     except KeyboardInterrupt:
         raise
 
