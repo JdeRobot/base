@@ -9,7 +9,6 @@
 
    <!-- A global light source -->
     <include>
-      <name>ArDrone2</name>
       <uri>model://ArDrone2</uri>
       <pose>0 0 0.2 0 0 0</pose>
     </include>
