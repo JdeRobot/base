@@ -5,4 +5,4 @@
   For details about the parameters avaialble please refer picamserver.cfg or visit this [link](https://github.com/raspberrypi/userland/tree/master/host_applications/linux/apps/raspicam#raspivid).
   One can also get to know various parameters by typing raspivid in terminal.
 
-  Various types are also listed in [parameter_types.h](parameter_types.h)
+  Various types are also listed in [parameter_types.h](src/parameter_types.h)
