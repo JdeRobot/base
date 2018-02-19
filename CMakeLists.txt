@@ -50,9 +50,9 @@ endif()
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" ) # Opciones para el compilador
 
-INCLUDE_DIRECTORIES(/opt/jderobot/include)
-LINK_DIRECTORIES(/opt/jderobot/lib)
-set (CMAKE_LIBRARY_PATH /opt/jderobot/lib)
+INCLUDE_DIRECTORIES(/opt/jderobot/include/openni2)
+LINK_DIRECTORIES(/opt/jderobot/lib/openni2)
+set (CMAKE_LIBRARY_PATH /opt/jderobot/lib/openni2)
 
 
 # ENV VARS
