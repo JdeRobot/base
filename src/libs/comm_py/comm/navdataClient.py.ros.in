@@ -35,7 +35,7 @@ def __getPublisherNavdata(jdrc, prefix):
     @return Navdata ROS Publisher
 
     '''
-    
+
     print(prefix + ": This Interface doesn't support ROS msg")
     return None
 
@@ -71,8 +71,11 @@ def getNavdataClient (jdrc, prefix):
 
     '''
     server = jdrc.getConfig().getProperty(prefix+".Server")
-    if not server:
-        server=0
+    if server.lower() == "ice":
+        server=1
+    elif server.lower() == "ros":
+        server=2
+    else : server = 0
 
     cons = [__Navdatadisabled, __getNavdataIceClient, __getPublisherNavdata]
 

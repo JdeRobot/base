@@ -35,7 +35,7 @@ def __getPublisherPTMotors(jdrc, prefix):
     @return PTMotors ROS Publisher
 
     '''
-    
+
     print(prefix + ": This Interface doesn't support ROS msg")
     return None
 
@@ -70,7 +70,12 @@ def getPTMotorsClient (jdrc, prefix):
     @return None if PTMotors is disabled
 
     '''
-    server = jdrc.getConfig().getPropertyWithDefault(prefix+".Server", 0)
+    server = jdrc.getConfig().getProperty(prefix+".Server")
+    if server.lower() == "ice":
+        server=1
+    elif server.lower() == "ros":
+        server=2
+    else : server = 0
 
     cons = [__PTMotorsdisabled, __getPTMotorsIceClient, __getPublisherPTMotors]
 
