@@ -6,11 +6,21 @@
 
 namespace Comm {
 
-LaserClient* 
+LaserClient*
 getLaserClient(Comm::Communicator* jdrc, std::string prefix){
 	LaserClient* client = 0;
 
-	int server = jdrc->getConfig().asIntWithDefault(prefix+".Server", 0);
+	int server;
+	std::string server_name = jdrc->getConfig().asString(prefix+".Server");
+	std::transform(server_name.begin(), server_name.end(), server_name.begin(), ::tolower);
+	if(server_name == "ice"){
+		server = 1;
+	}
+	else if(server_name == "ros"){
+		server = 2;
+	}
+	else server = 0;
+
 	switch (server){
 		case 0:
 		{
