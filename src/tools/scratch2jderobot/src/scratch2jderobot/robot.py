@@ -35,6 +35,7 @@ class Robot():
         self.__vel = CMDVel()
 
         # get clients
+        self.__pose3d_client = jdrc.getPose3dClient("robot.Pose3D")
         self.__motors_client = jdrc.getMotorsClient("robot.Motors")
         self.__laser_client = jdrc.getLaserClient("robot.Laser")
 
@@ -61,6 +62,16 @@ class Robot():
         self.__vel.ax = 0.0
         self.__vel.ay = 0.0
         self.__vel.az = 0.0
+
+    def get_pose3d(self):
+        """
+        Get the value of odometry sensor.
+
+        @return: return the asked value.
+        """
+
+        return self.__pose3d_client.getPose3d()
+
 
     def detect_object(self, position, color):
         """

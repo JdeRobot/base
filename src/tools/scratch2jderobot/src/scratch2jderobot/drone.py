@@ -66,6 +66,18 @@ class Drone():
         self.__navdata_client.stop()
         self.__pose3d_client.stop()
 
+
+
+    def get_pose3d(self):
+        """
+        Get the value of odometry sensor.
+
+        @return: return the asked value.
+        """
+
+        return self.__pose3d_client.getPose3d()
+
+
     def toggleCam(self):
         self.frontalCamera = True
         self.__extra_client.toggleCam()
@@ -130,27 +142,6 @@ class Drone():
 
         return size, x_position, y_position
 
-        # if position == "x position":
-        #     return x_position
-        # if position == "y position":
-        #     return y_position
-        # else:
-        #     return size
-
-    def get_size_object(self):
-
-        size, _, _ = self.detect_object("red")
-        return size
-
-    def get_x_position(self):
-
-        _, x_position, _ = self.detect_object("red")
-        return x_position
-
-    def get_y_position(self):
-
-        _, _, y_position = self.detect_object("red")
-        return y_position
 
     def go_up_down(self, direction):
         """

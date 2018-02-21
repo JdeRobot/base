@@ -7,7 +7,6 @@ import sys
 import comm
 import os
 import yaml
-
 import math
 
 from drone import Drone
@@ -15,21 +14,11 @@ from robot import Robot
 
 def execute(robot):
     try:
-        robot.take_off()
-        while True:
-            size = robot.get_size_object()
-            xpos = robot.get_x_position()
-            ypos = robot.get_y_position()
-            if size < 10:
-                robot.take_off()
-            
-            if xpos < 150:
-                robot.turn("left", 1)
-            
-            if ypos < 200:
-                robot.move("back")
-            
-        
+        myList = []
+        myList.append(robot.get_pose3d())
+        posex = myList[0][0]
+        posey = myList[0][1]
+        posez = myList[0][2]
     except KeyboardInterrupt:
         raise
 

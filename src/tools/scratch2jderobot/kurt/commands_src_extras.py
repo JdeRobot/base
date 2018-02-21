@@ -25,7 +25,5 @@ extras += [
     [' ', 'land drone', 'Scratch2JdeRobot/drone/land'],
     ['r', 'frontal laser distance', 'Scratch2JdeRobot/laser/frontal'],
     ['r', 'color detection %m.color', 'Scratch2JdeRobot/camera/all', 'red'],
-    ['r', 'size of object', 'Scratch2JdeRobot/camera/size'],
-    ['r', 'x position of object', 'Scratch2JdeRobot/camera/x_pos'],
-    ['r', 'y position of object', 'Scratch2JdeRobot/camera/y_pos']
+    ['r', 'get pose3D', 'Scratch2JdeRobot/camera/pose3D'],
 ]

@@ -65,9 +65,8 @@ ROBOTICS = [
     ['land drone', 'robot.land()'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
     ['color detection {}', 'robot.detect_object("{l[0]}")'],
-    ['size of object', 'robot.get_size_object()'],
-    ['x position of object', 'robot.get_x_position()'],
-    ['y position of object', 'robot.get_y_position()'],
+    ['get pose3D', 'robot.get_pose3d()'],
+
 ]
 
 def is_conditional(sentence):

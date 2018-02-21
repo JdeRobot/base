@@ -13,9 +13,8 @@
                 ["", "land drone", "drone/land"],
                 ["r", "frontal laser distance", "laser/frontal"],
                 ["r", "color detection %m.color", "camera/all","red"],
-                ["r", "size of object", "camera/size"],
-                ["r", "x position of object", "camera/x_pos"],
-                ["r", "y position of object", "camera/y_pos"],
+                ["r", "get pose3D", "camera/pose3D"],
+
         ],
         "menus": {
                 "robotDirections": ["forward", "back"],
