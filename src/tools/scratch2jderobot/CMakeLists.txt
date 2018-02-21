@@ -65,7 +65,21 @@ IF (ENABLE_ROS)
 	#    add_rostest(test/.test)
 	#endif()
 
-	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/robot.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
+	#############
+	## INSTALL ##
+	#############
 
-	INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/drone.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
+
+	#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/robot.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
+
+	#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cfg/drone.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT scratch2jderobot)
+
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/src DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/extension DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/kurt DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/scripts DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	INSTALL (DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+	#INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/scripts/scratch2python.py DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/python/scratch2jderobot/ COMPONENT scratch2jderobot)
+
 ENDIF()
