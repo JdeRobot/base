@@ -38,15 +38,9 @@ class Communicator:
 
 		ymlNode = self.config.getProperty(prefix)
 		for i in ymlNode:
-<<<<<<< HEAD
-			if type(ymlNode[i]) is dict and ymlNode[i]["Server"] == "ice":
-				iceserver = True
-			if type(ymlNode[i]) is dict and ymlNode[i]["Server"] == "ros":
-=======
 			if type(ymlNode[i]) is dict and ymlNode[i]["Server"].lower() == "ice":
 				iceserver = True
 			if type(ymlNode[i]) is dict and ymlNode[i]["Server"].lower() == "ros":
->>>>>>> 119f7bbc92e1ca685dfb3d7ccccb04fe64727f1c
 				rosserver = True
 
 		if rosserver:
