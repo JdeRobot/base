@@ -14,11 +14,11 @@ from robot import Robot
 
 def execute(robot):
     try:
+        mylist = []
         robot.take_off()
         velx = '2'
         velz = '1'
         velyaw = '-3'
-        mylist = []
         mylist.append(velx)
         mylist.append(velz)
         mylist.append(velyaw)

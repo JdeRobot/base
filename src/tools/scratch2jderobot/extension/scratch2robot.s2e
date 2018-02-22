@@ -3,11 +3,9 @@
     "extensionPort": 12345,
         "blockSpecs": [
                 ["", "stop robot-drone", "stop"],
-                ["", "move robot %m.robotDirection", "robot/move", "forward"],
-                ["", "move drone %n", "drone/move", " "],
-                ["", "move drone %m.droneDirections speed %n", "drone/move/speed", "forward", 1],
+                ["", "move robot %n", "robot/move", "vx,vz"],
+                ["", "move drone %n", "drone/move", "vx,vz,vyaw"],
                 ["", "move robot %m.robotDirections speed %n", "robot/move/speed", "forward", 1],
-                ["", "turn drone %m.turnDirections speed %n", "turn/speed", "left", 1],
                 ["", "turn robot %m.turnDirections speed %n", "turn/speed", "left", 1],
                 ["", "take off drone", "drone/takeoff"],
                 ["", "land drone", "drone/land"],
@@ -17,7 +15,6 @@
         ],
         "menus": {
                 "robotDirections": ["forward", "back"],
-                "droneDirections": ["forward", "back", "left", "right", "up", "down"],
                 "turnDirections": ["left", "right"],
                 "color": ["red", "blue"]
         }

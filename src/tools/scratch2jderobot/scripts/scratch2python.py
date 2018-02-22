@@ -54,13 +54,11 @@ GENERAL = [
 ]
 
 ROBOTICS = [
-    ['move robot {}', 'robot.move("{l[0]}")'],
+    ['move robot {}', 'robot.move_vector({l[0]})'],
     ['move drone {}', 'robot.move_vector({l[0]})'],
-    ['move drone {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
     ['move robot {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
-    ['stop robot-drone', 'robot.stop()'],
-    ['turn drone {} speed {}', 'robot.turn("{l[0]}", {l[1]})'],
     ['turn robot {} speed {}', 'robot.turn("{l[0]}", {l[1]})'],
+    ['stop robot-drone', 'robot.stop()'],
     ['take off drone', 'robot.take_off()'],
     ['land drone', 'robot.land()'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
@@ -69,7 +67,7 @@ ROBOTICS = [
 
 ]
 
-LISTSET = False
+LISTNAMES = []
 
 def is_conditional(sentence):
     """
@@ -248,6 +246,7 @@ if __name__ == '__main__':\n\
             sentences += b.stringify().split('\n')
         tab_seq = "\t"
         python_program = ""
+        python_lists = ""
 
         for s in sentences:
             # pre-processing if there is a condition (operators and types)
@@ -261,10 +260,11 @@ if __name__ == '__main__':\n\
 
             # check if there is list
 
-            if is_list(s) and not LISTSET:
-                LISTSET = True
-    	        python_program += tab_seq * (num_tabs + 1)
-    	        python_program += translation.split(".")[0]+" = []\n\t"
+            if is_list(s) and translation.split(".")[0] not in LISTNAMES :
+                newlistname = translation.split(".")[0]
+                LISTNAMES.append(newlistname)
+    	        python_lists += tab_seq
+    	        python_lists += translation.split(".")[0]+" = []\n\t"
 
             python_program += tab_seq * (num_tabs + 1)
 
@@ -276,6 +276,8 @@ if __name__ == '__main__':\n\
             python_program += "\n" + tab_seq
 
         # join the template with the code and replace the tabs
+        python_lists += python_program
+        python_program = python_lists
         file_text = template % python_program
         file_text = file_text.replace(tab_seq, ' ' * 4)
 

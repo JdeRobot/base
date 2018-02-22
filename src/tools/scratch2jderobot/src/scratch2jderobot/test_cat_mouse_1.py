@@ -7,37 +7,47 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
+        mylist = []
+        myvelocity = []
         robot.take_off()
         while True:
-            size = robot.get_size_object()
+            mylist.insert(0, robot.detect_object("red"))
+            size = mylist[0][0]
+            x = mylist[0][1]
+            y = mylist[0][2]
             if size > 0:
-                x = robot.get_x_position()
-                y = robot.get_y_position()
-                if x >   165:
-                    robot.turn("right", 2)
-                else:
-                    robot.turn("left", 2)
-                
-                if y >  110 :
-                    robot.move("down", 1)
-                else:
-                    robot.move("up", 1)
-                
                 if size > 700:
-                    robot.move("back", 2)
+                    velx = '-2'
                 else:
-                    robot.move("forward", 2)
+                    velx = '2'
+                
+                if x > 165:
+                    velyaw = '-2'
+                else:
+                    velyaw = '2'
+                
+                if y > 110:
+                    velz = '-1'
+                else:
+                    velz = '1'
                 
             else:
                 robot.stop()
-                robot.turn("left", 2)
+                velx = '0'
+                velz = '0'
+                velyaw = '2'
             
+            myvelocity.insert(0, velx)
+            myvelocity.insert(1, velz)
+            myvelocity.insert(2, velyaw)
+            robot.move_vector(myvelocity)
         
     except KeyboardInterrupt:
         raise
