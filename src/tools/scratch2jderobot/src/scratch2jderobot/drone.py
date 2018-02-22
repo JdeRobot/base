@@ -162,6 +162,22 @@ class Drone():
         # publish movement
         self.__cmdvel_client.sendVelocities()
 
+    def move_vector(self, velocities):
+        """
+        Set the movements of the drone.
+
+        @param velocities: a scratch list [x,z,yaw] with the velocities in m/s.
+        """
+        vx = int(velocities[0])
+        vz = int(velocities[1])
+        vyaw = int(velocities[2])
+        print "velocities vector:","x:",vx,"z:",vz,"yaw:",vyaw
+        self.__cmdvel_client.setVX(vx)
+        self.__cmdvel_client.setVZ(vz)
+        self.__cmdvel_client.setYaw(vyaw)
+
+        # publish movement
+        self.__cmdvel_client.sendVelocities()
 
     def move(self, direction, vel=None):
         """

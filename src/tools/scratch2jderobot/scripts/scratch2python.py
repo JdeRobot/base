@@ -55,7 +55,7 @@ GENERAL = [
 
 ROBOTICS = [
     ['move robot {}', 'robot.move("{l[0]}")'],
-    ['move drone {}', 'robot.move("{l[0]}")'],
+    ['move drone {}', 'robot.move_vector({l[0]})'],
     ['move drone {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
     ['move robot {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
     ['stop robot-drone', 'robot.stop()'],
@@ -68,6 +68,8 @@ ROBOTICS = [
     ['get pose3D', 'robot.get_pose3d()'],
 
 ]
+
+LISTSET = False
 
 def is_conditional(sentence):
     """
@@ -259,9 +261,10 @@ if __name__ == '__main__':\n\
 
             # check if there is list
 
-            if is_list(s):
-	        python_program += tab_seq * (num_tabs + 1)
-	        python_program += translation.split(".")[0]+" = []\n\t"
+            if is_list(s) and not LISTSET:
+                LISTSET = True
+    	        python_program += tab_seq * (num_tabs + 1)
+    	        python_program += translation.split(".")[0]+" = []\n\t"
 
             python_program += tab_seq * (num_tabs + 1)
 

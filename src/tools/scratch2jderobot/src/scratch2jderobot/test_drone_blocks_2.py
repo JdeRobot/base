@@ -7,7 +7,6 @@ import sys
 import comm
 import os
 import yaml
-
 import math
 
 from drone import Drone

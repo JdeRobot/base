@@ -16,7 +16,7 @@ extras += [
     # add extensions code if not auto-generated
     [' ', 'stop robot-drone', 'Scratch2JdeRobot/stop'],
     [' ', 'move robot %m.robotDirections', 'Scratch2JdeRobot/robot/move', 'forward'],
-    [' ', 'move drone %m.droneDirections', 'Scratch2JdeRobot/drone/move', 'forward'],
+    [' ', 'move drone %n', 'Scratch2JdeRobot/drone/move', 'forward'],
     [' ', 'move drone %m.direction speed %n', 'Scratch2JdeRobot/drone/move/speed', 'forward', 1],
     [' ', 'move robot %m.direction speed %n', 'Scratch2JdeRobot/robot/move/speed', 'forward', 1],
     [' ', 'turn drone %m.turnDirections speed %n', 'Scratch2JdeRobot/turn/speed', 'left', 1],
