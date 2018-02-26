@@ -1,8 +1,5 @@
 #include <jderobot/comm/pose3dClient.hpp>
-#include <jderobot/comm/ice/pose3dIceClient.hpp>
-#ifdef JDERROS
-#include <jderobot/comm/ros/listenerPose.hpp>
-#endif
+
 
 namespace Comm {
 
@@ -13,13 +10,7 @@ getPose3dClient(Comm::Communicator* jdrc, std::string prefix){
 	int server;
 	std::string server_name = jdrc->getConfig().asString(prefix+".Server");
 	std::transform(server_name.begin(), server_name.end(), server_name.begin(), ::tolower);
-	if(server_name == "ice"){
-		server = 1;
-	}
-	else if(server_name == "ros"){
-		server = 2;
-	}
-	else server = 0;
+	server = server2int(server_name);
 
 	switch (server){
 		case 0:

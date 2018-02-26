@@ -1,8 +1,5 @@
-#include <jderobot/comm/interfaces/navdataClient.hpp>
-#include <jderobot/comm/ice/navdataIceClient.hpp>
-#ifdef JDERROS
-//#include <jderobot/comm/ros/listenerNavdata.hpp>
-#endif
+#include <jderobot/comm/navdataClient.hpp>
+
 
 namespace Comm {
 
@@ -13,13 +10,7 @@ getNavdataClient(Comm::Communicator* jdrc, std::string prefix){
 	int server;
 	std::string server_name = jdrc->getConfig().asString(prefix+".Server");
 	std::transform(server_name.begin(), server_name.end(), server_name.begin(), ::tolower);
-	if(server_name == "ice"){
-		server = 1;
-	}
-	else if(server_name == "ros"){
-		server = 2;
-	}
-	else server = 0;
+	server = server2int(server_name);
 
 	switch (server){
 		case 0:

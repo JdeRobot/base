@@ -35,6 +35,7 @@
 #include <jderobot/comm/communicator.hpp>
 #include <jderobot/comm/cameraClient.hpp>
 #include <jderobot/comm/rgbdClient.hpp>
+#include <jderobot/comm/tools.hpp>
 #include <jderobot/types/image.h>
 #include <jderobot/types/rgbd.h>
 #include <logger/Logger.h>
@@ -166,9 +167,11 @@ int main(int argc, char** argv){
 		std::cerr <<"Error :" << msg << std::endl;
 		return 1;
 	}
-	cameraRGBActive=(bool)cfg.asIntWithDefault("rgbdViewer.CameraRGB.Server",0);
-	cameraDepthActive=(bool)cfg.asIntWithDefault("rgbdViewer.CameraDEPTH.Server",0);
-	cameraRGBDActive=(bool)cfg.asIntWithDefault("rgbdViewer.RGBD.Server",0);
+
+
+	cameraRGBActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.CameraRGB.Server","0"));
+	cameraDepthActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.CameraDEPTH.Server","0"));
+	cameraRGBDActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.RGBD.Server","0"));
 
 	if (cameraRGBDActive && (cameraRGBActive ||  cameraDepthActive)){
 		LOG(ERROR) << "RGBD and single cameras cannot be selected at the same time";

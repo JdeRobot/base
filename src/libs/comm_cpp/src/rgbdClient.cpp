@@ -17,10 +17,7 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 #include <jderobot/comm/rgbdClient.hpp>
-#include <jderobot/comm/ice/rgbdIceClient.hpp>
-#ifdef JDERROS
-//#include <jderobot/comm/ros/listenerRgbd.hpp>
-#endif
+
 
 namespace Comm {
 
@@ -30,14 +27,7 @@ getRgbdClient(Comm::Communicator* jdrc, std::string prefix){
 
 	int server;
 	std::string server_name = jdrc->getConfig().asString(prefix+".Server");
-	std::transform(server_name.begin(), server_name.end(), server_name.begin(), ::tolower);
-	if(server_name == "ice"){
-		server = 1;
-	}
-	else if(server_name == "ros"){
-		server = 2;
-	}
-	else server = 0;
+	server = server2int(server_name);
 
 	switch (server){
 		case 0:

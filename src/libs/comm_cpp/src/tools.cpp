@@ -16,39 +16,18 @@
  *  Authors :
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
-
-#ifndef JDEROBOTCOMM_RGBDCLIENT_H
-#define JDEROBOTCOMM_RGBDCLIENT_H
-
-#include <jderobot/types/rgbd.h>
-#include <Ice/Communicator.h>
 #include <jderobot/comm/tools.hpp>
-#include <jderobot/comm/communicator.hpp>
-#include <jderobot/comm/interfaces/rgbdClient.hpp>
-#include <jderobot/comm/ice/rgbdIceClient.hpp>
-#ifdef JDERROS
-//#include <jderobot/comm/ros/listenerRgbd.hpp>
-#endif
-
-
-
-
 
 namespace Comm {
+	int server2int(std::string server){
+		std::transform(server.begin(), server.end(), server.begin(), ::tolower);
+		if(server == "ice" || server == "1"){
+			return 1;
+		}
+		else if(server == "ros"|| server == "2"){
+			return 2;
+		}
+		else return 0;
+	}
 
-	/**
-	 * @brief make a RgbdClient using propierties
-	 *
-	 *
-	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Rgbd")
-	 * 
-	 *
-	 * @return null if propierties are wrong
-	 */
-	RgbdClient* getRgbdClient(Comm::Communicator* jdrc, std::string prefix);
-
-
-} //NS
-
-#endif // JDEROBOTCOMM_RGBDCLIENT_H
+}//NS
