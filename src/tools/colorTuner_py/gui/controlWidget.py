@@ -18,7 +18,7 @@
 #
 
 from PyQt5.QtCore import pyqtSignal, Qt,QRect
-from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QGridLayout, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QSlider, QTextEdit, QLineEdit
+from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QGridLayout, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QSlider, QTextEdit, QLineEdit,QCheckBox
 from PyQt5.QtGui import QIntValidator
 from PyQt5 import QtWidgets
 from filters.hsvFilter import HSVMAX, HSVMIN
@@ -55,6 +55,10 @@ class ControlWidget(QWidget):
         self.rgbButton = QRadioButton("RGB")
         self.hsvButton = QRadioButton("HSV")
         self.yuvButton = QRadioButton("YUV")
+        '''HSV status scheck'''
+        self.hsvCheck = QCheckBox('HSV Color Disc')
+        self.hsvCheck.setObjectName("hsvCheck")
+        self.hsvCheck.stateChanged.connect(self.showHSVWidget)
 
         '''Signals for toggled radio buttons'''
         self.origButton.toggled.connect(lambda:self.origButtonState())       
@@ -78,7 +82,7 @@ class ControlWidget(QWidget):
         self.radio1Layout.addWidget(self.rgbButton)
         self.radio1Layout.addWidget(self.hsvButton)
         self.radio1Layout.addWidget(self.yuvButton)
-
+        self.radio1Layout.addWidget(self.hsvCheck)
         #self.radio1Layout.addLayout(self.radio2Layout)
         #self.radio1Layout.addLayout(self.radio3Layout)
         self.radioLayout.addLayout(self.radio1Layout)
@@ -215,12 +219,8 @@ class ControlWidget(QWidget):
         self.smaxValue.textChanged.connect(self.changeSmax2)
         self.vminValue.textChanged.connect(self.changeVmin2)
         self.vmaxValue.textChanged.connect(self.changeVmax2)
-        '''HSV status scheck'''
-        self.hsvCheck = QtWidgets.QCheckBox(self.winParent.centralWidget)
-        self.hsvCheck.setGeometry(QRect(740, 350, 130, 26))
-        self.hsvCheck.setObjectName("hsvCheck")
-        self.hsvCheck.setText('HSV Color Disc')
-        self.hsvCheck.stateChanged.connect(self.showHSVWidget)
+        
+        
 
     #Show filtered image. Don't manually disable radio button, API does it for you!
     '''Methods for showing images depending on the current checked radio button'''
