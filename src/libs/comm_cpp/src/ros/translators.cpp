@@ -78,7 +78,7 @@ namespace Comm {
 
 		try {
 
-			std::cout << image_msg->encoding << std::endl;
+			//std::cout << image_msg->encoding << std::endl;
 
 			if (image_msg->encoding.compare(sensor_msgs::image_encodings::TYPE_32FC1)==0){
 				cv_ptr = cv_bridge::toCvCopy(image_msg);

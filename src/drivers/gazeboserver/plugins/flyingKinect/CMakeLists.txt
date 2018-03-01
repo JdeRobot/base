@@ -56,7 +56,7 @@ target_link_libraries(${PROJECT_NAME}
     ${easyiceconfig_STATIC_LIBRARIES}
 )
 
-INSTALL (TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/flyingkinect/ COMPONENT gazeboserver)
+INSTALL (TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/flyingKinect/ COMPONENT gazeboserver)
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
 INSTALL (FILES ${CFG_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT gazeboserver)
 

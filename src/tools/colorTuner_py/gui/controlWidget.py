@@ -18,7 +18,7 @@
 #
 
 from PyQt5.QtCore import pyqtSignal, Qt,QRect
-from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QGridLayout, QVBoxLayout, QSpacerItem, QSizePolicy, QSlider, QTextEdit, QLineEdit
+from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QGridLayout, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QSlider, QTextEdit, QLineEdit
 from PyQt5.QtGui import QIntValidator
 from PyQt5 import QtWidgets
 from filters.hsvFilter import HSVMAX, HSVMIN
@@ -69,13 +69,20 @@ class ControlWidget(QWidget):
         self.gLayout.setObjectName("gLayout")
 
         ''' Vertical Layout for radio buttons '''
+        self.radio1Layout = QHBoxLayout()
+        self.radio2Layout = QVBoxLayout()
+        self.radio3Layout = QVBoxLayout()
         self.radioLayout = QVBoxLayout()
         self.radioLayout.setObjectName("radioLayout")
-        self.radioLayout.addWidget(self.origButton)
-        self.radioLayout.addWidget(self.rgbButton)
-        self.radioLayout.addWidget(self.hsvButton)
-        self.radioLayout.addWidget(self.yuvButton)
-        self.vSpacer = QSpacerItem(30, 20, QSizePolicy.Ignored, QSizePolicy.Ignored);
+        self.radio1Layout.addWidget(self.origButton)
+        self.radio1Layout.addWidget(self.rgbButton)
+        self.radio1Layout.addWidget(self.hsvButton)
+        self.radio1Layout.addWidget(self.yuvButton)
+
+        #self.radio1Layout.addLayout(self.radio2Layout)
+        #self.radio1Layout.addLayout(self.radio3Layout)
+        self.radioLayout.addLayout(self.radio1Layout)
+        self.vSpacer = QSpacerItem(10, 10, QSizePolicy.Ignored, QSizePolicy.Ignored);
         self.radioLayout.addItem(self.vSpacer)
         
         hmin,smin,vmin = HSVMIN
