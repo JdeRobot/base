@@ -1,6 +1,7 @@
 import sys
 import Ice
 from .ice.cmdvelIceClient import CMDVelIceClient
+from .tools import server2int
 
 
 
@@ -71,11 +72,7 @@ def getCMDVelClient (jdrc, prefix):
 
     '''
     server = jdrc.getConfig().getProperty(prefix+".Server")
-    if server.lower() == "ice":
-        server=1
-    elif server.lower() == "ros":
-        server=2
-    else : server = 0
+    server = server2int(server)
 
     cons = [__CMDVeldisabled, __getCMDVelIceClient, __getPublisherCMDVel]
 

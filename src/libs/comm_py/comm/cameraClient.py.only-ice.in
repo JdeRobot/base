@@ -1,6 +1,7 @@
 import sys
 import Ice
 from .ice.cameraIceClient import CameraIceClient
+from .tools import server2int
 
 def __getCameraIceClient(jdrc, prefix):
     '''
@@ -67,12 +68,8 @@ def getCameraClient (jdrc, prefix):
 
     '''
     server = jdrc.getConfig().getProperty(prefix+".Server")
-    if server.lower() == "ice":
-        server=1
-    elif server.lower() == "ros":
-        server=2
-    else : server = 0
+    server = server2int(server)
 
     cons = [__Cameradisabled, __getCameraIceClient, __getListenerCamera]
 
-    return cons[server](jdrc, name)
+    return cons[server](jdrc, prefix)

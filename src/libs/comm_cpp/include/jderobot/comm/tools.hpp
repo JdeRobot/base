@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2017 JDE Developers Team
+ *  Copyright (C) 1997-2018 JDE Developers Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,38 +17,17 @@
  *       Aitor Martinez Fernandez <aitor.martinez.fernandez@gmail.com>
  */
 
-#ifndef JDEROBOTCOMM_RGBDCLIENT_H
-#define JDEROBOTCOMM_RGBDCLIENT_H
+#ifndef JDEROBOTCOMM_TOOLS_H
+#define JDEROBOTCOMM_TOOLS_H
 
-#include <jderobot/types/rgbd.h>
-#include <Ice/Communicator.h>
-#include <jderobot/comm/tools.hpp>
-#include <jderobot/comm/communicator.hpp>
-#include <jderobot/comm/interfaces/rgbdClient.hpp>
-#include <jderobot/comm/ice/rgbdIceClient.hpp>
-#ifdef JDERROS
-//#include <jderobot/comm/ros/listenerRgbd.hpp>
-#endif
-
-
-
+#include <jderobot/config/properties.hpp>
 
 
 namespace Comm {
 
-	/**
-	 * @brief make a RgbdClient using propierties
-	 *
-	 *
-	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Rgbd")
-	 * 
-	 *
-	 * @return null if propierties are wrong
-	 */
-	RgbdClient* getRgbdClient(Comm::Communicator* jdrc, std::string prefix);
+	int server2int (std::string server);
 
 
 } //NS
 
-#endif // JDEROBOTCOMM_RGBDCLIENT_H
+#endif // JDEROBOTCOMM_TOOLS_H

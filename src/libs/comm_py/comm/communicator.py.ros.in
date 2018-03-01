@@ -12,6 +12,7 @@ from .cmdvelClient import getCMDVelClient
 from .ptMotorsClient import getPTMotorsClient
 from .bumperClient import getBumperClient
 from .sonarClient import getSonarClient
+from .tools import server2int
 
 
 
@@ -38,9 +39,9 @@ class Communicator:
 
 		ymlNode = self.config.getProperty(prefix)
 		for i in ymlNode:
-			if type(ymlNode[i]) is dict and ymlNode[i]["Server"].lower() == "ice":
+			if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 1:
 				iceserver = True
-			if type(ymlNode[i]) is dict and ymlNode[i]["Server"].lower() == "ros":
+			if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 2:
 				rosserver = True
 
 		if rosserver:
