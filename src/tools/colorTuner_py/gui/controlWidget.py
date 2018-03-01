@@ -17,18 +17,19 @@
 #       Alberto Martin Florido <almartinflorido@gmail.com>
 #
 
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal, Qt,QRect
 from PyQt5.QtWidgets import QWidget, QLabel, QRadioButton, QGridLayout, QVBoxLayout, QSpacerItem, QSizePolicy, QSlider, QTextEdit, QLineEdit
 from PyQt5.QtGui import QIntValidator
+from PyQt5 import QtWidgets
 from filters.hsvFilter import HSVMAX, HSVMIN
 from filters.rgbFilter import RGBMAX, RGBMIN
 from filters.yuvFilter import YUVMAX, YUVMIN
-
+from hsvWidget import HsvWidget
 WIDTH = 1340
 HEIGTH = 200
 
 class ControlWidget(QWidget):
-    
+    updatehsv_disc=pyqtSignal()
     
     def __init__(self,winParent):      
         super(ControlWidget, self).__init__()
@@ -40,6 +41,8 @@ class ControlWidget(QWidget):
         self.hsvup = list(HSVMAX)
         self.yuvdwn = list(YUVMIN)
         self.yuvup = list(YUVMAX)
+        self.hsvWidget=HsvWidget(self)
+        self.updatehsv_disc.connect(self.updatecolordisc)
         self.initUI()
         
     def initUI(self):
@@ -205,16 +208,27 @@ class ControlWidget(QWidget):
         self.smaxValue.textChanged.connect(self.changeSmax2)
         self.vminValue.textChanged.connect(self.changeVmin2)
         self.vmaxValue.textChanged.connect(self.changeVmax2)
-
-        
+        '''HSV status scheck'''
+        self.hsvCheck = QtWidgets.QCheckBox(self.winParent.centralWidget)
+        self.hsvCheck.setGeometry(QRect(740, 350, 130, 26))
+        self.hsvCheck.setObjectName("hsvCheck")
+        self.hsvCheck.setText('HSV Color Disc')
+        self.hsvCheck.stateChanged.connect(self.showHSVWidget)
 
     #Show filtered image. Don't manually disable radio button, API does it for you!
     '''Methods for showing images depending on the current checked radio button'''
     def origButtonState(self):
         if self.origButton.isChecked():
             self.winParent.setFilterName('Orig')
-            
-
+    def updatecolordisc(self):
+        self.hsvWidget.hsvUpdate.emit()      
+    def showHSVWidget(self,state):
+        if state == Qt.Checked:
+            self.hsvWidget.show()
+        else:
+            self.hsvWidget.close()
+    def closeHSVWidget(self):
+        self.hsvCheck.setChecked(False)
     def rgbButtonState(self):
         if self.rgbButton.isChecked():
             self.winParent.setFilterName('RGB')
@@ -372,6 +386,7 @@ class ControlWidget(QWidget):
             self.vmaxSlider.setMaximum(vmax)
             self.vmaxSlider.setValue(vu)
 
+
     '''Methods to get the slider value and update value labels'''
     def changeHmin(self):
         value = self.hminSlider.value()
@@ -384,6 +399,7 @@ class ControlWidget(QWidget):
             self.yuvdwn[0] = value
         self.hminValue.setText(str(value))
         self.setMIN()
+        self.updatecolordisc()
 
     def changeHmin2(self):
         v = self.hminValue.text()
@@ -400,6 +416,7 @@ class ControlWidget(QWidget):
             self.yuvdwn[0] = value
         self.hminSlider.setValue(value)
         self.setMIN()    
+        self.updatecolordisc()
 
     def changeHmax(self):
         value = self.hmaxSlider.value()
@@ -412,6 +429,7 @@ class ControlWidget(QWidget):
 
         self.hmaxValue.setText(str(value))
         self.setMAX()
+        self.updatecolordisc()
 
     def changeHmax2(self):
         v = self.hmaxValue.text()
@@ -428,6 +446,8 @@ class ControlWidget(QWidget):
             self.yuvup[0] = value
         self.hmaxSlider.setValue(value)
         self.setMAX()
+        self.updatecolordisc()
+
 
     def changeSmin(self):
         value = self.sminSlider.value()
@@ -440,6 +460,8 @@ class ControlWidget(QWidget):
 
         self.sminValue.setText(str(value))
         self.setMIN()
+        self.updatecolordisc()
+
 
     def changeSmin2(self):
         v = self.sminValue.text()
@@ -456,6 +478,8 @@ class ControlWidget(QWidget):
             self.yuvdwn[1] = value
         self.sminSlider.setValue(value)
         self.setMIN()
+        self.updatecolordisc()
+
 
     def changeSmax(self):
         value = self.smaxSlider.value()
@@ -468,6 +492,8 @@ class ControlWidget(QWidget):
 
         self.smaxValue.setText(str(value))
         self.setMAX()
+        self.updatecolordisc()
+
 
     def changeSmax2(self):
         v = self.smaxValue.text()
@@ -484,6 +510,8 @@ class ControlWidget(QWidget):
             self.yuvup[1] = value
         self.smaxSlider.setValue(value)
         self.setMAX()
+        self.updatecolordisc()
+
 
     def changeVmin(self):
         value = self.vminSlider.value()
@@ -566,8 +594,23 @@ class ControlWidget(QWidget):
         elif self.yuvButton.isChecked():
             h, s, v = self.yuvdwn
             self.winParent.getCamera().getFilter(filt).setDownLimit(h,s,v)
-
-  
+    '''Method for updating slider values'''
+    def updateSlider(self,hue_min,hue_max,sat_min,sat_max):
+        if self.hsvButton.isChecked():
+            self.hsvdwn[0]=hue_min
+            self.hsvup[0]=hue_max
+            self.hsvdwn[1]=sat_min
+            self.hsvup[1]=sat_max
+            self.hminValue.setText(str(hue_min))
+            self.hminSlider.setValue(hue_min)
+            self.hmaxValue.setText(str(hue_max))
+            self.hmaxSlider.setValue(hue_max)
+            self.sminValue.setText(str(sat_min))
+            self.sminSlider.setValue(sat_min)
+            self.smaxValue.setText(str(sat_max))
+            self.smaxSlider.setValue(sat_max)
+            self.setMAX()
+            self.setMIN()
 
     '''Close event, for finalize the program'''
     def closeEvent(self, event):

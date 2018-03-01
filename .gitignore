@@ -20,3 +20,5 @@ src/interfaces/python/
 __pycache__/
 *.py[cod]
 /build/
+
+src/tools/colorTuner_py/build/

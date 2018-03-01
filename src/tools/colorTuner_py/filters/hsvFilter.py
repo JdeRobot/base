@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 '''Max Values supported by OpenCV'''
-HSVMAX = (179,255,255)
+HSVMAX = (359,255,255)
 HSVMIN = (0,0,0)
 
 
@@ -60,9 +60,10 @@ class HsvFilter:
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
         # http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_colorspaces/py_colorspaces.html
+        hup=hup//2
+        hdwn=hdwn//2
         minValues = np.array([hdwn,sdwn,vdwn],dtype=np.uint8)
         maxValues = np.array([hup,sup,vup], dtype=np.uint8)
-
         mask = cv2.inRange(hsv, minValues, maxValues)
 
         res = cv2.bitwise_and(img,img, mask= mask)
