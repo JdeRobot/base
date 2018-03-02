@@ -1,6 +1,7 @@
 import sys
 import Ice
 from .ice.sonarIceClient import SonarIceClient
+from .tools import server2int
 
 
 def __getSonarIceClient(jdrc, prefix):
@@ -67,8 +68,7 @@ def getSonarClient (jdrc, prefix):
 
     '''
     server = jdrc.getConfig().getProperty(prefix+".Server")
-    if not server:
-        server=0
+    server = server2int(server)
 
     cons = [__Laserdisabled, __getLaserIceClient, __getListenerLaser]
 

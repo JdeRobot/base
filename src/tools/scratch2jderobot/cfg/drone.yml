@@ -1,6 +1,6 @@
 drone:
   Motors:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Motors:default -h localhost -p 9000"
     Topic: "/cmd_vel_mux/input/teleop"
     Name: Motors
@@ -8,36 +8,36 @@ drone:
     maxW: 0.7
 
   Camera1:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Camera:default -h localhost -p 9000"
     Format: RGB8
     Topic: "/camera/rgb/image_raw"
     Name: Camera1
 
   Pose3D:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Pose3D:default -h localhost -p 9000"
     Topic: "/odom"
     Name: Pose3d
 
   Laser:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Laser:default -h localhost -p 9000"
     Topic: "/scan"
     Name: Laser
 
   CMDVel:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "CMDVel:default -h localhost -p 9000"
     Name: CMDVel
 
   Navdata:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Navdata:default -h localhost -p 9000"
     Name: Navdata
 
   Extra:
-    Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "Extra:default -h localhost -p 9000"
     Name: Extra
 
