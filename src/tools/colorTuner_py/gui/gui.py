@@ -74,13 +74,13 @@ class MainWindow(QMainWindow):
 
 
     updGUI=pyqtSignal()
-    def __init__(self, parent=None):
+    def __init__(self, img_path=None,parent=None):
         super(MainWindow, self).__init__(parent)
-
+        self.file_path=img_path
         aboutAction = QAction("&About", self)
         aboutAction.setStatusTip('About JdeRobot')
         aboutAction.triggered.connect(self.aboutWindow)
-
+        self.img_path=img_path
         closeAction = QAction("&Quit", self)
         closeAction.setShortcut("Ctrl+Q")
         closeAction.setStatusTip('Leave The App')
@@ -95,16 +95,18 @@ class MainWindow(QMainWindow):
 
         #self.setMaximumSize(800,600)
 
-        centralWidget = QWidget(self)
+        self.centralWidget = QWidget(self)
         mainLayout = QGridLayout()
-        centralWidget.setLayout(mainLayout)
+        self.centralWidget.setLayout(mainLayout)
 
         imagesLayout = QVBoxLayout(self)
         controlLayout = QVBoxLayout(self)
 
         sliders = QGridLayout(self)
-
-        self.image = QImage(":/images/image.png").scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX, Qt.KeepAspectRatio)
+        CURRENT_DIR = os.path.dirname(__file__)
+        
+        file_path = os.path.join(CURRENT_DIR, '../resources/no_input.png')
+        self.image = QImage(file_path).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX, Qt.KeepAspectRatio)
         self.sourceImg = MyLabel(self)
         self.sourceImg.setScaledContents(True)
         self.sourceImg.setPixmap(QPixmap.fromImage(self.image))
@@ -116,7 +118,7 @@ class MainWindow(QMainWindow):
         self.sourceImg.setFixedSize(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
 
 
-        self.imageF = QImage(":/images/image.png").scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+        self.imageF = QImage(file_path).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
         self.filterImg = QLabel(self)
         self.filterImg.setScaledContents(True)
         self.filterImg.setPixmap(QPixmap.fromImage(self.imageF))
@@ -148,9 +150,9 @@ class MainWindow(QMainWindow):
         zoompixGroupBox.setLayout(grid3)
 
         slidersGroupBox = QGroupBox("Filter setup")
-        controlWidget = ControlWidget(self)
+        self.controlWidget = ControlWidget(self)
         grid4 = QGridLayout()
-        grid4.addWidget(controlWidget)
+        grid4.addWidget(self.controlWidget)
         slidersGroupBox.setLayout(grid4)
 
 
@@ -186,26 +188,58 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(self.pixel,1,1)
         mainLayout.addWidget(self.rgbVal,1,0,1,1)'''
 
-        self.setCentralWidget(centralWidget)
+        self.setCentralWidget(self.centralWidget)
 
         self.updGUI.connect(self.updateGUI)
 
     def updateGUI(self):
+        defined_img=None
+        if self.file_path is not None:
+            defined_img=QImage(self.file_path).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+
 
         img = self.camera.getOrigImage()
+        if defined_img is not None:
+            img=defined_img
+            self.image=img
+        elif defined_img is None:
+            if img is not None:
+                self.image = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+
         if img is not None:
-            self.image = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+            
             self.sourceImg.setPixmap(QPixmap.fromImage(self.image))
 
+        #Filter Image
+
+
+
         filt = self.getFilterName()
-        img = self.camera.getFilteredImage(filt)
+        
         if (filt is not "Orig"):
             disc2 = self.camera.getFilter(filt).apply(self.colorSpace)
             imgDisc = QImage(disc2.data, disc2.shape[1], disc2.shape[0], disc2.shape[1] * disc2.shape[2], QImage.Format_RGB888).scaled(200, 200)
             self.colorSpaceLabel.setPixmap(QPixmap.fromImage(imgDisc))
-        if img is not None:
-            self.imageF = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
-            self.filterImg.setPixmap(QPixmap.fromImage(self.imageF))
+
+        img = self.camera.getOrigImage()
+        if defined_img is not None:
+            img2=cv2.imread(self.file_path)
+            img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+            if (filt is not "Orig"):
+                self.imageF=self.camera.getFilter(filt).apply(img2)
+                self.imageF= QImage(self.imageF.data, self.imageF.shape[1], self.imageF.shape[0], self.imageF.shape[1] * self.imageF.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+            else:
+                self.imageF=QImage(img2.data, img2.shape[1], img2.shape[0], img2.shape[1] * img2.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX)
+
+        elif defined_img is None:
+            if img is not None:
+                img = self.camera.getFilteredImage(filt)
+                self.imageF = QImage(img.data, img.shape[1], img.shape[0], img.shape[1] * img.shape[2], QImage.Format_RGB888).scaled(self.IMAGE_COLS_MAX, self.IMAGE_ROWS_MAX) 
+            
+        
+        #img = self.camera.getFilteredImage(filt)
+
+        self.filterImg.setPixmap(QPixmap.fromImage(self.imageF))
             
 
         #print "update"
@@ -249,11 +283,6 @@ class MainWindow(QMainWindow):
         self.filt = filt
 
     def closeEvent(self, event):
-        self.camera.stop()
+        self.camera.stop() 
         event.accept()
             
-
-        
-
-
-

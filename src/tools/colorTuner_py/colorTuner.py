@@ -38,6 +38,10 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
     cfg = config.load(sys.argv[1])
+    try:
+        img_path=sys.argv[2]
+    except IndexError:
+        img_path=None
 
     #starting comm
     jdrc= comm.init(cfg, 'ColorTuner')
@@ -46,7 +50,7 @@ if __name__ == '__main__':
     camera = CameraFilter(cameraCli)
     
     app = QApplication(sys.argv)
-    frame = MainWindow()
+    frame = MainWindow(img_path)
     frame.setCamera(camera)
     frame.show()
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
