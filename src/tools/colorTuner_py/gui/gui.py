@@ -95,9 +95,9 @@ class MainWindow(QMainWindow):
 
         #self.setMaximumSize(800,600)
 
-        centralWidget = QWidget(self)
+        self.centralWidget = QWidget(self)
         mainLayout = QGridLayout()
-        centralWidget.setLayout(mainLayout)
+        self.centralWidget.setLayout(mainLayout)
 
         imagesLayout = QVBoxLayout(self)
         controlLayout = QVBoxLayout(self)
@@ -148,9 +148,9 @@ class MainWindow(QMainWindow):
         zoompixGroupBox.setLayout(grid3)
 
         slidersGroupBox = QGroupBox("Filter setup")
-        controlWidget = ControlWidget(self)
+        self.controlWidget = ControlWidget(self)
         grid4 = QGridLayout()
-        grid4.addWidget(controlWidget)
+        grid4.addWidget(self.controlWidget)
         slidersGroupBox.setLayout(grid4)
 
 
@@ -186,7 +186,7 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(self.pixel,1,1)
         mainLayout.addWidget(self.rgbVal,1,0,1,1)'''
 
-        self.setCentralWidget(centralWidget)
+        self.setCentralWidget(self.centralWidget)
 
         self.updGUI.connect(self.updateGUI)
 
@@ -249,7 +249,8 @@ class MainWindow(QMainWindow):
         self.filt = filt
 
     def closeEvent(self, event):
-        self.camera.stop()
+        self.camera.stop() 
+        self.controlWidget.closeHSVWidget()
         event.accept()
             
 
