@@ -29,7 +29,7 @@ namespace resourcelocator {
 
 std::string
 inline findGladeFile(const std::string filename)
-	{ return findFile(filename, "GLADE_PATH", "@CMAKE_INSTALL_PREFIX@/share/jderobot/glade"); }
+	{ return findFile(filename, "JDEROBOT_GLADE_PATH"); }
 
 
 }//NS
