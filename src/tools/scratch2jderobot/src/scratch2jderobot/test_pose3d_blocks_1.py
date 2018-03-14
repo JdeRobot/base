@@ -7,32 +7,18 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
-        robot.take_off()
-        time.sleep(1)
-        robot.move("up", 2)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("down", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("left", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("forward", 1)
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.land()
-        time.sleep(1)
+        myList = []
+        myList.append(robot.get_pose3d())
+        posex = myList[0][0]
+        posey = myList[0][1]
+        posez = myList[0][2]
     except KeyboardInterrupt:
         raise
 

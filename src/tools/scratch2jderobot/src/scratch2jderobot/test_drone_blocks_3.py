@@ -7,27 +7,46 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
+        mylist = []
         robot.take_off()
-        while True:
-            size = robot.get_size_object()
-            xpos = robot.get_x_position()
-            ypos = robot.get_y_position()
-            if size < 10:
-                robot.take_off()
-            
-            if xpos < 150:
-                robot.turn("left", 1)
-            
-            if ypos < 200:
-                robot.move("back")
-            
-        
+        time.sleep(1)
+        mylist.append('1')
+        mylist.append('0')
+        mylist.append('0')
+        robot.move_vector(mylist)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        mylist.insert(0, '-1')
+        mylist.insert(1, '0')
+        mylist.insert(2, '0')
+        robot.move_vector(mylist)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        mylist.insert(0, '0')
+        mylist.insert(1, '1')
+        mylist.insert(2, '0')
+        robot.move_vector(mylist)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        mylist.insert(0, '0')
+        mylist.insert(1, '-1')
+        mylist.insert(2, '0')
+        robot.move_vector(mylist)
+        time.sleep(3)
+        robot.stop()
+        time.sleep(1)
+        robot.land()
+        time.sleep(1)
     except KeyboardInterrupt:
         raise
 

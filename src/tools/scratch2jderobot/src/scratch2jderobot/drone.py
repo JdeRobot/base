@@ -66,6 +66,18 @@ class Drone():
         self.__navdata_client.stop()
         self.__pose3d_client.stop()
 
+
+
+    def get_pose3d(self):
+        """
+        Get the value of odometry sensor.
+
+        @return: return the asked value.
+        """
+
+        return self.__pose3d_client.getPose3d()
+
+
     def toggleCam(self):
         self.frontalCamera = True
         self.__extra_client.toggleCam()
@@ -130,27 +142,6 @@ class Drone():
 
         return size, x_position, y_position
 
-        # if position == "x position":
-        #     return x_position
-        # if position == "y position":
-        #     return y_position
-        # else:
-        #     return size
-
-    def get_size_object(self):
-
-        size, _, _ = self.detect_object("red")
-        return size
-
-    def get_x_position(self):
-
-        _, x_position, _ = self.detect_object("red")
-        return x_position
-
-    def get_y_position(self):
-
-        _, _, y_position = self.detect_object("red")
-        return y_position
 
     def go_up_down(self, direction):
         """
@@ -171,55 +162,71 @@ class Drone():
         # publish movement
         self.__cmdvel_client.sendVelocities()
 
-
-    def move(self, direction, vel=None):
+    def move_vector(self, velocities):
         """
-        Set the horizontal movement of the drone.
+        Set the movements of the drone.
 
-        @param direction: direction of the move. Options: forward (default), back.
-        @param vel: a number with the velocity in m/s. Default: 1 m/s.
+        @param velocities: a scratch list [x,z,yaw] with the velocities in m/s.
         """
-
-        if vel == None:
-            vel = 1
-        # set different direction
-        if direction == "back":
-            self.__cmdvel_client.setVX(-vel)
-        elif direction == "forward":
-            self.__cmdvel_client.setVX(vel)
-        elif direction == "left":
-            self.__cmdvel_client.setVY(vel)
-        elif direction == "right":
-            self.__cmdvel_client.setVY(-vel)
-        elif direction == "down":
-            self.__cmdvel_client.setVZ(-vel)
-        elif direction == "up":
-            self.__cmdvel_client.setVZ(vel)
-        print direction
+        vx = float(velocities[0])
+        vz = float(velocities[1])
+        vyaw = float(velocities[2])
+        print "velocities vector:","x:",vx,"z:",vz,"yaw:",vyaw
+        self.__cmdvel_client.setVX(vx)
+        self.__cmdvel_client.setVZ(vz)
+        self.__cmdvel_client.setYaw(vyaw)
 
         # publish movement
         self.__cmdvel_client.sendVelocities()
-
-    def turn(self, direction, vel=None):
-        """
-        Set the angular velocity.
-
-        @param direction: direction of the move. Options: left (default), right.
-        @param vel: a number with the velocity in m/s. Default: 1 m/s.
-        """
-        if vel == None:
-            vel = 0.5
-        # set default velocity (m/s)
-        yaw = vel * math.pi
-
-        if direction == "right":
-            yaw = -yaw
-
-        # assign velocity
-        self.__cmdvel_client.setYaw(yaw)
-
-        # publish movement
-        self.__cmdvel_client.sendVelocities()
+    #
+    # def move(self, direction, vel=None):
+    #     """
+    #     Set the horizontal movement of the drone.
+    #
+    #     @param direction: direction of the move. Options: forward (default), back.
+    #     @param vel: a number with the velocity in m/s. Default: 1 m/s.
+    #     """
+    #
+    #     if vel == None:
+    #         vel = 1
+    #     # set different direction
+    #     if direction == "back":
+    #         self.__cmdvel_client.setVX(-vel)
+    #     elif direction == "forward":
+    #         self.__cmdvel_client.setVX(vel)
+    #     elif direction == "left":
+    #         self.__cmdvel_client.setVY(vel)
+    #     elif direction == "right":
+    #         self.__cmdvel_client.setVY(-vel)
+    #     elif direction == "down":
+    #         self.__cmdvel_client.setVZ(-vel)
+    #     elif direction == "up":
+    #         self.__cmdvel_client.setVZ(vel)
+    #     print direction
+    #
+    #     # publish movement
+    #     self.__cmdvel_client.sendVelocities()
+    #
+    # def turn(self, direction, vel=None):
+    #     """
+    #     Set the angular velocity.
+    #
+    #     @param direction: direction of the move. Options: left (default), right.
+    #     @param vel: a number with the velocity in m/s. Default: 1 m/s.
+    #     """
+    #     if vel == None:
+    #         vel = 0.5
+    #     # set default velocity (m/s)
+    #     yaw = vel * math.pi
+    #
+    #     if direction == "right":
+    #         yaw = -yaw
+    #
+    #     # assign velocity
+    #     self.__cmdvel_client.setYaw(yaw)
+    #
+    #     # publish movement
+    #     self.__cmdvel_client.sendVelocities()
 
     def stop(self):
         """

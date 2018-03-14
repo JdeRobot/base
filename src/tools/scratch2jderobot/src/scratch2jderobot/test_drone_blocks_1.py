@@ -7,32 +7,25 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
+        mylist = []
         robot.take_off()
-        time.sleep(1)
-        robot.move("forward")
-        time.sleep(3)
+        velx = '2'
+        velz = '1'
+        velyaw = '-3'
+        mylist.append(velx)
+        mylist.append(velz)
+        mylist.append(velyaw)
+        robot.move_vector(mylist)
+        time.sleep(4)
         robot.stop()
-        time.sleep(1)
-        robot.move("back")
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("left")
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
-        robot.move("right")
-        time.sleep(3)
-        robot.stop()
-        time.sleep(1)
         robot.land()
-        time.sleep(1)
     except KeyboardInterrupt:
         raise
 

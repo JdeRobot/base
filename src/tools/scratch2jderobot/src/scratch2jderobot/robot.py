@@ -35,6 +35,7 @@ class Robot():
         self.__vel = CMDVel()
 
         # get clients
+        self.__pose3d_client = jdrc.getPose3dClient("robot.Pose3D")
         self.__motors_client = jdrc.getMotorsClient("robot.Motors")
         self.__laser_client = jdrc.getLaserClient("robot.Laser")
 
@@ -61,6 +62,16 @@ class Robot():
         self.__vel.ax = 0.0
         self.__vel.ay = 0.0
         self.__vel.az = 0.0
+
+    def get_pose3d(self):
+        """
+        Get the value of odometry sensor.
+
+        @return: return the asked value.
+        """
+
+        return self.__pose3d_client.getPose3d()
+
 
     def detect_object(self, position, color):
         """
@@ -126,21 +137,6 @@ class Robot():
         else:
             return size
 
-    def get_size_object(self):
-
-        size = self.detect_object("size", "red")
-        return size
-
-    def get_x_position(self):
-
-        x_position = self.detect_object("x position", "red")
-        return x_position
-
-    def get_y_position(self):
-
-        y_position = self.detect_object("y position", "red")
-        return y_position
-
     def get_laser_distance(self):
         """
         Get the average value for the values of the frontal laser.
@@ -160,6 +156,31 @@ class Robot():
             avg = 0
 
         return avg
+
+
+    def move_vector(self, velocities):
+        """
+        Set the vector movement of the robot.
+
+        @param velocities: a vector with velocities (vx,vz) in m/s.
+        """
+
+        vx = float(velocities[0])
+        vz = float(velocities[1])
+        print "velocities:",vx,vz
+        # reset values
+        self.__reset()
+
+        self.__vel.vx = vx
+        self.__vel.vz = vz
+        if vz>0:
+            self.turn("left",vz)
+        if vz<0:
+            self.turn("right",vz)
+
+        self.__publish(self.__vel)
+
+
 
     def move(self, direction, vel=None):
         """
@@ -195,7 +216,7 @@ class Robot():
         """
 
         # reset values
-        self.__reset()
+        # self.__reset()
 
         # set default velocity (m/s)
         self.__vel.az = 0.2

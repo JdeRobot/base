@@ -7,19 +7,28 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
+        mylist2 = []
+        mylist = []
+        mylist2.append('0')
+        mylist2.append('0')
+        mylist2.append('-2')
+        mylist.append('0')
+        mylist.append('0')
+        mylist.append('2')
         robot.take_off()
         time.sleep(1)
-        robot.turn("left", 1)
+        robot.move_vector(mylist)
         time.sleep(3)
         robot.stop()
         time.sleep(1)
-        robot.turn("right", 2)
+        robot.move_vector(mylist2)
         time.sleep(3)
         robot.stop()
         time.sleep(1)

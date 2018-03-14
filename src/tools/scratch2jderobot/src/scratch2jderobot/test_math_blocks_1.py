@@ -8,21 +8,31 @@ import comm
 import os
 import yaml
 
+import math
+
 from drone import Drone
 from robot import Robot
-from mylist import MyList
 
 def execute(robot):
     try:
-        lista.append(robot.detect_object("red"))
-        if lista[0][2] >   300:
-            robot.move("forward", 1)
+        if 2 == 2 and 3 > 2:
+            x = math.sqrt(9)
+            x = math.sin(9)
+            x = math.cos(9)
+            x = math.tan(9)
+            x = math.asin(9)
+            x = math.acos(9)
+            x = math.atan(9)
+            x = math.log(9)
+            x = math.log10(9)
+            x = abs(9)
+            x = math.floor(9)
+            x = math.ceil(9)
         
     except KeyboardInterrupt:
         raise
 
 if __name__ == '__main__':
-    mylist=MyList()
     if len(sys.argv) == 2:
         path = os.getcwd()
         open_path = path[:path.rfind('src')] + 'cfg/'

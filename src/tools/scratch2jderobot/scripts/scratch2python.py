@@ -18,6 +18,23 @@ from difflib import SequenceMatcher
 from parse import parse, compile
 from termcolor import cprint
 
+MATH = [
+    ['sqrt of {}', 'math.sqrt({l[0]})'],
+    ['sin of {}', 'math.sin({l[0]})'],
+    ['cos of {}', 'math.cos({l[0]})'],
+    ['tan of {}', 'math.tan({l[0]})'],
+    ['asin of {}', 'math.asin({l[0]})'],
+    ['acos of {}', 'math.acos({l[0]})'],
+    ['atan of {}', 'math.atan({l[0]})'],
+    ['log of {}', 'math.log10({l[0]})'],
+    ['ln of {}', 'math.log({l[0]})'],
+    ['floor of {}', 'math.floor({l[0]})'],
+    ['ceiling of {}', 'math.ceil({l[0]})'],
+    ['abs of {}', 'abs({l[0]})'],
+    ['{} mod of {}', '{l[0]}%{l[1]}'],
+
+]
+
 GENERAL = [
     ['end', ''],
     ['forever', 'while True:'],
@@ -37,21 +54,20 @@ GENERAL = [
 ]
 
 ROBOTICS = [
-    ['move robot {}', 'robot.move("{l[0]}")'],
-    ['move drone {}', 'robot.move("{l[0]}")'],
-    ['move drone {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
+    ['move robot {}', 'robot.move_vector({l[0]})'],
+    ['move drone {}', 'robot.move_vector({l[0]})'],
     ['move robot {} speed {}', 'robot.move("{l[0]}", {l[1]})'],
-    ['stop robot-drone', 'robot.stop()'],
-    ['turn drone {} speed {}', 'robot.turn("{l[0]}", {l[1]})'],
     ['turn robot {} speed {}', 'robot.turn("{l[0]}", {l[1]})'],
+    ['stop robot-drone', 'robot.stop()'],
     ['take off drone', 'robot.take_off()'],
     ['land drone', 'robot.land()'],
     ['frontal laser distance', 'robot.get_laser_distance()'],
     ['color detection {}', 'robot.detect_object("{l[0]}")'],
-    ['size of object', 'robot.get_size_object()'],
-    ['x position of object', 'robot.get_x_position()'],
-    ['y position of object', 'robot.get_y_position()'],
+    ['get pose3D', 'robot.get_pose3d()'],
+
 ]
+
+LISTNAMES = []
 
 def is_conditional(sentence):
     """
@@ -64,7 +80,7 @@ def is_conditional(sentence):
         return True
 
     return False
-   
+
 
 def is_list(sentence):
     """
@@ -106,10 +122,16 @@ def sentence_mapping(sentence, threshold=0.0):
     translation = None
 
     # first look for general blocks
-    for elem in GENERAL:
+    for elem in MATH:
         if elem[0][:3] == sentence.replace('    ', '').replace('(', '')[:3]:
             options.append(elem)
             found = True
+
+    if not found:
+        for elem in GENERAL:
+            if elem[0][:3] == sentence.replace('    ', '').replace('(', '')[:3]:
+                options.append(elem)
+                found = True
 
     # then look for robotics blocks
     if not found:
@@ -122,6 +144,8 @@ def sentence_mapping(sentence, threshold=0.0):
         # select the option that better fits
         l = [(m[0], m[1], similar(sentence, m[0])) for m in options]
         original, translation, score = max(l, key=lambda item: item[2])
+
+
 
         if score < threshold:
             return None, None
@@ -152,7 +176,6 @@ def sentence_mapping(sentence, threshold=0.0):
     return original, translation
 
 
-
 if __name__ == "__main__":
     # get current working directory
     path = os.getcwd()
@@ -170,7 +193,8 @@ import config\n\
 import sys\n\
 import comm\n\
 import os\n\
-import yaml\n\n\
+import yaml\n\
+import math\n\n\
 from drone import Drone\n\
 from robot import Robot\n\n\
 def execute(robot):\n\
@@ -222,6 +246,7 @@ if __name__ == '__main__':\n\
             sentences += b.stringify().split('\n')
         tab_seq = "\t"
         python_program = ""
+        python_lists = ""
 
         for s in sentences:
             # pre-processing if there is a condition (operators and types)
@@ -232,16 +257,18 @@ if __name__ == '__main__':\n\
 
             # count number of tabs
             num_tabs = s.replace('    ', tab_seq).count(tab_seq)
-            
+
             # check if there is list
-            
-            if is_list(s):
-	        python_program += tab_seq * (num_tabs + 1)
-	        python_program += translation.split(".")[0]+" = []\n\t"
+
+            if is_list(s) and translation.split(".")[0] not in LISTNAMES :
+                newlistname = translation.split(".")[0]
+                LISTNAMES.append(newlistname)
+    	        python_lists += tab_seq
+    	        python_lists += translation.split(".")[0]+" = []\n\t"
 
             python_program += tab_seq * (num_tabs + 1)
 
-            # set the code		
+            # set the code
             if translation != None:
                 python_program += translation
             else:
@@ -249,6 +276,8 @@ if __name__ == '__main__':\n\
             python_program += "\n" + tab_seq
 
         # join the template with the code and replace the tabs
+        python_lists += python_program
+        python_program = python_lists
         file_text = template % python_program
         file_text = file_text.replace(tab_seq, ' ' * 4)
 

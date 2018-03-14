@@ -7,18 +7,25 @@ import sys
 import comm
 import os
 import yaml
+import math
 
 from drone import Drone
 from robot import Robot
 
 def execute(robot):
     try:
+        mylist = []
+        mylist2 = []
+        mylist.append('0')
+        mylist.append('1')
+        mylist2.append('0.5')
+        mylist2.append('0')
         while True:
-            laser_data = robot.get_laser_distance()
-            if laser_data < 1.5:
-                robot.turn("left", 1)
+            lasedata = robot.get_laser_distance()
+            if lasedata < 2.5:
+                robot.move_vector(mylist)
             else:
-                robot.move("forward")
+                robot.move_vector(mylist2)
             
         
     except KeyboardInterrupt:
