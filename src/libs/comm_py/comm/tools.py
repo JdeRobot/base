@@ -2,7 +2,7 @@
 
 def server2int(server):
     if isinstance(server, int):
-        if server in range(2):
+        if server in range(3):
             return server
         return 0
     elif isinstance(server, str):
