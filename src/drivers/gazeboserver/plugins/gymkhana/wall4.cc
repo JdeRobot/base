@@ -11,6 +11,8 @@ namespace gazebo
 
 		private: math::Pose pose;
   		private: bool flag;
+		private: double vel1; 
+		private: double vel2; 
 
   		public: void Load(physics::ModelPtr _parent, sdf::ElementPtr ) {
       			this->model = _parent;
@@ -18,6 +20,8 @@ namespace gazebo
 	  		this->updateConnection = event::Events::ConnectWorldUpdateBegin(
           		boost::bind(&Wall4::OnUpdate, this, _1));
 			std::cout << "Loading wall 4" << std::endl;
+			this->vel1 = 0.5 + double(rand())/RAND_MAX*1.5;
+			this->vel2 = (0.5 + double(rand())/RAND_MAX*1.5)*-1;
 			
 		}
 
@@ -25,7 +29,7 @@ namespace gazebo
 			pose = this->model->GetWorldPose();
 
 			if  (flag) {
-				this->model->SetLinearVel(math::Vector3(-1, 0, 0));
+				this->model->SetLinearVel(math::Vector3(this->vel2, 0, 0));
 			}
 			if ( pose.pos.x <=-4 ) {
 			        pose.pos.x = -4;
@@ -33,10 +37,10 @@ namespace gazebo
 				flag = false;
 			}
 			if (!flag) {
-				this->model->SetLinearVel(math::Vector3(1, 0, 0));
+				this->model->SetLinearVel(math::Vector3(this->vel1, 0, 0));
 			}	
-			if ( pose.pos.x >=0 ) {
-			        pose.pos.x = 0;
+			if ( pose.pos.x >= -1.25 ) {
+			        pose.pos.x = -1.25;
 			        this->model->SetWorldPose(pose);
 				flag = true;
 			}

@@ -4,11 +4,44 @@
     <!-- Ground -->
     <include>
       <uri>model://hangar</uri>
+      <pose>0 -2 0 0 0 0</pose>
     </include>
-    <!-- My robots -->
+
     <include>
       <uri>model://sun</uri>
     </include>
+    
+    <include>
+      <name>ardrone-black</name>
+      <uri>model://ArDrone2</uri>
+      <pose>0 10 0.1 0 0 -1.57</pose>
+    </include>
+
+    <include>
+      <uri>model://wall1</uri>
+      <pose>0 4 0 0 0 0</pose>
+    </include>
+
+     <include>
+      <uri>model://wall1</uri>
+      <pose>0 8 0 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>model://wall2</uri>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>model://wall3</uri>
+      <pose>0 -6 0 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>model://wall4</uri>
+      <pose>0 -6 0 0 0 0</pose>
+    </include>
+
 
     <include>
       <uri>model://wall1</uri>
@@ -34,3 +67,4 @@
 	
   </world>
 </sdf>
+
