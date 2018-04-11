@@ -17,11 +17,6 @@
       <pose>0 9.5 0.1 0 0 -1.57</pose>
     </include>
 
-    <include>
-      <uri>model://wall1</uri>
-      <pose>0 4 0 0 0 0</pose>
-    </include>
-
      <include>
       <uri>model://wall1</uri>
       <pose>0 8 0 0 0 0</pose>
