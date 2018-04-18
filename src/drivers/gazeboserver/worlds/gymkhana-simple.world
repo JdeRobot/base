@@ -176,7 +176,7 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
@@ -192,7 +192,7 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
@@ -208,7 +208,7 @@
       <box>
         <size>30 100 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
@@ -224,7 +224,7 @@
       <box>
         <size>100 30 .01</size>
       </box>
-      <model_count>60</model_count>
+      <model_count>10</model_count>
       <distribution>
         <type>random</type>
       </distribution>
