@@ -230,7 +230,7 @@ function TurtlebotViewer (config){
 
       if (model.robot==undefined) {
          var loader = new GUI.RobotLoader();
-         loader.loadTurtle(1,function () {
+         loader.loadTurtlebot(1,function () {
             model.robot=loader.robot;
             model.scene.add( model.robot );
             modelAnimation();
