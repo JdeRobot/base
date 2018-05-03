@@ -46,9 +46,9 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${comm_LIBRARY_DIRS}
     )
 
-    add_executable( kobukiViewer ${SOURCE} ${INTERFACES_CPP_DIR})
+    add_executable( carViz ${SOURCE} ${INTERFACES_CPP_DIR})
 			       
-    target_link_libraries(kobukiViewer
+    target_link_libraries(carViz
         ${Qt5Widgets_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Gui_LIBRARIES}
@@ -65,10 +65,10 @@ if (${QT5_COMPILE} AND ${roscpp_FOUND})
         ${ZLIB_LIBRARIES}
         colorspacesmm
             )
-    install(TARGETS kobukiViewer
+    install(TARGETS carViz
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT kobukiviewer
+    COMPONENT carviz
     )
 
-    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/kobukiViewer.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT kobukiviewer)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/carViz.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT carviz)
 ENDIF()

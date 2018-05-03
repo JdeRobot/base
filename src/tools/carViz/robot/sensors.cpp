@@ -5,20 +5,20 @@ Sensors::Sensors(Comm::Communicator* jdrc)
     this-> jdrc = jdrc;
     
 
-    this->poseClient = Comm::getPose3dClient(jdrc, "kobukiViewer.Pose3D");
+    this->poseClient = Comm::getPose3dClient(jdrc, "carViz.Pose3D");
 
 
     ////////////////////////////// CAMERA1 /////////////////////////////
 
-	this->camera1 = Comm::getCameraClient(jdrc, "kobukiViewer.Camera1");
+	this->camera1 = Comm::getCameraClient(jdrc, "carViz.Camera1");
 
     ////////////////////////////// CAMERA2 /////////////////////////////
-	this->camera2 = Comm::getCameraClient(jdrc, "kobukiViewer.Camera2");
+	this->camera2 = Comm::getCameraClient(jdrc, "carViz.Camera2");
 
     ////////////////////////////// LASER //////////////////////////////
 	// Contact to LASER interface
 
-	this->laserClient = Comm::getLaserClient(jdrc, "kobukiViewer.Laser");
+	this->laserClient = Comm::getLaserClient(jdrc, "carViz.Laser");
 }
 
 JdeRobotTypes::Image Sensors::getImage1()

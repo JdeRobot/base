@@ -31,8 +31,8 @@ void controlVW::setProps(Config::Properties props)
 {
 	this->props = props;
 
-    QString svmax = QString::fromUtf8(props.asStringWithDefault("kobukiViewer.Vmax", "5").c_str());
-    QString swmax = QString::fromUtf8(props.asStringWithDefault("kobukiViewer.Wmax", "0.5").c_str());
+    QString svmax = QString::fromUtf8(props.asStringWithDefault("carViz.Vmax", "5").c_str());
+    QString swmax = QString::fromUtf8(props.asStringWithDefault("carViz.Wmax", "0.5").c_str());
 
     this->v_max = svmax.toFloat();
     this->w_max = swmax.toFloat();
