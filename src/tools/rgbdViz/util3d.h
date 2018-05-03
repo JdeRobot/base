@@ -31,7 +31,7 @@
 
 
 
-namespace rgbdViewer {
+namespace rgbdViz {
 class util3d {
 	public:
 		util3d(myprogeo* p);

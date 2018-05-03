@@ -64,7 +64,7 @@ typedef struct SoRtype {
   float roll;
 } SofReference;
 
-namespace rgbdViewer {
+namespace rgbdViz {
 	class DrawArea : public Gtk::DrawingArea, public Gtk::GL::Widget<DrawArea>
 	{
 	public:

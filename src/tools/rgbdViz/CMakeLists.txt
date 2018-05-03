@@ -1,4 +1,4 @@
-SET(SOURCE_FILES rgbdViewer.cpp drawarea.cpp rgbdViewergui.cpp myprogeo.cpp)
+SET(SOURCE_FILES rgbdViz.cpp drawarea.cpp rgbdVizgui.cpp myprogeo.cpp)
 
 include_directories(
     ${INTERFACES_CPP_DIR}
@@ -21,10 +21,10 @@ link_directories(
     ${config_LIBRARY_DIRS}
 )
 
-add_executable (rgbdViewer ${SOURCE_FILES})
+add_executable (rgbdViz ${SOURCE_FILES})
 
 
-TARGET_LINK_LIBRARIES(rgbdViewer
+TARGET_LINK_LIBRARIES(rgbdViz
     ${CMAKE_THREAD_LIBS_INIT} 
     ${GLUT_LIBRARIES}
     ${OpenCV_LIBRARIES}
@@ -46,8 +46,8 @@ TARGET_LINK_LIBRARIES(rgbdViewer
     jderobotutil
 	)
 
-INSTALL (TARGETS rgbdViewer DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ COMPONENT rgbdViewer)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdViewergui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT rgbdViewer)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdViewer.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViewer)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdViewerKinect2.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViewer)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/camera-0.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViewer)
+INSTALL (TARGETS rgbdViz DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ COMPONENT rgbdViz)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdVizgui.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT rgbdViz)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdViz.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViz)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/rgbdVizKinect2.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViz)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/camera-0.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT rgbdViz)

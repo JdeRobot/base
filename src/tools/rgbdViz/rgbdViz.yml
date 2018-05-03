@@ -1,17 +1,17 @@
-rgbdViewer:
+rgbdViz:
   CameraRGB:
-    Server: ROS # Deactivate, Ice , ROS
+    Server: Ice # Deactivate, Ice , ROS
     Proxy: "cameraA:tcp -h localhost -p 9999"
     Format: RGB8
-    Topic: "/kinect2/hd/image_color_rect"
+    Topic: "/camera/rgb/image_raw"
     Name: cameraA
     Fps: 30
 
   CameraDEPTH:
-    Server: ROS # Deactivate, Ice, ROS
+    Server: Ice # Deactivate, Ice, ROS
     Proxy: "cameraB:tcp -h localhost -p 9999"
     Format: RGB8
-    Topic: "/kinect2/hd/image_depth_rect"
+    Topic: "/camera/depth_registered/image_raw"
     Name: cameraB
     Fps: 30
 
@@ -42,7 +42,7 @@ rgbdViewer:
     Name: KinectLeds
 
 
-  NodeName: rgbdViewer
+  NodeName: rgbdViz
   #camRGB: "./config/joseMaria/CameraAEsquina.xml"
   #camIR: "./config/joseMaria/CameraAEsquina.xml"
   #WorldFile: "./config/fempsa/fempsa.cfg"

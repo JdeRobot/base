@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViewer.camRGB
+ *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViz.camRGB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 
 
 
-namespace rgbdViewer {
+namespace rgbdViz {
 myprogeo::myprogeo(int nCam, int w, int h){
 
 	for (int i=0; i< nCam; i++){

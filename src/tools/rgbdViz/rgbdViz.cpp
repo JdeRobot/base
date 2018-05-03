@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViewer.camRGB
+ *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViz.camRGB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <jderobot/pointcloud.h>
 #include <rgbd.h>
 #include <jderobotutil/utils/CameraUtils.h>
-#include "rgbdViewergui.h"
+#include "rgbdVizgui.h"
 #include "pthread.h"
 #include <jderobot/config/config.h>
 #include <jderobot/comm/communicator.hpp>
@@ -45,7 +45,7 @@
 
 #define MAX_COMPONENTS 20	
 
-rgbdViewer::rgbdViewergui* rgbdViewergui_ptx;
+rgbdViz::rgbdVizgui* rgbdVizgui_ptx;
 
 
 //jderobot::PointcloudClientPtr pcClient;
@@ -69,7 +69,7 @@ void *gui_thread(void* arg){
 		IceUtil::Time lastIT;
 
 		lastIT=IceUtil::Time::now();
-		while(rgbdViewergui_ptx->isVisible() && ! rgbdViewergui_ptx->isClosed()){
+		while(rgbdVizgui_ptx->isVisible() && ! rgbdVizgui_ptx->isClosed()){
 
 			if (cameraRGBDActive) {
 				JdeRobotTypes::Rgbd data = rgbClient->getRgbd();
@@ -93,23 +93,23 @@ void *gui_thread(void* arg){
 
 */
 			if ((rgb.rows!=0)&&(depth.rows!=0)){
-				rgbdViewergui_ptx->updateAll(rgb,depth, cloud);
+				rgbdVizgui_ptx->updateAll(rgb,depth, cloud);
 			}
 			else if (rgb.rows!=0){
-				rgbdViewergui_ptx->updateRGB(rgb);
+				rgbdVizgui_ptx->updateRGB(rgb);
 			}
 			else if (depth.rows!=0){
-				rgbdViewergui_ptx->updateDEPTH(depth);
+				rgbdVizgui_ptx->updateDEPTH(depth);
 			}
 			else{	
-				rgbdViewergui_ptx->updatePointCloud(cloud);
+				rgbdVizgui_ptx->updatePointCloud(cloud);
 			}
-			if (((IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()) > rgbdViewergui_ptx->getCycle() )){
+			if (((IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()) > rgbdVizgui_ptx->getCycle() )){
 				if (debug)
-					;//std::cout<<"-------- rgbdViewer: timeout-" << std::endl;
+					;//std::cout<<"-------- rgbdViz: timeout-" << std::endl;
 			}
 			else{
-				usleep(rgbdViewergui_ptx->getCycle() - (IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()));
+				usleep(rgbdVizgui_ptx->getCycle() - (IceUtil::Time::now().toMicroSeconds() - lastIT.toMicroSeconds()));
 			}
 			lastIT=IceUtil::Time::now();
 
@@ -169,9 +169,9 @@ int main(int argc, char** argv){
 	}
 
 
-	cameraRGBActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.CameraRGB.Server","0"));
-	cameraDepthActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.CameraDEPTH.Server","0"));
-	cameraRGBDActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViewer.RGBD.Server","0"));
+	cameraRGBActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViz.CameraRGB.Server","0"));
+	cameraDepthActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViz.CameraDEPTH.Server","0"));
+	cameraRGBDActive=(bool)Comm::server2int(cfg.asStringWithDefault("rgbdViz.RGBD.Server","0"));
 
 	if (cameraRGBDActive && (cameraRGBActive ||  cameraDepthActive)){
 		LOG(ERROR) << "RGBD and single cameras cannot be selected at the same time";
@@ -180,47 +180,47 @@ int main(int argc, char** argv){
 
 
 	if (cameraRGBDActive) {
-		rgbClient = Comm::getRgbdClient(jdrc, "rgbdViewer.RGBD");
+		rgbClient = Comm::getRgbdClient(jdrc, "rgbdViz.RGBD");
 		if (rgbClient != NULL) {
 				rgbCamSelected = true;
 				create_gui = true;
 				depthCamSelected=true;
 			} else {
-				throw "rgbdViewer: failed to load RGBD interface";
+				throw "rgbdViz: failed to load RGBD interface";
 			}
 	}
 	else{
 		if (cameraRGBActive) {
-			camRGB = Comm::getCameraClient(jdrc, "rgbdViewer.CameraRGB");
+			camRGB = Comm::getCameraClient(jdrc, "rgbdViz.CameraRGB");
 			if (camRGB != NULL) {
 				rgbCamSelected = true;
 				create_gui = true;
 			} else {
-				throw "rgbdViewer: failed to load RGB Camera";
+				throw "rgbdViz: failed to load RGB Camera";
 			}
 
 		}
 		if (cameraDepthActive) {
-			camDEPTH =Comm::getCameraClient(jdrc, "rgbdViewer.CameraDEPTH");
+			camDEPTH =Comm::getCameraClient(jdrc, "rgbdViz.CameraDEPTH");
 			if (camDEPTH != NULL) {
 				depthCamSelected = true;
 				create_gui = true;
 			} else {
-				throw "rgbdViewer: failed to load DEPTH Camera";
+				throw "rgbdViz: failed to load DEPTH Camera";
 			}
 		}
 	}
 
 
-	/*if (prop->getPropertyAsIntWithDefault("rgbdViewer.pointCloudActive",0)){
-		pcClient = jderobot::PointcloudClientPtr(new jderobot::pointcloudClient(ic,"rgbdViewer.pointCloud."));
+	/*if (prop->getPropertyAsIntWithDefault("rgbdViz.pointCloudActive",0)){
+		pcClient = jderobot::PointcloudClientPtr(new jderobot::pointcloudClient(ic,"rgbdViz.pointCloud."));
 		if (pcClient!= NULL){
 			pcClient->start();
 			pointCloudSelected=true;
 			create_gui=true;
 		}
 		else{
-			throw "rgbdViewer: failed to load pointCloud";
+			throw "rgbdViz: failed to load pointCloud";
 		}
 	}
 */
@@ -257,16 +257,16 @@ int main(int argc, char** argv){
 
 
 
-	debug=cfg.asIntWithDefault("rgbdViewer.Debug",320);
-	int fps=cfg.asIntWithDefault("rgbdViewer.Fps",0);
+	debug=cfg.asIntWithDefault("rgbdViz.Debug",320);
+	int fps=cfg.asIntWithDefault("rgbdViz.Fps",0);
 	float cycle=(float)(1/(float)fps)*1000000;
 
-	std::string worldfile = cfg.asStringWithDefault("rgbdViewer.WorldFile", "");
-	std::string camRGBFile = cfg.asStringWithDefault("rgbdViewer.camRGB", "");
-	std::string camIRFile = cfg.asStringWithDefault("rgbdViewer.camIR", "");
+	std::string worldfile = cfg.asStringWithDefault("rgbdViz.WorldFile", "");
+	std::string camRGBFile = cfg.asStringWithDefault("rgbdViz.camRGB", "");
+	std::string camIRFile = cfg.asStringWithDefault("rgbdViz.camIR", "");
 
 
-	rgbdViewergui_ptx = new rgbdViewer::rgbdViewergui(rgbCamSelected,depthCamSelected, pointCloudSelected, worldfile, camRGBFile, camIRFile,rgbSize,depthSize, cycle);
+	rgbdVizgui_ptx = new rgbdViz::rgbdVizgui(rgbCamSelected,depthCamSelected, pointCloudSelected, worldfile, camRGBFile, camIRFile,rgbSize,depthSize, cycle);
 	
 	std::cout << create_gui << std::endl;
 	if (create_gui){
@@ -275,8 +275,8 @@ int main(int argc, char** argv){
 	}
 
 
-	if (rgbdViewergui_ptx == NULL)
-		throw "rgbdViewer: Could not create the grafic interface";
+	if (rgbdVizgui_ptx == NULL)
+		throw "rgbdViz: Could not create the grafic interface";
 	for (i = 0; i < n_components; i++) {
 		pthread_join(threads[i], NULL);
 	}

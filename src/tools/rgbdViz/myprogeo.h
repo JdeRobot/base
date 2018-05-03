@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViewer.camRGB
+ *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViz.camRGB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
  */
 
-#ifndef rgbdViewer_MYPROGEO_H
-#define rgbdViewer_MYPROGEO_H
+#ifndef rgbdViz_MYPROGEO_H
+#define rgbdViz_MYPROGEO_H
 
 #include <geometry/progeo/Progeo.h>
 #include <iostream>
@@ -35,7 +35,7 @@
 #define MAX_CAMERAS 8
 #define MAX_BUFFER 1024
 
-namespace rgbdViewer {
+namespace rgbdViz {
   class myprogeo {
 	public:
 	myprogeo(int nCam, int w, int h);
@@ -59,4 +59,4 @@ namespace rgbdViewer {
   };
 } // namespace
 
-#endif /*rgbdViewer_MYPROGEO_H*/
+#endif /*rgbdViz_MYPROGEO_H*/

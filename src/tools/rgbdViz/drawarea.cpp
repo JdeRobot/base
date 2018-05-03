@@ -27,7 +27,7 @@
 #define eval2(N) (N*N)
 
 
-namespace rgbdViewer {
+namespace rgbdViz {
 	const float DrawArea::MAXWORLD = 50.;
 	const float DrawArea::PI = 3.141592654;
 
@@ -534,11 +534,11 @@ DrawArea::load_line(FILE *myfile)
 					numlines++;
 				}
 				else{
-					printf("rgbdViewer: error, too much lines in the world file configuration.\n");
+					printf("rgbdViz: error, too much lines in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, worldfile line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, worldfile line not valid: %s\n",buffer_file);
 			}
 		}
 		else if (strcmp(word1, "post")==0){
@@ -557,11 +557,11 @@ DrawArea::load_line(FILE *myfile)
 					post_p++;
 				}
 				else{
-					printf("rgbdViewer: error, too much posts in the world file configuration.\n");
+					printf("rgbdViz: error, too much posts in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, post line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, post line not valid: %s\n",buffer_file);
 			}
 		}
 		else if (strcmp(word1, "jamb")==0){
@@ -580,11 +580,11 @@ DrawArea::load_line(FILE *myfile)
 					jamb_p++;
 				}
 				else{
-					printf("rgbdViewer: error, too much jambs in the world file configuration.\n");
+					printf("rgbdViz: error, too much jambs in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, post line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, post line not valid: %s\n",buffer_file);
 			}
 		}
 		else if (strcmp(word1, "circle")==0){
@@ -596,11 +596,11 @@ DrawArea::load_line(FILE *myfile)
 					circle_p++;
 				}
 				else{
-					printf("rgbdViewer: error, too much circles in the world file configuration.\n");
+					printf("rgbdViz: error, too much circles in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, circle line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, circle line not valid: %s\n",buffer_file);
 			}
 		}
 		else if (strcmp(word1, "triangle")==0){
@@ -612,11 +612,11 @@ DrawArea::load_line(FILE *myfile)
 					triangle_p++;
 				}
 				else{
-					printf("rgbdViewer: error, too much triangles in the world file configuration.\n");
+					printf("rgbdViz: error, too much triangles in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, triangle line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, triangle line not valid: %s\n",buffer_file);
 			}
 		}
 		else if (strcmp(word1, "sq")==0){
@@ -628,11 +628,11 @@ DrawArea::load_line(FILE *myfile)
 					sq_p++;
 				}
 				else{
-					printf("rgbdViewer: error, too much sqs in the world file configuration.\n");
+					printf("rgbdViz: error, too much sqs in the world file configuration.\n");
 				}
 			}
 			else{
-				printf("rgbdViewer: error, sq line not valid: %s\n",buffer_file);
+				printf("rgbdViz: error, sq line not valid: %s\n",buffer_file);
 			}
 		}
 	}
@@ -648,7 +648,7 @@ DrawArea::read_world_file(char* worldfile){
 	int i;
 
 	if ((myfile=fopen(worldfile,"r"))==NULL){
-		std::cout << "rgbdViewer: cannot find world file" << std::endl;
+		std::cout << "rgbdViz: cannot find world file" << std::endl;
 		return -1;
 	}
 

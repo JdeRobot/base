@@ -22,7 +22,7 @@
 #include "util3d.h"
 
 
-namespace rgbdViewer{
+namespace rgbdViz{
 
 util3d::util3d(myprogeo* p){
 	mypro = p;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViewer.camRGB
+ *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViz.camRGB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
  */
 
-#include "rgbdViewergui.h"
+#include "rgbdVizgui.h"
 #include <jderobot/pointcloud.h>
 #include <string>
 #include <iostream>
@@ -27,8 +27,8 @@
 #include <resourcelocator/gladelocator.hpp>
 #include <opencv2/opencv.hpp>
 
-namespace rgbdViewer {
-rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
+namespace rgbdViz {
+rgbdVizgui::rgbdVizgui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir,  cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle): gtkmain(0,0) {
 
     /*Init OpenGL*/
     if(!Gtk::GL::init_check(NULL, NULL))	{
@@ -72,7 +72,7 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
     lines_depth_active=false;
     lines_rgb_active=false;
     std::cout << "Loading glade\n";
-    const std::string gladepath = resourcelocator::findGladeFile("rgbdViewergui.glade");
+    const std::string gladepath = resourcelocator::findGladeFile("rgbdVizgui.glade");
     refXml = Gnome::Glade::Xml::create(gladepath);
     myDepthSize=sizeDEPTH;
     myRGBSize=sizeRGB;
@@ -81,7 +81,7 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
 
 
     /*Get widgets*/
-    refXml->get_widget("rgbdViewer", mainwindow);
+    refXml->get_widget("rgbdViz", mainwindow);
     refXml->get_widget("imageRGB", w_imageRGB);
     refXml->get_widget("imageDEPTH", w_imageDEPTH);
     refXml->get_widget("eventboxRGB", w_event_rgb);
@@ -117,19 +117,19 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
         w_toggle_depth->hide();
     }
 
-    w_event_rgb->signal_button_press_event().connect(sigc::mem_fun(this,&rgbdViewergui::on_clicked_event_rgb));
-    w_event_depth->signal_button_press_event().connect(sigc::mem_fun(this,&rgbdViewergui::on_clicked_event_depth));
-    w_reconstruct->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_reconstruct_depth));
-    w_camera_pos->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::add_camera_position));
-    w_lines_rgb->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_lines_rgb_toggled));
-    w_lines_depth->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_lines_depth_toggled));
-    w_tg_gl->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_tg_gl_toggled));
-    w_view_controller->signal_activate().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_view_controller_activate));
-    w_radio_depth->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_radio_depth_activate));
-    w_radio_rgb->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_radio_rgb_activate));
-    w_radio_mode_pointcloud->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_radio_mode_pointcloud_activate));
-    w_radio_mode_image->signal_toggled().connect(sigc::mem_fun(this,&rgbdViewergui::on_w_radio_mode_image_activate));
-    w_button_clear_lines->signal_clicked().connect(sigc::mem_fun(this,&rgbdViewergui::on_clicked_clear_lines));
+    w_event_rgb->signal_button_press_event().connect(sigc::mem_fun(this,&rgbdVizgui::on_clicked_event_rgb));
+    w_event_depth->signal_button_press_event().connect(sigc::mem_fun(this,&rgbdVizgui::on_clicked_event_depth));
+    w_reconstruct->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_reconstruct_depth));
+    w_camera_pos->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::add_camera_position));
+    w_lines_rgb->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_lines_rgb_toggled));
+    w_lines_depth->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_lines_depth_toggled));
+    w_tg_gl->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_tg_gl_toggled));
+    w_view_controller->signal_activate().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_view_controller_activate));
+    w_radio_depth->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_radio_depth_activate));
+    w_radio_rgb->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_radio_rgb_activate));
+    w_radio_mode_pointcloud->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_radio_mode_pointcloud_activate));
+    w_radio_mode_image->signal_toggled().connect(sigc::mem_fun(this,&rgbdVizgui::on_w_radio_mode_image_activate));
+    w_button_clear_lines->signal_clicked().connect(sigc::mem_fun(this,&rgbdVizgui::on_clicked_clear_lines));
 
     if (modesAvalables==0) {
         w_reconstruct->hide();
@@ -140,11 +140,11 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
     world->setCamerasResolution(myDepthSize.width,myDepthSize.height);
 
     std::cout << "Creating Progeos Virtual Cameras" << std::endl;
-    mypro= new rgbdViewer::myprogeo(2,myRGBSize.width,myRGBSize.height);
+    mypro= new rgbdViz::myprogeo(2,myRGBSize.width,myRGBSize.height);
     mypro->load_cam((char*)path_rgb.c_str(),0,myRGBSize.width, myRGBSize.height);
 
     mypro->load_cam((char*)path_ir.c_str(),1,myDepthSize.width, myDepthSize.height);
-    //util = new rgbdViewer::util3d(mypro);
+    //util = new rgbdViz::util3d(mypro);
 
     /*Show window. Note: Set window visibility to false in Glade, otherwise opengl won't work*/
     world->readFile(path);
@@ -156,13 +156,13 @@ rgbdViewergui::rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string 
                 }*/
 }
 
-rgbdViewergui::~rgbdViewergui() {
+rgbdVizgui::~rgbdVizgui() {
     //delete this->controller;
 }
 
 
 void
-rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jderobot::RGBPoint> cloud )
+rgbdVizgui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jderobot::RGBPoint> cloud )
 {
 
 	imageRGBlocal=imageRGB;
@@ -229,7 +229,7 @@ rgbdViewergui::updateAll( cv::Mat imageRGB, cv::Mat imageDEPTH, std::vector<jder
 }
 
 void
-rgbdViewergui::updateRGB(cv::Mat imageRGB)
+rgbdVizgui::updateRGB(cv::Mat imageRGB)
 {
     CvPoint pt1,pt2;
     if (w_toggle_rgb->get_active()) {
@@ -256,7 +256,7 @@ rgbdViewergui::updateRGB(cv::Mat imageRGB)
 }
 
 void
-rgbdViewergui::updateDEPTH(cv::Mat imageDEPTH )
+rgbdVizgui::updateDEPTH(cv::Mat imageDEPTH )
 {
 	imageDEPTHlocal=imageDEPTH;
     CvPoint pt1,pt2;
@@ -280,7 +280,7 @@ rgbdViewergui::updateDEPTH(cv::Mat imageDEPTH )
 }
 
 void
-rgbdViewergui::updatePointCloud(std::vector<jderobot::RGBPoint> cloud )
+rgbdVizgui::updatePointCloud(std::vector<jderobot::RGBPoint> cloud )
 {
     displayFrameRate();
     while (gtkmain.events_pending())
@@ -296,15 +296,15 @@ rgbdViewergui::updatePointCloud(std::vector<jderobot::RGBPoint> cloud )
 }
 
 
-bool rgbdViewergui::isClosed() {
+bool rgbdVizgui::isClosed() {
     return false;
 }
 
-bool rgbdViewergui::isVisible() {
+bool rgbdVizgui::isVisible() {
     return mainwindow->is_visible();
 }
 
-void rgbdViewergui::displayFrameRate()
+void rgbdVizgui::displayFrameRate()
 {
     double diff;
     IceUtil::Time diffT;
@@ -324,7 +324,7 @@ void rgbdViewergui::displayFrameRate()
     }
 }
 
-bool rgbdViewergui::on_clicked_event_rgb(GdkEventButton* event) {
+bool rgbdVizgui::on_clicked_event_rgb(GdkEventButton* event) {
     int x,y;
     float xp,yp,zp,camx,camy,camz;
     float xu,yu,zu;
@@ -394,7 +394,7 @@ bool rgbdViewergui::on_clicked_event_rgb(GdkEventButton* event) {
 }
 
 
-bool rgbdViewergui::on_clicked_event_depth(GdkEventButton* event) {
+bool rgbdVizgui::on_clicked_event_depth(GdkEventButton* event) {
     int x,y;
     float xp,yp,zp,camx,camy,camz;
     float xu,yu,zu;
@@ -467,7 +467,7 @@ bool rgbdViewergui::on_clicked_event_depth(GdkEventButton* event) {
     return true;
 }
 
-void rgbdViewergui::add_cameras_position() {
+void rgbdVizgui::add_cameras_position() {
     int x,y;
     float xp,yp,zp,camx,camy,camz;
     float xu,yu,zu;
@@ -486,7 +486,7 @@ void rgbdViewergui::add_cameras_position() {
 }
 
 void
-rgbdViewergui::on_reconstruct_depth() {
+rgbdVizgui::on_reconstruct_depth() {
     std::cout << std::endl<< std::endl<< std::endl<< w_reconstruct->get_active() << std::endl<< std::endl<< std::endl<< std::endl;
     if (w_reconstruct->get_active()) {
         reconstruct_depth_activate=true;
@@ -503,7 +503,7 @@ rgbdViewergui::on_reconstruct_depth() {
 }
 
 void
-rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
+rgbdVizgui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
     float d;
 
     world->clear_points();
@@ -578,7 +578,7 @@ rgbdViewergui::add_depth_pointsImage(cv::Mat imageRGB, cv::Mat distance) {
 }
 
 void
-rgbdViewergui::add_depth_pointsCloud(std::vector<jderobot::RGBPoint> cloud) {
+rgbdVizgui::add_depth_pointsCloud(std::vector<jderobot::RGBPoint> cloud) {
     world->clear_points();
     for (std::vector<jderobot::RGBPoint>::iterator it = cloud.begin(); it != cloud.end(); ++it) {
         world->add_kinect_point(it->x,it->y,it->z,(int)it->r,(int)it->g,(int)it->b);
@@ -586,7 +586,7 @@ rgbdViewergui::add_depth_pointsCloud(std::vector<jderobot::RGBPoint> cloud) {
 }
 
 void
-rgbdViewergui::add_camera_position() {
+rgbdVizgui::add_camera_position() {
     float c1x, c1y, c1z, c2x, c2y, c2z, c3x, c3y, c3z, c4x, c4y,c4z;
     float camx, camy, camz;
     float w,h;
@@ -665,7 +665,7 @@ rgbdViewergui::add_camera_position() {
 }
 
 void
-rgbdViewergui::on_w_lines_rgb_toggled() {
+rgbdVizgui::on_w_lines_rgb_toggled() {
     if (w_lines_rgb->get_active()) {
         lines_rgb_active=true;
     }
@@ -674,7 +674,7 @@ rgbdViewergui::on_w_lines_rgb_toggled() {
 }
 
 void
-rgbdViewergui::on_w_lines_depth_toggled() {
+rgbdVizgui::on_w_lines_depth_toggled() {
     if (w_lines_depth->get_active()) {
         lines_depth_active=true;
     }
@@ -683,18 +683,18 @@ rgbdViewergui::on_w_lines_depth_toggled() {
 }
 
 void
-rgbdViewergui::on_w_view_controller_activate() {
+rgbdVizgui::on_w_view_controller_activate() {
     w_window_controller->show();
 }
 
 void
-rgbdViewergui::on_w_radio_depth_activate() {
+rgbdVizgui::on_w_radio_depth_activate() {
     if (w_radio_depth->get_active())
         world->draw_kinect_with_color=false;
 }
 
 void
-rgbdViewergui::on_w_radio_mode_pointcloud_activate() {
+rgbdVizgui::on_w_radio_mode_pointcloud_activate() {
     if (w_radio_mode_pointcloud->get_active()){
         reconstructMode=1;
         w_images_tool->hide();
@@ -702,7 +702,7 @@ rgbdViewergui::on_w_radio_mode_pointcloud_activate() {
 }
 
 void
-rgbdViewergui::on_w_radio_mode_image_activate() {
+rgbdVizgui::on_w_radio_mode_image_activate() {
     if (w_radio_mode_image->get_active()){
         reconstructMode=0;
         w_images_tool->show();
@@ -710,18 +710,18 @@ rgbdViewergui::on_w_radio_mode_image_activate() {
 }
 
 void
-rgbdViewergui::on_w_radio_rgb_activate() {
+rgbdVizgui::on_w_radio_rgb_activate() {
     if (w_radio_rgb->get_active())
         world->draw_kinect_with_color=true;
 }
 
 void
-rgbdViewergui::on_clicked_clear_lines() {
+rgbdVizgui::on_clicked_clear_lines() {
     world->clearExtraLines();
 }
 
 void
-rgbdViewergui::on_w_tg_gl_toggled() {
+rgbdVizgui::on_w_tg_gl_toggled() {
     if (w_tg_gl->get_active()) {
         w_window_gl->show();
         w_vbox_gl->show();
@@ -733,7 +733,7 @@ rgbdViewergui::on_w_tg_gl_toggled() {
 }
 
 float
-rgbdViewergui::getCycle() {
+rgbdVizgui::getCycle() {
     return this->cycle;
 }
 

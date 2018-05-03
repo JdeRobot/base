@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViewer.camRGB
+ *  Copyright (C) 1997-2013 JDE Developers TeamrgbdViz.camRGB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
  */
 
-#ifndef rgbdViewer_VIEW_H
-#define rgbdViewer_VIEW_H
+#ifndef rgbdViz_VIEW_H
+#define rgbdViz_VIEW_H
 
 #include <string>
 #include <iostream>
@@ -36,12 +36,12 @@
 #include <highgui.h>
 //#include "util3d.h"
 
-namespace rgbdViewer {
-  class rgbdViewergui {
+namespace rgbdViz {
+  class rgbdVizgui {
 		public:
 
-		  rgbdViewergui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir, cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle);
-		  virtual ~rgbdViewergui();
+		  rgbdVizgui(bool rgb, bool depth,bool pointCloud , std::string path, std::string path_rgb, std::string path_ir, cv::Size sizeRGB, cv::Size sizeDEPTH, float cycle);
+		  virtual ~rgbdVizgui();
 
 			/*Return true if the windows is visible*/
 		  bool isVisible();
@@ -139,4 +139,4 @@ namespace rgbdViewer {
   };
 } // namespace
 
-#endif /*rgbdViewer_VIEW_H*/
+#endif /*rgbdViz_VIEW_H*/
