@@ -31,7 +31,7 @@
 
 int main(int argc, char** argv){
 
-	cameraview::Viewer viewer;
+	camViz::Viewer viewer;
 	
 
 	Comm::CameraClient* camRGB;
@@ -39,7 +39,7 @@ int main(int argc, char** argv){
 	Config::Properties cfg = Config::load(argc, argv);
 	Comm::Communicator* jdrc = new Comm::Communicator(cfg);
 
-	camRGB = Comm::getCameraClient(jdrc, "Cameraview.Camera");
+	camRGB = Comm::getCameraClient(jdrc, "camViz.Camera");
 
 	JdeRobotTypes::Image rgb;
 

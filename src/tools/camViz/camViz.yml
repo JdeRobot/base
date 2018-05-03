@@ -1,10 +1,10 @@
-Cameraview:
+camViz:
   Camera:
     Server: Ice # Deactivate, Ice , ROS
     Proxy: "cameraA:tcp -h localhost -p 9999"
     Format: RGB8
-    Topic: "/cameraserver/rgb"
+    Topic: "/camserver/rgb"
     Name: cameraA
     Fps: 30
 
-  NodeName: cameraview
+  NodeName: camViz

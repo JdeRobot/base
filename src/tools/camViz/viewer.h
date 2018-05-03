@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef CAMERAVIEW_VIEWER_H
-#define CAMERAVIEW_VIEWER_H
+#ifndef CAMVIZ_VIEWER_H
+#define CAMVIZ_VIEWER_H
 
 #include <gtkmm.h>
 #include <libglademm.h>
@@ -29,7 +29,7 @@
 #include <string>
 #include <visionlib/colorspaces/colorspacesmm.h>
 
-namespace cameraview{
+namespace camViz{
 
   class Viewer
   {
@@ -61,4 +61,4 @@ namespace cameraview{
 
 }//namespace
 
-#endif //CAMERAVIEW_VIEWER_H
+#endif //CAMVIZ_VIEWER_H

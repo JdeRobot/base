@@ -1,4 +1,4 @@
-SET( SOURCE_FILES cameraview.cpp viewer.cpp)
+SET( SOURCE_FILES camViz.cpp viewer.cpp)
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
@@ -22,9 +22,9 @@ link_directories(
     ${config_LIBRARY_DIRS}
 )
 
-add_executable (cameraview ${SOURCE_FILES})
+add_executable (camViz ${SOURCE_FILES})
 
-TARGET_LINK_LIBRARIES(cameraview
+TARGET_LINK_LIBRARIES(camViz
     ${CMAKE_THREAD_LIBS_INIT} 
     ${OpenCV_LIBRARIES}
     ${OpenCVGUI_LIBRARIES}
@@ -43,11 +43,11 @@ TARGET_LINK_LIBRARIES(cameraview
         jderobotutil
 		)
 
-install(TARGETS cameraview
+install(TARGETS camViz
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
-    COMPONENT cameraview
+    COMPONENT camviz
     )
 
 
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraview.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT cameraview)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraview.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT cameraview)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/camViz.glade DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/glade COMPONENT camviz)
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/camViz.yml DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT camviz)

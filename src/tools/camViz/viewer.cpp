@@ -25,8 +25,8 @@
 #include <string>
 #include <resourcelocator/gladelocator.hpp> 
 
-namespace cameraview {
-  const std::string gladepath = resourcelocator::findGladeFile("cameraview.glade");
+namespace camViz {
+  const std::string gladepath = resourcelocator::findGladeFile("camViz.glade");
 
   Viewer::Viewer()
     : gtkmain(0, 0), frameCount(0) {
