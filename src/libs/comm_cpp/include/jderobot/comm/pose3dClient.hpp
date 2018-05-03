@@ -41,7 +41,7 @@ namespace Comm {
 	 *
 	 *
 	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Pose3d")
+	 * @param prefix of client Propierties (example: "carViz.Pose3d")
 	 * 
 	 *
 	 * @return null if propierties are wrong

@@ -41,7 +41,7 @@ namespace Comm {
 	 *
 	 *
 	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Rgbd")
+	 * @param prefix of client Propierties (example: "carViz.Rgbd")
 	 * 
 	 *
 	 * @return null if propierties are wrong

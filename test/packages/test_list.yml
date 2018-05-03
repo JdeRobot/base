@@ -10,8 +10,8 @@ pantilt_teleop:
   path: pantilt_teleop
   run: True
 
-kobukiViewer:
-  path: kobukiViewer
+carViz:
+  path: carViz
   run: True
 
 easyiceconfig:
@@ -30,12 +30,12 @@ logger:
   path: logger
   run: True
 
-cameraserver:
-  path: cameraserver
+camserver:
+  path: camserver
   run: True
 
-rgbdViewer:
-  path: rgbdViewer
+rgbdViz:
+  path: rgbdViz
   run: True
 
 easyiceconfig_py:
@@ -94,8 +94,8 @@ recorder2:
   path: recorder2
   run: True
 
-cameraserver_py:
-  path: cameraserver_py
+camserver_py:
+  path: camserver_py
   run: True
 
 jderobotHandlers:
@@ -198,16 +198,16 @@ youtubeserver:
   path: youtubeserver
   run: True
 
-cameraview_py:
-  path: cameraview_py
+camviz_py:
+  path: camviz_py
   run: True
 
 kinect2Server:
   path: kinect2Server
   run: True
 
-cameraview:
-  path: cameraview
+camviz:
+  path: camviz
   run: True
 
 config:

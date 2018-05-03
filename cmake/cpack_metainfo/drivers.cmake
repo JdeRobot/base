@@ -9,15 +9,15 @@ SET(CPACK_COMPONENT_BASIC-SERVER_DESCRIPTION
 "An example of the most basic server made for JdeRobot based on ICE communications. 
  Home page https://jderobot.org") 
 
-SET(CPACK_DEBIAN_CAMERASERVER_DEPENDS "jderobot-easyice, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
-SET(CPACK_COMPONENT_CAMERASERVER_DESCRIPTION  
+SET(CPACK_DEBIAN_CAMSERVER_DEPENDS "jderobot-easyice, jderobot-util, jderobot-interfaces, jderobot-logger, jderobot-ns, jderobot-colorspaces")
+SET(CPACK_COMPONENT_CAMSERVER_DESCRIPTION  
 "Generic server for RGB cameras. 
- Manual Page http://jderobot.org/index.php/Drivers#cameraserver
+ Manual Page http://jderobot.org/index.php/Drivers#camserver
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_CAMERASERVER-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-interfaces")
-SET(CPACK_COMPONENT_CAMERASERVER-PYTHON_DESCRIPTION  
-"Example of cameraserver driver in python
+SET(CPACK_DEBIAN_CAMSERVER-PYTHON_PACKAGE_DEPENDS "jderobot-config-python, jderobot-interfaces")
+SET(CPACK_COMPONENT_CAMSERVER-PYTHON_DESCRIPTION  
+"Example of camserver driver in python
  Manual Page http://jderobot.org/
  Home page https://jderobot.org")
  
