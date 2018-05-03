@@ -11,8 +11,8 @@ import cv2
 if __name__ == "__main__":
     ic = EasyIce.initialize(sys.argv)
     properties = ic.getProperties()
-    cameraRGB = CameraClient(ic, "rgbdViewer.CameraRGB")
-    cameraDepth = CameraClient(ic, "rgbdViewer.CameraDEPTH")
+    cameraRGB = CameraClient(ic, "rgbdViz.CameraRGB")
+    cameraDepth = CameraClient(ic, "rgbdViz.CameraDEPTH")
 
     key=-1
     while key != 1048689:
