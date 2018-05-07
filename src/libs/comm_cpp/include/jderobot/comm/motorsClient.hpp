@@ -42,7 +42,7 @@ namespace Comm {
 	 *
 	 *
 	 * @param communicator that contains properties
-	 * @param prefix of client Propierties (example: "kobukiViewer.Motors")
+	 * @param prefix of client Propierties (example: "carViz.Motors")
 	 * 
 	 *
 	 * @return null if propierties are wrong

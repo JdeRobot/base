@@ -125,7 +125,7 @@ if (test_flyingKinect)
 	build_component(flyingKinect2 ON)
 		build_component(quadrotor2 ON) # dependency
 	build_component(navigatorCamera ON)
-	build_component(rgbdViewer ON)
+	build_component(rgbdViz ON)
 
 	build_component(core ON "ONLY_ON")
 endif()
@@ -146,7 +146,7 @@ if (build_drivers)
 	# core drivers
 	build_component(ardrone_server ON)
 	build_component(basic_server ON)
-	build_component(cameraserver ON)
+	build_component(camserver ON)
 	build_component(gazebo ON)
 		build_component(car ON)
 		build_component(flyingKinect ON)

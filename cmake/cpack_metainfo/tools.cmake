@@ -22,16 +22,16 @@ SET(CPACK_COMPONENT_COLORTUNER-PYTHON_DESCRIPTION
  Manual page http://jderobot.org/index.php/Tools#ColorTuner_.28Python.29
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_CAMERAVIEW_PACKAGE_DEPENDS "jderobot-config, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
-SET(CPACK_COMPONENT_CAMERAVIEW_DESCRIPTION  
+SET(CPACK_DEBIAN_CAMVIZ_PACKAGE_DEPENDS "jderobot-config, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
+SET(CPACK_COMPONENT_CAMVIZ_DESCRIPTION  
 "Generic viewer for cameras 
- Manual Page http://jderobot.org/index.php/Tools#CameraView
+ Manual Page http://jderobot.org/index.php/Tools#CamViz
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_CAMERAVIEW-PYTHON_PACKAGE_DEPENDS "jderobot-easyice, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
-SET(CPACK_COMPONENT_CAMERAVIEW-PYTHON_DESCRIPTION  
+SET(CPACK_DEBIAN_CAMVIZ-PYTHON_PACKAGE_DEPENDS "jderobot-easyice, jderobot-comm, jderobot-util, jderobot-interfaces, jderobot-resourcelocator, jderobot-colorspaces")
+SET(CPACK_COMPONENT_CAMVIZ-PYTHON_DESCRIPTION  
 "Generic viewer for cameras in python
- Manual Page http://jderobot.org/index.php/Tools#CameraView
+ Manual Page http://jderobot.org/index.php/Tools#CamViz
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_GIRAFFECLIENT_PACKAGE_DEPENDS "jderobot-easyice, jderobot-progeo, jderobot-util, jderobot-interfaces, jderobot-colorspaces")
@@ -40,10 +40,10 @@ SET(CPACK_COMPONENT_GIRAFFECLIENT_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_KOBUKIVIEWER_PACKAGE_DEPENDS "jderobot-config, jderobot-comm")
-SET(CPACK_COMPONENT_KOBUKIVIEWER_DESCRIPTION  
+SET(CPACK_DEBIAN_CARVIZ_PACKAGE_DEPENDS "jderobot-config, jderobot-comm")
+SET(CPACK_COMPONENT_CARVIZ_DESCRIPTION  
 "Teleoperator for vehicle-type robots, such as kobuki, pioneer, cars, etc. 
- Manual page http://jderobot.org/index.php/Tools#KobukiViewer
+ Manual page http://jderobot.org/index.php/Tools#carViz
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_NAMINGSERVICE_PACKAGE_DEPENDS "jderobot-easyice")
@@ -100,10 +100,10 @@ SET(CPACK_COMPONENT_RGBDMANUALCALIBRATOR_DESCRIPTION
  Manual Page 
  Home page https://jderobot.org")
 
-SET(CPACK_DEBIAN_RGBDVIEWER_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-parallelice, jderobot-progeo, jderobot-resourcelocator, jderobot-colorspaces")
-SET(CPACK_COMPONENT_RGBDVIEWER_DESCRIPTION  
+SET(CPACK_DEBIAN_RGBDVIZ_PACKAGE_DEPENDS "jderobot-easyice, jderobot-geometry, jderobot-util, jderobot-interfaces, jderobot-parallelice, jderobot-progeo, jderobot-resourcelocator, jderobot-colorspaces")
+SET(CPACK_COMPONENT_RGBDVIZ_DESCRIPTION  
 "Generic viewer for RGBD cameras. Included an openGL viewer for pointcloud representation. 
- Manual Page http://jderobot.org/index.php/Tools#RGBDViewer
+ Manual Page http://jderobot.org/index.php/Tools#RGBDViz
  Home page https://jderobot.org")
 
 SET(CPACK_DEBIAN_SCRACTCH2JDEROBOT_PACKAGE_DEPENDS "python-parse, python-termcolor, python-pyqt5, python-pip, python-numpy, python-pyqt5.qtsvg, jderobot-parallelice-python, jderobot-comm-python, kurt-jderobot")
