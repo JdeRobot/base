@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name='wall3'>
+  <model name='wall2'>
     <link name='pared1'>
       <gravity>0</gravity>
       <pose frame=''>0 0 1.2 0 0 0</pose>
