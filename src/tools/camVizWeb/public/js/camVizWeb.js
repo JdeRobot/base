@@ -6,6 +6,11 @@ try {
   const fs = require('fs');
   config = yaml.safeLoad(fs.readFileSync('public/config.yml', 'utf8'));
 } catch(e){
+  config.serv = {};
+  config.serv.dir= $('#dir').val();
+  config.serv.port= $('#port').val();
+  config.serv.tech = $('#serv').val();
+  config.epname = $('#ep').val();
   console.log(e);
 }
 

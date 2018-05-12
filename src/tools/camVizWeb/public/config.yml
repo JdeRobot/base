@@ -2,6 +2,6 @@ serv:
   tech: Ice #Deactivate, Ice , ROS
   dir: "localhost"
   port: "9090"
-endpoint: "CameraA"
+endpoint: "cameraA"
 topic: "/usb_cam/image_raw/compressed"
 msgs: "sensor_msgs/CompressedImage"

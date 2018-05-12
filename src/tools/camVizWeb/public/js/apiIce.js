@@ -14,7 +14,7 @@ API.CameraIce= function (config){
    var conf = config || {};
 
 
-   this.workerFile = "js/api_workers/camera_worker.js";
+   this.workerFile = "js/api_workers/cam_worker.js";
    this.w = undefined;
    this.onmessage= undefined;
    this.isRunning = false;
