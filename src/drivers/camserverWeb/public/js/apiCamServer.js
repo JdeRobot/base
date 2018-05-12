@@ -47,7 +47,6 @@ API.CameraServer = function (conf){
 
 
       function cameraOn(){
-
           videoSource = $("#videoSource").val();
           var constraints = {};
           if (videoSource == null) {
@@ -63,8 +62,16 @@ API.CameraServer = function (conf){
             }).catch(function(err) {
               alert(err.name + ": " + err.message);
             });
-      }
+     	 }
 
+	function cameraOff(){
+	    let stream = video.srcObject;
+	    let tracks = stream.getTracks();
+	    tracks.forEach(function(track) {
+	      track.stop();
+	    });
+	    video.srcObject = null;
+	  }
 
   video.addEventListener('canplay', function(ev){
     if (!hasRunOnce) {
@@ -81,7 +88,7 @@ API.CameraServer = function (conf){
   this.startStreaming = function () {
     if(cameraTimer == null) {
         self.ros.connect("ws://" + config.serv.dir + ":" + config.serv.port);
-        document.getElementById("activeCam").innerHTML = "CamereServer active in address " + config.serv.dir + " and port " + config.serv.port;
+        document.getElementById("activeCam").innerHTML = "CamServer active in address " + config.serv.dir + " and port " + config.serv.port;
         cameraOn();
         cameraTimer = setInterval(function(){
           canvas.width = width;
@@ -108,6 +115,7 @@ API.CameraServer = function (conf){
    }
 
    this.restart = function() {
+     cameraOff();
      self.ros.close();
    }
 }
