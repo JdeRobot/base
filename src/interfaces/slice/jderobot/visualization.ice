@@ -20,8 +20,8 @@
 #ifndef VISUALIZATION_ICE
 #define VISUALIZATION_ICE
 
-#include <jderobot/common.ice>
-#include <jderobot/primitives.ice>
+#include <common.ice>
+#include <primitives.ice>
 
 
 module jderobot{
@@ -31,23 +31,33 @@ module jderobot{
 	    float g;
 	    float b;
 	};
-
+	
 	struct RGBSegment{
 	    Segment seg;
 	    Color c;
 	};
+
+	sequence<RGBSegment> Segments;
+	sequence<RGBPoint> Points;
+
+	struct bufferSegments{
+		Segments buffer;
+		bool refresh;
+	};
 	
-	sequence<RGBPoint> bufferPoint; 
-	sequence<RGBSegment> bufferSegment;
+	struct bufferPoints{
+		Points buffer;
+		bool refresh;
+	};
   /**
    * Interface to the Visualization interaction.
    */
 	interface Visualization
 	{
-        void drawSegment(Segment seg, Color c);
-	bufferSegment getSegment();
-        void drawPoint(Point p, Color c);
-	bufferPoint getPoints();
+        void drawSegment(bufferSegments bseg);
+	bufferSegments getSegment ();
+        void drawPoint(bufferPoints bpoints);
+	bufferPoints getPoints();
         void clearAll();
 	};
 
