@@ -20,8 +20,8 @@
 #ifndef VISUALIZATION_ICE
 #define VISUALIZATION_ICE
 
-#include <common.ice>
-#include <primitives.ice>
+#include <jderobot/common.ice>
+#include <jderobot/primitives.ice>
 
 
 module jderobot{
