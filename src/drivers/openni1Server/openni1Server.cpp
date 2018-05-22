@@ -469,11 +469,10 @@ private:
 		g_pTexMap = (XnRGB24Pixel*)malloc(g_nTexMapX * g_nTexMapY * sizeof(XnRGB24Pixel));
 		SceneMetaData smd;
 
-		struct timeval a, b;
+		struct timeval a;
 		int cycle; // duración del ciclo
 		long totala;
 		long totalpre=0;
-		long diff;
 
 		std::cout << "RGB FPS: " << fps << std::endl;
 		cycle=(float)(1/(float)fps)*1000000;
@@ -714,8 +713,6 @@ private:
 	}
 
     virtual void run(){
-		int test;
-		
 
 		jderobot::ImageDataPtr reply(new jderobot::ImageData);
 		reply->description = mycameradepth->imageDescription;
@@ -727,11 +724,10 @@ private:
 		g_pTexMap = (XnRGB24Pixel*)malloc(g_nTexMapX * g_nTexMapY * sizeof(XnRGB24Pixel));
 		distances.resize(width*height);
 
-		struct timeval a, b;
+		struct timeval a;
 		int cycle; // duración del ciclo
 		long totala;
 		long totalpre=0;
-		long diff;
 
 		//std::cout << "FPS depth: " << fps << std::endl;
 		cycle=(float)(1/(float)fps)*1000000;
@@ -754,7 +750,6 @@ private:
 				XnDepthPixel* pDepth = (XnDepthPixel* )pDepthRow;
 				for (XnUInt x = 0; x < sensors[SELCAM].depthMD.XRes(); ++x, ++pDepth)
 				{
-					test= *pDepth;
 					
 					if ((!segmentation)||(*pLabels!=0)){
 						distances[(y*sensors[SELCAM].depthMD.XRes() + x)] = *pDepth;
@@ -783,7 +778,9 @@ private:
 			}
 			//cvFlip(src, NULL, 1);
 
-		   if ((mycameradepth->imageDescription->width != sensors[SELCAM].imageMD.XRes()) || (mycameradepth->imageDescription->height != sensors[SELCAM].imageMD.YRes())){
+		   if ( (static_cast<unsigned int>(mycameradepth->imageDescription->width) != sensors[SELCAM].imageMD.XRes()) || 
+                (static_cast<unsigned int>(mycameradepth->imageDescription->height) != sensors[SELCAM].imageMD.YRes())
+            ) {
 				cvResize(src,dst_resize);
 				memcpy(&(reply->pixelData[0]),(unsigned char *) dst_resize->imageData,dst_resize->width*dst_resize->height * 3);
 			}
@@ -942,7 +939,7 @@ private:
 				mypro= new openni1Server::myprogeo();
 				mypro->load_cam((char*)path.c_str(),0, cWidth, cHeight);
 				
-				struct timeval a, b;
+				struct timeval a;
 				int cycle; // duración del ciclo
 				long totala;
 				long totalpre=0;
@@ -955,14 +952,15 @@ private:
 					totala=a.tv_sec*1000000+a.tv_usec;
 					pthread_mutex_lock(&mutex);
 					data2->p.clear();
-					for( unsigned int i = 0 ; (i < cWidth*cHeight)&&(distances.size()>0); i=i+9) {
-							distance=(float)distances[i];
-							if (distance!=0){
+					for( unsigned int i = 0 ; 
+                        (i < static_cast<unsigned int>(cWidth * cHeight)) && 
+                        (distances.size()>0); i=i+9) {
+
+						    distance = (float)distances[i];
+							if (distance != 0){
 								//if (((unsigned char)srcRGB->imageData[3*i]!=0) && ((unsigned char)srcRGB->imageData[3*i+1]!=0) && ((unsigned char)srcRGB->imageData[3*i+2]!=0)){
 									float xp,yp,zp,camx,camy,camz;
 									float ux,uy,uz; 
-									float x,y;
-									float k;
 									float c1x, c1y, c1z;
 									float fx,fy,fz;
 									float fmod;
@@ -1285,7 +1283,7 @@ int main(int argc, char** argv){
 	width=prop->getPropertyAsIntWithDefault("openni1Server.Width", 640);
 	localDebug=prop->getPropertyAsIntWithDefault("openni1Server.Debug", 0);
 	height=prop->getPropertyAsIntWithDefault("openni1Server.Height",480);
-	int fps=prop->getPropertyAsIntWithDefault("openni1Server.Fps",30);
+	//int fps=prop->getPropertyAsIntWithDefault("openni1Server.Fps",30);
 
 #ifndef WITH_NITE
 	playerdetection=0;
@@ -1390,7 +1388,7 @@ int main(int argc, char** argv){
 			uint8_t address = libusb_get_device_address (device);
 
 			int device_id = -1;
-			for (size_t i = 0; device_id < 0 && i < n_devices; ++i)
+			for (size_t i = 0; device_id < 0 && i < static_cast<unsigned int>(n_devices); ++i)
 			{
 				if (busId == sensors[i].bus && address == sensors[i].address)
 				device_id = i;
@@ -1467,14 +1465,10 @@ int main(int argc, char** argv){
 				}
 				delete[] aModeD;
 
-
-
-
-					XnMapOutputMode depth_mode;
-				depth_mode.nXRes = width;
-				depth_mode.nYRes = height;
-				depth_mode.nFPS = 30;
-
+				//XnMapOutputMode depth_mode;
+				//depth_mode.nXRes = width;
+				//depth_mode.nYRes = height;
+				//depth_mode.nFPS = 30;
 
 				CHECK_RC(rc, "Create Depth");
 				// now create a image generator over this device
@@ -1497,11 +1491,11 @@ int main(int argc, char** argv){
 				CHECK_RC(rc, "Find user generator");
 				#endif
 
-				XnMapOutputMode rgb_mode;
-					rgb_mode.nXRes = width;
-					rgb_mode.nYRes = height;
-					rgb_mode.nFPS = fps;
-					sensors[i].image.SetMapOutputMode(aModeD[2]);
+				// XnMapOutputMode rgb_mode;
+				// rgb_mode.nXRes = width;
+				// rgb_mode.nYRes = height;
+				// rgb_mode.nFPS = fps;
+				sensors[i].image.SetMapOutputMode(aModeD[2]);
 
 
 				sensors[i].depth.GetAlternativeViewPointCap().SetViewPoint(sensors[i].image);

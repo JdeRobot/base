@@ -5,4 +5,4 @@ configure_module_python(easyiceconfig)
 add_custom_target(easyiceconfig_py ALL)
 copy_to_binary_python(easyiceconfig_py easyiceconfig)
 
-install_python(easyiceconfig core)
+install_python(easyiceconfig easyice-python)

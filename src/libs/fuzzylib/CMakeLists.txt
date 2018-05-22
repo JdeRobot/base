@@ -1,18 +1,18 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library (fuzzylib STATIC fuzzylib.c)
+JDEROBOT_ADD_LIBRARY (fuzzylib STATIC fuzzylib.c)
 
-add_library (fuzzyshare SHARED fuzzylib.c)
+JDEROBOT_ADD_LIBRARY (fuzzyshare SHARED fuzzylib.c)
 
-set_target_properties(fuzzyshare PROPERTIES OUTPUT_NAME fuzzylib)
+JDEROBOT_RENAME_GENERATED_LIB(fuzzyshare fuzzylib)
 
 ### Install
 install(TARGETS fuzzylib fuzzyshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT fuzzylib
 )
 
 install( FILES fuzzylib.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/fuzzylib/
-    COMPONENT core
+    COMPONENT fuzzylib
 )

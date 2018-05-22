@@ -1,0 +1,12 @@
+youtubeServer:
+  ImageSrv:
+    Server: Ice #Deactivate, Ice , ROS (Not supported)
+    Proxy: "default -h 0.0.0.0 -p 9999"
+    URL: "https://www.youtube.com/watch?v=zw47_q9wbBE"
+    LiveBroadcast: False #True for youtube live events
+    OutputDir: "/tmp/" #where do you want to store temporal files. INCLUDE THE FINAL /
+    FPS: 24       #framerate to serve images
+    Format: 18    #youtube-dl format to NOT streaming video download. Run: 'youtube-dl --list-formats [URL]'  to see available video formats
+    Name: youtubeServer_py
+
+  NodeName: youtubeServerCfg

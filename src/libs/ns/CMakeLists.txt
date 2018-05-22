@@ -6,7 +6,7 @@ include_directories( ${LIBS_DIR}/)
 
 set(SRC_FILES ns.h ns.cpp) 
  
-ADD_LIBRARY(ns SHARED ${SRC_FILES})
+JDEROBOT_ADD_LIBRARY(ns SHARED ${SRC_FILES})
 
 target_link_libraries(ns 
     JderobotInterfaces
@@ -20,10 +20,10 @@ target_link_libraries(ns
 ### Install
 install(TARGETS ns
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT ns
 )
 
 install( FILES ns.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/ns/
-    COMPONENT core
+    COMPONENT ns
 )

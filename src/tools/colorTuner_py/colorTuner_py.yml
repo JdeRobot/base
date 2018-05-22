@@ -1,0 +1,10 @@
+ColorTuner:
+  Camera:
+    Server: Ice # Deactivate, Ice , ROS
+    Proxy: "cameraA:tcp -h localhost -p 9999"
+    Format: RGB8
+    Topic: "/TurtlebotROS/cameraL/image_raw"
+    Name: cameraA
+    Fps: 30
+
+  NodeName: ColorTuner

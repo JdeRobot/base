@@ -21,25 +21,24 @@
 
 import sys
 
-import jderobotComm as comm
-from parallelIce.ptMotors import PTMotorsClient
+import comm
 from gui.threadGUI import ThreadGUI
 from gui.GUI import MainWindow
 from PyQt5.QtWidgets import QApplication
-import easyiceconfig as EasyIce
+import config
 
 import signal
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    ic = EasyIce.initialize(sys.argv)
+    cfg = config.load(sys.argv[1])
 
     #starting comm
-    ic, node = comm.init(ic)
+    jdrc= comm.init(cfg, 'pantilt_teleop')
 
-    camera = comm.getCameraClient(ic, "PanTiltTeleop.Camera")
-    motors = PTMotorsClient(ic,"PanTiltTeleop.PTMotors", True)
+    camera = jdrc.getCameraClient("pantilt_teleop.Camera")
+    motors = jdrc.getPTMotorsClient("pantilt_teleop.PTMotors")
 
     app = QApplication(sys.argv)
     frame = MainWindow()

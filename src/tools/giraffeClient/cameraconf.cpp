@@ -269,7 +269,7 @@ namespace giraffeClient {
 	void
 	CameraConf::getAngles(float x, float y, float z, float &pan, float &tilt) {
 
-		float rx, ry, rz;
+		float rx, /*ry,*/ rz;
 
 		/*Set pan with X-Y*/
 		if(x == 0.0)
@@ -279,7 +279,7 @@ namespace giraffeClient {
 
 		/*Calc relative position of point from tilt motor*/
 		rx = x - CAM_RIGHT_X*1000;
-		ry = y - CAM_RIGHT_Y*1000;
+		//ry = y - CAM_RIGHT_Y*1000;
 		rz = z - CAM_RIGHT_Z*1000 - NECK_LENGTH*1000;
 
 		/*Set tilt with X-Z*/

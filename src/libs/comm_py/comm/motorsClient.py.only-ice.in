@@ -1,0 +1,79 @@
+import sys
+import Ice
+from .ice.motorsIceClient import MotorsIceClient
+from .tools import server2int
+
+
+
+def __getMotorsIceClient(jdrc, prefix):
+    '''
+    Returns a Motors Ice Client. This function should never be used. Use getMotorsClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: Name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return Motors Ice Client
+
+    '''
+    print("Publishing "+ prefix +" with ICE interfaces")
+    client = MotorsIceClient(jdrc, prefix)
+    client.start()
+    return client
+
+def __getPublisherMotors(jdrc, prefix):
+    '''
+    Returns a Motors ROS Publisher. This function should never be used. Use getMotorsClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: Name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return Motors ROS Publisher
+
+    '''
+
+    print(prefix + ": ROS msg are diabled")
+    return None
+
+def __Motorsdisabled(jdrc, prefix):
+    '''
+    Prints a warning that the client is disabled. This function should never be used. Use getMotorsClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: Name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return None
+
+    '''
+    print(prefix + " Disabled")
+    return None
+
+def getMotorsClient (jdrc, prefix):
+    '''
+    Returns a Motors Client.
+
+    @param jdrc: Comm Communicator
+    @param prefix: Name of client in config file
+    @param node: ROS node
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+    @type node: ROS node
+
+    @return None if Motors is disabled
+
+    '''
+    server = jdrc.getConfig().getProperty(prefix+".Server")
+    server = server2int(server)
+
+    cons = [__Motorsdisabled, __getMotorsIceClient, __getPublisherMotors]
+
+    return cons[server](jdrc, prefix)

@@ -28,6 +28,7 @@ module jderobot{
     struct rgbData {
         ImageData color;
         ImageData depth;
+        Time timeStamp; 				/**< TimeStamp of Data */
     };
 
 

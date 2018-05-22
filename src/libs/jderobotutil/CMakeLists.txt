@@ -15,20 +15,20 @@ SET(JDEROBOT_UTILS_SOURCES
         utils/CameraUtils
         )
 
-add_library (jderobotutil STATIC ${JDEROBOT_UTILS_SOURCES} )
+JDEROBOT_ADD_LIBRARY (jderobotutil STATIC ${JDEROBOT_UTILS_SOURCES} )
 
-add_library (jderobotutilshare SHARED ${JDEROBOT_UTILS_SOURCES})
+JDEROBOT_ADD_LIBRARY (jderobotutilshare SHARED ${JDEROBOT_UTILS_SOURCES})
 
-set_target_properties(jderobotutilshare PROPERTIES OUTPUT_NAME jderobotutil)
+JDEROBOT_RENAME_GENERATED_LIB(jderobotutilshare jderobotutil)
 
 ### Install
 install(TARGETS jderobotutil jderobotutilshare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT util
 )
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/jderobotutil/
-    COMPONENT core
+    COMPONENT util
 )

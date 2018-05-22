@@ -1,0 +1,248 @@
+<?xml version="1.0" ?>
+<VisualStates>
+  <config type="0">
+    <interfaces>
+      <interface>
+        <serverType>ice</serverType>
+        <name>myCMDVel</name>
+        <topic></topic>
+        <proxyName>CMDVel</proxyName>
+        <ip>localhost</ip>
+        <port>9000</port>
+        <interfaceName>CMDVel</interfaceName>
+      </interface>
+      <interface>
+        <serverType>ice</serverType>
+        <name>myPose3d</name>
+        <topic></topic>
+        <proxyName>Pose3D</proxyName>
+        <ip>localhost</ip>
+        <port>9000</port>
+        <interfaceName>Pose3d</interfaceName>
+      </interface>
+      <interface>
+        <serverType>ice</serverType>
+        <name>myDroneExtra</name>
+        <topic></topic>
+        <proxyName>Extra</proxyName>
+        <ip>localhost</ip>
+        <port>9000</port>
+        <interfaceName>ArDroneExtra</interfaceName>
+      </interface>
+    </interfaces>
+  </config>
+  <functions>def reachedToPoint(self, x, y):
+	reachTresh = 0.1
+	pose = self.myPose3d.getPose3d()
+	diffx = x-pose.x
+	diffy = y-pose.y
+	maxDiff = abs(diffx)
+	if abs(diffy) &gt; maxDiff:
+		maxDiff = abs(diffy)
+	if maxDiff &lt; reachTresh:
+		return True
+	return False
+
+
+def moveToPoint(self, x, y):
+	if self.reachedToPoint(x, y):
+		self.myCMDVel.setVX(0)
+		self.myCMDVel.setVY(0)
+	else:
+		pose = self.myPose3d.getPose3d()
+		diffx = x-pose.x
+		diffy = y-pose.y
+		maxDiff = abs(diffx)
+		if abs(diffy) &gt; maxDiff:
+			maxDiff = abs(diffy)
+		self.myCMDVel.setVX(diffx / (maxDiff*2))
+		self.myCMDVel.setVY(diffy / (maxDiff*2))
+	
+	self.myCMDVel.sendVelocities()</functions>
+  <variables>self.one_points = [[0,0], [1,1], [1,-4]]
+self.zero_points = [[2,-4], [4,-4], [4,1], [2,1]]
+self.closing_loop = False</variables>
+  <libraries/>
+  <state id="0" initial="True">
+    <posx>0.0</posx>
+    <posy>0.0</posy>
+    <name>root</name>
+    <code></code>
+    <timestep>100</timestep>
+    <state id="1" initial="True">
+      <posx>831.0</posx>
+      <posy>926.0</posy>
+      <name>takeoff</name>
+      <code>self.interfaces.myDroneExtra.takeoff()</code>
+      <timestep>100</timestep>
+      <transition id="1">
+        <type>0</type>
+        <time>5000</time>
+        <posx>903.0</posx>
+        <posy>840.0</posy>
+        <name>transition 1</name>
+        <originid>1</originid>
+        <destinationid>2</destinationid>
+        <code></code>
+      </transition>
+    </state>
+    <state id="2" initial="False">
+      <posx>965.0</posx>
+      <posy>926.0</posy>
+      <name>draw_one</name>
+      <code></code>
+      <timestep>100</timestep>
+      <transition id="2">
+        <type>1</type>
+        <condition>return self.interfaces.reachedToPoint(self.interfaces.one_points[2][0], self.interfaces.one_points[2][1])</condition>
+        <posx>1038.0</posx>
+        <posy>827.0</posy>
+        <name>one_completed</name>
+        <originid>2</originid>
+        <destinationid>3</destinationid>
+        <code></code>
+      </transition>
+      <state id="4" initial="True">
+        <posx>833.0</posx>
+        <posy>899.0</posy>
+        <name>move_to_first</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.one_points[0][0], self.interfaces.one_points[0][1])</code>
+        <timestep>100</timestep>
+        <transition id="7">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.one_points[0][0], self.interfaces.one_points[0][1])</condition>
+          <posx>898.5</posx>
+          <posy>827.5</posy>
+          <name>reached_to_first</name>
+          <originid>4</originid>
+          <destinationid>5</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="5" initial="False">
+        <posx>973.0</posx>
+        <posy>892.0</posy>
+        <name>move_to_second</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.one_points[1][0], self.interfaces.one_points[1][1])</code>
+        <timestep>100</timestep>
+        <transition id="8">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.one_points[1][0], self.interfaces.one_points[1][1])</condition>
+          <posx>1056.5</posx>
+          <posy>807.0</posy>
+          <name>reached_to_second</name>
+          <originid>5</originid>
+          <destinationid>6</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="6" initial="False">
+        <posx>1126.0</posx>
+        <posy>894.0</posy>
+        <name>move_to_third</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.one_points[2][0], self.interfaces.one_points[2][1])</code>
+        <timestep>100</timestep>
+      </state>
+    </state>
+    <state id="3" initial="False">
+      <posx>1113.0</posx>
+      <posy>940.0</posy>
+      <name>draw_zero</name>
+      <code></code>
+      <timestep>100</timestep>
+      <transition id="3">
+        <type>1</type>
+        <condition>return self.interfaces.reachedToPoint(self.interfaces.zero_points[0][0], self.interfaces.zero_points[0][1]) and self.interfaces.closing_loop</condition>
+        <posx>1172.0</posx>
+        <posy>842.5</posy>
+        <name>zero_completed</name>
+        <originid>3</originid>
+        <destinationid>7</destinationid>
+        <code></code>
+      </transition>
+      <state id="8" initial="True">
+        <posx>843.0</posx>
+        <posy>915.0</posy>
+        <name>move_to_first</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.zero_points[0][0], self.interfaces.zero_points[0][1])</code>
+        <timestep>100</timestep>
+        <transition id="9">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.zero_points[0][0], self.interfaces.zero_points[0][1])</condition>
+          <posx>914.5</posx>
+          <posy>828.0</posy>
+          <name>reached_first</name>
+          <originid>8</originid>
+          <destinationid>9</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="9" initial="False">
+        <posx>978.0</posx>
+        <posy>911.0</posy>
+        <name>move_to_second</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.zero_points[1][0], self.interfaces.zero_points[1][1])</code>
+        <timestep>100</timestep>
+        <transition id="10">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.zero_points[1][0], self.interfaces.zero_points[1][1])</condition>
+          <posx>1051.5</posx>
+          <posy>840.5</posy>
+          <name>reached_second</name>
+          <originid>9</originid>
+          <destinationid>10</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="10" initial="False">
+        <posx>1137.0</posx>
+        <posy>912.0</posy>
+        <name>move_to_third</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.zero_points[2][0], self.interfaces.zero_points[2][1])</code>
+        <timestep>100</timestep>
+        <transition id="11">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.zero_points[2][0], self.interfaces.zero_points[2][1])</condition>
+          <posx>1201.0</posx>
+          <posy>821.5</posy>
+          <name>reached_third</name>
+          <originid>10</originid>
+          <destinationid>11</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="11" initial="False">
+        <posx>1263.0</posx>
+        <posy>915.0</posy>
+        <name>move_to_fourth</name>
+        <code>self.interfaces.moveToPoint(self.interfaces.zero_points[3][0], self.interfaces.zero_points[3][1])</code>
+        <timestep>100</timestep>
+        <transition id="12">
+          <type>1</type>
+          <condition>return self.interfaces.reachedToPoint(self.interfaces.zero_points[3][0], self.interfaces.zero_points[3][1])</condition>
+          <posx>1326.5</posx>
+          <posy>820.0</posy>
+          <name>reached_four</name>
+          <originid>11</originid>
+          <destinationid>12</destinationid>
+          <code></code>
+        </transition>
+      </state>
+      <state id="12" initial="False">
+        <posx>1382.0</posx>
+        <posy>911.0</posy>
+        <name>close_the_loop</name>
+        <code>self.interfaces.closing_loop = True
+self.interfaces.moveToPoint(self.interfaces.zero_points[0][0], self.interfaces.zero_points[0][1])</code>
+        <timestep>100</timestep>
+      </state>
+    </state>
+    <state id="7" initial="False">
+      <posx>1220.0</posx>
+      <posy>937.0</posy>
+      <name>land</name>
+      <code>self.interfaces.myDroneExtra.land()</code>
+      <timestep>100</timestep>
+    </state>
+  </state>
+</VisualStates>

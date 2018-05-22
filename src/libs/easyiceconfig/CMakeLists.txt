@@ -16,15 +16,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
-configure_file(
-    include/easyiceconfig/hardcodedlocations.h.in
-    include/easyiceconfig/hardcodedlocations.h
-    @ONLY
-)
-
 set(HEADERS
     include/easyiceconfig/EasyIce.h
-    ${CMAKE_CURRENT_BINARY_DIR}/include/easyiceconfig/hardcodedlocations.h
     include/easyiceconfig/loader.hpp
     include/easyiceconfig/initializer.hpp
     include/easyiceconfig/injector.hpp
@@ -40,12 +33,12 @@ set(SOURCES
 set_property(SOURCE src/loader.cpp PROPERTY COMPILE_FLAGS "-std=c++0x")
 
 ## Adding shared library for common usage
-add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${ZeroCIce_LIBRARIES})
 
 ## Adding static library for single .so configurations
 # since target is a shared library, -fPIC must be provided
-add_library(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
+JDEROBOT_ADD_LIBRARY(${PROJECT_NAME}-embedded STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME}-embedded ${ZeroCIce_LIBRARIES})
 set_property(TARGET ${PROJECT_NAME}-embedded PROPERTY POSITION_INDEPENDENT_CODE 1)
 
@@ -72,9 +65,9 @@ target_link_libraries(test_loader ${PROJECT_NAME} ${ZeroCIce_LIBRARIES})
 ### Install
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-embedded
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT easyice
 )
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT core
+    COMPONENT easyice
 )

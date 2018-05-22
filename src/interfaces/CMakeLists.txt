@@ -10,7 +10,7 @@ include_directories(
         ${CMAKE_CURRENT_LIST_DIR}/cpp/jderobot
         ${CMAKE_CURRENT_LIST_DIR}/cpp/
 )
-add_library (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
+JDEROBOT_ADD_LIBRARY (JderobotInterfaces SHARED ${SOURCE_FILES} ${ICE_FILES})
 TARGET_LINK_LIBRARIES(JderobotInterfaces ${ice2_LIBRARIES})
 
 else()
@@ -117,7 +117,7 @@ unset(SLICE_DIRECTORY)
 ### CPP
 if (build_interfaces_cpp)
     include_directories(${SLICE_CPP_DIR})
-    add_library (JderobotInterfaces SHARED ${SLICE_CPP_GENERATED})
+    JDEROBOT_ADD_LIBRARY (JderobotInterfaces SHARED ${SLICE_CPP_GENERATED})
     target_link_libraries(JderobotInterfaces ${ice2_LIBRARIES})
 endif()
 
@@ -132,25 +132,25 @@ endif(NOT DEFINED SLICE_NEW_STYLE)
 #                 #
 ###################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib COMPONENT core)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib COMPONENT interfaces )
 
 # Install python files
 file(GLOB HEADERS_FILES ${SLICE_PY_DIR}/*)
 FOREACH(header ${HEADERS_FILES})
     if (IS_DIRECTORY ${header})
-        INSTALL(DIRECTORY ${header} DESTINATION ${JDEROBOT_PYTHON_MODULE_PATH} COMPONENT core)
+        INSTALL(DIRECTORY ${header} DESTINATION ${JDEROBOT_PYTHON_MODULE_PATH} COMPONENT interfaces)
     else()
-        INSTALL(FILES ${header} DESTINATION ${JDEROBOT_PYTHON_MODULE_PATH} COMPONENT core)
+        INSTALL(FILES ${header} DESTINATION ${JDEROBOT_PYTHON_MODULE_PATH} COMPONENT interfaces)
     endif()
 ENDFOREACH(header)
 
 # Install interfaces headers
 INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cpp/jderobot/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot
-    COMPONENT core
+    COMPONENT interfaces
     FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
 
 # Install slice
 FILE(GLOB SLICE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/slice/jderobot/*.ice)
-INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT core)
+INSTALL (FILES ${SLICE_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/slice COMPONENT interfaces)

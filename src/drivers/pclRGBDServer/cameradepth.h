@@ -62,7 +62,7 @@ namespace kinect{
 		    }
 
 		    virtual std::string startCameraStreaming(const Ice::Current&){
-
+                return "";
 		    }
 
 		    virtual void stopCameraStreaming(const Ice::Current&) {

@@ -7,23 +7,23 @@ if (with_pcl)
     include_directories( ${LIBS_DIR}/)
     set(jderobotViewerSources JderobotViewer.cpp JderobotViewer.h)
 
-    add_library (jderobotViewer STATIC ${jderobotViewerSources})
+    JDEROBOT_ADD_LIBRARY (jderobotViewer STATIC ${jderobotViewerSources})
     TARGET_LINK_LIBRARIES(jderobotViewer ${Boost_LIBRARIES})
 
-    add_library (jderobotViewerShare SHARED ${jderobotViewerSources})
+    JDEROBOT_ADD_LIBRARY (jderobotViewerShare SHARED ${jderobotViewerSources})
     TARGET_LINK_LIBRARIES(jderobotViewerShare ${Boost_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
 
 
-    set_target_properties(jderobotViewerShare PROPERTIES OUTPUT_NAME jderobotViewer)
+    JDEROBOT_RENAME_GENERATED_LIB(jderobotViewerShare jderobotViewer)
 
     ### Install
     install(TARGETS jderobotViewer jderobotViewerShare
         DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        COMPONENT core
+        COMPONENT viewer
         )
 
     install( FILES JderobotViewer.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/jderobotViewer/
-    COMPONENT core
+    COMPONENT viewer
 )
 endif()

@@ -20,6 +20,8 @@
 #
 
 import sys
+import config
+import comm
 import easyiceconfig as EasyIce
 from gui.threadGUI import ThreadGUI
 from parallelIce.cameraClient import CameraClient
@@ -35,27 +37,31 @@ import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    ic = EasyIce.initialize(sys.argv)
-    camera = CameraClient(ic, "UAVViewer.Camera", True)
-    navdata = NavDataClient(ic, "UAVViewer.Navdata", True)
-    pose = Pose3DClient(ic, "UAVViewer.Pose3D", True)
-    cmdvel = CMDVel(ic, "UAVViewer.CMDVel")
-    extra = Extra(ic, "UAVViewer.Extra")
+
+        cfg = config.load(sys.argv[1])
+
+        #starting comm
+        jdrc= comm.init(cfg, 'UAVViewer')
+
+        camera = jdrc.getCameraClient("UAVViewer.Camera")
+        navdata = jdrc.getNavdataClient("UAVViewer.Navdata")
+        pose = jdrc.getPose3dClient("UAVViewer.Pose3D")
+        cmdvel = jdrc.getCMDVelClient("UAVViewer.CMDVel")
+        extra = jdrc.getArDroneExtraClient("UAVViewer.Extra")
+
+        app = QApplication(sys.argv)
+        frame = MainWindow()
+        frame.setCamera(camera)
+        frame.setNavData(navdata)
+        frame.setPose3D(pose)
+        frame.setCMDVel(cmdvel)
+        frame.setExtra(extra)
+        frame.show()
 
 
-    app = QApplication(sys.argv)
-    frame = MainWindow()
-    frame.setCamera(camera)
-    frame.setNavData(navdata)
-    frame.setPose3D(pose)
-    frame.setCMDVel(cmdvel)
-    frame.setExtra(extra)
-    frame.show()
-    
-    
 
-    t2 = ThreadGUI(frame)  
-    t2.daemon=True
-    t2.start()
-    
-    sys.exit(app.exec_()) 
+        t2 = ThreadGUI(frame)
+        t2.daemon=True
+        t2.start()
+
+        sys.exit(app.exec_())

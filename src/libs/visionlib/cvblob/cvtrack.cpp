@@ -189,9 +189,9 @@ namespace cvb
       }
 
       // Proximity matrix calculation and "used blob" list inicialization:
-      for (i=0; i<nBlobs; i++)
-	for (j=0; j<nTracks; j++)
-	  if (C(i, j) = (distantBlobTrack(B(i), T(j)) < thDistance))
+      for (i = 0; i < nBlobs; i++)
+	for (j = 0; j < nTracks; j++)
+	  if ((C(i, j) = (distantBlobTrack(B(i), T(j)) < thDistance)))
 	  {
 	    AB(i)++;
 	    AT(j)++;
@@ -377,12 +377,13 @@ namespace cvb
 	    cvPutText(imgDest, buffer.str().c_str(), cvPoint((int)it->second->centroid.x, (int)it->second->centroid.y), font, CV_RGB(0.,255.,0.));
 	  }
 
-	if (mode&CV_TRACK_RENDER_BOUNDING_BOX)
+	if (mode & CV_TRACK_RENDER_BOUNDING_BOX)
+    {
 	  if (it->second->inactive)
 	    cvRectangle(imgDest, cvPoint(it->second->minx, it->second->miny), cvPoint(it->second->maxx-1, it->second->maxy-1), CV_RGB(0., 0., 50.));
 	  else
 	    cvRectangle(imgDest, cvPoint(it->second->minx, it->second->miny), cvPoint(it->second->maxx-1, it->second->maxy-1), CV_RGB(0., 0., 255.));
-
+    }
 	if (mode&CV_TRACK_RENDER_TO_LOG)
 	{
 	  clog << "Track " << it->second->id << endl;

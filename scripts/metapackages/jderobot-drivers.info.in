@@ -1,0 +1,17 @@
+Package: ${PROJECT_NAME}-drivers
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Provides: ${PROJECT_NAME}-drivers
+Conflicts: ${PROJECT_NAME}-drivers
+Replaces: ${PROJECT_NAME}-drivers
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: jderobot-ardrone-server, jderobot-camserver, jderobot-gazebo, jderobot-mavlinkserver, jderobot-openni1server, jderobot-openniserver, jderobot-pclrgbdserver,jderobot-evicamdriver, jderobot-camserver-python, jderobot-youtubeserver-python
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that gathers all the drivers of JdeRobot framework.
+ Jderobot is a software development suite for robotics applications.
+ Get it from https://github.com/JdeRobot/JdeRobot.git
+

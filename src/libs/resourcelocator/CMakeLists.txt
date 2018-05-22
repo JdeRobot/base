@@ -18,24 +18,18 @@ include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
-configure_file(
-    include/resourcelocator/gladelocator.hpp.in
-    include/resourcelocator/gladelocator.hpp
-    @ONLY
-)
-
 ## Sources
 set(SOURCES
 	include/resourcelocator/stdutils.hpp
 	include/resourcelocator/resourcelocator.hpp
-	${CMAKE_CURRENT_BINARY_DIR}/include/resourcelocator/gladelocator.hpp
+	include/resourcelocator/gladelocator.hpp
 
 	src/resourcelocator.cpp
 )
 
 set_property(SOURCE src/resourcelocator.cpp PROPERTY COMPILE_FLAGS "-std=c++0x")
 
-add_library(${binname} SHARED ${SOURCES})
+JDEROBOT_ADD_LIBRARY(${binname} SHARED ${SOURCES})
 target_link_libraries(${binname} ${LIBRARIES})
 
 ## Options
@@ -52,13 +46,9 @@ target_link_libraries(test_gladelocator ${binname})
 ### Install
 install(TARGETS ${PROJECT_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT resourcelocator
 )
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    COMPONENT core
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/resourcelocator/gladelocator.hpp
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/resourcelocator/
-    COMPONENT core
+    COMPONENT resourcelocator
 )

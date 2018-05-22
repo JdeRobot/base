@@ -1,7 +1,0 @@
-#!/bin/bash
-
-wd=$(pwd)
-cd /usr/local/share/jderobot/webtools/kobukiviewerjs/
-nodejs run.js &
-
-cd $wd

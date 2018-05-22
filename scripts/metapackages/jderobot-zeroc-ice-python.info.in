@@ -1,0 +1,16 @@
+Package: ${PROJECT_NAME}-zeroc-ice-python
+Version: ${PACKAGE_VERSION}
+Architecture: all
+Provides: ${PROJECT_NAME}-zeroc-ice-python
+Conflicts: ${PROJECT_NAME}-zeroc-ice-python
+Replaces: ${PROJECT_NAME}-zeroc-ice-python
+Section: net
+Priority: extra
+Size: 0
+Installed-Size: 0
+Depends: libssl-dev, libbz2-dev, python-pip
+Maintainer: Francisco Perez <f.perez475@gmail.com>
+Homepage: http://jderobot.org
+Description: Metapackage that intalls with pip zeroc-ice.
+ Get it from https://github.com/JdeRobot/JdeRobot.git
+

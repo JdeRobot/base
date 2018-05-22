@@ -20,12 +20,16 @@
 #
 
 import sys
-import easyiceconfig as EasyIce
+import config
 from gui.threadGUI import ThreadGUI
-import jderobotComm as comm
+import comm
 from sensors.cameraFilter import CameraFilter
-from gui.GUI import MainWindow
+from gui.gui import MainWindow
 from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtGui
+import qdarkstyle
+
+
 
 
 import signal
@@ -33,18 +37,23 @@ import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
-    ic = EasyIce.initialize(sys.argv)
+    cfg = config.load(sys.argv[1])
+    try:
+        img_path=sys.argv[2]
+    except IndexError:
+        img_path=None
 
     #starting comm
-    ic, node = comm.init(ic)
+    jdrc= comm.init(cfg, 'ColorTuner')
 
-    cameraCli = comm.getCameraClient(ic, "ColorTuner.Camera", True)
+    cameraCli = jdrc.getCameraClient("ColorTuner.Camera")
     camera = CameraFilter(cameraCli)
     
     app = QApplication(sys.argv)
-    frame = MainWindow()
+    frame = MainWindow(img_path)
     frame.setCamera(camera)
     frame.show()
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     t2 = ThreadGUI(frame)  
     t2.daemon=True

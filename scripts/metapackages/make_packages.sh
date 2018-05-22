@@ -26,17 +26,30 @@
 
 build=.dpkg_pkgs
 mkdir -p $build
-post=../scripts/cmake/postinst
+mkdir -p debs
 for pkginfo in *.info
 do
 	pkgname=${pkginfo%.info}
+	dr=${pkginfo%_*_*.info}
+	drname=$(echo $dr | sed 's/jderobot-//')
 #	echo $pkgname
+	echo $drname
 	target=$build/$pkgname/DEBIAN
 	mkdir -p $target
 	cp $pkginfo $target/control
-	cp $post  $target
-	chmod 555 $target/postinst
+	FILE=../scripts/cmake/$drname/postinst
+	if [ -f $FILE ]; then
+		cp $FILE  $target
+		chmod 555 $target/postinst
+	fi
+
+	FILE=../scripts/cmake/$drname/postrm
+	if [ -f $FILE ]; then
+		cp $FILE  $target
+		chmod 555 $target/postrm
+	fi
+	
 	dpkg --build $build/$pkgname
-	cp $build/${pkgname}.deb .
+	cp $build/${pkgname}.deb ./debs
 done
 

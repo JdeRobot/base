@@ -53,14 +53,14 @@ namespace cvb
       CV_ASSERT(img&&(img->depth==IPL_DEPTH_8U)&&(img->nChannels==3));
 
       int stepDst = img->widthStep/(img->depth/8);
-      int img_width = img->width;
-      int img_height = img->height;
+      // int img_width = img->width;  // Unused but set
+      // int img_height = img->height;  // Unused but set
       int img_offset = 0;
 
       if(img->roi)
       {
-	img_width = img->roi->width;
-	img_height = img->roi->height;
+	// img_width = img->roi->width;  // Unused but set
+	// img_height = img->roi->height;  // Unused but set
 	img_offset = (img->nChannels * img->roi->xOffset) + (img->roi->yOffset * stepDst);
       }
 
@@ -121,6 +121,8 @@ namespace cvb
       return contour;
     }
     __CV_END__;
+    
+    return NULL;
   }
 
   void cvRenderContourPolygon(CvContourPolygon const *contour, IplImage *img, CvScalar const &color)
@@ -175,6 +177,8 @@ namespace cvb
       return a*0.5;
     }
     __CV_END__;
+    
+    return 0;
   }
 
   double cvContourChainCodePerimeter(CvContourChainCode const *c)
@@ -197,6 +201,8 @@ namespace cvb
       return perimeter;
     }
     __CV_END__;
+    
+    return 0; // Remove return warning
   }
 
   double cvContourPolygonPerimeter(CvContourPolygon const *p)
@@ -214,6 +220,8 @@ namespace cvb
       return perimeter;
     }
     __CV_END__;
+    
+    return 0;  // Return-type warning fix
   }
 
   double cvContourPolygonCircularity(const CvContourPolygon *p)
@@ -232,6 +240,8 @@ namespace cvb
         return 0.;
     }
     __CV_END__;
+    
+    return 0; // Remove return warning
   }
 
   void simplifyPolygonRecursive(CvContourPolygon const *p, int const i1, int const i2, bool *pnUseFlag, double const delta)
@@ -321,6 +331,8 @@ namespace cvb
       return result;
     }
     __CV_END__;
+    
+    return NULL;
   }
 
   CvContourPolygon *cvPolygonContourConvexHull(CvContourPolygon const *p)
@@ -375,6 +387,8 @@ namespace cvb
       return new CvContourPolygon(dq.begin(), dq.end());
     }
     __CV_END__;
+    
+    return NULL;
   }
 
   void cvWriteContourPolygonCSV(const CvContourPolygon& p, const string& filename)

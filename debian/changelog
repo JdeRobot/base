@@ -1,3 +1,121 @@
+jderobot (5.6.4) unstable; urgency=low
+
+  * release 5.6.4
+  * Solved some bugs related with installation and other minor bugs in components.
+  * Added some little improvements in some tools. 
+  * [PR #1070] Now server value on yml files are more intuitive.
+  * [PR #1080] Change in movement blocks and added math blocks
+  * [PR #1082] Added support for kinect1's ROS driver
+  * [PR #1091] HSV color disk added to colorTuner tool
+  * [PR #1106] Added support for kinect2's ROS driver  
+  * [PR #1111] Moved scratch2jderobot away from the oficial repo. Now this tool has its own one.
+  * [PR #1119] Added turtlebot ROS launchers
+  * [PR #1123] Added 3dViewer-web tool
+  * [PR #1124] New tool cameraview-web
+  * [PR #1125] Deleted 3dViewer tool.
+  * [PR #1126] Cameraserver python full ROS based and full OpenCV
+  * [PR #1127] Added new world for IIROS drone championship
+  * [PR #1132] Better support for bumper sensor in comm
+  * [PR #1133] Web tool kobukiviewer renamed and electron based  
+  * [PR #1134] Web tool uavviewer renamed and electron based
+  * [PR #1141] Added new ROS based formula1 model for simulation
+  * [PR #1148] Renamed several components 
+  * [PR #1150] New models for holo taxi and opel car ROS based.
+  * [PR #1154] Deleted old webtools 
+
+-- Francisco Perez <f.perez475@gmail.com>, Wed, 18 May 2018 14:20:00 +0100
+
+jderobot (5.6.3) unstable; urgency=low
+
+  * release 5.6.3
+  * Solved some bugs related with installation and other minor bugs in components.
+  * Added some little improvements in some tools. 
+  * YoutubeServer is now working from debian package installation, it only works with python clients for the moment.
+  * [PR #1017] Added support for synchronized RGBD
+  * [PR #1024] Added new tests to jenkins dockers
+  * [PR #1031] Added new component rgbdViewer_py
+  * [PR #1032] Added support for MBOT in gazebo 
+  * [PR #1040] Added a new widget with zoom to rgbdcalibrator
+  * [PR #1049] New tests for packages installation.
+  * [PR #1050] First approach. Deleted discontinuity in HSV filter of colorTuner
+  * [PR #1053] Added comm to rgbdViewer 
+  * [PR #1054] Ported MAVLINKServer to python 2.7 and integrated with comm 
+  * [PR #1035] [PR #1063] Improved scratch2JdeRobot tool.
+
+-- Francisco Perez <f.perez475@gmail.com>, Wed, 19 Feb 2018 17:15:00 +0100
+
+
+jderobot (5.6.2) unstable; urgency=low
+
+  * release 5.6.2
+  * Solved some bugs and updated to even ROS update packages due to opencv package stopped working.
+  * Added some little improvements in some tools. 
+  * [PR #963] Scratch2JdeRobot: generation of output node in a single step
+  * [PR #966] Added suppor for bumper sensor in comm.
+  * [PR #969] Added new server for cameras in python using openCV instead our visionlib
+  * [PR #973] Added examples for visualStates
+  * [PR #974] Improvements in visualStates.
+  * [PR #975] Added new interface for pause, stop, resume, etc.
+  * [PR #979] Webtools are operative again.
+  * [PR #982] Migrated uav_viewer to make it compatible with python 2.7
+  * [PR #988] Deleted kobuki_driver and laser_server and added ros drivers for kobuki and lasers.
+  * [PR #950] [PR #1001] Added new server: Youtube server. Now we can have another source of video.
+  * [PR #1006] Final and fully functional version of visualStates.
+
+-- Francisco Perez <f.perez475@gmail.com>, Wed, 20 Dec 2017 17:06:00 +0100
+
+
+jderobot (5.6.1) unstable; urgency=low
+
+  * release 5.6.1
+  * Solved several bugs in packages generation and tools. 
+  * [PR #886] Fixed some compilation warnings
+  * [PR #928] Added support for comm in colorTuner tool
+  * [PR #933] Created test for packages intallation.
+  * [PR #937] Added support for ardrone interfaces in jderobot comm.
+  * [PR #942] Renamed samples folder to examples and added a metapackage for them.
+
+-- Francisco Perez <f.perez475@gmail.com>, Tue, 24 Oct 2017 13:30:00 +0100
+
+
+jderobot (5.6.0) unstable; urgency=low
+
+  * release 5.6.0
+  * [PR #780 #914] This is the main change in the installation process. We now offer atomic debian packages for the user to install the
+project. There is no more a monolithic package that install the whole project but there is now a bunch of packages (one for each tool, driver, and lib) and
+some extra themed metapackages. This is in beta phase yet, so the may contain some bugs. Also, there will be more metapackages in the future. (see issue 915 for
+further information).
+  * [PR #736] Added a more realistic Formula 1 car and plugin. Now the wheels move and the car moves by phyisics forces, not just by teleporting the model.
+  * [PR #797] Added options for generate only ice packages. For embedded systems (arm)
+  * [PR #802] Created launcher for webtools.
+  * [PR #810] Refactoring of replayer tool.
+  * [PR #812] RGBD images are now synchronized.
+  * [PR #813] RGBD Viewer now allows to use camera distances.
+  * [PR #822] New driver for the Sony EVI IP camera. 
+  * [PR #829] Refactor for recorder2 tool. Added ringed buffer.
+  * [PR #832] Added new holonomic cars for gazebo. They include their own plugins.
+  * [PR #844] Deleted obsolete interfaces to clean the project
+  * [PR #847] Stop support for Nao humanoid robot.
+  * [PR #851] Created a new tool for teleoperate IP cameras. PanTiltTeleop.
+  * [PR #852] Solved problem with maximum drone velocities in uav_viewer.
+  * [PR #859] Added a new cameraview tool in python only for ice. 
+  * [PR #863] Included optional horizontal flip for openniserver
+  * [PR #862] Jderobotcomm_py now installs ROS python clients if ROS_cpp is found.
+  * [PR #866] Added new model for gazebo of the arduino robot MBOT 
+  * [PR #873] Created a JdeRobot version of the ROS turtlebot model for gazebo.
+  * [PR #874] Renamed VisualHFSM to VisualStates
+  * [PR #877] Added samples folder and moved al examples to it.
+  * [PR #885] Updated Dockerfiles. 
+  * [PR #880] Moved installation of the project from /usr/local to /opt. This will let the system as clear as possible.
+  * [PR #899] Update the world and models of JdeRobot's Academy global_navigation practice.
+  * [PR #901] Added new tool. Scratch2JdeRobot, will let the users program complex robot behaviours using scratch.
+  * [PR #908] Added the infraestructure for a new JdeRobot Academy practice based on autonomous vehicles. Autopark.
+  * [PR #916] Created Config library for read Yaml config files. We are migrating from ICE config file, to a more generic library based on YAML.
+  * [PR #918] Added the infraestructure for a new JdeRobot Academy practice based on autonomous vehicles. Stop practice.
+  * [PR #921] Added support for RGBD sensors in Ice to JdeRobot Comm
+
+-- Francisco Perez <f.perez475@gmail.com>, Mon, 09 Oct 2017 20:30:00 +0100
+
 
 jderobot (5.5.2) unstable; urgency=low
 

@@ -5,22 +5,22 @@ include_directories(${LIBS_DIR}) # Aquí se alojan las cabeceras de las interfac
 
 include_directories( ${LIBS_DIR}/)
 
-add_library (xmlParser STATIC xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
+JDEROBOT_ADD_LIBRARY (xmlParser STATIC xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
 TARGET_LINK_LIBRARIES(xmlParser ${Boost_LIBRARIES})
 
-add_library (xmlParsershare SHARED xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
+JDEROBOT_ADD_LIBRARY (xmlParsershare SHARED xmlReaderParser.cpp  xmlReaderParser.h  xmlWriterParser.cpp  xmlWriterParser.h)
 TARGET_LINK_LIBRARIES(xmlParsershare ${Boost_LIBRARIES} ${libxmlpp_LIBRARIES} )
 
-set_target_properties(xmlParsershare PROPERTIES OUTPUT_NAME xmlParser)
+JDEROBOT_RENAME_GENERATED_LIB(xmlParsershare xmlParser)
 
 ### Install
 install(TARGETS xmlParser xmlParsershare
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-    COMPONENT core
+    COMPONENT xmlparser
 )
 
 FILE(GLOB_RECURSE HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install( FILES ${HEADERS_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/jderobot/xmlParser
-    COMPONENT core
+    COMPONENT xmlparser
 )
