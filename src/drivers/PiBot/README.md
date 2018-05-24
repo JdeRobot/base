@@ -1,8 +1,15 @@
-PiBot is a educative robot designed by JdeRobot team. It is composed by a RaspberryPI board, a PiCam camera, several common (and cheap) sensors and actuators, a battery and a frame of 3D printable pieces.
+PiBot is an educational robot designed by JdeRobot team. It is composed by a RaspberryPI board, a PiCam camera, several common (and cheap) sensors and actuators, a battery and a frame of 3D printable pieces.
 
 It is open hardware.
 
 Its drivers are provided as open source, so students may program PiBot applications in Python. In addition, they can program a simulated PiBot in Gazebo too. The robot model and plugin are also provided with the same programming interface as the real PiBot.
+
+![real Pibot][PiBot-real]
+![simulated Pibot][PiBot-sim]
+
+[PiBot-sim]: http://jderobot.github.io/JdeRobot/pibot-2.png "Simulated PiBot"
+[PiBot-real]: http://jderobot.github.io/JdeRobot/pibot-1.jpg "Real PiBot"
+
 
 # Programming interface
 
@@ -32,3 +39,8 @@ The Hardware Abstraction Layer (HAL) is composed of four sections: raw sensors, 
 * IR sensors
 * US sensor HC-SR04 model
 
+
+# PiBot in action
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=WUeVjef1p6U" target="_blank"><img src="http://img.youtube.com/vi/WUeVjef1p6U/0.jpg" 
+alt="Real PiBot moving" width="240" height="180" border="10" /></a>
