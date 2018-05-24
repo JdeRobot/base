@@ -41,7 +41,7 @@ Test:
 
   IR:
     Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
-    Proxy: "irLeft:default -h localhost -p 8991"
+    Proxy: "irRight:default -h localhost -p 8992"
     Topic: "/turtlebotROS/laser/scan"
     Name: testIR
 

@@ -26,7 +26,7 @@ namespace JdeRobotTypes {
 
 	class IRData {
 	public:
-	    float received = 0;
+	    int received = 0;
 	    double timeStamp = 0; //seconds
 	};
 

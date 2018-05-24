@@ -33,7 +33,7 @@ namespace gazebo
   class IRD
     {
         public:
-            float received;
+            int received;
     };
 
   class IR : public CameraPlugin
@@ -68,9 +68,7 @@ namespace gazebo
 
 
 			nameIR = std::string("--Ice.Config=" + strs[4] + ".cfg");
-			// std::cout << "@@@@@@@@@@@@@@@@@@@@ " << nameCamera << std::endl;
 			nameCamera = std::string(strs[4]);
-			// std::cout << "@@@@@@@@@@@@@@@@@@@@ " << nameCamera << std::endl;
 
 			if (count == 0){
 				pthread_t thr_gui;
@@ -87,20 +85,12 @@ namespace gazebo
 
         cv::cvtColor(image, gray_image, CV_BGR2GRAY);
         brightness = cv::mean(gray_image)[0];
-// cv::imshow(nameCamera, image);
-// cv::waitKey(0);
 					
-		float received = 0;
+		int received = 0;
 		if (brightness <= threshold)
 			received = 1;
 		else
 			received = 0;
-
-		
-// std::cout << brightness << std::endl;
-// result = gray_image.clone();
-// std::string output = "/tmp/images/"+std::to_string(brightness)+"_R"+std::to_string(received)+".jpg";
-// cv::imwrite( output, result );
 
 		IRD data;
 		data.received = received;
@@ -142,7 +132,7 @@ namespace gazebo
 			};
 
 		private:
-			float received;
+			int received;
 			gazebo::IR* ir;
 	};
 
@@ -188,209 +178,3 @@ namespace gazebo
 
 	    return NULL;
 	}
-
-// class CameraI: virtual public jderobot::Camera {
-// 	public:
-// 		CameraI(std::string propertyPrefix, gazebo::IR* camera)
-// 			   : prefix(propertyPrefix), cameraI(camera) {
-		
-// 			imageDescription = (new jderobot::ImageDescription());
-// 			cameraDescription = (new jderobot::CameraDescription());
-// 			cameraDescription->name = "camera Introrob";
-
-//         	replyTask = new ReplyTask(this);
-// 		    replyTask->start(); // my own thread
-		  
-// 		}
-
-// 		std::string getName () {
-// 			return (cameraDescription->name);
-// 		}
-
-// 		std::string getRobotName () {
-// 			return "RobotName";
-// 		}
-
-// 		virtual ~CameraI() {
-
-
-// 		}
-
-// 		virtual jderobot::ImageDescriptionPtr getImageDescription(const Ice::Current& c){
-// 			return imageDescription;
-// 		}
-
-// 		virtual jderobot::CameraDescriptionPtr getCameraDescription(const Ice::Current& c){
-// 			return cameraDescription;
-// 		}
-
-// 		virtual Ice::Int setCameraDescription(const jderobot::CameraDescriptionPtr &description, const Ice::Current& c) {
-// 			return 0;
-// 		}
-
-// 		virtual void getImageData_async (const jderobot::AMD_ImageProvider_getImageDataPtr& cb,const std::string& format, const Ice::Current& c){
-// 			replyTask->pushJob(cb, format);
-// 		}
-
-// 		virtual jderobot::ImageFormat getImageFormat(const Ice::Current& c)
-// 		{
-// 			jderobot::ImageFormat mFormats;
-// 			mFormats.push_back(colorspaces::ImageRGB8::FORMAT_RGB8.get()->name);
-
-// 			return mFormats;
-// 		}
-
-// 		virtual std::string startCameraStreaming(const Ice::Current&){
-//             return "";  // Remove return warning
-// 		}
-
-// 		virtual void stopCameraStreaming(const Ice::Current&) {
-
-// 		}
-
-// 		virtual void reset(const Ice::Current&)
-// 		{
-// 		}
-
-// 	private:
-// 		class ReplyTask: public IceUtil::Thread {
-// 			public:
-// 				ReplyTask(CameraI* camera){
-//                     mycamera = camera;
-// 				}
-
-// 				void pushJob(const jderobot::AMD_ImageProvider_getImageDataPtr& cb, std::string format){
-
-// 					mFormat = format;
-// 					IceUtil::Mutex::Lock sync(requestsMutex);
-// 					requests.push_back(cb);
-// 				}
-
-// 				virtual void run(){
-// 					jderobot::ImageDataPtr reply(new jderobot::ImageData);
-// 					struct timeval a, b;
-// 					int cycle = 48;
-// 					long totalb,totala;
-// 					long diff;
-					
-// 					int count =0 ;
-
-// 					while(1){
-						
-// 						if(!mycamera->cameraI->image.data){
-// 							usleep(100);
-// 							continue;
-// 						}
-// 						if(count==0){
-// 							pthread_mutex_lock (&mycamera->cameraI->mutex);
-// 							mycamera->imageDescription->width = mycamera->cameraI->image.cols;
-// 							mycamera->imageDescription->height = mycamera->cameraI->image.rows;
-// 							mycamera->imageDescription->size = mycamera->cameraI->image.cols*mycamera->cameraI->image.rows*3;
-// 							pthread_mutex_unlock (&mycamera->cameraI->mutex);
-
-// 							mycamera->imageDescription->format = "RGB8";
-
-// 							reply->description = mycamera->imageDescription;
-// 							count++;
-// 						}
-									
-// 						gettimeofday(&a,NULL);
-// 						totala=a.tv_sec*1000000+a.tv_usec;
-
-
-// 						IceUtil::Time t = IceUtil::Time::now();
-// 						reply->timeStamp.seconds = (long)t.toSeconds();
-// 						reply->timeStamp.useconds = (long)t.toMicroSeconds() - reply->timeStamp.seconds*1000000;
-          				
-//           				pthread_mutex_lock (&mycamera->cameraI->mutex);
-// 					    reply->pixelData.resize(mycamera->cameraI->image.rows*mycamera->cameraI->image.cols*3);
-					    
-// 					    memcpy( &(reply->pixelData[0]), (unsigned char *) mycamera->cameraI->image.data, mycamera->cameraI->image.rows*mycamera->cameraI->image.cols*3);
-// 						pthread_mutex_unlock (&mycamera->cameraI->mutex);
-
-// 					   { //critical region start
-// 						   IceUtil::Mutex::Lock sync(requestsMutex);
-// 						   while(!requests.empty()) {
-// 							   jderobot::AMD_ImageProvider_getImageDataPtr cb = requests.front();
-// 							   requests.pop_front();
-// 							   cb->ice_response(reply);
-// 						   }
-// 					   } //critical region end
-                  
-// 						gettimeofday(&b,NULL);
-// 						totalb=b.tv_sec*1000000+b.tv_usec;
-
-// 						diff = (totalb-totala)/1000;
-// 						diff = cycle-diff;
-
-// 						if(diff < 33)
-// 							diff = 33;
-
-
-// 						/*Sleep Algorithm*/
-// 						usleep(diff*1000);
-// 					}
-// 				}
-
-// 				CameraI* mycamera;
-// 				IceUtil::Mutex requestsMutex;
-// 				std::list<jderobot::AMD_ImageProvider_getImageDataPtr> requests;
-// 				std::string mFormat;
-// 		};
-
-// 		typedef IceUtil::Handle<ReplyTask> ReplyTaskPtr;
-// 		std::string prefix;
-
-// 		colorspaces::Image::FormatPtr imageFmt;
-// 		jderobot::ImageDescriptionPtr imageDescription;
-// 		jderobot::CameraDescriptionPtr cameraDescription;
-// 		ReplyTaskPtr replyTask;
-// 		gazebo::IR* cameraI;	
-		
-// }; // end class CameraI
-
-
-// void *myMain(void* v)
-// {
-
-// 	gazebo::IR* ir = (gazebo::IR*)v;
-
-// 	char* name = (char*)camera->nameConfig.c_str();
-
-
-//     Ice::CommunicatorPtr ic;
-//     int argc = 1;
-
-//     Ice::PropertiesPtr prop;
-// 	char* argv[] = {name};
-
-//     try {
-        
-//         ic = EasyIce::initialize(argc, argv);
-//         prop = ic->getProperties();
-        
-//         std::string Endpoints = prop->getProperty("CameraGazebo.Endpoints");
-//         std::cout << "CameraGazebo "<< camera->nameCamera <<" Endpoints > "  << Endpoints << std::endl;
-
-//         Ice::ObjectAdapterPtr adapter =
-//         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
-		
-//         Ice::ObjectPtr object = new CameraI(std::string("CameraGazebo"),  camera);
-//         adapter->add(object, ic->stringToIdentity(camera->nameCamera));
-//         adapter->activate();
-//         ic->waitForShutdown();
-//     } catch (const Ice::Exception& e) {
-//         std::cerr << e << std::endl;
-//     } catch (const char* msg) {
-//         std::cerr << msg << std::endl;
-//     }
-//     if (ic) {
-//         try {
-//             ic->destroy();
-//         } catch (const Ice::Exception& e) {
-//             std::cerr << e << std::endl;
-//         }
-//     }
-
-//     return NULL;    
-// }

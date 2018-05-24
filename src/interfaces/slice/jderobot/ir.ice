@@ -30,7 +30,7 @@ module jderobot{
 	/* IR information */
   class IRData
   {
-    float received;
+    int received;
     Time timeStamp;
   };
 
