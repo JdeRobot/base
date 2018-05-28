@@ -59,7 +59,7 @@ target_link_libraries(irMBOT ${GAZEBO_libraries}
 )
  
 INSTALL (TARGETS motorsMBOT sonarMBOT pose3dMBOT camera_dumpMBOT irMBOT
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/mbot/ 
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/pibot/ 
 	COMPONENT gazeboserver)
 
 FILE(GLOB_RECURSE CFG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
