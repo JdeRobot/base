@@ -2,7 +2,7 @@ file(GLOB SOURCE_FILES "src/*.cpp")
 
 add_definitions(-DGLADE_DIR="${gladedir}")
 
-include_directories( "/opt/vc/include"
+include_directories( ${MMAL_INCLUDE_DIRS}
 	${INTERFACES_CPP_DIR}
 	${LIBS_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -11,13 +11,13 @@ include_directories( "/opt/vc/include"
 
 link_directories(
 	${easyiceconfig_LIBRARY_DIRS}
-	"/opt/vc/lib"
+	${MMAL_LIBRARIES}
 )
 
 add_executable (picamserver ${SOURCE_FILES})
 
 
-TARGET_LINK_LIBRARIES(picamserver mmal mmal_core mmal_util
+TARGET_LINK_LIBRARIES(picamserver ${MMAL_LIBRARY} ${MMALCORE_LIBRARY} ${MMALUTIL_LIBRARY}
     jderobotutil
 	${OpenCV_LIBRARIES}
     ${OpenCVGUI_LIBRARIES}
