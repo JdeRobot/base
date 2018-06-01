@@ -9,7 +9,7 @@ import config
 import progeo
 
 class PiBot:
-<<<<<<< HEAD
+
 	'''
 	Controlador para el Robot PiBot de JdeRobot-Kids
 	Actualmente incluye dos funciones de procesamiento visual:
@@ -435,7 +435,7 @@ class PiBot:
         #servos = pigpio.pi()
         self._dit.set_servo_pulsewidth(puertoL, velV)
         self._dit.set_servo_pulsewidth(puertoR, velW)
->>>>>>> 9055aa8edfb064a945b84ff01e3ba62c7cccb222
+
 
 	def quienSoy(self):
 		print ("Yo soy un robot real PiBot")
