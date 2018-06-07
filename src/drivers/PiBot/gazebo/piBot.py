@@ -6,22 +6,25 @@ import threading
 import sys
 import comm
 import config
-# import progeo
+import cv2
 
 class PiBot:
 
     '''
     Controlador para el Robot PiBot de JdeRobot-Kids
     '''
-    def __init__(self):
+    def __init__(self, cfg):
 	 
         print("En constructor")
-        cfg = config.load("JdeRobotKids.yml")
+        cfg = config.load(cfg)
         
         #starting comm
-        jdrc= comm.init(cfg, 'piBot')
-        # self.camera = jdrc.getCameraClient("piBot.Camera")
-        self.motors = jdrc.getMotorsClient("piBot.Motors")    
+        jdrc= comm.init(cfg, 'JdeRobotKids.Sim')
+        self.camera = jdrc.getCameraClient("JdeRobotKids.Sim.Camera")
+        self.motors = jdrc.getMotorsClient("JdeRobotKids.Sim.Motors")    
+        self.irLeft = jdrc.getIRClient("JdeRobotKids.Sim.IRLeft")    
+        self.irRight = jdrc.getIRClient("JdeRobotKids.Sim.IRRight")    
+        
 
     def moverServo(self, *args):
         '''
@@ -40,7 +43,6 @@ class PiBot:
         @type vel: entero
         @param vel: velocidad de avance del robot (máximo 255)
         '''
-        print("En avanzar")
         self.motors.sendV(vel)
 
     def retroceder(self, vel):
@@ -49,15 +51,14 @@ class PiBot:
         @type vel: entero
         @param vel: velocidad de retroceso del robot (máximo 255)
         '''
-        print("En retroceder")
+        self.motors.sendV(-vel)
 
     def parar(self):
         '''
         Función que hace detenerse al robot.
         '''
-        print("En parar")
-        img = self.camera.getImage().data
-        cv2.imshow("img", img)
+        self.motors.sendV(0)
+        self.motors.sendW(0)
 
     def girarIzquierda(self, vel):
         '''
@@ -65,7 +66,8 @@ class PiBot:
         @type vel: entero
         @param vel: velocidad de giro del robot (máximo 255)
         '''
-        print("En girar izquierda")
+        self.motors.sendW(vel)
+        
 
     def girarDerecha(self, vel):
         '''
@@ -73,7 +75,7 @@ class PiBot:
         @type vel: entero
         @param vel: velocidad de giro del robot (máximo 255)
         '''
-        print("En girar derecha")
+        self.motors.sendW(-vel)
 
     def move(self, velV, velW):
         '''
@@ -81,15 +83,47 @@ class PiBot:
         @type velV, velW: entero
         @param velV, velW: velocidades de avance de motores izquierdo y derecho
         '''
-        print("En move")
+        self.motors.sendV(vel)
+        self.motors.sendW(vel)
 
-	def quienSoy(self):
-		print ("Yo soy un robot simulado PiBot")
+    def dameImagen(self):
+        '''
+        Función que muestra la imagen percibida por la camara
+        '''
+        img = self.camera.getImage().data
+        cv2.imshow("img", img)
+        cv2.waitKey(0)
 
-	@property
-	def tipo(self):
-		return self._tipo
+    def leerIRSigueLineas(self):
+        '''
+        Función que retorna las lecturas del sensor siguelineas de la siguiente forma:
+            0: ambos sensores sobre la linea
+            1: solo sensor izquierdo sobre la linea
+            2: solo sensor derecho sobre la linea 
+            3: ambos sensores fuera de la linea
+        '''
+        lft = self.irLeft.getIRData().received
+        rgt = self.irRight.getIRData().received
+        value = -1
+        if lft == 1 and rgt == 1:
+            value = 0
+        elif lft == 1 and rgt == 0:
+            value = 1
+        elif lft == 0 and rgt == 1:
+            value = 2
+        elif lft == 0 and rgt == 0:
+            value = 3
 
-	@tipo.setter
-	def tipo(self, valor):
-		self._tipo = valor
+        return value
+
+
+    def quienSoy(self):
+        print ("Yo soy un robot simulado PiBot")
+
+    @property
+    def tipo(self):
+        return self._tipo
+
+    @tipo.setter
+    def tipo(self, valor):
+        self._tipo = valor
