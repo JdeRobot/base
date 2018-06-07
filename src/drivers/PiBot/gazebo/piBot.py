@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from JdeRobotKids import JdeRobotKids
-import Ice
 import numpy
 import threading
 import sys
@@ -23,7 +22,8 @@ class PiBot:
         self.camera = jdrc.getCameraClient("JdeRobotKids.Sim.Camera")
         self.motors = jdrc.getMotorsClient("JdeRobotKids.Sim.Motors")    
         self.irLeft = jdrc.getIRClient("JdeRobotKids.Sim.IRLeft")    
-        self.irRight = jdrc.getIRClient("JdeRobotKids.Sim.IRRight")    
+        self.irRight = jdrc.getIRClient("JdeRobotKids.Sim.IRRight") 
+        self.us = jdrc.getSonarClient("JdeRobotKids.Sim.Sonar")    
         
 
     def moverServo(self, *args):
@@ -116,6 +116,12 @@ class PiBot:
 
         return value
 
+    def leerUltrasonido(self):
+        '''
+        Función que retorna las lecturas del sensor ultrasonidos
+        '''
+        value = self.us.getSonarData().range
+        return value
 
     def quienSoy(self):
         print ("Yo soy un robot simulado PiBot")

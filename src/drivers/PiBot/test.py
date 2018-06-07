@@ -1,11 +1,11 @@
+#!/bin/python2
+
 import sys, time
 import PiBot 
 
 if __name__ == "__main__":
 
-	cfg = sys.argv[1]
-
-	robot = PiBot.dameRobot(cfg)
+	robot = PiBot.dameRobot()
 
 	# robot.avanzar(1)
 	# time.sleep(2)

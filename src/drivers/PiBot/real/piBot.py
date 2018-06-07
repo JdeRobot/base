@@ -17,8 +17,6 @@ class PiBot:
 	- dameSonarVisual
 	'''
 	def __init__(self, camara):
-		None
-		'''
 		# Libreria RPi.GPIO
 		print("real")
 		import RPi.GPIO as GPIO
@@ -32,7 +30,6 @@ class PiBot:
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else
 			self._videostream = VideoStream(usePiCamera=False).start()
-		'''
 		'''
 		props = Ice.createProperties()
 		props.setProperty("JdeRobotKids.Motors.Proxy", "Motors:default -h localhost -p 9999")

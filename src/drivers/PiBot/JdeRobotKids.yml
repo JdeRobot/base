@@ -7,7 +7,7 @@ JdeRobotKids:
 
     Sim:
         Motors:
-            Server: 1 # Deactivate, Ice , ROS
+            Server: Ice # Deactivate, Ice , ROS
             Proxy: "Motors:default -h localhost -p 9999"
             maxW: 0.75
             maxV: 4
@@ -18,7 +18,7 @@ JdeRobotKids:
             Format: RGB8
 
         Sonar:
-            Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+            Server: 0 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
             Proxy: "Sonar:default -h localhost -p 8993"
     
         IRLeft:

@@ -1,7 +1,8 @@
 import config
 
 
-def dameRobot(cfg_file):
+def dameRobot():
+    cfg_file = "JdeRobotKids.yml"
     cfg = config.load(cfg_file)
     bot = cfg.getProperty('JdeRobotKids.Robot')
     bot = bot.lower()
