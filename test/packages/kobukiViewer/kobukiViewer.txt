@@ -1,2 +1,0 @@
-/opt/jderobot/bin/kobukiViewer
-/opt/jderobot/share/jderobot/conf/kobukiViewer.yml

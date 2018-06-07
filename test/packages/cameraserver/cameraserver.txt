@@ -1,2 +1,0 @@
-/opt/jderobot/bin/cameraserver
-/opt/jderobot/share/jderobot/conf/cameraserver.cfg

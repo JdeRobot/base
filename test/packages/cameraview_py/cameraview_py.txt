@@ -1,3 +1,0 @@
-/opt/jderobot/bin/cameraview_py
-/opt/jderobot/share/jderobot/python/cameraview_py/cameraview.py
-/opt/jderobot/share/jderobot/conf/cameraview_py.cfg
