@@ -39,10 +39,14 @@ class Communicator:
 
 		ymlNode = self.config.getProperty(prefix)
 		for i in ymlNode:
-			if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 1:
-				iceserver = True
-			if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 2:
-				rosserver = True
+			try:
+				if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 1:
+					iceserver = True
+				if type(ymlNode[i]) is dict and server2int(ymlNode[i]["Server"]) == 2:
+					rosserver = True
+			except KeyError:
+				# Node without a ROS/ICE interface found. Keep calm...
+				pass
 
 		if rosserver:
 			self.__node = rospy.init_node(ymlNode["NodeName"], anonymous=True)
