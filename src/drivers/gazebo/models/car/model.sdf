@@ -3,7 +3,7 @@
 <model name="car">
   <pose>0 0 0.5 0 0 0</pose>
   <static>false</static>
-    <link name="link">
+    <link name="car">
       <gravity>false</gravity>
       <inertial>
         <mass>1.0</mass>
@@ -31,6 +31,13 @@
         </geometry>
       </visual>
     </link>
-    <plugin name="carplugin" filename="libcarplugin.so"/>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+	<robotNamespace>/dummy</robotNamespace>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>car</robotBaseFrame>
+    </plugin>
   </model>
 </sdf>

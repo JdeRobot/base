@@ -120,15 +120,87 @@
     
     
     <!-- Cars -->
-    <include>
-      <uri>model://car</uri>
-      <pose>-30 -1.5 0 0 0 1.57</pose>
-    </include>
-    
-    <include>
-      <uri>model://car</uri>
-      <pose>40 1.5 0 0 0 -1.57</pose>
-    </include>
+    <model name="car1">
+  <pose>30 1.5 0 0 0 -1.57</pose> 
+  <static>false</static>
+    <link name="car1">
+      <gravity>false</gravity>
+      <inertial>
+        <mass>1.0</mass>
+        <inertia> 
+          <ixx>0.083</ixx>      
+          <ixy>0.0</ixy>        
+          <ixz>0.0</ixz>        
+          <iyy>0.083</iyy>      
+          <iyz>0.0</iyz>         
+          <izz>0.083</izz>      
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+	  <mesh>
+	    <uri>model://opel/meshes/model.dae</uri>
+	  </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://opel/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <robotNamespace></robotNamespace>
+      <commandTopic>dummy1/cmd_vel</commandTopic>
+      <odometryTopic>dummy1/odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>car1</robotBaseFrame>
+    </plugin>
+  </model>
+
+<model name="car2">
+  <pose>-30 -1.5 0 0 0 1.57</pose>
+  <static>false</static>
+    <link name="car2">
+      <gravity>false</gravity>
+      <inertial>
+        <mass>1.0</mass>
+        <inertia> 
+          <ixx>0.083</ixx>      
+          <ixy>0.0</ixy>        
+          <ixz>0.0</ixz>        
+          <iyy>0.083</iyy>      
+          <iyz>0.0</iyz>         
+          <izz>0.083</izz>      
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+	  <mesh>
+	    <uri>model://opel/meshes/model.dae</uri>
+	  </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://opel/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <robotNamespace></robotNamespace>
+      <commandTopic>dummy2/cmd_vel</commandTopic>
+      <odometryTopic>dummy2/odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>car2</robotBaseFrame>
+    </plugin>
+  </model>
     
     
     <!-- Roads -->
