@@ -1,0 +1,33 @@
+JdeRobotKids:
+    Robot: gazebo  #pibot, mbot or gazebo
+
+    Real:
+        Port: /dev/ttyUSB0
+        Camera: PiCam
+
+    Sim:
+        Motors:
+            Server: Ice # Deactivate, Ice , ROS
+            Proxy: "Motors:default -h localhost -p 9999"
+            maxW: 0.75
+            maxV: 4
+        
+        Camera:
+            Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+            Proxy: "picam:default -h localhost -p 8995"
+            Format: RGB8
+
+        Sonar:
+            Server: 0 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+            Proxy: "Sonar:default -h localhost -p 8993"
+    
+        IRLeft:
+            Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+            Proxy: "irLeft:default -h localhost -p 8991"
+            Format: RGB8
+
+        IRRight:
+            Server: 1 # 0 -> Deactivate, 1 -> Ice , 2 -> ROS
+            Proxy: "irRight:default -h localhost -p 8992"
+            Format: RGB8
+            

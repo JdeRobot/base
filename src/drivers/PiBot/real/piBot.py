@@ -18,6 +18,7 @@ class PiBot:
 	'''
 	def __init__(self, camara):
 		# Libreria RPi.GPIO
+		print("real")
 		import RPi.GPIO as GPIO
 		import pigpio # Libreria para manejar los servos
 		JdeRobotKids.__init__(self)
@@ -123,7 +124,7 @@ class PiBot:
 		self._dit.set_servo_pulsewidth(puertoL, 1620)
 		self._dit.set_servo_pulsewidth(puertoR, 1460)
 
-	def move(self, velV, velW):
+        def move(self, velV, velW):
 		'''
 		Función que hace avanzar y girar al robot al mismo tiempo, según las velocidades V,W dadas como parámetro.
 
@@ -206,14 +207,13 @@ class PiBot:
 				self._dit.set_servo_pulsewidth(puertoL, 1530)
 				self._dit.set_servo_pulsewidth(puertoR, 1300)
 
-		def dameImagen (self):
-		self._frame = self._videostream.read()
-		self._frame = imutils.resize(self._frame, width=400)
- 
-		return self._frame
+        def dameImagen (self):
+                self._frame = self._videostream.read()
+                self._frame = imutils.resize(self._frame, width=400)
+                return self._frame
 
-	def mostrarImagen (self)
-		cv2.imshow("Imagen", self._frame)
+        def mostrarImagen (self):
+                cv2.imshow("Imagen", self._frame)
 
 	def damePosicionDeObjetoDeColor():
 		'''
