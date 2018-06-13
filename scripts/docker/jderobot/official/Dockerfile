@@ -27,8 +27,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 
 
 ## JdeRobot ##
-RUN sh -c 'echo "deb http://jderobot.org/apt xenial main" > /etc/apt/sources.list.d/jderobot.list'
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv B0E7F58E82C8091DF945A0453DA08892EE69A25C
+RUN echo "deb [arch=amd64] http://jderobot.org/apt xenial main" > /etc/apt/sources.list.d/jderobot.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 24E521A4
 
 
 ########## Install JdeRobot ##############
@@ -134,7 +134,6 @@ RUN cd /videos && \
 RUN cd /videos && \
     wget http://jderobot.org/store/amartinflorido/uploads/curso/drone2.mp4
 
-COPY ./turtlebotplugin.cfg /opt/jderobot/share/jderobot/conf
 
 
 
