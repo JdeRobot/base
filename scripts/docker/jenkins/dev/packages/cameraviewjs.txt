@@ -1,3 +1,0 @@
-/opt/jderobot/bin/cameraviewjs
-/opt/jderobot/share/jderobot/webtools/cameraviewjs/run.js
-/opt/jderobot/share/jderobot/webtools/cameraviewjs/public

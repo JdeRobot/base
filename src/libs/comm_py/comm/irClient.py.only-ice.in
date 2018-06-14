@@ -70,6 +70,6 @@ def getIRClient (jdrc, prefix):
     if not server:
         server=0
 
-    cons = [__Laserdisabled, __getLaserIceClient, __getListenerLaser]
+    cons = [__IRdisabled, __getIRIceClient, __getListenerIR]
 
     return cons[server](jdrc, prefix)

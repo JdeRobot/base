@@ -4,6 +4,7 @@
 import abc
 from abc import ABCMeta
 
+
 class JdeRobotKids(object):
     __metaclass__ = ABCMeta
 
