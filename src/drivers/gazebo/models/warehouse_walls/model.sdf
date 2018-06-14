@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="warehouse_walls">
+    <static>true</static>
+    <link name="wall1_link">
+      <pose>-10 0 0 0 0 1.57</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>20 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall1_visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>20 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wall2_link">
+      <pose>0 -10 0 0 0 0</pose>
+      <collision name="wall2_collision">
+        <geometry>
+          <box>
+            <size>25 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall2_visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>25 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+    <link name="wall3_link">
+      <pose>0 10 0 0 0 0</pose>
+      <collision name="wall3_collision">
+        <geometry>
+          <box>
+            <size>25 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>25 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+
+
+  </model>
+</sdf>
