@@ -10,6 +10,7 @@ Makefile
 src/interfaces/cpp/
 src/interfaces/java/
 src/interfaces/python/
+!src/interfaces/python/JdeRobotKids.py
 
 *.qrc.depends
 
