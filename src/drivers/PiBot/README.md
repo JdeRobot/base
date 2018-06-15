@@ -1,46 +1,51 @@
-PiBot is an educational robot designed by JdeRobot team. It is composed by a RaspberryPI board, a PiCam camera, several common (and cheap) sensors and actuators, a battery and a frame of 3D printable pieces.
+PiBot es un robot educacional inventado por el equipo de JdeRobot. Consta de una Raspberry PI, una PiCam, varios sensores y actuadores comunes (y baratos), una bateria y un conjunto de piezas imprimibles.
 
-It is open hardware.
+Es Hardware abierto.
 
-Its drivers are provided as open source, so students may program PiBot applications in Python. In addition, they can program a simulated PiBot in Gazebo too. The robot model and plugin are also provided with the same programming interface as the real PiBot.
+Los drivers son de código abierto, por lo que los estudiantes pueden programar aplicaciones del PiBot con python. Además, Pueden programar para el PiBot simulado en gazebo. El modelo y los plugins tambien usan el mismo interfaz de programacion que el PiBot real.
 
-![real Pibot][PiBot-real]
-![simulated Pibot][PiBot-sim]
+![Pibot real][PiBot-real]
+![Pibot simulado][PiBot-sim]
 
 [PiBot-sim]: http://jderobot.github.io/JdeRobot/pibot-2.png "Simulated PiBot"
 [PiBot-real]: http://jderobot.github.io/JdeRobot/pibot-1.jpg "Real PiBot"
 
 
-# Programming interface
+# Interfaz de Programación
 
-The Hardware Abstraction Layer (HAL) is composed of four sections: raw sensors, raw actuators, cooked sensors and cooked actuators.
+La capa de abstracción de hardware
 
-| Function | Meaning|
+La capa de abstracción de hardware (HAL, Hardware Abstraction Layer) está compuesta por 4 tipos: sensores puros, actuadores puros, sensores personalizados y actuadores personalizados.
+
+| Función | Significado |
 | ------ |------|
-| | Robot movement|
-| | Left Motor movement |
-| | Right Motor movement |
-| | Servo motor movement |
-| | Get IR measurement |
-| | Get US measurement |
-| | Get camera image |
-| | Get colored object in image |
-| | Get front distance to obstacles from image |
+| avanzar | Avanza con la velocidad dada|
+| retroceder | Retrocede con la velocidad dada|
+| parar | El robot se detiene|
+| girarIzquierda | Gira con la velocidad dada |
+| girarDerecha | Gira con la velocidad dada |
+| leerUltrasonido | Devuelve la distacia leida por el ultrasonido |
+| leerIRSigueLineas | Devuelve el valor de los siguelineas (0: ambos sensores sobre la linea, 1: solo sensor izquierdo sobre la linea, 2: solo sensor derecho sobre la linea, 3: ambos sensores fuera de la linea) |
+| leerIntensidadSonido | Get US measurement |
+| leerPotenciometro | devuelve el valor del potenciometro |
+| moverServo | mueve el servo a la posición indicada |
+| dameImagen | Devuelve la imagen de la camara del robot |
+| damePosicionDeObjetoDeColor | Devuelve la posición del objeto del color indicado en la imagen dada |
 
 
 
-# Shopping list
+# Lista de la compra
 
 * Raspberry Pi 3
 * Micro SD de 16GB
-* Battery (3A output, 20000mAh)
-* 3 motors: like [Parallax Servo Feedback 360º](https://www.parallax.com/product/900-00360)
+* Batería (3A output, 20000mAh)
+* 3 motores: como [Parallax Servo Feedback 360º](https://www.parallax.com/product/900-00360)
 * PiCam camera
-* IR sensors
-* US sensor HC-SR04 model
+* Sensores IR
+* sensor de ultrasonido HC-SR04 
 
 
-# PiBot in action
+# PiBot en acción
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=WUeVjef1p6U" target="_blank"><img src="http://img.youtube.com/vi/WUeVjef1p6U/0.jpg" 
-alt="Real PiBot moving" width="240" height="180" border="10" /></a>
+alt="Pibot Real moviéndose" width="240" height="180" border="10" /></a>
