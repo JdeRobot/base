@@ -40,11 +40,11 @@ def __getPublisherArDroneExtra(jdrc, prefix):
 
     if (sys.version_info[0] == 2):
         print("Publishing "+  prefix + " with ROS messages")
-        topictakeoff = jdrc.getConfig().getProperty(prefix+".TopicTakeoff")
+        toppicarming = jdrc.getConfig().getProperty(prefix+".TopicArming")
         topicland = jdrc.getConfig().getProperty(prefix+".TopicLand")
         topicSetMode = jdrc.getConfig().getProperty(prefix+".TopicSetMode")
 
-        client = PublisherExtra(topictakeoff,topicland, topicSetMode)
+        client = PublisherExtra(toppicarming,topicland, topicSetMode)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])

@@ -1,5 +1,5 @@
 import rospy
-from geometry_msgs.msg import TwistStamped as Twist
+from geometry_msgs.msg import TwistStamped
 import threading
 from math import pi as PI
 from jderobotTypes import CMDVel
@@ -18,7 +18,7 @@ def cmdvel2Twist(vel):
     @return a Twist translated from vel
 
     '''
-    tw = Twist()
+    tw = TwistStamped()
     tw.twist.linear.x = vel.vx
     tw.twist.linear.y = vel.vy
     tw.twist.linear.z = vel.vz
@@ -44,7 +44,7 @@ class PublisherCMDVel:
         rospy.init_node("ss")
         self.topic = topic
         self.vel = CMDVel()
-        self.pub = self.pub = rospy.Publisher("/mavros/setpoint_velocity/cmd_vel", Twist, queue_size=1)
+        self.pub = self.pub = rospy.Publisher(topic, TwistStamped, queue_size=1)
         self.lock = threading.Lock()
 
         self.kill_event = threading.Event()
