@@ -32,17 +32,20 @@ class PublisherCMDVel:
     '''
         ROS CMDVel Publisher. CMDVel Client to Send CMDVel to ROS nodes.
     '''
-    def __init__(self, topic):
+    def __init__(self, topic, jdrc):
         '''
         PublisherCMDVel Constructor.
 
         @param topic: ROS topic to publish
+        @param jdrc: jderobot Communicator
         
         @type topic: String
+        @type jdrc: jderobot Communicator
 
         '''
         rospy.init_node("ss")
         self.topic = topic
+        self.jdrc = jdrc
         self.vel = CMDVel()
         self.pub = self.pub = rospy.Publisher(topic, TwistStamped, queue_size=1)
         self.lock = threading.Lock()
@@ -60,7 +63,8 @@ class PublisherCMDVel:
         self.lock.acquire()
         tw = cmdvel2Twist(self.vel)
         self.lock.release()
-        self.pub.publish(tw)
+        if (self.jdrc.getState() == "flying"):
+            self.pub.publish(tw)
         
     def stop(self):
         '''

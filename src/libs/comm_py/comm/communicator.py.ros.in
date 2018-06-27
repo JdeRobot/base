@@ -14,6 +14,8 @@ from .bumperClient import getBumperClient
 from .sonarClient import getSonarClient
 from .irClient import getIRClient
 
+import threading
+
 
 
 class Communicator:
@@ -36,6 +38,10 @@ class Communicator:
 		self.__node = None
 		self.__ic = None
 		self.config = config
+
+
+		self.__state = ""
+		self.__lock = threading.Lock()
 
 		ymlNode = self.config.getProperty(prefix)
 		for i in ymlNode:
@@ -69,6 +75,17 @@ class Communicator:
 
 	def getConfig(self):	
 		return self.config 
+
+	def getState(self):
+		self.__lock.acquire()
+        s = self.__state
+        self.__lock.release()
+		return s
+
+	def setState (self, state):
+		self.__lock.acquire()
+        self.__state = state
+        self.__lock.release()
 
 
 	def getCameraClient(self, name):
@@ -159,7 +176,6 @@ class Communicator:
 
 	    '''
 		return getArDroneExtraClient(self, name)
-
 	def getPTMotorsClient(self, name):
 		'''
 	    Returns a PTMotors client with the configration indicated by the name

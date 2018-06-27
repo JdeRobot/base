@@ -39,7 +39,7 @@ def __getPublisherCMDVel(jdrc, prefix):
     '''
 
     '''
-    Returns a Motors ROS Publisher. This function should never be used. Use getMotorsClient instead of this
+    Returns a CMDVel ROS Publisher. This function should never be used. Use getCMDVelClient instead of this
 
     @param jdrc: Comm Communicator
     @param prefix: Name of client in config file
@@ -47,14 +47,14 @@ def __getPublisherCMDVel(jdrc, prefix):
     @type jdrc: Comm Communicator
     @type prefix: String
 
-    @return Motors ROS Publisher
+    @return CMDVel ROS Publisher
 
     '''
     if (sys.version_info[0] == 2):
         print("Publishing "+  prefix + " with ROS messages")
         topic = jdrc.getConfig().getProperty(prefix+".Topic")
 
-        client = PublisherCMDVel(topic)
+        client = PublisherCMDVel(topic, jdrc)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
