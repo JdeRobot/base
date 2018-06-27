@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <!-- World Camera Settings-->
+  <gui>
+    <camera name="user_camera">
+        <pose frame=''>24.1194 -0.328974 17.8913 0 0.683643 3.13619</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+    </camera>
+  </gui>
+    <!--A global light source -->
+    <include>
+      <uri>model://sun</uri>
+      <cast_shadows>0</cast_shadows>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- Warehouse pallets -->
+<!--    <include>
+      <uri>model://warehouse_pallet</uri>
+	<name>warehouse_pallet_0</name>
+    </include>
+-->
+    <population name="pallet_population0">
+      <model name="pallet_set0">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>-7 -5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+    <population name="pallet_population1">
+      <model name="pallet_set1">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>0 -5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+    <population name="pallet_population2">
+      <model name="pallet_set2">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>7 -5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+
+    <population name="pallet_population3">
+      <model name="pallet_set3">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>-7 5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+    <population name="pallet_population4">
+      <model name="pallet_set4">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>0 5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+    <population name="pallet_population5">
+      <model name="pallet_set5">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>7 5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows>
+        <cols>3</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+
+
+
+    <!-- Our Robot model -->
+    <model name="amazon_warehouse_robot">
+      <include>
+        <uri>model://amazon_warehouse_robot</uri>
+	<pose>10 0 0 0 0 3.14</pose>
+      </include>
+
+    </model>
+    <!-- Three Walls that surround the warehouse -->
+      <include>
+        <uri>model://warehouse_walls</uri>
+      </include>
+
+    <!-- A visual element to show staging area
+	<model name="staging_area">
+	<link name="staging_area_link">
+	      <visual name="staging_area_visual">
+		<pose>10 0 0 0 0 0</pose>
+	        <cast_shadows>false</cast_shadows>
+		<geometry>
+		  <plane>
+		    <normal>0 0 1</normal>
+		    <size>15 19</size>
+		</plane>
+		</geometry>
+	      </visual> 
+	</link>
+	</model>
+-->
+  </world>
+</sdf>

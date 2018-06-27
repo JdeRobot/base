@@ -70,6 +70,6 @@ def getSonarClient (jdrc, prefix):
     server = jdrc.getConfig().getProperty(prefix+".Server")
     server = server2int(server)
 
-    cons = [__Laserdisabled, __getLaserIceClient, __getListenerLaser]
+    cons = [__Sonardisabled, __getSonarIceClient, __getSonarLaser]
 
     return cons[server](jdrc, prefix)

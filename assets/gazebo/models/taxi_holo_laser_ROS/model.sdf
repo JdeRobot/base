@@ -1,0 +1,345 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="taxiholoLaser">
+  <pose>0 0 0 0 0 0</pose>
+  <static>false</static>
+    <link name="taxiholoLaser">
+      <gravity>false</gravity>
+      <inertial>
+        <mass>750.0</mass>
+        <inertia> 
+          <ixx>1</ixx>      
+          <ixy>0.0</ixy>        
+          <ixz>0.0</ixz>        
+          <iyy>1</iyy>      
+          <iyz>0.0</iyz>         
+          <izz>1</izz>      
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+	  <mesh>
+	    <uri>model://taxi_holo_Laser/meshes/taxi_holo.dae</uri>
+	  </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://taxi_holo_Laser/meshes/taxi_holo.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    
+    <link name='laser1'>
+        <pose>2.000000 0.000000 0.572000 0.000000 0.000000 0.000000</pose>
+        <gravity>0</gravity>
+        <inertial>
+          <mass>0.100000</mass>
+          <inertia>
+            <ixx>1.000000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>1.000000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://hokuyo/meshes/hokuyo.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+        <collision name='collision-base'>
+          <pose>0.000000 0.000000 -0.014500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <box>
+              <size>0.050000 0.050000 0.041000</size>
+          </box>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <collision name='collision-top'>
+          <pose>0.000000 0.000000 0.020500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.021000</radius>
+              <length>0.029000</length>
+          </cylinder>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <sensor name='laser1' type='ray'>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>180</samples>
+                <resolution>1.000000</resolution>
+                <min_angle>-1.570000</min_angle>
+                <max_angle>1.570000</max_angle>
+            </horizontal>
+          </scan>
+            <range>
+              <min>0.080000</min>
+              <max>10.000000</max>
+              <resolution>0.010000</resolution>
+          </range>
+        </ray>
+          <update_rate>20.000000</update_rate>
+          <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <topicName>/taxi_holo_laser/laser1/scan</topicName>
+            <frameName>laser</frameName>
+          </plugin>          <always_on>1</always_on>
+          <visualize>1</visualize>
+      </sensor>
+        <velocity_decay>
+          <linear>0.000000</linear>
+          <angular>0.000000</angular>
+      </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+    </link>
+    
+    
+    <link name='laser2'>
+        <pose>-1.900000 0.000000 0.572000 0.000000 0.000000 3.14</pose>
+        <gravity>0</gravity>
+        <inertial>
+          <mass>0.100000</mass>
+          <inertia>
+            <ixx>1.000000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>1.000000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://hokuyo/meshes/hokuyo.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+        <collision name='collision-base'>
+          <pose>0.000000 0.000000 -0.014500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <box>
+              <size>0.050000 0.050000 0.041000</size>
+          </box>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <collision name='collision-top'>
+          <pose>0.000000 0.000000 0.020500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.021000</radius>
+              <length>0.029000</length>
+          </cylinder>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <sensor name='laser2' type='ray'>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>180</samples>
+                <resolution>1.000000</resolution>
+                <min_angle>-1.570000</min_angle>
+                <max_angle>1.570000</max_angle>
+            </horizontal>
+          </scan>
+            <range>
+              <min>0.080000</min>
+              <max>10.000000</max>
+              <resolution>0.010000</resolution>
+          </range>
+        </ray>
+          <update_rate>20.000000</update_rate>
+          <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <topicName>/taxi_holo_laser/laser2/scan</topicName>
+            <frameName>laser</frameName>
+          </plugin>    
+          <always_on>1</always_on>
+          <visualize>1</visualize>
+      </sensor>
+        <velocity_decay>
+          <linear>0.000000</linear>
+          <angular>0.000000</angular>
+      </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+    </link>
+    
+    
+   <link name='laser3'>
+        <pose>0.3000 -1.00000 0.772000 0.000000 0.000000 -1.57</pose>
+        <gravity>0</gravity>
+        <inertial>
+          <mass>0.100000</mass>
+          <inertia>
+            <ixx>1.000000</ixx>
+            <ixy>0.000000</ixy>
+            <ixz>0.000000</ixz>
+            <iyy>1.000000</iyy>
+            <iyz>0.000000</iyz>
+            <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://hokuyo/meshes/hokuyo.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+        <collision name='collision-base'>
+          <pose>0.000000 0.000000 -0.014500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <box>
+              <size>0.050000 0.050000 0.041000</size>
+          </box>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <collision name='collision-top'>
+          <pose>0.000000 0.000000 0.020500 0.000000 0.000000 0.000000</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.021000</radius>
+              <length>0.029000</length>
+          </cylinder>
+        </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+          </friction>
+            <contact>
+              <ode/>
+          </contact>
+        </surface>
+      </collision>
+        <sensor name='laser3' type='ray'>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>180</samples>
+                <resolution>1.000000</resolution>
+                <min_angle>-1.570000</min_angle>
+                <max_angle>1.570000</max_angle>
+            </horizontal>
+          </scan>
+            <range>
+              <min>0.080000</min>
+              <max>10.000000</max>
+              <resolution>0.010000</resolution>
+          </range>
+        </ray>
+          <update_rate>20.000000</update_rate>
+          <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <topicName>/taxi_holo_laser/laser3/scan</topicName>
+            <frameName>laser</frameName>
+          </plugin>    
+          <always_on>1</always_on>
+          <visualize>1</visualize>
+      </sensor>
+        <velocity_decay>
+          <linear>0.000000</linear>
+          <angular>0.000000</angular>
+      </velocity_decay>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+    </link>
+    
+    
+    
+    <joint type="revolute" name="laser1_joint">
+        <pose>0 0 0 0 0 0</pose>
+        <child>laser1</child>
+        <parent>taxiholoLaser</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+      </axis>
+    </joint>
+
+
+	  <joint type="revolute" name="laser2_joint">
+        <pose>0 0 0 0 0 0</pose>
+        <child>laser2</child>
+        <parent>taxiholoLaser</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+      </axis>
+    </joint>
+
+
+	  <joint type="revolute" name="laser3_joint">
+        <pose>0 0 0 0 0 0</pose>
+        <child>laser3</child>
+        <parent>taxiholoLaser</parent>
+        <axis>
+          <xyz>0 0 0</xyz>
+      </axis>
+    </joint>
+    
+    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>taxi_holo_laser/cmd_vel</commandTopic>
+      <odometryTopic>taxi_holo_laser/odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>taxi_holo_laser</robotBaseFrame>
+    </plugin>
+  </model>
+</sdf>

@@ -2,8 +2,8 @@ ubuntu_base:
   path: ubuntu/xenial/base
   tag: "jderobot/ubuntu:base"
   level: 0
-  build: True
-  push: True           
+  build: False
+  push: False           
   
 official:
   path: jderobot/official
@@ -39,5 +39,5 @@ cameraviewjs:
   path: jderobot/demos/cameraviewjs
   tag: "jderobot/demos:cameraviewjs"
   level: 2
-  build: True
-  push: True
+  build: False
+  push: False

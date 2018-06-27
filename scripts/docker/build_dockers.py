@@ -16,6 +16,7 @@ def build_image(ipath, itag):
     client.images.build(pull=True, path=ipath, tag=itag, rm=True, stream=True)
   except docker.errors.BuildError as exc:
     print(exc)
+    sys.exit()
   except docker.errors.APIError as exc:
     print (exc)
 

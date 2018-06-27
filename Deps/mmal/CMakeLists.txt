@@ -1,0 +1,14 @@
+SET(CMAKE_MODULE_PATH
+        ${CMAKE_MODULE_PATH}
+        "${CMAKE_CURRENT_LIST_DIR}/CMake"
+)
+
+
+SET(CMAKE_PREFIX_PATH  /opt/vc/include /opt/vc/lib)
+
+FIND_PACKAGE(MMAL)
+
+
+IF( MMAL_FOUND )
+        MESSAGE("*** MMAL FOUND")
+ENDIF( MMAL_FOUND )

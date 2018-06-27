@@ -23,9 +23,9 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 
 
 ## JdeRobot ##
-RUN sh -c 'echo "deb http://jderobot.org/apt xenial main" > /etc/apt/sources.list.d/jderobot.list'
+RUN echo "deb [arch=amd64] http://jderobot.org/apt xenial main" > /etc/apt/sources.list.d/jderobot.list
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv B0E7F58E82C8091DF945A0453DA08892EE69A25C
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 24E521A4
 
 
 
@@ -79,9 +79,11 @@ RUN apt update && apt install -q -y \
     libusb-1.0-0 libusb-1.0-0-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# CWIID
+# YAML
 RUN apt update && apt install -q -y \
-    libcwiid-dev \
+    libyaml-cpp0.5v5 \
+    libyaml-cpp-dev \
+    python-yaml \
     && rm -rf /var/lib/apt/lists/*
 
 # PYTHON
@@ -156,13 +158,10 @@ RUN apt update && apt install -q -y \
     libgoogle-glog-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# KURT
-#RUN apt update && apt install -q -y \
-#    kurt-jderobot \
-#    && rm -rf /var/lib/apt/lists/*
-
-# SCRTACH2JDEROBOT DEPS
-RUN  pip2 install termcolor==1.1.0 parse==1.8.2 imutils==0.4.3
+# YOUTUBE-DL
+RUN apt update && apt install -q -y \
+    youtube-dl \
+    && rm -rf /var/lib/apt/lists/*
 
 
 COPY ./testPR /bin/
