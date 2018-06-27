@@ -45,7 +45,7 @@ def __getPublisherArDroneExtra(jdrc, prefix):
         topicSetMode = jdrc.getConfig().getProperty(prefix+".TopicSetMode")
         topicvel = jdrc.getConfig().getProperty(prefix+".TopicVel")
 
-        client = PublisherExtra(toppicarming,topicland, topicSetMode, topicvel, jdrc)
+        client = PublisherExtra(topicarming,topicland, topicSetMode, topicvel, jdrc)
         return client
     else:
         print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])

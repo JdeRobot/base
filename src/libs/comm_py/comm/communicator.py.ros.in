@@ -78,14 +78,14 @@ class Communicator:
 
 	def getState(self):
 		self.__lock.acquire()
-        s = self.__state
-        self.__lock.release()
+		s = self.__state
+		self.__lock.release()
 		return s
 
 	def setState (self, state):
 		self.__lock.acquire()
-        self.__state = state
-        self.__lock.release()
+		self.__state = state
+		self.__lock.release()
 
 
 	def getCameraClient(self, name):

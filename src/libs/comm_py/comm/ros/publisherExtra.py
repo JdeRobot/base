@@ -47,9 +47,10 @@ class PublisherExtra:
             time.sleep(0.5)
             self.set_mode_client.call(custom_mode="OFFBOARD")
             tw = TwistStamped()
-            tw.twist.linear.z = 2
-            self.vel.publish(tw)
-            time.sleep(0.5)
+            tw.twist.linear.z = 1
+	        for i in range(20):
+            	self.vel.publish(tw)
+            	time.sleep(0.1)
             tw = TwistStamped()
             self.vel.publish(tw)
             self.lock.release()
