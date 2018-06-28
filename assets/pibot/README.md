@@ -1,6 +1,7 @@
 
 <h1 style="text-align: center;">
-Listado de piezas para la construcción de mPiBot </h1>
+Listado de piezas para la construcción de mPiBot 
+</h1>
 
 
 <center>
