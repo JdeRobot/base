@@ -8,7 +8,7 @@ Los drivers son de código abierto, por lo que los estudiantes pueden programar 
 ![Pibot simulado][PiBot-sim]
 
 [PiBot-sim]: http://jderobot.github.io/JdeRobot/pibot-2.png "Simulated PiBot"
-[PiBot-real]: http://jderobot.github.io/JdeRobot/pibot-1.jpg "Real PiBot"
+[PiBot-real]: http://jderobot.github.io/JdeRobot/pibot-1.png "Real PiBot"
 
 
 # Interfaz de Programación
