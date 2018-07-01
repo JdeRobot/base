@@ -18,6 +18,7 @@
 // </auto-generated>
 //
 
+
 (function(module, require, exports)
 {
     var Ice = require("ice").Ice;
@@ -25,7 +26,8 @@
     var jderobot = __M.require(module,
     [
         "common",
-        "primitives"
+        "primitives",
+        "pose3d"
     ]).jderobot;
 
     var Slice = Ice.Slice;
@@ -50,7 +52,7 @@
             this.g = __is.readFloat();
             this.b = __is.readFloat();
         },
-        12, 
+        12,
         true);
 
     jderobot.RGBSegment = Slice.defineStruct(
@@ -70,11 +72,11 @@
             this.seg = jderobot.Segment.read(__is, this.seg);
             this.c = jderobot.Color.read(__is, this.c);
         },
-        36, 
+        36,
         true);
     Slice.defineSequence(jderobot, "SegmentsHelper", "jderobot.RGBSegment", true);
     Slice.defineSequence(jderobot, "PointsHelper", "jderobot.RGBPoint", true);
-
+    Slice.defineSequence(jderobot, "FileHelper", "Ice.ByteHelper", true);
     jderobot.bufferSegments = Slice.defineStruct(
         function(buffer, refresh)
         {
@@ -92,7 +94,7 @@
             this.buffer = jderobot.SegmentsHelper.read(__is);
             this.refresh = __is.readBool();
         },
-        2, 
+        2,
         false);
 
     jderobot.bufferPoints = Slice.defineStruct(
@@ -112,9 +114,53 @@
             this.buffer = jderobot.PointsHelper.read(__is);
             this.refresh = __is.readBool();
         },
-        2, 
+        2,
         false);
 
+        jderobot.object3d = Slice.defineStruct(
+            function(obj, id, format)
+            {
+                this.obj = obj !== undefined ? obj : "";
+                this.id = id !== undefined ? id : "";
+                this.format = format !== undefined ? format : "";
+            },
+            true,
+            function(__os)
+            {
+                __os.writeString(this.obj);
+                __os.writeString(this.id);
+                __os.writeString(this.format);
+            },
+            function(__is)
+            {
+                this.obj = __is.readString();
+                this.id = __is.readString();
+                this.format = __is.readString();
+            },
+            3,
+            false);
+
+            jderobot.PoseObj3D = Slice.defineStruct(
+                function(id, pos)
+                {
+                    this.id = id !== undefined ? id : "";
+                    this.pos = pos !== undefined ? pos : null;
+                },
+                false,
+                function(__os)
+                {
+                    __os.writeString(this.id);
+                    __os.writeObject(this.pos);
+                },
+                function(__is)
+                {
+                    var self = this;
+                    this.id = __is.readString();
+                    __is.readObject(function(__o){ self.pos = __o; }, jderobot.Pose3DData);
+                },
+                2,
+                false);
+            Slice.defineSequence(jderobot, "bufferPoseObj3DHelper", "jderobot.PoseObj3D", false);
 
     /**
      * Interface to the Visualization interaction.
@@ -132,11 +178,13 @@
 
     Slice.defineOperations(jderobot.Visualization, jderobot.VisualizationPrx,
     {
-        "drawSegment": [, , , , , , [[jderobot.bufferSegments]], , , , ],
-        "getSegment": [, , , , , [jderobot.bufferSegments], , , , , ],
-        "drawPoint": [, , , , , , [[jderobot.bufferPoints]], , , , ],
-        "getPoints": [, , , , , [jderobot.bufferPoints], , , , , ],
-        "clearAll": [, , , , , , , , , , ]
+      "drawSegment": [, , , , , , [[jderobot.bufferSegments]], , , , ],
+      "getSegment": [, , , , , [jderobot.bufferSegments], , , , , ],
+      "drawPoint": [, , , , , , [[jderobot.bufferPoints]], , , , ],
+      "getPoints": [, , , , , [jderobot.bufferPoints], , , , , ],
+      "getObj3D": [, , , , , [jderobot.object3d], [[7]], , , , ],
+      "getPoseObj3DData": [, , , , , ["jderobot.bufferPoseObj3DHelper"], , , , , true],
+      "clearAll": [, , , , , , , , , , ]
     });
     exports.jderobot = jderobot;
 }

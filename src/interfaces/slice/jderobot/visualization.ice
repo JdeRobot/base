@@ -22,7 +22,7 @@
 
 #include <jderobot/common.ice>
 #include <jderobot/primitives.ice>
-
+#include <jderobot/pose3d.ice>
 
 module jderobot{
 
@@ -31,7 +31,7 @@ module jderobot{
 	    float g;
 	    float b;
 	};
-	
+
 	struct RGBSegment{
 	    Segment seg;
 	    Color c;
@@ -39,30 +39,43 @@ module jderobot{
 
 	sequence<RGBSegment> Segments;
 	sequence<RGBPoint> Points;
+  sequence<byte> File;
 
 	struct bufferSegments{
 		Segments buffer;
 		bool refresh;
 	};
-	
+
 	struct bufferPoints{
 		Points buffer;
 		bool refresh;
 	};
+
+  struct object3d {
+    string obj;
+    string id;
+    string format;
+  };
+
+  struct PoseObj3D{
+    string id;
+    Pose3DData pos;
+  };
+
+  sequence<PoseObj3D> bufferPoseObj3D;
+
   /**
    * Interface to the Visualization interaction.
    */
 	interface Visualization
 	{
         void drawSegment(bufferSegments bseg);
-	bufferSegments getSegment ();
-        void drawPoint(bufferPoints bpoints);
-	bufferPoints getPoints();
+	      bufferSegments getSegment ();
+        void drawPoint(bufferPoints bpnts);
+	      bufferPoints getPoints();
+        object3d getObj3D(string id);
+        bufferPoseObj3D getPoseObj3DData();
         void clearAll();
 	};
-
-
-
-
 };
 #endif

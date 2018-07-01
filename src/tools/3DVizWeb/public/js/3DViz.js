@@ -1,6 +1,19 @@
 let config = {};
 var w;
-var lineInterval, pointInterval;
+var lineInterval, pointInterval, posInterval, objInterval;
+var cont = 1;
+class obj3DPose {
+	constructor(id,x,y,z,rx,ry,rz){
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.rx = rx;
+		this.ry = ry;
+		this.rz = rz;
+	}
+}
+
 try{
 	const yaml = require('js-yaml');
 	const fs = require('fs');
@@ -61,7 +74,8 @@ try{
 			},config.updatePoints);
 			lineInterval = setInterval(function(){
 				setLine();
-			},config.updateSegments);}
+			},config.updateSegments);
+			objInterval = setInterval(function(){setObj();},1000);}
 		}
 
 		function setLine(){
@@ -72,7 +86,18 @@ try{
     function setPoint(){
       w.postMessage({func:"setPoint"});
 			getData();
-}
+		}
+		function setObj(){
+			id = "obj" + cont;
+			w.postMessage({func:"setObj", id: id});
+			getData();
+		}
+
+		function setPose3D(){
+			w.postMessage({func:"setPose3D"});
+			getData();
+		}
+
 		function getData (){
 			w.onmessage = function(event) {
 				if (event.data.func == "drawLine"){
@@ -91,6 +116,22 @@ try{
 				for (var i = 0; i < points.length; i+=1) {
         	addPoint(points[i]);
 				}
-				}
+			} else if (event.data.func == "drawObj") {
+				cont += 1
+				addObj(event.data.obj);
+				posInterval = setInterval(function(){
+					setPose3D();
+				}, 5000);
+
+			} else if (event.data.func == "pose3d") {
+				for (var i = 0; i < event.data.bpose3d.length; i += 1){
+					data = event.data.bpose3d[i];
+					console.log(data);
+					rotateZ=getYaw(data.pos.q0,data.pos.q1,data.pos.q2,data.pos.q3);
+        	rotateY=getPitch(data.pos.q0,data.pos.q1,data.pos.q2,data.pos.q3);
+        	rotateX=getRoll(data.pos.q0,data.pos.q1,data.pos.q2,data.pos.q3);
+					objpose3d = new obj3DPose(data.id,data.pos.x,data.pos.y,data.pos.z,rotateX,rotateY,rotateZ);
+					moveObj(objpose3d);}
+			}
 			}
 		}
