@@ -87,8 +87,8 @@ class PiBot:
         @type velV, velW: entero
         @param velV, velW: velocidades de avance de motores izquierdo y derecho
         '''
-        self.motors.sendV(vel)
-        self.motors.sendW(vel)
+        self.motors.sendV(velV)
+        self.motors.sendW(velW)
 
     def dameImagen(self):
         '''
