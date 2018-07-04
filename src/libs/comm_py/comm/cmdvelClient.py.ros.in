@@ -1,6 +1,7 @@
 import sys
 import Ice
 from .ice.cmdvelIceClient import CMDVelIceClient
+from .ros.publisherCmdVel import PublisherCMDVel
 from .tools import server2int
 
 
@@ -37,8 +38,27 @@ def __getPublisherCMDVel(jdrc, prefix):
 
     '''
 
-    print(prefix + ": This Interface doesn't support ROS msg")
-    return None
+    '''
+    Returns a CMDVel ROS Publisher. This function should never be used. Use getCMDVelClient instead of this
+
+    @param jdrc: Comm Communicator
+    @param prefix: Name of client in config file
+
+    @type jdrc: Comm Communicator
+    @type prefix: String
+
+    @return CMDVel ROS Publisher
+
+    '''
+    if (sys.version_info[0] == 2):
+        print("Publishing "+  prefix + " with ROS messages")
+        topic = jdrc.getConfig().getProperty(prefix+".Topic")
+
+        client = PublisherCMDVel(topic, jdrc)
+        return client
+    else:
+        print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
+        return None
 
 def __CMDVeldisabled(jdrc, prefix):
     '''

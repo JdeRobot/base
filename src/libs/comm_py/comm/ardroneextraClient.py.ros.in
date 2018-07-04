@@ -1,6 +1,7 @@
 import sys
 import Ice
 from .ice.ardroneextraIceClient import ArDroneExtraIceClient
+from .ros.publisherExtra import PublisherExtra
 from .tools import server2int
 
 
@@ -37,8 +38,18 @@ def __getPublisherArDroneExtra(jdrc, prefix):
 
     '''
 
-    print(prefix + ": This Interface doesn't support ROS msg")
-    return None
+    if (sys.version_info[0] == 2):
+        print("Publishing "+  prefix + " with ROS messages")
+        topicarming = jdrc.getConfig().getProperty(prefix+".TopicArming")
+        topicland = jdrc.getConfig().getProperty(prefix+".TopicLand")
+        topicSetMode = jdrc.getConfig().getProperty(prefix+".TopicSetMode")
+        topicvel = jdrc.getConfig().getProperty(prefix+".TopicVel")
+
+        client = PublisherExtra(topicarming,topicland, topicSetMode, topicvel, jdrc)
+        return client
+    else:
+        print(prefix + ": ROS msg are diabled for python "+ sys.version_info[0])
+        return None
 
 def __ArDroneExtradisabled(jdrc, prefix):
     '''
