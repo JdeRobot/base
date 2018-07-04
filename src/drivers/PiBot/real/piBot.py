@@ -8,6 +8,7 @@ import comm
 import config
 import progeo
 
+
 class PiBot:
 
 	'''
