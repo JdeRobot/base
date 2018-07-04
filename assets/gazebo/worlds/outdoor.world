@@ -65,7 +65,7 @@
       <uri>model://vrc_heightmap_1</uri>
     </include>
     <include>
-      <uri>model://grass_plane</uri>
+      <uri>model://grass_plane2</uri>
     </include>
     <include>
       <uri>model://construction_barrel</uri>
