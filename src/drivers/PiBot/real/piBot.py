@@ -95,8 +95,8 @@ class PiBot:
 		puertoL = 4 
 		puertoR = 18
 		#servos = pigpio.pi()
-		self._dit.set_servo_pulsewidth(puertoL, 1500)
-		self._dit.set_servo_pulsewidth(puertoR, 1480)
+		self._dit.set_servo_pulsewidth(puertoL, 1525)
+		self._dit.set_servo_pulsewidth(puertoR, 1510)
 
 	def girarIzquierda(self, vel):
 		'''
@@ -207,7 +207,7 @@ class PiBot:
 				self._dit.set_servo_pulsewidth(puertoL, 1530)
 				self._dit.set_servo_pulsewidth(puertoR, 1300)
 	
-	def leerIRSigueLineas(self):
+	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
 		self._GPIO.setmode(self._GPIO.BOARD)
 		self._GPIO.setup(12, self._GPIO.IN)
 		self._GPIO.setup(14, self._GPIO.IN)
@@ -228,6 +228,30 @@ class PiBot:
 			state = 3
 
 		return state
+		
+	def leerUltrasonido(self): #devuelve la distancia a un objeto en metros
+		
+		inp = 3
+		out = 2
+		
+		self._GPIO.setwarnings(False)
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(out, self._GPIO.OUT)
+		self._GPIO.setup(inp, self._GPIO.IN)
+		
+		self._GPIO.output(out, False)
+		time.sleep(0.00001)
+		self._GPIO.output(out, True)
+		time.sleep(0.00001)
+		self._GPIO.output(out, False)
+		start = time.time()
+		while(self._GPIO.input(inp) == 0):
+		    start = time.time()
+		while(self._GPIO.input(inp) == 1):
+		    stop = time.time()
+		elapsed = stop - start
+
+		return (elapsed * 343) / 2
 
     def dameImagen (self):
         self._frame = self._videostream.read()
