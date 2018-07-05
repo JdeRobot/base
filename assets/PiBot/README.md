@@ -36,21 +36,21 @@ La capa de abstracción de hardware (HAL, Hardware Abstraction Layer) está comp
 
 # Lista de componentes
 
-| # |  Componentes          | Modelo                                                   | Precio aproximado           | Enlaces                                               |
+| # |  Componentes          | Modelo                                                   | Precio aproximado           | Proveedores                                               |
 |---|-----------------|----------------------------------------------------------|-----------------------|-------------------------------------------------------|
-| 1 | Raspberri Pi    | 3 Modelo B                                               | 36.19 €               | [Enlace1](http://amzn.eu/7uRiBW7)                     |
-| 2 | Tarjeta SD      | Toshiba M203 - 16GB                                      | 8.98 €                | [Enlace1](http://amzn.eu/bW0ki3k)                     |
-| 3 | Cámara PiCam           | PI NOIR V2.1                                             | 29.81 €               | [Enlace1](http://amzn.eu/eGM1Ubi)                     |
-| 4 | Batería  | HomeXin 10000mAh                                         | 15.99 ~ 19.99 €       | [Enlace1](http://amzn.eu/dQH6yoq)                     |
-| 5 | Motores         | Parallax Feedback 360° High Speed Servo                  | 24.99 € x 2 = 49.98 € | [Enlace1](https://www.parallax.com/product/900-00360) |
-| 6 | Sensor ultrasonidos    | hc-SR04                                                  | 1.09 €                | [Enlace1](http://amzn.eu/b4SQsB3)                     |
+| 1 | Raspberri Pi    | 3 Modelo B                                               | 36.19 €               | [Proveedor1](http://amzn.eu/7uRiBW7)              |
+| 2 | Tarjeta SD      | Toshiba M203 - 16GB                                      | 8.98 €                | [Proveedor1](http://amzn.eu/bW0ki3k)                     |
+| 3 | Cámara PiCam           | PI NOIR V2.1                                             | 29.81 €               | [Proveedor1](http://amzn.eu/eGM1Ubi)                     |
+| 4 | Batería  | HomeXin 10000mAh                                         | 15.99 ~ 19.99 €       | [Proveedor1](http://amzn.eu/dQH6yoq)                     |
+| 5 | Motores         | Parallax Feedback 360° High Speed Servo                  | 20.50 € x 2 = 41 € | [Proveedor1](https://www.parallax.com/product/900-00360) [Proveedor2](https://www.mouser.es/ProductDetail/Parallax/900-00360?qs=sGAEpiMZZMtt6tuQNKDHLE0oGB4bKBGVOpFaHt1npXQ%3d)    |
+| 6 | Sensor ultrasonidos    | hc-SR04                                                  | 1.09 €                | [Proveedor1](http://amzn.eu/b4SQsB3)                     |
 | 7 | Sensores infrarrojos     | AZDelivery FOLGER Line Tracking Sensor Módulo TCRT5000   | 8.29 €                | [Enlace1](http://amzn.eu/55ZCxem)                     |
-| 8 | Rueda Loca      | Bola de Metal para rodamiento - 15mm - 5pcs              | 7.99 €                | [Enlace1](http://amzn.eu/eefjAvr)                     |
-| 9 | Cables GPIO     | Kuman 120pcs Cables de Puente combinados (M-M, M-H, H-H) | 5.10 €                | [Enlace1](http://amzn.eu/5Ubyt91)                     |
-|   | **TOTAL**       |                                                          | **167.42 €**          |                                                       |
+| 8 | Rueda Loca      | Bola de Metal para rodamiento - 15mm - 5pcs              | 7.99 €                | [Proveedor1](http://amzn.eu/eefjAvr)                     |
+| 9 | Cables GPIO     | Kuman 120pcs Cables de Puente combinados (M-M, M-H, H-H) | 5.10 €                | [Proveedor1](http://amzn.eu/5Ubyt91)                     |
+|   | **TOTAL**       |                                                          | **159 €**          |                                                       |
 
 
 # PiBot en acción
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=WUeVjef1p6U" target="_blank"><img src="http://img.youtube.com/vi/WUeVjef1p6U/0.jpg" 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=jZ3wTeToTUo" target="_blank"><img src="http://img.youtube.com/vi/WUeVjef1p6U/0.jpg"
 alt="Pibot Real moviéndose" width="240" height="180" border="10" /></a>
