@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://nurburgrinLine</uri>
+      <pose>0 0 0 0 0 o</pose>
+    </include>
+    <include>
+      <uri>model://f1ROS</uri>
+      <pose>-58.7 28.3 0 0 0 -0.55</pose>
+    </include>
+  </world>
+</sdf>
