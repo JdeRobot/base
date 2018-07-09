@@ -204,7 +204,7 @@ class PiBot:
 
 	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
 
-		right_sensor_port = 4
+		right_sensor_port = 22
 		left_sensor_port = 27
 
 		self._GPIO.setmode(self._GPIO.BCM)
