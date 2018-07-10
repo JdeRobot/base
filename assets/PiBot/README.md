@@ -47,9 +47,8 @@ La capa de abstracción de hardware (HAL, Hardware Abstraction Layer) está comp
 | 7 | Sensores infrarrojos     | AZDelivery FOLGER Line Tracking Sensor Módulo TCRT5000   | 8.29 €                | [Enlace1](http://amzn.eu/55ZCxem)                     |
 | 8 | Rueda Loca      | Bola de Metal para rodamiento - 15mm - 5pcs              | 7.99 €                | [Proveedor1](http://amzn.eu/eefjAvr)                     |
 | 9 | Cables GPIO     | Kuman 120pcs Cables de Puente combinados (M-M, M-H, H-H) | 5.10 €                | [Proveedor1](http://amzn.eu/5Ubyt91) 
-| 10 | Dongle Wifi     | TP-LINK TL-WN823N - Mini adaptador inalámbrico USB | 10.99 €                | [Proveedor1](http://amzn.eu/b7FWw1E
-) |
-|   | **TOTAL**       |                                                          | **159 €**          |                                                       |
+| 10 | Dongle Wifi     | TP-LINK TL-WN823N - Mini adaptador inalámbrico USB | 10.99 €                | [Proveedor1](http://amzn.eu/b7FWw1E) |
+|   | **TOTAL**       |                                                          | **170 €**          |                                                       |
 
 
 
