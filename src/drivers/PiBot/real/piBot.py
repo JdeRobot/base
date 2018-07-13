@@ -59,7 +59,7 @@ class PiBot:
 		p = self._GPIO.PWM(puerto,50)		#Ponemos el pin args[0] en modo PWM y enviamos 50 pulsos por segundo
 		p.start(7.5)			   #Enviamos un pulso del 7.5% para centrar el servo
 		p.ChangeDutyCycle(angulo)
-		time.sleep(0.5)  
+		time.sleep(0.5)
 
 	def avanzar(self, vel):
 		'''
@@ -68,11 +68,10 @@ class PiBot:
 		@param vel: velocidad de avance del robot (máximo 255)
 		'''
 	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
-		self._dit.set_servo_pulsewidth(puertoL, 1720)
-		self._dit.set_servo_pulsewidth(puertoR, 1280)
+		self._dit.set_servo_pulsewidth(puertoL, 1720) #hacia el frente
+		self._dit.set_servo_pulsewidth(puertoR, 1240) #hacia el frente
 
 	def retroceder(self, vel):
 		'''
@@ -81,9 +80,8 @@ class PiBot:
 		@param vel: velocidad de retroceso del robot (máximo 255)
 		'''
 	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
 		self._dit.set_servo_pulsewidth(puertoL, 1280)
 		self._dit.set_servo_pulsewidth(puertoR, 1720)
 
@@ -92,11 +90,10 @@ class PiBot:
 		Función que hace detenerse al robot.
 		'''
 	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
-		self._dit.set_servo_pulsewidth(puertoL, 1500)
-		self._dit.set_servo_pulsewidth(puertoR, 1480)
+		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
+		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
 
 	def girarIzquierda(self, vel):
 		'''
@@ -105,11 +102,10 @@ class PiBot:
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
 	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
-		self._dit.set_servo_pulsewidth(puertoL, 1530)
-		self._dit.set_servo_pulsewidth(puertoR, 1380)
+		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
+		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza al frente
 
 	def girarDerecha(self, vel):
 		'''
@@ -118,11 +114,10 @@ class PiBot:
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
 	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
-		self._dit.set_servo_pulsewidth(puertoL, 1620)
-		self._dit.set_servo_pulsewidth(puertoR, 1460)
+		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza al frente
+		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
 
         def move(self, velV, velW):
 		'''
@@ -132,7 +127,7 @@ class PiBot:
 		@param velV, velW: velocidades de avance de motores lineal y angular, en m/s y rad/s respectivamente
 		'''
 		# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4 
+		puertoL = 4
 		puertoR = 18
 		#servos = pigpio.pi()
 		if ((velV == 0) and (velW != 0)): # pivotar
@@ -178,7 +173,7 @@ class PiBot:
 		elif ((velV == 0) and (velW == 0)): # PARADO
 			self._dit.set_servo_pulsewidth(puertoL, 1525)
 			self._dit.set_servo_pulsewidth(puertoR, 1510)
-		
+
 		elif ((velV > 0) and (velV <= 3)): # COMBINACION DE VELOCIDADES, AVANZANDO DESPACIO...
 			if ((velW > 0) and (velW <= 3)): # ...mientras gira despacio a derecha
 				self._dit.set_servo_pulsewidth(puertoL, 1540)
@@ -206,18 +201,22 @@ class PiBot:
 			elif (velW < -3): # ...mientras gira rapido a izquierda
 				self._dit.set_servo_pulsewidth(puertoL, 1530)
 				self._dit.set_servo_pulsewidth(puertoR, 1300)
-	
-	def leerIRSigueLineas(self):
-		self._GPIO.setmode(self._GPIO.BOARD)
-		self._GPIO.setup(12, self._GPIO.IN)
-		self._GPIO.setup(14, self._GPIO.IN)
-		right_value = self._GPIO.input(12)
-		left_value = self._GPIO.input(14)
+
+	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
+
+		right_sensor_port = 22
+		left_sensor_port = 27
+
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(right_sensor_port, self._GPIO.IN)
+		self._GPIO.setup(left_sensor_port, self._GPIO.IN)
+		right_value = self._GPIO.input(right_sensor_port)
+		left_value = self._GPIO.input(left_sensor_port)
 		#0: ambos sobre la linea
 		#1: izquierdo sobre la linea
 		#2: derecho sobre la linea
 		#3: ambos fuera de la linea
-		
+
 		if(right_value == 1 and left_value == 1):
 			state = 0
 		elif(right_value == 0 and left_value == 1):
@@ -228,6 +227,30 @@ class PiBot:
 			state = 3
 
 		return state
+
+	def leerUltrasonido(self): #devuelve la distancia a un objeto en metros
+
+		inp = 3
+		out = 2
+
+		self._GPIO.setwarnings(False)
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(out, self._GPIO.OUT)
+		self._GPIO.setup(inp, self._GPIO.IN)
+
+		self._GPIO.output(out, False)
+		time.sleep(0.00001)
+		self._GPIO.output(out, True)
+		time.sleep(0.00001)
+		self._GPIO.output(out, False)
+		start = time.time()
+		while(self._GPIO.input(inp) == 0):
+		    start = time.time()
+		while(self._GPIO.input(inp) == 1):
+		    stop = time.time()
+		elapsed = stop - start
+
+		return (elapsed * 343) / 2
 
     def dameImagen (self):
         self._frame = self._videostream.read()
@@ -313,7 +336,7 @@ class PiBot:
 					row = i
 					v1 = row*ANCHO_IMAGEN+c
 
-					if (not((c >= 0) and (c < ANCHO_IMAGEN) and 
+					if (not((c >= 0) and (c < ANCHO_IMAGEN) and
 					(row >= 0) and (row < LARGO_IMAGEN))): # si no es válido ponemos sus valores a 0
 						pix = 0
 					else:
