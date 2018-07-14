@@ -6,6 +6,7 @@ import sys
 import comm
 import config
 import cv2
+import imutils
 
 GREEN_MIN = numpy.array([20, 50, 100],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
 GREEN_MAX = numpy.array([90, 235, 210],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
@@ -108,6 +109,8 @@ class PiBot:
         Función que muestra la imagen percibida por la camara
         '''
         img = self.camera.getImage().data
+        img = imutils.resize(img, width=400)
+
         return img
         #cv2.imshow("img", img)
         #cv2.waitKey(0)
