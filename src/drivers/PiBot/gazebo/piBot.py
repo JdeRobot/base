@@ -144,7 +144,7 @@ class PiBot:
         value = self.us.getSonarData().range
         return value
 
-    def damePosicionDeObjetoDeColor(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
+    def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
 
         image = self.dameImagen()
          # convert to the HSV color space
