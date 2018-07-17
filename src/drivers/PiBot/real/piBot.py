@@ -2,12 +2,16 @@
 from jderobot_interfaces import JdeRobotKids
 import numpy
 import threading
-import sys
+import sys, time
 import jderobot_config
 import progeo
+import cv2
 
 from imutils.video import VideoStream
 import imutils
+
+ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
+ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
 
 class PiBot:
 
@@ -31,16 +35,7 @@ class PiBot:
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
 			self._videostream = VideoStream(usePiCamera=False).start()
-		'''
-		props = Ice.createProperties()
-		props.setProperty("JdeRobotKids.Motors.Proxy", "Motors:default -h localhost -p 9999")
-		props.setProperty("JdeRobotKids.Motors.maxV", "1")
-		props.setProperty("JdeRobotKids.Motors.maxW", "0.5")
-		id = Ice.InitializationData()
-		id.properties = props
-		ic = Ice.initialize(id)
-		self.motors = Motors (ic, "JdeRobotKids.Motors")
-		'''
+		time.sleep(2)
 
 	def moverServo(self, *args):
 		'''
@@ -262,12 +257,12 @@ class PiBot:
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
 
-	def dameObjeto():
+	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
 		'''
 		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
 		'''
 		# resize the image
-		image = dameImagen()
+		image = self.dameImagen()
 
 		# convert to the HSV color space
 		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -275,7 +270,7 @@ class PiBot:
 		# construct a mask for the color specified
 		# then perform a series of dilations and erosions
 		# to remove any small blobs left in the mask
-		mask = cv2.inRange(hsv, GREEN_MIN, GREEN_MAX)
+		mask = cv2.inRange(hsv, ORANGE_MIN, ORANGE_MAX)
 		mask = cv2.erode(mask, None, iterations=2)
 		mask = cv2.dilate(mask, None, iterations=2)
 
@@ -302,6 +297,10 @@ class PiBot:
 
 				# and the centroid
 				cv2.circle(image, center, 5, (0, 255, 255), -1)
+		if showImageFiltered:
+			# Control waitKey from outside, only for local executions, not jupyter.
+			cv2.imshow("image_filtered", image)
+			cv2.imshow("mask", mask)
 
 		return center, area
 
