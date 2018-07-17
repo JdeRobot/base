@@ -1,5 +1,5 @@
 JdeRobotKids:
-    Robot: gazebo  #pibot, mbot or gazebo
+    Robot: pibot  #pibot, mbot or gazebo
 
     Real:
         Port: /dev/ttyUSB0

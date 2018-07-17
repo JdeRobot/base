@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from JdeRobotKids import JdeRobotKids
-import Ice
+from jderobot_interfaces import JdeRobotKids
 import numpy
 import threading
 import sys
-import comm
-import config
+import jderobot_config
 import progeo
+
+from imutils.video import VideoStream
+import imutils
 
 class PiBot:
 
@@ -26,9 +27,9 @@ class PiBot:
 		self._tipo = "PiBot"
 		self._dit = pigpio.pi()
 		self._frame = None
-		if camara == "PiCam"
+		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
-		else
+		else:
 			self._videostream = VideoStream(usePiCamera=False).start()
 		'''
 		props = Ice.createProperties()
@@ -251,14 +252,15 @@ class PiBot:
 		elapsed = stop - start
 
 		return (elapsed * 343) / 2
-
-    def dameImagen (self):
-        self._frame = self._videostream.read()
-        self._frame = imutils.resize(self._frame, width=400)
-        return self._frame
-
-    def mostrarImagen (self):
-        cv2.imshow("Imagen", self._frame)
+		
+	def dameImagen (self):
+		self._frame = self._videostream.read()
+		self._frame = imutils.resize(self._frame, width=400)
+		
+		return self._frame
+		
+	def mostrarImagen (self):
+		cv2.imshow("Imagen", self._frame)
 
 	def damePosicionDeObjetoDeColor():
 		'''
@@ -291,6 +293,7 @@ class PiBot:
 			((x, y), radius) = cv2.minEnclosingCircle(c)
 			M = cv2.moments(c)
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+			area = M["m00"]
 
 			# only proceed if the radius meets a minimum size
 			if radius > 10:
@@ -300,7 +303,7 @@ class PiBot:
 				# and the centroid
 				cv2.circle(image, center, 5, (0, 255, 255), -1)
 
-		return center
+		return center, area
 
 	def dameSonarVisual ():
 		'''
