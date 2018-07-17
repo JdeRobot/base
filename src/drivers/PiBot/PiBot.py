@@ -1,4 +1,4 @@
-import config
+from jderobot_config import config
 
 
 def dameRobot():
