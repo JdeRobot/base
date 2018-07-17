@@ -262,7 +262,7 @@ class PiBot:
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
 
-	def damePosicionDeObjetoDeColor():
+	def dameObjeto():
 		'''
 		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
 		'''
