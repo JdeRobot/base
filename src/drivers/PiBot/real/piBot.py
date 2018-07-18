@@ -66,8 +66,21 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1720) #hacia el frente
-		self._dit.set_servo_pulsewidth(puertoR, 1240) #hacia el frente
+		if(vel == 1):
+			self._dit.set_servo_pulsewidth(puertoL, 1527)
+			self._dit.set_servo_pulsewidth(puertoR, 1515)
+		elif(vel == 2):
+			self._dit.set_servo_pulsewidth(puertoL, 1540)
+			self._dit.set_servo_pulsewidth(puertoR, 1501)
+		elif(vel == 3):
+			self._dit.set_servo_pulsewidth(puertoL, 1550)
+			self._dit.set_servo_pulsewidth(puertoR, 1492)
+		elif(vel == 4):
+			self._dit.set_servo_pulsewidth(puertoL, 1570)
+			self._dit.set_servo_pulsewidth(puertoR, 1472)
+		else:
+			self._dit.set_servo_pulsewidth(puertoL, 2500)
+			self._dit.set_servo_pulsewidth(puertoR, 500)
 
 	def retroceder(self, vel):
 		'''
@@ -247,13 +260,13 @@ class PiBot:
 		elapsed = stop - start
 
 		return (elapsed * 343) / 2
-		
+
 	def dameImagen (self):
 		self._frame = self._videostream.read()
 		self._frame = imutils.resize(self._frame, width=400)
-		
+
 		return self._frame
-		
+
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
 
