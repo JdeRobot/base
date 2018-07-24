@@ -26,7 +26,7 @@
     var Slice = Ice.Slice;
 
     /**
-     * Pose3D data information 
+     * Pose3D data information
      **/
     jderobot.Pose3DData = Slice.defineObject(
         function(x, y, z, h, q0, q1, q2, q3)
@@ -74,7 +74,7 @@
     jderobot.Pose3DDataPrx = Slice.defineProxy(Ice.ObjectPrx, jderobot.Pose3DData.ice_staticId, undefined);
 
     Slice.defineOperations(jderobot.Pose3DData, jderobot.Pose3DDataPrx);
-
+    
     /**
      * Interface to the Pose3D.
      **/
@@ -91,8 +91,8 @@
 
     Slice.defineOperations(jderobot.Pose3D, jderobot.Pose3DPrx,
     {
-        "getPose3DData": [, 2, 2, , , ["jderobot.Pose3DData", true], , , , , true],
-        "setPose3DData": [, , , , , [3], [["jderobot.Pose3DData", true]], , , true, ]
+      "getPose3DData": [, 2, 2, , , ["jderobot.Pose3DData", true], , , , , true],
+      "setPose3DData": [, , , , , [3], [["jderobot.Pose3DData", true]], , , true, ]
     });
     exports.jderobot = jderobot;
 }

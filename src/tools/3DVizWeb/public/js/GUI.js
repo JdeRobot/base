@@ -3,6 +3,7 @@ var camera, scene, renderer, controls;
 var  axes, grid, particles;
 var rotationx = 0.0;
 var rotationy = 0.0;
+var toDegrees = 180/Math.PI;
 
 
 			function init() {
@@ -17,6 +18,20 @@ var rotationy = 0.0;
 				document.getElementById("canvas").appendChild( renderer.domElement );
 				controls = new THREE.OrbitControls(camera, renderer.domElement);
 				window.addEventListener( 'resize', onWindowResize, false );
+				var ambientLight = new THREE.AmbientLight( 0xffffff, 0.4 );
+				scene.add( ambientLight );
+				var light = new THREE.PointLight( 0xffffff, 1, 100 );
+				light.position.set( 10, 10, 10 );
+				scene.add( light );
+				var light = new THREE.PointLight( 0xffffff, 1, 100 );
+				light.position.set( 20, 20, 20 );
+				scene.add( light );
+				var light = new THREE.PointLight( 0xffffff, 1, 100 );
+				light.position.set( 30, 30, 30 );
+				scene.add( light );
+				var light = new THREE.PointLight( 0xffffff, 1, 100 );
+				light.position.set( 40, 40, 40 );
+				scene.add( light );
 			}
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
@@ -55,6 +70,12 @@ var rotationy = 0.0;
 				scene.add(line);
 			}
 
+			function addGrid(){
+				grid = new THREE.GridHelper( 1000, 100, 0x888888, 0x888888);
+				grid.position.set(0,-0.1,0);
+				scene.add(grid);
+			}
+
 			function deleteObj(name){
 				var selectedObject = scene.getObjectByName(name);
 				while (selectedObject != null) {
@@ -63,8 +84,55 @@ var rotationy = 0.0;
 				}
 			}
 
+			function addObj(obj){
+				var type = obj.obj.split(":");
+				if (type[0] == "https" ){
+					var url = obj.obj
+				} else{
+					var file = new Blob([obj.obj], {type:'text/plain'});
+					var url  = window.URL.createObjectURL(file);
+				}
+				if (obj.format == "obj"){
+					loadObj(url, obj)
+				} else if (obj.format == "dae") {
+					loadDae(url,obj);
+				}
+			}
+
+			function loadDae (url,obj){
+				var loader = new THREE.ColladaLoader();
+				loader.load(url, function (collada) {
+					var avatar = collada.scene;
+					avatar.name = obj.id;
+					scene.add( avatar );
+				} );
+			}
+
+			function loadObj(url,obj){
+				var loader = new THREE.OBJLoader();
+				loader.load(
+					url,
+					function(object){
+						object.name = obj.id;
+						scene.add(object);
+					},
+					function (xhr){
+					},
+					function (error){
+						console.log(error);
+					}
+				);
+			}
+
+			function moveObj(pose3d){
+				selectedObject = scene.getObjectByName(pose3d.id);
+				selectedObject.position.set(pose3d.x,pose3d.y,pose3d.z);
+				selectedObject.rotation.set(pose3d.rx*toDegrees,pose3d.ry * toDegrees, pose3d.rz * toDegrees);
+			}
+
       function webGLStart (){
         init();
+				//addGrid();
   			animate();
 				startWorker();
       }

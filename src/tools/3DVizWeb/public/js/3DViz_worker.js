@@ -8,6 +8,7 @@ importScripts('jderobot/datetime.js');
 importScripts('jderobot/exceptions.js');
 importScripts('jderobot/containers.js');
 importScripts('jderobot/common.js');
+importScripts('jderobot/pose3d.js');
 importScripts('jderobot/image.js');
 importScripts('jderobot/primitives.js');
 importScripts('jderobot/visualization.js')
@@ -43,6 +44,19 @@ function setLine(){
   });
 }
 
+function setObj(id){
+  srv.getObj3D(id).then(function(data){
+    console.log(data);
+    self.postMessage({func:"drawObj", obj: data});
+  })
+}
+
+function setPose3D(){
+  srv.getPoseObj3DData().then(function (data){
+    self.postMessage({func:"pose3d", bpose3d: data});
+  })
+}
+
 function clearAll(){
   srv.clearAll().then(function(data){
     console.log("Clear all");
@@ -76,6 +90,13 @@ onmessage = function(e) {
       case "setPoint":
             var point = []
             setPoint(point);
+            break;
+      case "setObj":
+            id = e.data.id;
+            setObj(id);
+            break;
+      case "setPose3D":
+            setPose3D();
             break;
       }
 }
