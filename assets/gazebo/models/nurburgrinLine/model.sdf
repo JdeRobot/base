@@ -1,0 +1,42 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="nulburgrin">
+  <static>true</static>
+  <link name="nulburgrin">
+    <pose>0 0 0 0 0 0</pose>
+    <collision name="collision">
+      <geometry>
+        <plane>
+          <size> 200 200</size>
+        </plane>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <geometry>
+        <mesh>
+          <scale>2 2 2</scale>
+          <uri>model://nurburgrinLine/meshes/Circuito_Nurburgrin.dae</uri>
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+  <link name="pared">
+    <collision name="collision">
+      <geometry>
+        <mesh>
+          <scale>2 2 2</scale>
+          <uri>model://nurburgrinLine/meshes/Nurburgrin_Pared.dae</uri>
+        </mesh>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <geometry>
+        <mesh>
+          <scale>2 2 2</scale>
+          <uri>model://nurburgrinLine/meshes/Nurburgrin_Pared.dae</uri>
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+</model>
+</sdf>
