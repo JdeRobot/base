@@ -13,7 +13,7 @@
 	<pose>-160 17 0 0 0 0</pose>
     </include>
     <include>
-      <uri>model://f1ROS</uri>
+      <uri>model://f1_renault</uri>
       <pose>1 0 0 0 0 -1.57</pose>
     </include>
 
