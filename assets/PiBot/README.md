@@ -4,7 +4,15 @@ Es Hardware abierto.
 
 Los drivers son de código abierto, por lo que los estudiantes pueden programar aplicaciones del PiBot con python. Además, Pueden programar para el PiBot simulado en gazebo. El modelo y los plugins tambien usan el mismo interfaz de programacion que el PiBot real.
 
-![Pibot real][PiBot-real]
+
+
+![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_left_side.jpg)
+
+![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_right_side.jpg)
+
+
+
+
 ![Pibot simulado][PiBot-sim]
 
 [PiBot-sim]: http://jderobot.github.io/JdeRobot/pibot-2.png "Simulated PiBot"
