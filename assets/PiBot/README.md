@@ -4,16 +4,13 @@ Es Hardware abierto.
 
 Los drivers son de código abierto, por lo que los estudiantes pueden programar aplicaciones del PiBot con python. Además, Pueden programar para el PiBot simulado en gazebo. El modelo y los plugins tambien usan el mismo interfaz de programacion que el PiBot real.
 
-
-
-![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_left_side.jpg)
-
-![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_right_side.jpg)
-
-
-
+| Lado izquierdo del PiBot       | Lado derecho del PiBot          |
+| ------------------------------ | ------------------------------- |
+| ![](./img/pibot_left_side.jpg) | ![](./img/pibot_right_side.jpg) |
 
 ![Pibot simulado][PiBot-sim]
+
+
 
 [PiBot-sim]: http://jderobot.github.io/JdeRobot/pibot-2.png "Simulated PiBot"
 [PiBot-real]: http://jderobot.github.io/JdeRobot/pibot-1.png "Real PiBot"
@@ -65,3 +62,7 @@ La capa de abstracción de hardware (HAL, Hardware Abstraction Layer) está comp
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=jZ3wTeToTUo" target="_blank"><img src="http://img.youtube.com/vi/WUeVjef1p6U/0.jpg"
 alt="Pibot Real moviéndose" width="240" height="180" border="10" /></a>
+
+  ```
+
+  ```
