@@ -6,9 +6,9 @@ Los drivers son de código abierto, por lo que los estudiantes pueden programar 
 
 
 
-![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_left_side.jpg)
+![](./img/pibot_left_side.jpg)
 
-![](/home/nachoaz/jderobot/assets/PiBot/img/pibot_right_side.jpg)
+![](./img/pibot_right_side.jpg)
 
 
 
