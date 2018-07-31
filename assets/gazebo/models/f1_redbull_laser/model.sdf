@@ -245,29 +245,20 @@
         </range>
       </ray>
       <update_rate>20.000000</update_rate>
-	    <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
-		    <topicName>/F1ROS/laser/scan</topicName>
-		    <frameName>laser</frameName>
-	    </plugin>
+		  <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+			  <topicName>/F1ROS/laser/scan</topicName>
+			  <frameName>laser</frameName>
+		  </plugin>
       <always_on>1</always_on>
       <visualize>1</visualize>
     </sensor>
     <velocity_decay>
-        <linear>0.000000</linear>
-        <angular>0.000000</angular>
+      <linear>0.000000</linear>
+      <angular>0.000000</angular>
     </velocity_decay>
     <self_collide>0</self_collide>
     <kinematic>0</kinematic>
   </link>
-
-  <joint type="revolute" name="laser_joint">
-      <pose>0 0 0 0 0 0</pose>
-      <child>laser</child>
-      <parent>f1</parent>
-      <axis>
-          <xyz>0 0 0</xyz>
-      </axis>
-  </joint>
 
   <joint type="revolute" name="camera_left">
       <pose>0 0 0 0 0 0</pose>
@@ -285,6 +276,15 @@
       <axis>
         <xyz>0 0 0</xyz>
     </axis>
+  </joint>
+
+  <joint type="revolute" name="laser_joint">
+      <pose>0 0 0 0 0 0</pose>
+      <child>laser</child>
+      <parent>f1</parent>
+      <axis>
+          <xyz>0 0 0</xyz>
+      </axis>
   </joint>
 
   <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">

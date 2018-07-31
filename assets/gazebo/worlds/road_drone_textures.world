@@ -31,122 +31,152 @@
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro1</name>
       <pose>-24 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro2</name>
       <pose>-16 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro3</name>
       <pose>-8 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro4</name>
       <pose>0 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro5</name>
       <pose>8 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro6</name>
       <pose>16 18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro7</name>
       <pose>-24 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro8</name>
       <pose>-16 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro9</name>
       <pose>-8 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro10</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro11</name>
       <pose>8 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro12</name>
       <pose>16 0 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro13</name>
       <pose>-24 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro14</name>
       <pose>-16 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro15</name>
       <pose>-8 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro16</name>
       <pose>0 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro17</name>
       <pose>8 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro18</name>
       <pose>16 9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro19</name>
       <pose>-24 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro20</name>
       <pose>-16 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro21</name>
       <pose>-8 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro22</name>
       <pose>0 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro23</name>
       <pose>8 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro24</name>
       <pose>16 -9 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro25</name>
       <pose>-24 -18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro26</name>
       <pose>-16 -18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro27</name>
       <pose>-8 -18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro28</name>
       <pose>0 -18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro29</name>
       <pose>8 -18 0 0 0 0</pose>
     </include>
     <include>
       <uri>model://mud_box</uri>
+      <name>barro30</name>
       <pose>16 -18 0 0 0 0</pose>
     </include>
 
@@ -156,10 +186,6 @@
     </include>
     <road name="my_road">
       <width>3</width>
-<!--      <point>0 0 0.15</point>
-      <point>5 0 0.15</point>
-      <point>7 1 0.15</point>-->
-
       <point>8 0 0.15</point>
       <point>8 3 0.15</point>
       <point>8 8 0.15</point>
@@ -175,37 +201,25 @@
       <point>-2 2 0.15</point>
       <point>-2 -2 0.15</point>
       <point>-1 -3 0.15</point>
-    
       <point>1 -4 0.15</point>
       <point>2 -5 0.15</point>
-
       <point>2 -6 0.15</point>
       <point>1 -8 0.15</point>
       <point>-1 -9 0.15</point>
       <point>-2 -9 0.15</point>
       <point>-4 -8 0.15</point>
-
       <point>-11 -1 0.15</point>
       <point>-14 5 0.15</point>
-
       <point>-15 7 0.15</point>
       <point>-17 8 0.15</point>
       <point>-19 7 0.15</point>
-
       <point>-20 5 0.15</point>
       <point>-20 3 0.15</point>
       <point>-19 1 0.15</point>
       <point>-17 -1 0.15</point>
-
       <point>-16 -2 0.15</point>
       <point>-14 -3 0.15</point>
       <point>-9 -8 0.15</point>
-
-<!--      <point>-11 9 0.15</point>
-      <point>-8 15 0.15</point>
-      <point>-7 17 0.15</point>
-      <point>-7 20 0.15</point>-->
-
     </road>
   </world>
 </sdf>
