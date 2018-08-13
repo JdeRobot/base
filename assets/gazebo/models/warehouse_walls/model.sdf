@@ -2,6 +2,8 @@
 <sdf version="1.5">
   <model name="warehouse_walls">
     <static>true</static>
+
+<!-- Wall 1 -->
     <link name="wall1_link">
       <pose>-10 0 0 0 0 1.57</pose>
       <collision name="collision">
@@ -28,20 +30,48 @@
       </visual>
     </link>
 
-    <link name="wall2_link">
-      <pose>0 -10 0 0 0 0</pose>
-      <collision name="wall2_collision">
+<!-- Wall 2 -->
+<!--
+    <link name="wall2_link1">
+      <pose>13 -10 0 0 0 0</pose>
+      <collision name="wall2_collision1">
         <geometry>
           <box>
-            <size>25 0.2 2.8</size>
+            <size>2 0.2 2.8</size>
           </box>
         </geometry>
       </collision>
-      <visual name="wall2_visual">
+      <visual name="wall2_visual1">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>25 0.2 2.8</size>
+            <size>2 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+-->
+    <link name="wall2_link2">
+      <pose>8 -10 0 0 0 0</pose>
+      <collision name="wall2_collision2">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall2_visual2">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
           </box>
         </geometry>
         <material>
@@ -55,20 +85,20 @@
     </link>
 
 
-    <link name="wall3_link">
-      <pose>0 10 0 0 0 0</pose>
-      <collision name="wall3_collision">
+    <link name="wall2_link3">
+      <pose>4 -13.5 0 0 0 1.57</pose>
+      <collision name="wall2_collision3">
         <geometry>
           <box>
-            <size>25 0.2 2.8</size>
+            <size>7 0.2 2.8</size>
           </box>
         </geometry>
       </collision>
-      <visual name="wall3_visual">
+      <visual name="wall2_visual3">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>25 0.2 2.8</size>
+            <size>7 0.2 2.8</size>
           </box>
         </geometry>
         <material>
@@ -80,6 +110,394 @@
         </material>
       </visual>
     </link>
+
+    <link name="wall2_link4">
+      <pose>0 -17 0 0 0 0</pose>
+      <collision name="wall2_collision4">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall2_visual4">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+    <link name="wall2_link5">
+      <pose>-4 -13.5 0 0 0 1.57</pose>
+      <collision name="wall2_collision5">
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall2_visual5">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wall2_link6">
+      <pose>-8 -10 0 0 0 0</pose>
+      <collision name="wall2_collision6">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall2_visual6">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+<!--Lets also add Output Area Visual to be green color-->
+
+    <link name="output_area">
+      <pose>0 13.5 0 0 0 0</pose>
+	  <visual name='visual_output_area'>
+		<cast_shadows>false</cast_shadows>
+		<geometry>
+		  <plane>
+		    <normal>0 0 1</normal>
+		    <size>8 7</size>
+		  </plane>
+		</geometry>
+	  <material>
+	    <ambient>0 0.5 0 1</ambient>
+	    <diffuse>0 0.5 0 1</diffuse>
+	    <specular>0 0 0 1</specular>
+	    <emissive>0 0 0 0</emissive>
+	  </material>
+	  </visual>
+    </link>
+
+
+
+<!-- Wall 3 -->
+<!--
+    <link name="wall3_link1">
+      <pose>13 10 0 0 0 0</pose>
+      <collision name="wall2_collision1">
+        <geometry>
+          <box>
+            <size>2 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual1">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>2 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+-->
+    <link name="wall3_link2">
+      <pose>8 10 0 0 0 0</pose>
+      <collision name="wall3_collision2">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual2">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+    <link name="wall3_link3">
+      <pose>4 13.5 0 0 0 1.57</pose>
+      <collision name="wall3_collision3">
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual3">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wall3_link4">
+      <pose>0 17 0 0 0 0</pose>
+      <collision name="wall3_collision4">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual4">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+    <link name="wall3_link5">
+      <pose>-4 13.5 0 0 0 1.57</pose>
+      <collision name="wall3_collision5">
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual5">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>7 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wall3_link6">
+      <pose>-8 10 0 0 0 0</pose>
+      <collision name="wall3_collision6">
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall3_visual6">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>8 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+<!--Lets also add Input Area Visual to be Red color-->
+
+    <link name="output_area">
+      <pose>0 -13.5 0 0 0 0</pose>
+	  <visual name='visual_output_area'>
+		<cast_shadows>false</cast_shadows>
+		<geometry>
+		  <plane>
+		    <normal>0 0 1</normal>
+		    <size>8 7</size>
+		  </plane>
+		</geometry>
+	  <material>
+	    <ambient>0.75 0 0 1</ambient>
+	    <diffuse>0.75 0 0 1</diffuse>
+	    <specular>0 0 0 1</specular>
+	    <emissive>0 0 0 0</emissive>
+	  </material>
+	  </visual>
+    </link>
+
+
+<!-- Wall 4 -->
+    <link name="wall4_link">
+      <pose>12 0 0 0 0 1.57</pose>
+      <collision name="wall4_collision">
+        <geometry>
+          <box>
+            <size>20 0.2 2.8</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall4_visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>20 0.2 2.8</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+<!-- Resting Area Walls -->
+    <link name="wall5_link1">
+      <pose>10 -5 0 0 0 1.57</pose>
+      <collision name="wall5_collision1">
+        <geometry>
+          <box>
+            <size>6 0.2 0.6</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall5_visual1">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>6 0.2 0.6</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wall5_link2">
+      <pose>10 5 0 0 0 1.57</pose>
+      <collision name="wall5_collision2">
+        <geometry>
+          <box>
+            <size>6 0.2 0.6</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="wall5_visual2">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>6 0.2 0.6</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://grey_wall/materials/scripts</uri>
+            <uri>model://grey_wall/materials/textures</uri>
+            <name>vrc/grey_wall</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+
+<!--Lets also add Resting Area Visual to be a darker orange color-->
+
+    <link name="resting_area">
+      <pose>11 0 0 0 0 1.57</pose>
+	  <visual name='visual_resting_area'>
+		<cast_shadows>false</cast_shadows>
+		<geometry>
+		  <plane>
+		    <normal>0 0 1</normal>
+		    <size>20 2</size>
+		  </plane>
+		</geometry>
+	  <material>
+	    <ambient>1 0.35 0 1</ambient>
+	    <diffuse>1 0.35 0 1</diffuse>
+	    <specular>0 0 0 1</specular>
+	    <emissive>0 0 0 0</emissive>
+	  </material>
+	  </visual>
+    </link>
+
 
 
 
