@@ -37,13 +37,13 @@
         </material>
       </visual>
 
-<!-- Lets create a Holding angle bracket kind of structure under surface1, so that it could hold the lift plate of the robot.-.->
+<!-- Lets create a Holding angle bracket kind of structure under surface1, so that it could hold the lift plate of the robot.-->
 
       <collision name="holding1_collision">
-        <pose>0 0.39 0.28 0 0 0</pose>
+        <pose>0 0.39 0.30 0 0 0</pose>
         <geometry>
           <box>
-            <size>1.5 0.03 0.05</size>
+            <size>1.5 0.02 0.05</size>
           </box>
         </geometry>
         <surface>
@@ -58,10 +58,10 @@
         </surface>
       </collision>
       <visual name="holding1_visual">
-        <pose>0 0.39 0.28 0 0 0</pose>
+        <pose>0 0.39 0.30 0 0 0</pose>
         <geometry>
           <box>
-            <size>1.5 0.03 0.05</size>
+            <size>1.5 0.02 0.05</size>
           </box>
         </geometry>
         <material>
@@ -73,10 +73,10 @@
       </visual>
 
       <collision name="holding2_collision">
-        <pose>0 -0.39 0.28 0 0 0</pose>
+        <pose>0 -0.39 0.30 0 0 0</pose>
         <geometry>
           <box>
-            <size>1.5 0.03 0.05</size>
+            <size>1.5 0.02 0.05</size>
           </box>
         </geometry>
         <surface>
@@ -91,10 +91,10 @@
         </surface>
       </collision>
       <visual name="holding2_visual">
-        <pose>0 -0.39 0.28 0 0 0</pose>
+        <pose>0 -0.39 0.30 0 0 0</pose>
         <geometry>
           <box>
-            <size>1.5 0.03 0.05</size>
+            <size>1.5 0.02 0.05</size>
           </box>
         </geometry>
         <material>
@@ -106,10 +106,10 @@
       </visual>
 
       <collision name="holding3_collision">
-        <pose>0.735 0 0.28 0 0 1.57</pose>
+        <pose>0.735 0 0.30 0 0 1.57</pose>
         <geometry>
           <box>
-            <size>0.8 0.03 0.05</size>
+            <size>0.8 0.02 0.05</size>
           </box>
         </geometry>
         <surface>
@@ -124,10 +124,10 @@
         </surface>
       </collision>
       <visual name="holding3_visual">
-        <pose>0.735 0 0.28 0 0 1.57</pose>
+        <pose>0.735 0 0.30 0 0 1.57</pose>
         <geometry>
           <box>
-            <size>0.8 0.03 0.05</size>
+            <size>0.8 0.02 0.05</size>
           </box>
         </geometry>
         <material>
@@ -140,10 +140,10 @@
 
 
       <collision name="holding4_collision">
-        <pose>-0.735 0 0.28 0 0 1.57</pose>
+        <pose>-0.735 0 0.30 0 0 1.57</pose>
         <geometry>
           <box>
-            <size>0.8 0.03 0.05</size>
+            <size>0.8 0.02 0.05</size>
           </box>
         </geometry>
         <surface>
@@ -158,10 +158,10 @@
         </surface>
       </collision>
       <visual name="holding4_visual">
-        <pose>-0.735 0 0.28 0 0 1.57</pose>
+        <pose>-0.735 0 0.30 0 0 1.57</pose>
         <geometry>
           <box>
-            <size>0.8 0.03 0.05</size>
+            <size>0.8 0.02 0.05</size>
           </box>
         </geometry>
         <material>
@@ -172,7 +172,7 @@
         </material>
       </visual>
 
--->
+
 
 
 

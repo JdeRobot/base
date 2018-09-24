@@ -5,7 +5,8 @@
   <gui>
     <camera name="user_camera">
         <pose frame=''>24.1194 -0.328974 17.8913 0 0.683643 3.13619</pose>
-        <view_controller>orbit</view_controller>
+        <!--<pose frame=''>0.715311 -25.388 35.3666 0 0.999643 1.53219</pose>-->
+	<view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
     </camera>
   </gui>
@@ -126,17 +127,66 @@
       </distribution>
     </population>
 
+    <!-- Put three Pallets each in Pickup and Delivery area too -->
+
+    <population name="pallet_population6">
+      <model name="pallet_set6">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>-2 -13.5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>3</rows>
+        <cols>1</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
+    <population name="pallet_population7">
+      <model name="pallet_set7">
+        <include>
+          <uri>model://warehouse_pallet</uri>
+	  <pose>0 0 0 0 0 1.57</pose>
+        </include>
+      </model>
+      <pose>-2 13.5 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>3</rows>
+        <cols>1</cols>
+        <step>1.5 2 0</step>
+      </distribution>
+    </population>
 
 
-    <!-- Our Robot model -->
+    <!-- Our Robot model --> 
     <model name="amazon_warehouse_robot">
       <include>
         <uri>model://amazon_warehouse_robot</uri>
-	<pose>10 0 0 0 0 3.14</pose>
+	<pose>0 0 0 0 0 0</pose>
       </include>
 
     </model>
-    <!-- Three Walls that surround the warehouse -->
+
+<!--    <model name="amazon_warehouse_robot2">
+      <include>
+        <uri>model://amazon_warehouse_robot</uri>
+	<pose>3 0 0 0 0 3.14</pose>
+	<gazebo reference="laser_link">
+		<sensor>
+  		<plugin>
+		<robotNamespace>/amazon_warehouse_robot2</robotNamespace>
+    		<topicName>amazon_warehouse_robot2/scan</topicName>
+  		</plugin>
+		</sensor>
+	</gazebo>
+
+      </include>
+    </model>
+-->
+    <!-- Walls that surround the warehouse -->
       <include>
         <uri>model://warehouse_walls</uri>
       </include>
