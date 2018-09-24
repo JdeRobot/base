@@ -66,16 +66,16 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		if(vel == 1):
+		if(vel <= 0.0355):
 			self._dit.set_servo_pulsewidth(puertoL, 1527)
 			self._dit.set_servo_pulsewidth(puertoR, 1515)
-		elif(vel == 2):
+		elif(vel > 0.0355 and vel <= 0.0655):
 			self._dit.set_servo_pulsewidth(puertoL, 1540)
 			self._dit.set_servo_pulsewidth(puertoR, 1501)
-		elif(vel == 3):
+		elif(vel > 0.0655 and vel <= 0.0925):
 			self._dit.set_servo_pulsewidth(puertoL, 1550)
 			self._dit.set_servo_pulsewidth(puertoR, 1492)
-		elif(vel == 4):
+		elif(vel > 0.0925 and vel <= 0.13):
 			self._dit.set_servo_pulsewidth(puertoL, 1570)
 			self._dit.set_servo_pulsewidth(puertoR, 1472)
 		else:
