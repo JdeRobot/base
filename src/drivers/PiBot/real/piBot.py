@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
-from jderobot_interfaces import JdeRobotKids
+from JdeRobotKids import JdeRobotKids
+#import Ice
 import numpy
 import threading
-import sys, time
-import jderobot_config
-import progeo
-import cv2
-
-from imutils.video import VideoStream
-import imutils
-
-ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
-ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
+import sys
+#import comm
+#import config
+#import progeo
+import time
 
 class PiBot:
 
@@ -31,11 +27,20 @@ class PiBot:
 		self._tipo = "PiBot"
 		self._dit = pigpio.pi()
 		self._frame = None
-		if camara == "PiCam":
-			self._videostream = VideoStream(usePiCamera=True).start()
-		else:
-			self._videostream = VideoStream(usePiCamera=False).start()
-		time.sleep(2)
+		#if camara == "PiCam":
+		#	self._videostream = VideoStream(usePiCamera=True).start()
+		#else:
+		#	self._videostream = VideoStream(usePiCamera=False).start()
+		'''
+		props = Ice.createProperties()
+		props.setProperty("JdeRobotKids.Motors.Proxy", "Motors:default -h localhost -p 9999")
+		props.setProperty("JdeRobotKids.Motors.maxV", "1")
+		props.setProperty("JdeRobotKids.Motors.maxW", "0.5")
+		id = Ice.InitializationData()
+		id.properties = props
+		ic = Ice.initialize(id)
+		self.motors = Motors (ic, "JdeRobotKids.Motors")
+		'''
 
 	def moverServo(self, *args):
 		'''
@@ -63,26 +68,49 @@ class PiBot:
 		@type vel: entero
 		@param vel: velocidad de avance del robot (máximo 255)
 		'''
-	# Puertos de datos para servos izquierdo y derecho
+		#puertos donde van conectados los motores
 		puertoL = 4
 		puertoR = 18
-		if(vel <= 0.0355):
-			self._dit.set_servo_pulsewidth(puertoL, 1527)
-			self._dit.set_servo_pulsewidth(puertoR, 1515)
-		elif(vel > 0.0355 and vel <= 0.0655):
-			self._dit.set_servo_pulsewidth(puertoL, 1540)
-			self._dit.set_servo_pulsewidth(puertoR, 1501)
-		elif(vel > 0.0655 and vel <= 0.0925):
-			self._dit.set_servo_pulsewidth(puertoL, 1550)
-			self._dit.set_servo_pulsewidth(puertoR, 1492)
-		elif(vel > 0.0925 and vel <= 0.13):
-			self._dit.set_servo_pulsewidth(puertoL, 1570)
-			self._dit.set_servo_pulsewidth(puertoR, 1472)
-		else:
-			self._dit.set_servo_pulsewidth(puertoL, 2500)
-			self._dit.set_servo_pulsewidth(puertoR, 500)
 
-	def retroceder(self, vel):
+		def esnegativo(vel):
+			return vel < 0
+
+		if(not esnegativo(vel)):
+			#self._dit.set_servo_pulsewidth(puertoL, 1720) #hacia el frente
+			#self._dit.set_servo_pulsewidth(puertoR, 1240) #hacia el frente
+			if(vel <= 0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoL, 1529) #hacia el frente, 1526-1537
+				self._dit.set_servo_pulsewidth(puertoR, 1510) #hacia el frente, 1510-1512
+			elif(vel > 0.0355 and vel <= 0.0655):
+				self._dit.set_servo_pulsewidth(puertoL, 1540)
+				self._dit.set_servo_pulsewidth(puertoR, 1501)
+			elif(vel > 0.0655 and vel <= 0.0925):
+				self._dit.set_servo_pulsewidth(puertoL, 1550)
+				self._dit.set_servo_pulsewidth(puertoR, 1490)
+			elif(vel > 0.0925 and vel <= 0.13):
+				self._dit.set_servo_pulsewidth(puertoL, 1570)
+				self._dit.set_servo_pulsewidth(puertoR, 1474)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoL, 2500)
+				self._dit.set_servo_pulsewidth(puertoR, 500)
+		else:
+			if(vel >= -0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoL, 1498)
+				self._dit.set_servo_pulsewidth(puertoR, 1541)
+			elif(vel < -0.0355 and vel >= -0.0655):
+				self._dit.set_servo_pulsewidth(puertoL, 1490)
+				self._dit.set_servo_pulsewidth(puertoR, 1545)
+			elif(vel < -0.0655 and vel >= -0.0925):
+				self._dit.set_servo_pulsewidth(puertoL, 1480)
+				self._dit.set_servo_pulsewidth(puertoR, 1559)
+			elif(vel < -0.0925 and vel >= -0.13):
+				self._dit.set_servo_pulsewidth(puertoL, 1470)
+				self._dit.set_servo_pulsewidth(puertoR, 1568)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoL, 500)
+				self._dit.set_servo_pulsewidth(puertoR, 2500)
+
+	def retroceder(self):
 		'''
 		Función que hace retroceder al robot en línea recta a una velocidad dada como parámetro.
 		@type vel: entero
@@ -101,10 +129,10 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
-		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
+		self._dit.set_servo_pulsewidth(puertoL, 1510) #parado 1525
+		self._dit.set_servo_pulsewidth(puertoR, 1525) #parado 1510
 
-	def girarIzquierda(self, vel):
+	def girarIzquierda(self):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la izquierda a una velocidad dada como parámetro.
 		@type vel: entero
@@ -113,10 +141,11 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
+		#servos = pigpio.pi()
 		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
-		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza al frente
+		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza el frente
 
-	def girarDerecha(self, vel):
+	def girarDerecha(self):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la derecha a una velocidad dada como parámetro.
 		@type vel: entero
@@ -125,7 +154,7 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza al frente
+		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza el frente
 		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
 
         def move(self, velV, velW):
@@ -138,78 +167,104 @@ class PiBot:
 		# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
-		if ((velV == 0) and (velW != 0)): # pivotar
-			if (velW > 0): # hacia derecha
-				if (velW < 3): # despacio
-					self._dit.set_servo_pulsewidth(puertoL, 1550)
-					self._dit.set_servo_pulsewidth(puertoR, 1520)
 
-				else: # a tope
-					self._dit.set_servo_pulsewidth(puertoL, 1700)
-					self._dit.set_servo_pulsewidth(puertoR, 1700)
+		def esnegativo(n):
+			return n < 0
 
-			else: # hacia izquierda
-				if (velW > -3): # despacio
-					self._dit.set_servo_pulsewidth(puertoL, 1520)
-					self._dit.set_servo_pulsewidth(puertoR, 1490)
+		def espositivo(n):
+			return n > 0
 
-				else: # a tope
-					self._dit.set_servo_pulsewidth(puertoL, 1300)
-					self._dit.set_servo_pulsewidth(puertoR, 1300)
+		def escero(n):
+			return n == 0
 
-		elif ((velV != 0) and (velW == 0)): # linea recta
-			if (velV > 0): # adelante
-				if (velV < 2): # minimo
-					self._dit.set_servo_pulsewidth(puertoL, 1530)
-					self._dit.set_servo_pulsewidth(puertoR, 1509)
-				elif (velV <= 4): # despacio
+		def movermotorizq(vel):
+
+			if(not esnegativo(vel)):
+
+				if(escero(vel)):
+					self._dit.set_servo_pulsewidth(puertoL, 1510) #parado 1525
+				elif(vel <= 0.0355): #velocidad muy lenta
+					self._dit.set_servo_pulsewidth(puertoL, 1529) #hacia el frente, 1526-1537
+				elif(vel > 0.0355 and vel <= 0.0655):
 					self._dit.set_servo_pulsewidth(puertoL, 1540)
-					self._dit.set_servo_pulsewidth(puertoR, 1500)
-				else: # a tope
-					self._dit.set_servo_pulsewidth(puertoL, 1700)
-					self._dit.set_servo_pulsewidth(puertoR, 1300)
+				elif(vel > 0.0655 and vel <= 0.0925):
+					self._dit.set_servo_pulsewidth(puertoL, 1550)
+				elif(vel > 0.0925 and vel <= 0.13):
+					self._dit.set_servo_pulsewidth(puertoL, 1570)
+				else: #velocidad muy rapida
+					self._dit.set_servo_pulsewidth(puertoL, 2500)
+			else:
+				if(vel >= -0.0355): #velocidad muy lenta
+					self._dit.set_servo_pulsewidth(puertoL, 1498)
+				elif(vel < -0.0355 and vel >= -0.0655):
+					self._dit.set_servo_pulsewidth(puertoL, 1490)
+				elif(vel < -0.0655 and vel >= -0.0925):
+					self._dit.set_servo_pulsewidth(puertoL, 1480)
+				elif(vel < -0.0925 and vel >= -0.13):
+					self._dit.set_servo_pulsewidth(puertoL, 1470)
+				else: #velocidad muy rapida
+					self._dit.set_servo_pulsewidth(puertoL, 500)
 
-			else: # atras
-				if (velV > -3): # despacio
-					self._dit.set_servo_pulsewidth(puertoL, 1520)
-					self._dit.set_servo_pulsewidth(puertoR, 1520)
+		def movermotordcho(vel):
 
-				else: # a tope
-					self._dit.set_servo_pulsewidth(puertoL, 1300)
-					self._dit.set_servo_pulsewidth(puertoR, 1700)
+			if(not esnegativo(vel)):
 
-		elif ((velV == 0) and (velW == 0)): # PARADO
-			self._dit.set_servo_pulsewidth(puertoL, 1525)
-			self._dit.set_servo_pulsewidth(puertoR, 1510)
+				if(escero(vel)):
+					self._dit.set_servo_pulsewidth(puertoR, 1525) #parado 1510
+				if(vel <= 0.0355): #velocidad muy lenta
+					self._dit.set_servo_pulsewidth(puertoR, 1510) #hacia el frente, 1510-1512
+				elif(vel > 0.0355 and vel <= 0.0655):
+					self._dit.set_servo_pulsewidth(puertoR, 1501)
+				elif(vel > 0.0655 and vel <= 0.0925):
+					self._dit.set_servo_pulsewidth(puertoR, 1490)
+				elif(vel > 0.0925 and vel <= 0.13):
+					self._dit.set_servo_pulsewidth(puertoR, 1474)
+				else: #velocidad muy rapida
+					self._dit.set_servo_pulsewidth(puertoR, 500)
+			else:
+				if(vel >= -0.0355): #velocidad muy lenta
+					self._dit.set_servo_pulsewidth(puertoR, 1541)
+				elif(vel < -0.0355 and vel >= -0.0655):
+					self._dit.set_servo_pulsewidth(puertoR, 1545)
+				elif(vel < -0.0655 and vel >= -0.0925):
+					self._dit.set_servo_pulsewidth(puertoR, 1559)
+				elif(vel < -0.0925 and vel >= -0.13):
+					self._dit.set_servo_pulsewidth(puertoR, 1568)
+				else: #velocidad muy rapida
+					self._dit.set_servo_pulsewidth(puertoR, 2500)
 
-		elif ((velV > 0) and (velV <= 3)): # COMBINACION DE VELOCIDADES, AVANZANDO DESPACIO...
-			if ((velW > 0) and (velW <= 3)): # ...mientras gira despacio a derecha
-				self._dit.set_servo_pulsewidth(puertoL, 1540)
-				self._dit.set_servo_pulsewidth(puertoR, 1509)
-			elif (velW > 3): # ...mientras gira rapido a derecha
-				self._dit.set_servo_pulsewidth(puertoL, 1700)
-				self._dit.set_servo_pulsewidth(puertoR, 1509)
-			elif ((velW < 0) and (velW >= -3)): # ...mientras gira despacio a izquierda
-				self._dit.set_servo_pulsewidth(puertoL, 1530)
-				self._dit.set_servo_pulsewidth(puertoR, 1500)
-			elif (velW < -3): # ...mientras gira rapido a izquierda
-				self._dit.set_servo_pulsewidth(puertoL, 1530)
-				self._dit.set_servo_pulsewidth(puertoR, 1300)
+		#Aqui empieza la algoritmia principal
 
-		elif (velV > 3): # COMBINACION DE VELOCIDADES, AVANZANDO RAPIDO...
-			if ((velW > 0) and (velW <= 3)): # ...mientras gira despacio a derecha
-				self._dit.set_servo_pulsewidth(puertoL, 1700)
-				self._dit.set_servo_pulsewidth(puertoR, 1500)
-			elif (velW > 3): # ...mientras gira rapido a derecha
-				self._dit.set_servo_pulsewidth(puertoL, 1700)
-				self._dit.set_servo_pulsewidth(puertoR, 1509)
-			elif ((velW < 0) and (velW >= -3)): # ...mientras gira despacio a izquierda
-				self._dit.set_servo_pulsewidth(puertoL, 1540)
-				self._dit.set_servo_pulsewidth(puertoR, 1300)
-			elif (velW < -3): # ...mientras gira rapido a izquierda
-				self._dit.set_servo_pulsewidth(puertoL, 1530)
-				self._dit.set_servo_pulsewidth(puertoR, 1300)
+		if(velW != 0):
+			rcir = abs(velV / velW) #Es el radio de la circunferencia que tengo que trazar. En valor absoluto
+			velmotorgiro = abs(velV) + rcir     #Velocidad a la que tiene que girar el motor encargado del giro del robot
+		if(escero(velV) and not escero(velW)):
+			#Motor izquierdo hacia atras y motor derecho hacia adelante a velocidad maxima
+			if(espositivo(velW)):
+				movermotordcho(1)
+				movermotorizq(-1)
+			else:
+				movermotordcho(-1)
+				movermotorizq(1)
+
+		elif(not escero(velV) and escero(velW)):
+			#Avanza hacia el frente a la velocidad lineal dada
+			movermotordcho(velV)
+			movermotorizq(velV)
+
+		elif(espositivo(velV) and espositivo(velW)):
+			movermotorizq(velV)
+			movermotordcho(velmotorgiro)
+		elif(espositivo(velV) and esnegativo(velW)):
+			movermotorizq(velmotorgiro)
+			movermotordcho(velV)
+		elif(esnegativo(velV) and espositivo(velW)):
+			movermotorizq(-velmotorgiro)
+			movermotordcho(velV)
+		elif(esnegativo(velV) and esnegativo(velW)):
+			movermotorizq(velV)
+			movermotordcho(-velmotorgiro)
+
 
 	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
 
@@ -261,21 +316,20 @@ class PiBot:
 
 		return (elapsed * 343) / 2
 
-	def dameImagen (self):
+	def dameImagen(self):
 		self._frame = self._videostream.read()
 		self._frame = imutils.resize(self._frame, width=400)
-
 		return self._frame
 
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
 
-	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
+	def damePosicionDeObjetoDeColor():
 		'''
 		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
 		'''
 		# resize the image
-		image = self.dameImagen()
+		image = dameImagen()
 
 		# convert to the HSV color space
 		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -283,7 +337,7 @@ class PiBot:
 		# construct a mask for the color specified
 		# then perform a series of dilations and erosions
 		# to remove any small blobs left in the mask
-		mask = cv2.inRange(hsv, ORANGE_MIN, ORANGE_MAX)
+		mask = cv2.inRange(hsv, GREEN_MIN, GREEN_MAX)
 		mask = cv2.erode(mask, None, iterations=2)
 		mask = cv2.dilate(mask, None, iterations=2)
 
@@ -301,7 +355,6 @@ class PiBot:
 			((x, y), radius) = cv2.minEnclosingCircle(c)
 			M = cv2.moments(c)
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-			area = M["m00"]
 
 			# only proceed if the radius meets a minimum size
 			if radius > 10:
@@ -310,12 +363,8 @@ class PiBot:
 
 				# and the centroid
 				cv2.circle(image, center, 5, (0, 255, 255), -1)
-		if showImageFiltered:
-			# Control waitKey from outside, only for local executions, not jupyter.
-			cv2.imshow("image_filtered", image)
-			cv2.imshow("mask", mask)
 
-		return center, area
+		return center
 
 	def dameSonarVisual ():
 		'''
