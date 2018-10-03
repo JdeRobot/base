@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-from JdeRobotKids import JdeRobotKids
-#import Ice
+from jderobot_interfaces import JdeRobotKids
 import numpy
 import threading
-import sys
-#import comm
-#import config
-#import progeo
-import time
+import sys, time
+import jderobot_config
+import progeo
+import cv2
+
+from imutils.video import VideoStream
+import imutils
+
+ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
+ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
 
 class PiBot:
 
@@ -27,20 +31,11 @@ class PiBot:
 		self._tipo = "PiBot"
 		self._dit = pigpio.pi()
 		self._frame = None
-		#if camara == "PiCam":
-		#	self._videostream = VideoStream(usePiCamera=True).start()
-		#else:
-		#	self._videostream = VideoStream(usePiCamera=False).start()
-		'''
-		props = Ice.createProperties()
-		props.setProperty("JdeRobotKids.Motors.Proxy", "Motors:default -h localhost -p 9999")
-		props.setProperty("JdeRobotKids.Motors.maxV", "1")
-		props.setProperty("JdeRobotKids.Motors.maxW", "0.5")
-		id = Ice.InitializationData()
-		id.properties = props
-		ic = Ice.initialize(id)
-		self.motors = Motors (ic, "JdeRobotKids.Motors")
-		'''
+		if camara == "PiCam":
+			self._videostream = VideoStream(usePiCamera=True).start()
+		else:
+			self._videostream = VideoStream(usePiCamera=False).start()
+		time.sleep(2)
 
 	def moverServo(self, *args):
 		'''
@@ -110,7 +105,7 @@ class PiBot:
 				self._dit.set_servo_pulsewidth(puertoL, 500)
 				self._dit.set_servo_pulsewidth(puertoR, 2500)
 
-	def retroceder(self):
+	def retroceder(self, vel):
 		'''
 		Función que hace retroceder al robot en línea recta a una velocidad dada como parámetro.
 		@type vel: entero
@@ -129,10 +124,10 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1510) #parado 1525
-		self._dit.set_servo_pulsewidth(puertoR, 1525) #parado 1510
+		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
+		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
 
-	def girarIzquierda(self):
+	def girarIzquierda(self, vel):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la izquierda a una velocidad dada como parámetro.
 		@type vel: entero
@@ -141,11 +136,10 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		#servos = pigpio.pi()
 		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
-		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza el frente
+		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza al frente
 
-	def girarDerecha(self):
+	def girarDerecha(self, vel):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la derecha a una velocidad dada como parámetro.
 		@type vel: entero
@@ -154,7 +148,7 @@ class PiBot:
 	# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza el frente
+		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza al frente
 		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
 
         def move(self, velV, velW):
@@ -265,7 +259,6 @@ class PiBot:
 			movermotorizq(velV)
 			movermotordcho(-velmotorgiro)
 
-
 	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
 
 		right_sensor_port = 22
@@ -316,20 +309,21 @@ class PiBot:
 
 		return (elapsed * 343) / 2
 
-	def dameImagen(self):
+	def dameImagen (self):
 		self._frame = self._videostream.read()
 		self._frame = imutils.resize(self._frame, width=400)
+
 		return self._frame
 
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
 
-	def damePosicionDeObjetoDeColor():
+	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
 		'''
 		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
 		'''
 		# resize the image
-		image = dameImagen()
+		image = self.dameImagen()
 
 		# convert to the HSV color space
 		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -337,7 +331,7 @@ class PiBot:
 		# construct a mask for the color specified
 		# then perform a series of dilations and erosions
 		# to remove any small blobs left in the mask
-		mask = cv2.inRange(hsv, GREEN_MIN, GREEN_MAX)
+		mask = cv2.inRange(hsv, ORANGE_MIN, ORANGE_MAX)
 		mask = cv2.erode(mask, None, iterations=2)
 		mask = cv2.dilate(mask, None, iterations=2)
 
@@ -355,6 +349,7 @@ class PiBot:
 			((x, y), radius) = cv2.minEnclosingCircle(c)
 			M = cv2.moments(c)
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+			area = M["m00"]
 
 			# only proceed if the radius meets a minimum size
 			if radius > 10:
@@ -363,8 +358,12 @@ class PiBot:
 
 				# and the centroid
 				cv2.circle(image, center, 5, (0, 255, 255), -1)
+		if showImageFiltered:
+			# Control waitKey from outside, only for local executions, not jupyter.
+			cv2.imshow("image_filtered", image)
+			cv2.imshow("mask", mask)
 
-		return center
+		return center, area
 
 	def dameSonarVisual ():
 		'''
