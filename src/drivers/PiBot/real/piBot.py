@@ -267,7 +267,7 @@ class PiBot:
 		DcMin = 29
 		DcMax = 971
 		Pi = 3.1416
-		FullCircle = 360 #2 * Pi
+		FullCircle = 2 * Pi
 		DutyScale = 1000
 		Q2Min = FullCircle / 4 #angulo minimo perteneciente al segundo cuadrante
 		Q3Max = Q2Min * 3 #angulo maximo perteneciente al tercer cuadrante
