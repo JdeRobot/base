@@ -259,6 +259,110 @@ class PiBot:
 			movermotorizq(velV)
 			movermotordcho(-velmotorgiro)
 
+	def leerangulorueda(self, Encoder):
+	#devuelve el angulo en el que se encuentra la rueda cuyo pin de feedback
+	#se encuentra en el pin "Encoder" en el momento en que se llama a la funcion
+
+		#Constantes:
+		DcMin = 29
+		DcMax = 971
+		Pi = 3.1416
+		FullCircle = 360 #2 * Pi
+		DutyScale = 1000
+		Q2Min = FullCircle / 4 #angulo minimo perteneciente al segundo cuadrante
+		Q3Max = Q2Min * 3 #angulo maximo perteneciente al tercer cuadrante
+
+		turns = 0
+
+		def pulse_in(inp, bit):
+
+		    def readuntil(inp, bit):
+				rec = self._GPIO.input(inp)
+				if(rec == bit):
+				    #esperar hasta terminar de leer unos
+				    while(rec == bit):
+					rec = self._GPIO.input(inp)
+				#leer ceros hasta que me llegue el primer uno
+				if(bit == 1):
+				    while(rec == 0):
+					rec = self._GPIO.input(inp)
+				    #ahora me acaba de llegar el primer uno despues de los ceros
+				else:
+				    while(rec == 1):
+					rec = self._GPIO.input(inp)
+				    #ahora me acaba de llegar el primer cero despues de los unos
+
+		    if(bit != 0 and bit != 1):
+			    return 0
+		    else:
+		    	readuntil(inp, bit) #leo hasta que me llega ese bit
+		    	start = time.time() #guardo la hora actual
+			if(bit == 1):
+			    readuntil(inp, 0) #leo hasta que me llega un bit contrario al anterior
+			else:
+			    readuntil(inp, 1)
+			finish = time.time()
+			elapsed = (finish - start) * 1000000 #tiempo en microsegundos
+
+			return elapsed #todavia esto no son microsegundos. Hay que pasarlo
+
+		def initangle():
+		    timeHigh = pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
+		    timeLow = pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
+		    timeCycle = timeHigh + timeLow
+		    dutyCycle = (DutyScale * timeHigh) / timeCycle #calculo el ciclo de trabajo
+		    return (FullCircle - 1) - ((dutyCycle - DcMin) * FullCircle) / (DcMax - DcMin + 1)
+
+
+		#se inicializa la configuracion de los pines correspondientes:
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(Encoder, self._GPIO.IN)
+
+
+		#calculo el angulo inicial
+		angle = initangle()
+		p_angle = angle
+
+		finish = False
+		while(not finish):
+		    timeHigh = pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
+		    timeLow = pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
+
+		    timeCycle = timeHigh + timeLow
+
+		    if((timeCycle > 1000) and (timeCycle < 1200)):
+			finish = True
+
+		dutyCycle = (DutyScale * timeHigh)/ timeCycle #calculo el ciclo de trabajo
+
+		angle = (FullCircle - 1) - ((dutyCycle - DcMin) * FullCircle) / (DcMax - DcMin + 1)
+		if(angle < 0):
+		   	angle = 0
+	 	elif(angle > (FullCircle - 1)):
+		    angle = FullCircle - 1
+
+		#Si la transicion va del cuarto cuadrante al primero, incremento 'turns'
+		if((angle < Q2Min) and (p_angle > Q3Max)):
+		    turns = turns + 1
+		#Si la transicion va del primer cuadrante al cuarto, incremento 'turns'
+		elif((p_angle < Q2Min) and (angle > Q3Max)):
+		    turns = turns - 1
+
+		#Calculo el angulo
+		if(turns >= 0):
+		    angle = (turns * FullCircle) + angle
+		elif(turns <  0):
+		    angle = ((turns + 1) * FullCircle) - (FullCircle - angle)
+		#Esto lo hago para que cuando repita la vuelta se ponga a cero de nuevo
+		if(angle >= FullCircle):
+		    angle = angle - FullCircle
+		    turns = 0
+		elif(angle <= -FullCircle):
+		    angle = angle + FullCircle
+		    turns = 0
+
+		return angle
+
 	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
 
 		right_sensor_port = 22
