@@ -6,11 +6,11 @@
     </include>
     <include>
       <uri>model://nurburgrinLine</uri>
-      <pose>70 -47 0 0 0 0</pose>
+      <pose>0 0 0 0 0 o</pose>
     </include>
     <include>
-      <uri>model://f1ROS</uri>
-      <pose>0.05 -0.44 0 0 0 0.9</pose>
+      <uri>model://f1_redbull</uri>
+      <pose>-59.25 28.6 0 0 0 -0.55</pose>
     </include>
   </world>
 </sdf>

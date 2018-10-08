@@ -14,7 +14,6 @@
     <visual name="visual">
       <geometry>
         <mesh>
-          <scale>2 2 2</scale>
           <uri>model://nurburgrinLine/meshes/Circuito_Nurburgrin.dae</uri>
         </mesh>
       </geometry>
@@ -24,7 +23,6 @@
     <collision name="collision">
       <geometry>
         <mesh>
-          <scale>2 2 2</scale>
           <uri>model://nurburgrinLine/meshes/Nurburgrin_Pared.dae</uri>
         </mesh>
       </geometry>
@@ -32,7 +30,6 @@
     <visual name="visual">
       <geometry>
         <mesh>
-          <scale>2 2 2</scale>
           <uri>model://nurburgrinLine/meshes/Nurburgrin_Pared.dae</uri>
         </mesh>
       </geometry>
