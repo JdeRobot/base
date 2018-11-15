@@ -1,1 +1,1 @@
-from PiBotHAL import dameRobot
+from .PiBotHAL import dameRobot
