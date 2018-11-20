@@ -1,3 +1,34 @@
+jderobot (5.6.6) unstable; urgency=low
+
+  * release 5.6.6
+  * Solved some bugs related with installation and other minor bugs in components.
+  * [PR #1088] New PiCameraServer Driver and fixed Logging of slice executables error cmake
+  * [PR #1156] Solved problem with usbcam on camserver_web
+  * [PR #1167] Modify visualization.ice to visualize 3D segments
+  * [PR #1169] 3DViewer_web modify to visualize 3D segments
+  * [PR #1177] Added Roomba robot for ros nodes
+  * [PR #1179] Added library PiBot as a new driver of JdeRobot
+  * [PR #1180] Added driver piCamServer_py to serve PiCamera and USB cams.
+  * [PR #1181] Added new tool PiCamCalibrator
+  * [PR #1192] Added pibot robot support for gazebo
+  * [PR #1198] Moved kids interfaces to interfaces directory
+  * [PR #1209] New F1 model with realistic mesh (obj)
+  * [PR #1220] Added model pibot with us sensor instead of picam sensor 
+  * [PR #1228] New ROS-based worlds for vacuum practices
+  * [PR #1234] minimal support for ros drones
+  * [PR #1236] Added printable pieces for PiBot
+  * [PR #1240] 3DVizWeb show objects
+  * [PR #1241] Added new formula1 models
+  * [PR #1250] Added Nurburgrin circuit
+  * [PR #1251] solved several problems with pibot api
+  * [PR #1256] velocity implemented with five speeds for pibot real driver.
+  * [PR #1258] velocity implemented at "avanzar" function of piBot.py for real PiBot
+  * [PR #1262] Added Cameras and no-laser models to the F1 models. Follow_Road world fixed
+  * [PR #1271] Control in position for pibot driver
+  * [PR #1277] drone model with mavros
+
+-- Francisco Perez <f.perez475@gmail.com>, Tue, 20 Nov 2018 12:00:00 +0100
+
 jderobot (5.6.4) unstable; urgency=low
 
   * release 5.6.4
