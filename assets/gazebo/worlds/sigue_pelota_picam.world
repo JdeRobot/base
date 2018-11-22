@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <world name="default">
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+   <!-- A global light source -->
+    <include>
+      <uri>model://red_ball</uri>
+      <pose>1 0 .1 0 0 0</pose>
+    </include>
+
+    <!-- Include pibot robot -->
+    <include>
+      <uri>model://pibot</uri>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+
+
+    <!-- A ground plane -->
+    <include>
+      <uri>model://grass_plane</uri>
+    </include>
+    
+    <scene>
+	<sky>
+	    <clouds>
+		<speed>12</speed>
+	    </clouds>
+        </sky>
+     </scene>
+  </world>
+</sdf>
+
