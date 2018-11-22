@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="Fast Food">
+    <static>false</static>
+    <link name="red_ball">
+      <pose>0 0 0 0 0 0</pose>
+      <gravity>false</gravity>
+      <collision name="collision">
+        <geometry>
+          <sphere>
+            <radius> 0.05 </radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <sphere>
+            <radius> 0.05 </radius>
+          </sphere>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <ambient>0 0 1 1</ambient>
+          <diffuse>0.3 0.3 0.8 1</diffuse>
+          <specular>0.01 0.1 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+          <shader type='vertex'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+      </visual>
+    </link>
+    <plugin name="ballplugin" filename="libballplugin.so"/>
+  </model>
+</sdf>
