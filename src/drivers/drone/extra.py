@@ -1,5 +1,6 @@
 import rospy
 from mavros_msgs.srv import CommandBool,CommandTOL, SetMode
+from sensor_msgs.msg import NavSatFix
 import threading
 import time
 
@@ -22,11 +23,13 @@ class PublisherExtra:
 
         self.lock = threading.Lock()
 
-
         self.arming_client = rospy.ServiceProxy(topicArming,CommandBool)
         self.land_client = rospy.ServiceProxy(topicLand,CommandTOL)
         self.takeoff_client = rospy.ServiceProxy(topicTakeOff,CommandTOL)
         self.set_mode_client = rospy.ServiceProxy(topicSetMode,SetMode)
+
+        self.latitude = 0
+        self.longitude = 0
 
     def arming(self):
         self.lock.acquire()

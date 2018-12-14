@@ -33,9 +33,13 @@ class Drone(threading.Thread):
         return self.__cameraFrontal.getImage()
 
     def takeoff(self):
+        self.__extra.get_coordinates()
         self.__extra.arming()
         self.__extra.takeoff()
         self.__extra.change_mode()
+
+    def get_coordinates(self):
+        self.__extra.get_coordinates()
 
     def land(self):
         self.__extra.land()
@@ -49,8 +53,9 @@ class Drone(threading.Thread):
     def record(self, record):
         self.__extra.record(record)
 
-    def sendCMDVel (self,px,py,pz,vx,vy,vz,ax,ay,az,yaw,yaw_rate):
-        self.__cmdvel.sendCMDVel(px,py,pz,vx,vy,vz,ax,ay,az,yaw,yaw_rate)
+    def sendCMDVel (self,vx,vy,vz,yaw_rate):
+        pz = self.__pose3d.getPose3d().z + vz
+        self.__cmdvel.sendCMDVel(0,0,pz,vx,vy,vz,0,0,0,0,yaw_rate)
 
     def sendVelocities(self):
         self.__cmdvel.sendVelocities()
