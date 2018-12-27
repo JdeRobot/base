@@ -1,5 +1,6 @@
 import rospy
-from mavros import setpoint as SP
+from mavros_msgs.msg import PositionTarget
+from std_msgs.msg import Header
 import threading
 from math import pi as PI
 from .threadPublisher import ThreadPublisher
@@ -40,8 +41,8 @@ def cmdvel2PosTarget(vel):
     @return a Twist translated from vel
 
     '''
-    msg=SP.PositionTarget(
-        header=SP.Header(
+    msg=PositionTarget(
+        header=Header(
             stamp=rospy.Time.now(),
             frame_id=''),
     )
@@ -76,7 +77,7 @@ class PublisherCMDVel:
         rospy.init_node("ss")
         self.topic = topic
         self.vel = CMDVel()
-        self.pub = rospy.Publisher(topic, SP.PositionTarget, queue_size=1)
+        self.pub = rospy.Publisher(topic, PositionTarget, queue_size=1)
         self.lock = threading.Lock()
 
         self.kill_event = threading.Event()

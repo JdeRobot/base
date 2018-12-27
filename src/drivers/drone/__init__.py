@@ -54,7 +54,7 @@ class Drone(threading.Thread):
         self.__extra.record(record)
 
     def sendCMDVel (self,vx,vy,vz,yaw_rate):
-        pz = self.__pose3d.getPose3d().z + vz
+        pz = 2 - self.__pose3d.getPose3d().z + vz
         self.__cmdvel.sendCMDVel(0,0,pz,vx,vy,vz,0,0,0,0,yaw_rate)
 
     def sendVelocities(self):
