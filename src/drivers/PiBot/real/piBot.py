@@ -6,6 +6,10 @@ import sys, time
 import jderobot_config
 import progeo
 import cv2
+import time
+import math
+import yaml
+import RPi.GPIO as GPIO
 
 from imutils.video import VideoStream
 import imutils
@@ -24,18 +28,85 @@ class PiBot:
 	def __init__(self, camara):
 		# Libreria RPi.GPIO
 		print("real")
-		import RPi.GPIO as GPIO
 		import pigpio # Libreria para manejar los servos
 		JdeRobotKids.__init__(self)
 		self._GPIO = GPIO
 		self._tipo = "PiBot"
 		self._dit = pigpio.pi()
 		self._frame = None
+		self._odometry_interval = 0.032
+		
 		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
 			self._videostream = VideoStream(usePiCamera=False).start()
 		time.sleep(2)
+
+
+		self.lock = threading.Lock()
+		#Variables de la posicion relativa del PiBot
+		self.posx = 0 #posicion en x
+		self.posy = 0 #posicion en y
+		self.postheta = 0 #posicion en theta (angular)
+
+		#Creo el objeto que me servirá para matar el hilo 'self.hilo'
+		self.kill_event = threading.Event()
+
+		#Creo un nuevo hilo que ejecutara el metodo 'readOdometry'
+		self.hilo = threading.Thread(target=self.readOdometry, args=(self.kill_event,))
+		self.hilo.start()
+
+	class Angles:
+		def __init__(self):
+			prev = 0
+			actual = 0
+			dif = 0
+
+	def readOdometry(self, kill_event):
+		'''
+		Esta leyendo los angulos de ambos motores llamando a la funcion 'leerangulorueda'
+		y va modificando las variables posx, posy, postheta
+		'''
+		config = yaml.load(open('config.yml'))
+		#Constantes:
+		FullCircle = 2 * math.pi #radianes
+		DistRuedas = float(config['Dist_Ruedas']) #metros
+		Rrueda = float(config['Radio_Rueda']) #Radio de la rueda
+
+		#Pines de los encoders:
+		EncoderL = 6
+		EncoderR = 24
+		sample_time = 0.065 #Intervalo entre mediciones
+
+		#Creo los dos ojetos de la clase Angles
+		angleizq = self.Angles()
+		angledcho = self.Angles()
+
+		(angleizq.prev, angledcho.prev) = self._leerangulos(EncoderL, EncoderR) #Leo el angulo previo
+		time.sleep(sample_time)
+
+		while(not kill_event.is_set()):
+
+
+			(angleizq.actual, angledcho.actual) = self._leerangulos(EncoderL, EncoderR) #Leo el angulo actual
+			(angleizq.dif, angledcho.dif) = self._diferenciaangulos(angleizq, angledcho, FullCircle) #calculo la diferencia de angulos en ambas ruedas
+
+			self._calcularposicion(angleizq.dif, angledcho.dif, Rrueda, DistRuedas) #calculo la nueva posicion y la guardo
+
+			(angleizq.prev, angledcho.prev) = (angleizq.actual, angledcho.actual) #los angulos actuales son los previos para la siguiente vuelta
+			time.sleep(sample_time)
+
+	def getOdometry(self):
+		self.lock.acquire()
+		aux1 = self.posx
+		aux2 = self.posy
+		aux3 = self.postheta
+		self.lock.release()
+		return (aux1, aux2, aux3)
+
+	def stopOdometry(self):
+		#print("Parando...")
+		self.kill_event.set()
 
 	def moverServo(self, *args):
 		'''
@@ -63,47 +134,7 @@ class PiBot:
 		@type vel: entero
 		@param vel: velocidad de avance del robot (máximo 255)
 		'''
-		#puertos donde van conectados los motores
-		puertoL = 4
-		puertoR = 18
-
-		def esnegativo(vel):
-			return vel < 0
-
-		if(not esnegativo(vel)):
-			#self._dit.set_servo_pulsewidth(puertoL, 1720) #hacia el frente
-			#self._dit.set_servo_pulsewidth(puertoR, 1240) #hacia el frente
-			if(vel <= 0.0355): #velocidad muy lenta
-				self._dit.set_servo_pulsewidth(puertoL, 1529) #hacia el frente, 1526-1537
-				self._dit.set_servo_pulsewidth(puertoR, 1510) #hacia el frente, 1510-1512
-			elif(vel > 0.0355 and vel <= 0.0655):
-				self._dit.set_servo_pulsewidth(puertoL, 1540)
-				self._dit.set_servo_pulsewidth(puertoR, 1501)
-			elif(vel > 0.0655 and vel <= 0.0925):
-				self._dit.set_servo_pulsewidth(puertoL, 1550)
-				self._dit.set_servo_pulsewidth(puertoR, 1490)
-			elif(vel > 0.0925 and vel <= 0.13):
-				self._dit.set_servo_pulsewidth(puertoL, 1570)
-				self._dit.set_servo_pulsewidth(puertoR, 1474)
-			else: #velocidad muy rapida
-				self._dit.set_servo_pulsewidth(puertoL, 2500)
-				self._dit.set_servo_pulsewidth(puertoR, 500)
-		else:
-			if(vel >= -0.0355): #velocidad muy lenta
-				self._dit.set_servo_pulsewidth(puertoL, 1498)
-				self._dit.set_servo_pulsewidth(puertoR, 1541)
-			elif(vel < -0.0355 and vel >= -0.0655):
-				self._dit.set_servo_pulsewidth(puertoL, 1490)
-				self._dit.set_servo_pulsewidth(puertoR, 1545)
-			elif(vel < -0.0655 and vel >= -0.0925):
-				self._dit.set_servo_pulsewidth(puertoL, 1480)
-				self._dit.set_servo_pulsewidth(puertoR, 1559)
-			elif(vel < -0.0925 and vel >= -0.13):
-				self._dit.set_servo_pulsewidth(puertoL, 1470)
-				self._dit.set_servo_pulsewidth(puertoR, 1568)
-			else: #velocidad muy rapida
-				self._dit.set_servo_pulsewidth(puertoL, 500)
-				self._dit.set_servo_pulsewidth(puertoR, 2500)
+		self.move(vel, 0)
 
 	def retroceder(self, vel):
 		'''
@@ -111,213 +142,371 @@ class PiBot:
 		@type vel: entero
 		@param vel: velocidad de retroceso del robot (máximo 255)
 		'''
-	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4
-		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1280)
-		self._dit.set_servo_pulsewidth(puertoR, 1720)
+		self.move(-vel, 0)
 
 	def parar(self):
 		'''
 		Función que hace detenerse al robot.
 		'''
-	# Puertos de datos para servos izquierdo y derecho
+		# Puertos de datos para servos izquierdo y derecho
 		puertoL = 4
 		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
-		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
-
-	def girarIzquierda(self, vel):
+		self._dit.set_servo_pulsewidth(puertoL, 1520) #parado 1525
+		self._dit.set_servo_pulsewidth(puertoR, 1520) #parado 1510
+	def girarIzquierda(self):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la izquierda a una velocidad dada como parámetro.
 		@type vel: entero
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
-	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4
-		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1525) #parado
-		self._dit.set_servo_pulsewidth(puertoR, 1380) #avanza al frente
+		self.move(0, 1)
 
-	def girarDerecha(self, vel):
+	def girarDerecha(self):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la derecha a una velocidad dada como parámetro.
 		@type vel: entero
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
-	# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4
-		puertoR = 18
-		self._dit.set_servo_pulsewidth(puertoL, 1620) #avanza al frente
-		self._dit.set_servo_pulsewidth(puertoR, 1510) #parado
+		self.move(0, -1)
 
-        def move(self, velV, velW):
+	def moverHasta(self, pos):
+		'''
+		Avanza o retrocede a una posicion dada
+		'''
+		Timeout = 10 #[s] Tiempo maximo que va a estar bloqueada la funcion
+		ErrorRange = 0.02 #Margen de error para la posicion que ha de alcanzar
+		Vel = 0.08 #Velocidad a la que se movera el robot
+
+		def posicionalcanzada(dif, pos):
+			return abs(dif) >= (abs(pos) - ErrorRange) and abs(dif) <= (abs(pos) + ErrorRange)
+		def timeout_excedido(elapsed):
+			return elapsed >= Timeout
+
+		#self.odom.startOdometry()
+		finish = False
+		(x0, y0, t0) = self.getOdometry()
+		time0 = time.time() #Guardo el instante de comienzo de la funcion bloqueante
+
+		while(not finish):
+			if(pos > 0):
+				self.move(Vel, 0)
+			else:
+				self.move(-Vel, 0)
+			time.sleep(self._odometry_interval)
+
+			(xf, yf, tf) = self.getOdometry()
+			dif = xf - x0
+			timef = time.time() #guardo el instante actual en cada vuelta del bucle
+			elapsed = timef - time0 #Calculo el tiempo transcurrido desde que que comenzo la funcion
+
+			if(posicionalcanzada(dif, pos) or timeout_excedido(elapsed)):
+				finish = True
+			if(timeout_excedido(elapsed)):
+				print("No se pudo alcanzar la posicion deseada")
+				finish = True
+		#self.fin()
+		self.parar()
+		time.sleep(0.12)
+	def girarHasta(self, angle):
+		'''
+		Gira el robot un angulo determinado en sentido horario o antihorario dependiendo
+		del signo de 'angle'
+		'''
+
+		ErrorRange = 0.2
+		Timeout = 10
+
+		timeout_exceded = False
+
+		def posicionalcanzada(dif, angle_aux):
+			return (abs(dif) > (abs(angle_aux) - ErrorRange)) and (abs(dif) <= (abs(angle_aux) + ErrorRange))
+
+		def timeout_excedido(t0, tf):
+			return (tf - t0) >= Timeout
+
+		def alcanzarposicion(angle_aux):
+			finish = False
+
+			(x0, y0, t0) = self.getOdometry()
+			time_start = time.time()
+			while(not finish):
+				if(angle > 0):
+					self.move(0, 1)
+				else:
+					self.move(0, -1)
+				time.sleep(self._odometry_interval)
+				(xf, yf, tf) = self.getOdometry()
+
+				dif = tf - t0
+				time_finish = time.time()
+
+				if(posicionalcanzada(dif, angle_aux) or timeout_excedido(time_start, time_finish)):
+					finish = True
+					timeout_exceded = True
+
+			if(timeout_excedido(time_start, time_finish)):
+				print("No se pudo alcanzar la posicion deseada")
+
+		#self.odom.startOdometry()
+		nvueltas = abs(angle / (math.pi / 2))
+		parte_entera = int(nvueltas) #Son las vueltas completas que tiene que dar
+		parte_decimal = abs(nvueltas - parte_entera) #Parte de vuelta que tendra que dar
+
+		if(nvueltas > 1):
+
+			#Doy todas las medias vueltas que tenga que dar
+			for i in range(0, parte_entera):
+				if(angle > 0):
+					angle_aux = math.pi / 2
+				else:
+					angle_aux = (-1) * (math.pi /2)
+				alcanzarposicion(angle_aux)
+
+			#Si me queda una parte de vuelta por dar, la doy
+			if(parte_decimal != 0 and not timeout_exceded):
+				if(angle > 0):
+					angle_aux = (math.pi / 2) * parte_decimal
+				else:
+					angle_aux = (-1) * (math.pi / 2) * parte_decimal
+
+				alcanzarposicion(angle_aux)
+
+		else:
+			alcanzarposicion(angle)
+
+		self.parar()
+		time.sleep(0.12)
+
+	def arcoHasta(self, x, y, theta):
+		'''
+		Mueve el robot a la posicion relativa (x, y, theta)
+		¡Ojo! Tengo en cuenta que el eje Y aumenta hacia la izquierda
+		'''
+		#Fijo como constante la velocidad lineal [m/s]
+		VelV = 0.03
+		#Fijo el radio minimo que se puede trazar [m]
+		Rmax = 0.25 - VelV #0.25 es la velocidad maxima en m/s que puede alcanzar un motor
+
+		ErrorRangeLinear = 0.01 #Margen de error para el movimiento
+
+		def alcanzado_x(difx):
+			return abs(difx) >= (abs(x) - ErrorRangeLinear) and abs(difx) <= (abs(x) + ErrorRangeLinear)
+		def alcanzado_y(dify):
+			return abs(dify) >= (abs(y) - ErrorRangeLinear) and abs(dify) <= (abs(y) + ErrorRangeLinear)
+		def posicion_alcanzada(difx, dify):
+			return alcanzado_x(difx) or alcanzado_y(dify)
+
+		def arco(v, w):
+			(x0, y0, t0) = self.getOdometry()
+			finish = False
+			while(not finish):
+				self.move(v, w)
+				time.sleep(self._odometry_interval)
+				(xf, yf, tf) = self.getOdometry()
+
+				difx = xf - x0
+				dify = yf - y0
+
+				if(posicion_alcanzada(difx, dify)):
+					finish = True
+
+		#Si el movimiento solo es en una componente, llamo a 'moverHasta'
+		if(x == 0 and y != 0):
+			if(y > 0):
+				self.girarHasta(- math.pi / 2)
+			else:
+				self.girarHasta(math.pi / 2)
+			self.moverHasta (y)
+		elif(x != 0 and y == 0):
+			self.moverHasta(x)
+		#Si el movimiento es en ambas componentes, he de llamar a 'move'
+		else:
+			#Defino el radio del arco que tengo que trazar
+			r_arco = ((x ** 2) + (y ** 2)) / (2 * y)
+			if(abs(r_arco) <= Rmax):
+				w = VelV / r_arco
+
+				if((x < 0 and y < 0) or (x < 0 and y > 0)):
+					for i in range(0, 2):
+						arco(VelV, w)
+						self.parar()
+						time.sleep(0.013)
+				else:
+					arco(VelV, w)
+			else:
+				#Me tengo que mover el linea recta
+				alfa = math.atan(y / x) #Calculo la fase (angulo de giro)
+				if((x < 0 and y < 0) or (x < 0 and y > 0)):
+					alfa = alfa + math.pi
+
+				self.girarHasta(alfa) #Llevo a cabo el giro
+				dist = math.sqrt((x ** 2) + (y ** 2)) #Calculo el modulo del vector
+				self.moverHasta(dist)
+		self.parar()
+		time.sleep(0.15)
+		#Por ultimo, giro el angulo 'theta' especificado
+		self.girarHasta(theta)
+		self.parar()
+		time.sleep(0.12)
+
+
+	def fin(self):
+		self.parar()
+		self.stopOdometry()
+
+	def move(self, velV, velW):
 		'''
 		Función que hace avanzar y girar al robot al mismo tiempo, según las velocidades V,W dadas como parámetro.
-
 		@type velV, velW: enteros de [1 a 5, a mas, se corta en 5]
 		@param velV, velW: velocidades de avance de motores lineal y angular, en m/s y rad/s respectivamente
 		'''
-		# Puertos de datos para servos izquierdo y derecho
-		puertoL = 4
-		puertoR = 18
-
-		def esnegativo(n):
-			return n < 0
-
-		def espositivo(n):
-			return n > 0
-
-		def escero(n):
-			return n == 0
-
-		def movermotorizq(vel):
-
-			if(not esnegativo(vel)):
-
-				if(escero(vel)):
-					self._dit.set_servo_pulsewidth(puertoL, 1510) #parado 1525
-				elif(vel <= 0.0355): #velocidad muy lenta
-					self._dit.set_servo_pulsewidth(puertoL, 1529) #hacia el frente, 1526-1537
-				elif(vel > 0.0355 and vel <= 0.0655):
-					self._dit.set_servo_pulsewidth(puertoL, 1540)
-				elif(vel > 0.0655 and vel <= 0.0925):
-					self._dit.set_servo_pulsewidth(puertoL, 1550)
-				elif(vel > 0.0925 and vel <= 0.13):
-					self._dit.set_servo_pulsewidth(puertoL, 1570)
-				else: #velocidad muy rapida
-					self._dit.set_servo_pulsewidth(puertoL, 2500)
-			else:
-				if(vel >= -0.0355): #velocidad muy lenta
-					self._dit.set_servo_pulsewidth(puertoL, 1498)
-				elif(vel < -0.0355 and vel >= -0.0655):
-					self._dit.set_servo_pulsewidth(puertoL, 1490)
-				elif(vel < -0.0655 and vel >= -0.0925):
-					self._dit.set_servo_pulsewidth(puertoL, 1480)
-				elif(vel < -0.0925 and vel >= -0.13):
-					self._dit.set_servo_pulsewidth(puertoL, 1470)
-				else: #velocidad muy rapida
-					self._dit.set_servo_pulsewidth(puertoL, 500)
-
-		def movermotordcho(vel):
-
-			if(not esnegativo(vel)):
-
-				if(escero(vel)):
-					self._dit.set_servo_pulsewidth(puertoR, 1525) #parado 1510
-				if(vel <= 0.0355): #velocidad muy lenta
-					self._dit.set_servo_pulsewidth(puertoR, 1510) #hacia el frente, 1510-1512
-				elif(vel > 0.0355 and vel <= 0.0655):
-					self._dit.set_servo_pulsewidth(puertoR, 1501)
-				elif(vel > 0.0655 and vel <= 0.0925):
-					self._dit.set_servo_pulsewidth(puertoR, 1490)
-				elif(vel > 0.0925 and vel <= 0.13):
-					self._dit.set_servo_pulsewidth(puertoR, 1474)
-				else: #velocidad muy rapida
-					self._dit.set_servo_pulsewidth(puertoR, 500)
-			else:
-				if(vel >= -0.0355): #velocidad muy lenta
-					self._dit.set_servo_pulsewidth(puertoR, 1541)
-				elif(vel < -0.0355 and vel >= -0.0655):
-					self._dit.set_servo_pulsewidth(puertoR, 1545)
-				elif(vel < -0.0655 and vel >= -0.0925):
-					self._dit.set_servo_pulsewidth(puertoR, 1559)
-				elif(vel < -0.0925 and vel >= -0.13):
-					self._dit.set_servo_pulsewidth(puertoR, 1568)
-				else: #velocidad muy rapida
-					self._dit.set_servo_pulsewidth(puertoR, 2500)
 
 		#Aqui empieza la algoritmia principal
 
 		if(velW != 0):
 			rcir = abs(velV / velW) #Es el radio de la circunferencia que tengo que trazar. En valor absoluto
 			velmotorgiro = abs(velV) + rcir     #Velocidad a la que tiene que girar el motor encargado del giro del robot
-		if(escero(velV) and not escero(velW)):
+		if(self._escero(velV) and not self._escero(velW)):
 			#Motor izquierdo hacia atras y motor derecho hacia adelante a velocidad maxima
-			if(espositivo(velW)):
-				movermotordcho(1)
-				movermotorizq(-1)
+			if(self._espositivo(velW)):
+				self._movermotordcho(0.08)
+				self._movermotorizq(-0.08)
 			else:
-				movermotordcho(-1)
-				movermotorizq(1)
+				self._movermotordcho(-0.08)
+				self._movermotorizq(0.08)
 
-		elif(not escero(velV) and escero(velW)):
+		elif(not self._escero(velV) and self._escero(velW)):
 			#Avanza hacia el frente a la velocidad lineal dada
-			movermotordcho(velV)
-			movermotorizq(velV)
+			self._movermotordcho(velV)
+			self._movermotorizq(velV)
 
-		elif(espositivo(velV) and espositivo(velW)):
-			movermotorizq(velV)
-			movermotordcho(velmotorgiro)
-		elif(espositivo(velV) and esnegativo(velW)):
-			movermotorizq(velmotorgiro)
-			movermotordcho(velV)
-		elif(esnegativo(velV) and espositivo(velW)):
-			movermotorizq(-velmotorgiro)
-			movermotordcho(velV)
-		elif(esnegativo(velV) and esnegativo(velW)):
-			movermotorizq(velV)
-			movermotordcho(-velmotorgiro)
+		elif(self._espositivo(velV) and self._espositivo(velW)):
+			self._movermotorizq(velV)
+			self._movermotordcho(velmotorgiro)
+		elif(self._espositivo(velV) and self._esnegativo(velW)):
+			self._movermotorizq(velmotorgiro)
+			self._movermotordcho(velV)
+		elif(self._esnegativo(velV) and self._espositivo(velW)):
+			self._movermotorizq(-velmotorgiro)
+			self._movermotordcho(velV)
+		elif(self._esnegativo(velV) and self._esnegativo(velW)):
+			self._movermotorizq(velV)
+			self._movermotordcho(-velmotorgiro)
 
-	def leerangulorueda(self, Encoder):
-	#devuelve el angulo en el que se encuentra la rueda cuyo pin de feedback
-	#se encuentra en el pin "Encoder" en el momento en que se llama a la funcion
+	#AQUI EMPIEZAN LOS METODOS PRIVADOS
+
+	def _esnegativo(self, n):
+		return n < 0
+
+	def _espositivo(self, n):
+		return n > 0
+
+	def _escero(self, n):
+		return n == 0
+
+	def _movermotorizq(self, vel):
+		'''
+		Mueve el motor izquierdo a la velicidad dada como parametro
+		'''
+		# Puerto de datos para servo izquierdo
+		puertoL = 4
+
+		if(not self._esnegativo(vel)):
+
+			if(self._escero(vel)):
+				self._dit.set_servo_pulsewidth(puertoL, 1520)
+			elif(vel <= 0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoL, 1537) #hacia el frente
+			elif(vel > 0.0355 and vel <= 0.0655):
+				self._dit.set_servo_pulsewidth(puertoL, 1557)
+			elif(vel > 0.0655 and vel <= 0.0925):
+				self._dit.set_servo_pulsewidth(puertoL, 1582) #1582
+			elif(vel > 0.0925 and vel <= 0.13):
+				self._dit.set_servo_pulsewidth(puertoL, 1602)
+			elif(vel > 0.13 and vel <= 0.2):
+				self._dit.set_servo_pulsewidth(puertoL, 1647)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoL, 2500)
+		else:
+			if(vel >= -0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoL, 1450)
+			elif(vel < -0.0355 and vel >= -0.0655):
+				self._dit.set_servo_pulsewidth(puertoL, 1430)
+			elif(vel < -0.0655 and vel >= -0.0925):
+				self._dit.set_servo_pulsewidth(puertoL, 1410) #1410
+			elif(vel < -0.0925 and vel >= -0.13):
+				self._dit.set_servo_pulsewidth(puertoL, 1390)
+			elif(vel < -0.13 and vel >= -0.2):
+				self._dit.set_servo_pulsewidth(puertoL, 1345)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoL, 500)
+
+	def _movermotordcho(self, vel):
+		'''
+		Mueve el motor derecho a la velicidad dada como parametro
+		'''
+		# Puerto de datos para servo Derecho
+		puertoR = 18
+
+		if(not self._esnegativo(vel)):
+
+			if(self._escero(vel)):
+				self._dit.set_servo_pulsewidth(puertoR, 1515)
+			if(vel <= 0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoR, 1450) #hacia el frente
+			elif(vel > 0.0355 and vel <= 0.0655):
+				self._dit.set_servo_pulsewidth(puertoR, 1430)
+			elif(vel > 0.0655 and vel <= 0.0925):
+				self._dit.set_servo_pulsewidth(puertoR, 1410)
+			elif(vel > 0.0925 and vel <= 0.13):
+				self._dit.set_servo_pulsewidth(puertoR, 1390) #1390
+			elif(vel > 0.13 and vel <= 0.2):
+				self._dit.set_servo_pulsewidth(puertoR, 1345)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoR, 1275) #1290
+		else:
+			if(vel >= -0.0355): #velocidad muy lenta
+				self._dit.set_servo_pulsewidth(puertoR, 1542)
+			elif(vel < -0.0355 and vel >= -0.0655):
+				self._dit.set_servo_pulsewidth(puertoR, 1562)
+			elif(vel < -0.0655 and vel >= -0.0925):
+				self._dit.set_servo_pulsewidth(puertoR, 1582)
+			elif(vel < -0.0925 and vel >= -0.13):
+				self._dit.set_servo_pulsewidth(puertoR, 1603)
+			elif(vel < -0.13 and vel >= -0.2):
+				self._dit.set_servo_pulsewidth(puertoR, 1640)
+			else: #velocidad muy rapida
+				self._dit.set_servo_pulsewidth(puertoR, 1700)
+
+	def _leerangulorueda(self, Encoder):
+		'''
+		Encoder: encoder del motor cuyo angulo se quiere conocer
+
+		Devuelve el angulo en el que se encuentra la rueda cuyo pin de feedback se encuentra en el
+		pin Encoder en el momento en que se llama a la funcion
+		'''
 
 		#Constantes:
+		#Pi = 3.1416
 		DcMin = 29
 		DcMax = 971
-		Pi = 3.1416
-		FullCircle = 2 * Pi
+		FullCircle = 2 * math.pi #360
 		DutyScale = 1000
 		Q2Min = FullCircle / 4 #angulo minimo perteneciente al segundo cuadrante
 		Q3Max = Q2Min * 3 #angulo maximo perteneciente al tercer cuadrante
 
 		turns = 0
 
-		def pulse_in(inp, bit):
-
-		    def readuntil(inp, bit):
-				rec = self._GPIO.input(inp)
-				if(rec == bit):
-				    #esperar hasta terminar de leer unos
-				    while(rec == bit):
-					rec = self._GPIO.input(inp)
-				#leer ceros hasta que me llegue el primer uno
-				if(bit == 1):
-				    while(rec == 0):
-					rec = self._GPIO.input(inp)
-				    #ahora me acaba de llegar el primer uno despues de los ceros
-				else:
-				    while(rec == 1):
-					rec = self._GPIO.input(inp)
-				    #ahora me acaba de llegar el primer cero despues de los unos
-
-		    if(bit != 0 and bit != 1):
-			    return 0
-		    else:
-		    	readuntil(inp, bit) #leo hasta que me llega ese bit
-		    	start = time.time() #guardo la hora actual
-			if(bit == 1):
-			    readuntil(inp, 0) #leo hasta que me llega un bit contrario al anterior
-			else:
-			    readuntil(inp, 1)
-			finish = time.time()
-			elapsed = (finish - start) * 1000000 #tiempo en microsegundos
-
-			return elapsed #todavia esto no son microsegundos. Hay que pasarlo
-
-		def initangle():
-		    timeHigh = pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
-		    timeLow = pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
-		    timeCycle = timeHigh + timeLow
-		    dutyCycle = (DutyScale * timeHigh) / timeCycle #calculo el ciclo de trabajo
-		    return (FullCircle - 1) - ((dutyCycle - DcMin) * FullCircle) / (DcMax - DcMin + 1)
-
-
 		#se inicializa la configuracion de los pines correspondientes:
 		self._GPIO.setmode(self._GPIO.BCM)
 		self._GPIO.setup(Encoder, self._GPIO.IN)
 
+		def initangle():
+			timeHigh = self._pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
+			timeLow = self._pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
+			timeCycle = timeHigh + timeLow
+			dutyCycle = (DutyScale * timeHigh) / timeCycle #calculo el ciclo de trabajo
+			return (FullCircle - 1) - ((dutyCycle - DcMin) * FullCircle) / (DcMax - DcMin + 1)
 
 		#calculo el angulo inicial
 		angle = initangle()
@@ -325,46 +514,153 @@ class PiBot:
 
 		finish = False
 		while(not finish):
-		    timeHigh = pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
-		    timeLow = pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
+			timeHigh = self._pulse_in(Encoder, 1) #devuelve el tiempo en microsegundos
+			timeLow = self._pulse_in(Encoder, 0) #devuelve el tiempo en microsegundos
 
-		    timeCycle = timeHigh + timeLow
+			timeCycle = timeHigh + timeLow
 
-		    if((timeCycle > 1000) and (timeCycle < 1200)):
-			finish = True
+			if((timeCycle > 1000) and (timeCycle < 1200)):
+				finish = True
 
 		dutyCycle = (DutyScale * timeHigh)/ timeCycle #calculo el ciclo de trabajo
 
 		angle = (FullCircle - 1) - ((dutyCycle - DcMin) * FullCircle) / (DcMax - DcMin + 1)
 		if(angle < 0):
-		   	angle = 0
-	 	elif(angle > (FullCircle - 1)):
-		    angle = FullCircle - 1
+			angle = 0
+		elif(angle > (FullCircle - 1)):
+			angle = FullCircle - 1
 
-		#Si la transicion va del cuarto cuadrante al primero, incremento 'turns'
+		#If transition from quadrant 4 to quadrant 1, increase turns count.
 		if((angle < Q2Min) and (p_angle > Q3Max)):
-		    turns = turns + 1
-		#Si la transicion va del primer cuadrante al cuarto, incremento 'turns'
+			turns = turns + 1
+		#If transition from quadrant 1 to  quadrant 4, decrease turns count.
 		elif((p_angle < Q2Min) and (angle > Q3Max)):
-		    turns = turns - 1
+			turns = turns - 1
 
-		#Calculo el angulo
+		#Construct the angle measurement from the turns count and current angle value.
 		if(turns >= 0):
-		    angle = (turns * FullCircle) + angle
+			angle = (turns * FullCircle) + angle
 		elif(turns <  0):
-		    angle = ((turns + 1) * FullCircle) - (FullCircle - angle)
+			angle = ((turns + 1) * FullCircle) - (FullCircle - angle)
 		#Esto lo hago para que cuando repita la vuelta se ponga a cero de nuevo
 		if(angle >= FullCircle):
-		    angle = angle - FullCircle
-		    turns = 0
+			angle = angle - FullCircle
+			turns = 0
 		elif(angle <= -FullCircle):
-		    angle = angle + FullCircle
-		    turns = 0
+			angle = angle + FullCircle
+			turns = 0
 
 		return angle
 
-	def leerIRSigueLineas(self): #devuelve el estado de los sensores IR
+	def _leerangulos(self, l, r):
+		'''
+		l: Encoder del motor izquierdo
+		r: Encoder del motor derecho
 
+		Devuelve el angulo en el que se encuentran los motores izquierdo y derecho
+		'''
+		return (self._leerangulorueda(l), self._leerangulorueda(r))
+
+	def _diferenciaangulos(self, izq, dcho, fullcircle):
+		'''
+		Recibe dos objetos de la clase 'Angles' y devuelve la diferencia de angulos
+		de las ruedas izquierda y derecha.
+		'''
+
+		def diferencia(previous, actual):
+
+			def actualesmenor(p, a):
+				return a < p
+
+			dif = actual - previous
+
+			if(actualesmenor(previous, actual)):
+				if(abs(dif) >= 5.21): #5.21 se corresponde con el 83% de la circunferencia completa. Lo uso para estimar si ha completado una vuelta o no
+					dif = fullcircle - previous + actual
+
+			return dif
+
+		return (diferencia(izq.prev, izq.actual), diferencia(dcho.prev, dcho.actual))
+
+	def _calcularposicion(self, difizq, difdcho, rrueda, distruedas):
+		'''
+		Recibe la diferencia de angulo (en radianes) de cada motor (difizq y difdcho) y
+		sobreescribe la posicion relativa
+		'''
+
+		def dist_recorrida(difizq, difdcho):
+
+			lizq = difizq * rrueda
+			ldcho = (-1) * difdcho * rrueda
+			return (lizq + ldcho) / 2
+
+		def guardarposicion(x, y, dtheta):
+
+			self.lock.acquire()
+			self.posx = self.posx + x
+			self.posy = self.posy + y
+			self.postheta  = self.postheta + dtheta
+			self.lock.release()
+
+		def diferencialtheta(difizq, difdcho):
+
+			#Hayo la longitud de arco que ha trazado cada una de las ruedas:
+			longarcoizq = difizq * rrueda
+			longarcodcho = (-1) * difdcho * rrueda #Por convenio, si avanza hacia adelante, la distancia recorrida es positiva
+
+			return (longarcodcho - longarcoizq) / distruedas
+
+		#calculo el diferencial de theta:
+		dtheta = diferencialtheta(difizq, difdcho)
+		#calculo la distancia en linea recta que el robot ha recorrido:
+		d = dist_recorrida(difizq, difdcho)
+		#calculo x e y:
+		x = d * math.cos(dtheta)
+		y = d * math.sin(dtheta)
+		guardarposicion(x, y, dtheta)
+
+	def _pulse_in(self, inp, bit):
+		'''
+		inp: pin digital de entrada
+		bit: Nivel que quiero testear. 1(nivel alto) o 0(nivel bajo)
+
+		Devuelve el ancho de pulso (en microsegundos) del estado especificado de la señal (alto o bajo)
+		'''
+
+		def readuntil(inp, bit):
+			rec = self._GPIO.input(inp)
+			if(rec == bit):
+				#esperar hasta terminar de leer unos
+				while(rec == bit):
+					rec = self._GPIO.input(inp)
+			#leer ceros hasta que me llegue el primer uno
+			if(bit == 1):
+				while(rec == 0):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer uno despues de los ceros
+			else:
+				while(rec == 1):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer cero despues de los unos
+
+		if(bit != 0 and bit != 1):
+			return 0
+		else:
+			readuntil(inp, bit) #leo hasta que me llega ese bit
+			start = time.time() #guardo la hora actual
+		if(bit == 1):
+			readuntil(inp, 0) #leo hasta que me llega un bit contrario al anterior
+		else:
+			readuntil(inp, 1)
+		finish = time.time()
+		elapsed = (finish - start) * 1000000 #tiempo en microsegundos
+
+		return elapsed
+
+	def leerIRSigueLineas(self):
+		'''
+		devuelve el estado de los sensores IR
+		'''
 		right_sensor_port = 22
 		left_sensor_port = 27
 
@@ -389,7 +685,10 @@ class PiBot:
 
 		return state
 
-	def leerUltrasonido(self): #devuelve la distancia a un objeto en metros
+	def leerUltrasonido(self):
+		'''
+		devuelve la distancia a un objeto en metros
+		'''
 
 		inp = 3
 		out = 2
@@ -414,6 +713,9 @@ class PiBot:
 		return (elapsed * 343) / 2
 
 	def dameImagen (self):
+		'''
+		devuelve una matriz que se corresponde con una imagen
+		'''
 		self._frame = self._videostream.read()
 		self._frame = imutils.resize(self._frame, width=400)
 
