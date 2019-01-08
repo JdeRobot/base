@@ -169,7 +169,16 @@ robot.arcoHasta(x, y, t)
 ```
 The robot will move to the relative position (0.3, 0.4, Pi / 2).
 
-## 9º *move*
+## 9º *fin*
+This method delete the "robot" object.
+
+### Header:
+His header is ``fin()``.
+
+### Parameters:
+This method does receive any parameter.
+
+## 10º *move*
 This method allows you to move the robot with a speed control. You can move the robot with a specificated linear and angular velocity.
 
 Depending on the the sign of each parameter, the robot will do different arcs in different directions.
@@ -189,7 +198,7 @@ robot.fin()
 ```
 This code will do the robot to move describing an arc countercloskwise with linear speed of 0.05 meters per second and 0.8 radians per second.
 
-## 10º leerIRSiguelineas
+## 11º *leerIRSiguelineas*
 This method serves to read the state of the infrared sensors.
 PiBot has two infrared sensors and each of them is capable of detect if it es being over a black place. So there is four possible cases and, method *leerIRSigueLineas* returns a different number depending on each possibility.
 The number code that this method returns is as follow:
@@ -223,11 +232,11 @@ except KeyboardInterrupt:
 ```
 This code will do the robot to go forward while robot is over the black line. If not, robot will turn right.
 
-## 11º leerUltrasonido
+## 12º *leerUltrasonido*
 It returns the distance (in meters) between robot and an object.
 
 ### Header:
-His header is ``leerUltrasonido``.
+His header is ``leerUltrasonido()``
 
 ### Parameters:
 This method does receive any parameter.
@@ -244,7 +253,84 @@ try:
     else:
       girarHasta(Pi / 2)
 
+    time.sleep(0.2)
+
 except KeyboardInterrupt:
   pass
 ```
 This code will do the robot to go forward while there is not an object nearer than 15 cm (0.15 m), and else, turn left 90 degrees (Pi / 2). In addition, it will we printed on the screen the different distances that sensor reads.
+
+## 13º *DameImagen*
+It returns the frame that camera is capturing in that instant.
+
+### Header:
+His header is ``dameImagen()``.
+
+### Parameters:
+This method does receive any parameters.
+
+### Usage Example:
+At the next method explanation, there is an example about how to show by a screen what camera is capturing.
+
+## 14º *mostrarImagen*
+This method shows by screen an image previously captured by the PiBot's camera.
+
+### Header:
+His header is ``mostrarImagen()``.
+
+### Parameters:
+This method does receive any parameters.
+
+### Usage Example:
+```
+try:
+    while(True):
+        frame = robot.dameImagen()
+        robot.mostrarImagen()
+        time.sleep(0.2)
+
+except KeyboardInterrupt:
+    robot.fin()
+```
+
+## 15º *dameObjeto*
+This method returns two things. One of them is the center of the object (in **(x,y)** format) whose color
+is specificated by parameter, and the other is his area (in pixels).
+
+### Header:
+His header is ``dameObjeto(lower, upper, showImageFiltered)``.
+
+### Parameters:
+* **lower:** This is an array that contains RGB lower values of the color that you want to detect.
+* **upper:** This is an array that contains RGB high values of the color that you want to detect.
+* **showImageFiltered:** This parameters have to be "True" or "False" and it serves to show the image filtered or not.
+
+**Note:** All the parameters are optional. If you use the method *dameObjeto* without parameters, *lower* and *upper* have default values to detect an orange object, and *showImageFiltered* has "False" value.
+
+### Usage Example:
+```
+try:
+
+    (center, area) = robot.dameObjeto
+    print "center:", center, "area:", area
+    time.sleep(0.5)
+
+except KeyboardInterrupt:
+    robot.fin()
+```
+This program prints by screen the center and the area of an orange object. If we want to detect a blue object, for example, we should do it as follow:
+```
+import numpy
+
+lower_blue = numpy.array([100,65,75], dtype=numpy.uint8)
+upper_blue = numpy.array([130, 255, 255], dtype=numpy.uint8)
+
+try:
+
+    (center, area) = robot.dameObjeto(lower=lower_blue, upper=upper_blue)
+    print "center:", center, "area:", area
+    time.sleep(0.5)
+
+except KeyboardInterrupt:
+    robot.fin()
+```
