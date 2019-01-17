@@ -35,7 +35,7 @@ class PiBot:
 		self._dit = pigpio.pi()
 		self._frame = None
 		self._odometry_interval = 0.032
-		
+
 		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
@@ -55,6 +55,9 @@ class PiBot:
 		#Creo un nuevo hilo que ejecutara el metodo 'readOdometry'
 		self.hilo = threading.Thread(target=self.readOdometry, args=(self.kill_event,))
 		self.hilo.start()
+
+	def __del__(self):
+		self.fin()
 
 	class Angles:
 		def __init__(self):
@@ -105,7 +108,6 @@ class PiBot:
 		return (aux1, aux2, aux3)
 
 	def stopOdometry(self):
-		#print("Parando...")
 		self.kill_event.set()
 
 	def moverServo(self, *args):
@@ -247,10 +249,9 @@ class PiBot:
 			if(timeout_excedido(time_start, time_finish)):
 				print("No se pudo alcanzar la posicion deseada")
 
-		#self.odom.startOdometry()
 		nvueltas = abs(angle / (math.pi / 2))
-		parte_entera = int(nvueltas) #Son las vueltas completas que tiene que dar
-		parte_decimal = abs(nvueltas - parte_entera) #Parte de vuelta que tendra que dar
+		parte_entera = int(nvueltas) #Son las medias vueltas que tiene que dar
+		parte_decimal = abs(nvueltas - parte_entera) #Parte de media vuelta que tendra que dar
 
 		if(nvueltas > 1):
 
@@ -262,7 +263,7 @@ class PiBot:
 					angle_aux = (-1) * (math.pi /2)
 				alcanzarposicion(angle_aux)
 
-			#Si me queda una parte de vuelta por dar, la doy
+			#Si me queda una parte de media vuelta por dar, la doy
 			if(parte_decimal != 0 and not timeout_exceded):
 				if(angle > 0):
 					angle_aux = (math.pi / 2) * parte_decimal
@@ -365,7 +366,7 @@ class PiBot:
 
 		if(velW != 0):
 			rcir = abs(velV / velW) #Es el radio de la circunferencia que tengo que trazar. En valor absoluto
-			velmotorgiro = abs(velV) + rcir     #Velocidad a la que tiene que girar el motor encargado del giro del robot
+			velmotorgiro = abs(velV) + rcir #Velocidad a la que tiene que girar el motor encargado del giro del robot
 		if(self._escero(velV) and not self._escero(velW)):
 			#Motor izquierdo hacia atras y motor derecho hacia adelante a velocidad maxima
 			if(self._espositivo(velW)):
@@ -392,6 +393,192 @@ class PiBot:
 		elif(self._esnegativo(velV) and self._esnegativo(velW)):
 			self._movermotorizq(velV)
 			self._movermotordcho(-velmotorgiro)
+
+
+
+	def leerIRSigueLineas(self):
+		'''
+		devuelve el estado de los sensores IR
+		'''
+		right_sensor_port = 22
+		left_sensor_port = 27
+
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(right_sensor_port, self._GPIO.IN)
+		self._GPIO.setup(left_sensor_port, self._GPIO.IN)
+		right_value = self._GPIO.input(right_sensor_port)
+		left_value = self._GPIO.input(left_sensor_port)
+		#0: ambos sobre la linea
+		#1: izquierdo sobre la linea
+		#2: derecho sobre la linea
+		#3: ambos fuera de la linea
+
+		if(right_value == 1 and left_value == 1):
+			state = 0
+		elif(right_value == 0 and left_value == 1):
+			state = 1
+		elif(right_value == 1 and left_value == 0):
+			state = 2
+		else:
+			state = 3
+
+		return state
+
+	def leerUltrasonido(self):
+		'''
+		devuelve la distancia a un objeto en metros
+		'''
+
+		inp = 3
+		out = 2
+
+		self._GPIO.setwarnings(False)
+		self._GPIO.setmode(self._GPIO.BCM)
+		self._GPIO.setup(out, self._GPIO.OUT)
+		self._GPIO.setup(inp, self._GPIO.IN)
+
+		self._GPIO.output(out, False)
+		time.sleep(0.00001)
+		self._GPIO.output(out, True)
+		time.sleep(0.00001)
+		self._GPIO.output(out, False)
+		start = time.time()
+		while(self._GPIO.input(inp) == 0):
+		    start = time.time()
+		while(self._GPIO.input(inp) == 1):
+		    stop = time.time()
+		elapsed = stop - start
+
+		return (elapsed * 343) / 2
+
+	def dameImagen (self):
+		'''
+		devuelve una matriz que se corresponde con una imagen
+		'''
+		self._frame = self._videostream.read()
+		self._frame = imutils.resize(self._frame, width=400)
+
+		return self._frame
+
+	def mostrarImagen (self):
+		cv2.imshow("Imagen", self._frame)
+
+	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
+		'''
+		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
+		'''
+		# resize the image
+		image = self.dameImagen()
+
+		# convert to the HSV color space
+		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+		# construct a mask for the color specified
+		# then perform a series of dilations and erosions
+		# to remove any small blobs left in the mask
+		mask = cv2.inRange(hsv, ORANGE_MIN, ORANGE_MAX)
+		mask = cv2.erode(mask, None, iterations=2)
+		mask = cv2.dilate(mask, None, iterations=2)
+
+		# find contours in the mask and
+		# initialize the current center
+		cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+		center = None
+
+		# only proceed if at least one contour was found
+		if len(cnts) > 0:
+			# find the largest contour in the mask, then use
+			# it to compute the minimum enclosing circle and
+			# centroid
+			c = max(cnts, key=cv2.contourArea)
+			((x, y), radius) = cv2.minEnclosingCircle(c)
+			M = cv2.moments(c)
+			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+			area = M["m00"]
+
+			# only proceed if the radius meets a minimum size
+			if radius > 10:
+				# draw the circle border
+				cv2.circle(image, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+
+				# and the centroid
+				cv2.circle(image, center, 5, (0, 255, 255), -1)
+		if showImageFiltered:
+			# Control waitKey from outside, only for local executions, not jupyter.
+			cv2.imshow("image_filtered", image)
+			cv2.imshow("mask", mask)
+
+		return center, area
+
+	def dameSonarVisual ():
+		'''
+		Función que devuelve el array de puntos [X,Y] (Z=0) correspondiente al obstáculo detectado
+		'''
+		cameraModel = loadPiCamCameraModel ()
+		puntosFrontera = 0
+		fronteraArray = numpy.zeros((ANCHO_IMAGEN,2), dtype = "float64")
+
+		image = dameImagen ()
+		hsvImg = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+		bnImg = cv2.inRange(hsvImg, GREEN_MIN, GREEN_MAX)
+
+		pixel = Punto2D()
+		pixelOnGround3D = Punto3D()
+		tmp2d = Punto2D()
+		puntosFrontera = 0
+		j = 0
+
+		# Ground image: recorremos la imagen de abajo a arriba (i=filas) y de izquierda a derecha (j=columnas)
+		while (j < ANCHO_IMAGEN): # recorrido en columnas
+			i = LARGO_IMAGEN-1
+			esFrontera = None
+			while ((i>=0) and (esFrontera == None)): # recorrido en filas
+				pos = i*ANCHO_IMAGEN+j # posicion actual
+
+				pix = bnImg[i, j] # value 0 or 255 (frontera)
+
+				if (pix != 0): # si no soy negro
+					esFrontera = True # lo damos por frontera en un principio, luego veremos
+					# Calculo los demás vecinos, para ver de qué color son...
+					c = j - 1
+					row = i
+					v1 = row*ANCHO_IMAGEN+c
+
+					if (not((c >= 0) and (c < ANCHO_IMAGEN) and
+					(row >= 0) and (row < LARGO_IMAGEN))): # si no es válido ponemos sus valores a 0
+						pix = 0
+					else:
+						pix = bnImg[row, c]
+
+					if (esFrontera == True): # si NO SOY COLOR CAMPO y alguno de los vecinitos ES color campo...
+						pixel.x = j
+						pixel.y = i
+						pixel.h = 1
+
+						# obtenemos su backproject e intersección con plano Z en 3D
+						pixelOnGround3D = getIntersectionZ (pixel, cameraModel)
+
+						# vamos guardando estos puntos frontera 3D para luego dibujarlos con PyGame
+						fronteraArray[puntosFrontera][0] = pixelOnGround3D.x
+						fronteraArray[puntosFrontera][1] = pixelOnGround3D.y
+						puntosFrontera = puntosFrontera + 1
+						#print "Hay frontera en pixel [",i,",",j,"] que intersecta al suelo en [",pixelOnGround3D.x,",",pixelOnGround3D.y,",",pixelOnGround3D.z,"]"
+
+				i = i - 1
+			j = j + 5
+
+		return fronteraArray
+
+	def quienSoy(self):
+		print ("Yo soy un robot real PiBot")
+
+	@property
+	def tipo(self):
+		return self._tipo
+
+	@tipo.setter
+	def tipo(self, valor):
+		self._tipo = valor
 
 	#AQUI EMPIEZAN LOS METODOS PRIVADOS
 
@@ -656,187 +843,3 @@ class PiBot:
 		elapsed = (finish - start) * 1000000 #tiempo en microsegundos
 
 		return elapsed
-
-	def leerIRSigueLineas(self):
-		'''
-		devuelve el estado de los sensores IR
-		'''
-		right_sensor_port = 22
-		left_sensor_port = 27
-
-		self._GPIO.setmode(self._GPIO.BCM)
-		self._GPIO.setup(right_sensor_port, self._GPIO.IN)
-		self._GPIO.setup(left_sensor_port, self._GPIO.IN)
-		right_value = self._GPIO.input(right_sensor_port)
-		left_value = self._GPIO.input(left_sensor_port)
-		#0: ambos sobre la linea
-		#1: izquierdo sobre la linea
-		#2: derecho sobre la linea
-		#3: ambos fuera de la linea
-
-		if(right_value == 1 and left_value == 1):
-			state = 0
-		elif(right_value == 0 and left_value == 1):
-			state = 1
-		elif(right_value == 1 and left_value == 0):
-			state = 2
-		else:
-			state = 3
-
-		return state
-
-	def leerUltrasonido(self):
-		'''
-		devuelve la distancia a un objeto en metros
-		'''
-
-		inp = 3
-		out = 2
-
-		self._GPIO.setwarnings(False)
-		self._GPIO.setmode(self._GPIO.BCM)
-		self._GPIO.setup(out, self._GPIO.OUT)
-		self._GPIO.setup(inp, self._GPIO.IN)
-
-		self._GPIO.output(out, False)
-		time.sleep(0.00001)
-		self._GPIO.output(out, True)
-		time.sleep(0.00001)
-		self._GPIO.output(out, False)
-		start = time.time()
-		while(self._GPIO.input(inp) == 0):
-		    start = time.time()
-		while(self._GPIO.input(inp) == 1):
-		    stop = time.time()
-		elapsed = stop - start
-
-		return (elapsed * 343) / 2
-
-	def dameImagen (self):
-		'''
-		devuelve una matriz que se corresponde con una imagen
-		'''
-		self._frame = self._videostream.read()
-		self._frame = imutils.resize(self._frame, width=400)
-
-		return self._frame
-
-	def mostrarImagen (self):
-		cv2.imshow("Imagen", self._frame)
-
-	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
-		'''
-		Función que devuelve el centro del objeto que tiene un color verde en el rango [GREEN_MIN, GREEN_MAX] para ser detectado
-		'''
-		# resize the image
-		image = self.dameImagen()
-
-		# convert to the HSV color space
-		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-		# construct a mask for the color specified
-		# then perform a series of dilations and erosions
-		# to remove any small blobs left in the mask
-		mask = cv2.inRange(hsv, ORANGE_MIN, ORANGE_MAX)
-		mask = cv2.erode(mask, None, iterations=2)
-		mask = cv2.dilate(mask, None, iterations=2)
-
-		# find contours in the mask and
-		# initialize the current center
-		cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-		center = None
-
-		# only proceed if at least one contour was found
-		if len(cnts) > 0:
-			# find the largest contour in the mask, then use
-			# it to compute the minimum enclosing circle and
-			# centroid
-			c = max(cnts, key=cv2.contourArea)
-			((x, y), radius) = cv2.minEnclosingCircle(c)
-			M = cv2.moments(c)
-			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-			area = M["m00"]
-
-			# only proceed if the radius meets a minimum size
-			if radius > 10:
-				# draw the circle border
-				cv2.circle(image, (int(x), int(y)), int(radius), (0, 255, 0), 2)
-
-				# and the centroid
-				cv2.circle(image, center, 5, (0, 255, 255), -1)
-		if showImageFiltered:
-			# Control waitKey from outside, only for local executions, not jupyter.
-			cv2.imshow("image_filtered", image)
-			cv2.imshow("mask", mask)
-
-		return center, area
-
-	def dameSonarVisual ():
-		'''
-		Función que devuelve el array de puntos [X,Y] (Z=0) correspondiente al obstáculo detectado
-		'''
-		cameraModel = loadPiCamCameraModel ()
-		puntosFrontera = 0
-		fronteraArray = numpy.zeros((ANCHO_IMAGEN,2), dtype = "float64")
-
-		image = dameImagen ()
-		hsvImg = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
-		bnImg = cv2.inRange(hsvImg, GREEN_MIN, GREEN_MAX)
-
-		pixel = Punto2D()
-		pixelOnGround3D = Punto3D()
-		tmp2d = Punto2D()
-		puntosFrontera = 0
-		j = 0
-
-		# Ground image: recorremos la imagen de abajo a arriba (i=filas) y de izquierda a derecha (j=columnas)
-		while (j < ANCHO_IMAGEN): # recorrido en columnas
-			i = LARGO_IMAGEN-1
-			esFrontera = None
-			while ((i>=0) and (esFrontera == None)): # recorrido en filas
-				pos = i*ANCHO_IMAGEN+j # posicion actual
-
-				pix = bnImg[i, j] # value 0 or 255 (frontera)
-
-				if (pix != 0): # si no soy negro
-					esFrontera = True # lo damos por frontera en un principio, luego veremos
-					# Calculo los demás vecinos, para ver de qué color son...
-					c = j - 1
-					row = i
-					v1 = row*ANCHO_IMAGEN+c
-
-					if (not((c >= 0) and (c < ANCHO_IMAGEN) and
-					(row >= 0) and (row < LARGO_IMAGEN))): # si no es válido ponemos sus valores a 0
-						pix = 0
-					else:
-						pix = bnImg[row, c]
-
-					if (esFrontera == True): # si NO SOY COLOR CAMPO y alguno de los vecinitos ES color campo...
-						pixel.x = j
-						pixel.y = i
-						pixel.h = 1
-
-						# obtenemos su backproject e intersección con plano Z en 3D
-						pixelOnGround3D = getIntersectionZ (pixel, cameraModel)
-
-						# vamos guardando estos puntos frontera 3D para luego dibujarlos con PyGame
-						fronteraArray[puntosFrontera][0] = pixelOnGround3D.x
-						fronteraArray[puntosFrontera][1] = pixelOnGround3D.y
-						puntosFrontera = puntosFrontera + 1
-						#print "Hay frontera en pixel [",i,",",j,"] que intersecta al suelo en [",pixelOnGround3D.x,",",pixelOnGround3D.y,",",pixelOnGround3D.z,"]"
-
-				i = i - 1
-			j = j + 5
-
-		return fronteraArray
-
-	def quienSoy(self):
-		print ("Yo soy un robot real PiBot")
-
-	@property
-	def tipo(self):
-		return self._tipo
-
-	@tipo.setter
-	def tipo(self, valor):
-		self._tipo = valor
