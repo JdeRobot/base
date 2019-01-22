@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd rb0_main.tga
+map_Kd materials/textures/rb0_main.png
 
 newmtl generic.003
 Ns 0.000000
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd generic_main.tga
+map_Kd materials/textures/generic_main.png
 
 newmtl glass.003
 Ns 0.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd glass.tga
+map_Kd materials/textures/glass.png
 
 newmtl tread.003
 Ns 0.000000
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd tread_slick.tga
+map_Kd materials/textures/tread_slick.png
 
 newmtl tyre.003
 Ns 0.000000
@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd tyre.tga
+map_Kd materials/textures/tyre.png
 
 newmtl wheel.003
 Ns 0.000000
@@ -65,4 +65,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd rb0_wheel.tga
+map_Kd materials/textures/rb0_wheel.png
