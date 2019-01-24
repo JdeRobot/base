@@ -40,8 +40,7 @@ class PiBot(Kibotics):
 		cam = cfg.getProperty('Kibotics.Real.Camera')
 		d = cfg.getProperty('Kibotics.Real.Dist_ruedas')
 		r = cfg.getProperty('Kibotics.Real.Radio_ruedas')
-		print(d,r)
-		
+
 		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
@@ -61,6 +60,9 @@ class PiBot(Kibotics):
 		self.hilo = threading.Thread(target=self.readOdometry, args=(self.kill_event,d,r))
 		self.hilo.start()
 
+
+	def __del__(self):
+		self.fin()
 
 	class Angles:
 		def __init__(self):
@@ -117,7 +119,6 @@ class PiBot(Kibotics):
 
 
 	def stopOdometry(self):
-		#print("Parando...")
 		self.kill_event.set()
 
 
@@ -268,10 +269,9 @@ class PiBot(Kibotics):
 			if(timeout_excedido(time_start, time_finish)):
 				print("No se pudo alcanzar la posicion deseada")
 
-		#self.odom.startOdometry()
 		nvueltas = abs(angle / (math.pi / 2))
-		parte_entera = int(nvueltas) #Son las vueltas completas que tiene que dar
-		parte_decimal = abs(nvueltas - parte_entera) #Parte de vuelta que tendra que dar
+		parte_entera = int(nvueltas) #Son las medias vueltas que tiene que dar
+		parte_decimal = abs(nvueltas - parte_entera) #Parte de media vuelta que tendra que dar
 
 		if(nvueltas > 1):
 
@@ -283,7 +283,7 @@ class PiBot(Kibotics):
 					angle_aux = (-1) * (math.pi /2)
 				alcanzarposicion(angle_aux)
 
-			#Si me queda una parte de vuelta por dar, la doy
+			#Si me queda una parte de media vuelta por dar, la doy
 			if(parte_decimal != 0 and not timeout_exceded):
 				if(angle > 0):
 					angle_aux = (math.pi / 2) * parte_decimal
@@ -388,7 +388,7 @@ class PiBot(Kibotics):
 
 		if(velW != 0):
 			rcir = abs(velV / velW) #Es el radio de la circunferencia que tengo que trazar. En valor absoluto
-			velmotorgiro = abs(velV) + rcir     #Velocidad a la que tiene que girar el motor encargado del giro del robot
+			velmotorgiro = abs(velV) + rcir #Velocidad a la que tiene que girar el motor encargado del giro del robot
 		if(self._escero(velV) and not self._escero(velW)):
 			#Motor izquierdo hacia atras y motor derecho hacia adelante a velocidad maxima
 			if(self._espositivo(velW)):
@@ -445,7 +445,7 @@ class PiBot(Kibotics):
 
 		return state
 
-
+  
 	def leerUltrasonido(self):
 		'''
 		devuelve la distancia a un objeto en metros
@@ -483,10 +483,8 @@ class PiBot(Kibotics):
 
 		return self._frame
 
-
 	def mostrarImagen (self):
 		cv2.imshow("Imagen", self._frame)
-
 
 	def dameObjeto(self, lower=ORANGE_MIN, upper=ORANGE_MAX, showImageFiltered=False):
 		'''
@@ -595,14 +593,16 @@ class PiBot(Kibotics):
 
 		return fronteraArray
 
-
 	def quienSoy(self):
 		print ("Yo soy un robot real PiBot")
 
+	@property
+	def tipo(self):
+		return self._tipo
 
-    ##################
-	# METODOS PRIVADOS
-	##################
+	@tipo.setter
+	def tipo(self, valor):
+		self._tipo = valor
 
 	def _esnegativo(self, n):
 		return n < 0
@@ -875,7 +875,6 @@ class PiBot(Kibotics):
 		y = d * math.sin(dtheta)
 		guardarposicion(x, y, dtheta)
 
-
 	@property
 	def tipo(self):
 		return self._tipo
@@ -884,3 +883,41 @@ class PiBot(Kibotics):
 	@tipo.setter
 	def tipo(self, valor):
 		self._tipo = valor
+
+	def _pulse_in(self, inp, bit):
+		'''
+		inp: pin digital de entrada
+		bit: Nivel que quiero testear. 1(nivel alto) o 0(nivel bajo)
+
+		Devuelve el ancho de pulso (en microsegundos) del estado especificado de la señal (alto o bajo)
+		'''
+
+		def readuntil(inp, bit):
+			rec = self._GPIO.input(inp)
+			if(rec == bit):
+				#esperar hasta terminar de leer unos
+				while(rec == bit):
+					rec = self._GPIO.input(inp)
+			#leer ceros hasta que me llegue el primer uno
+			if(bit == 1):
+				while(rec == 0):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer uno despues de los ceros
+			else:
+				while(rec == 1):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer cero despues de los unos
+
+		if(bit != 0 and bit != 1):
+			return 0
+		else:
+			readuntil(inp, bit) #leo hasta que me llega ese bit
+			start = time.time() #guardo la hora actual
+		if(bit == 1):
+			readuntil(inp, 0) #leo hasta que me llega un bit contrario al anterior
+		else:
+			readuntil(inp, 1)
+		finish = time.time()
+		elapsed = (finish - start) * 1000000 #tiempo en microsegundos
+
+		return elapsed
