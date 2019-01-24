@@ -2,9 +2,9 @@ from jderobot_config import config
 
 
 def dameRobot():
-    cfg_file = "JdeRobotKids.yml"
+    cfg_file = "Kibotics.yml"
     cfg = config.load(cfg_file)
-    bot = cfg.getProperty('JdeRobotKids.Robot')
+    bot = cfg.getProperty('Kibotics.Robot')
     bot = bot.lower()
 
     if bot == "pibot":
@@ -14,8 +14,9 @@ def dameRobot():
         robot = pireal(cfg)
 
     if bot == "mbot":
-        port = cfg.getProperty('JdeRobotKids.Real.Port')
+        #port = cfg.getProperty('Kibotics.Real.Port')
         #robot = MBot()
+	None
 
     elif bot == "gazebo":
         # Import simulated Pibot wrapper

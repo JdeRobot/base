@@ -1,5 +1,5 @@
 Kibotics:
-    Robot: gazebo  #pibot, mbot or gazebo
+    Robot: real  #pibot, mbot or gazebo
 
     Real:
         Port: /dev/ttyUSB0
