@@ -1,4 +1,4 @@
-import config
+from jderobot_config import config
 
 
 def dameRobot():
@@ -9,10 +9,9 @@ def dameRobot():
 
     if bot == "pibot":
         # Import real Pibot wrapper
-        from .real import PiBot as pireal
+        from real import PiBot as pireal
 
-        cam = cfg.getProperty('JdeRobotKids.Real.Camera')
-        robot = pireal(cam)
+        robot = pireal(cfg)
 
     if bot == "mbot":
         port = cfg.getProperty('JdeRobotKids.Real.Port')
@@ -20,9 +19,9 @@ def dameRobot():
 
     elif bot == "gazebo":
         # Import simulated Pibot wrapper
-        from .gazebo import PiBot as pisim
+        from gazebo import PiBot as pisim
 
-        robot = pisim(cfg_file)
+        robot = pisim(cfg)
 
     return robot
 

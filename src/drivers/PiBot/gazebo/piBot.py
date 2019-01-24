@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from JdeRobotKids import JdeRobotKids
+from jderobot_interfaces import Kibotics
 import numpy
 import threading
 import sys
@@ -21,7 +21,7 @@ ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],n
 ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
 
 
-class PiBot:
+class PiBot(Kibotics):
 
     '''
     Controlador para el Robot PiBot de JdeRobot-Kids
@@ -29,15 +29,16 @@ class PiBot:
     def __init__(self, cfg):
 	 
         print("En constructor")
-        cfg = config.load(cfg)
+        Kibotics.__init__(self)
+        #cfg = config.load(cfg)
         
         #starting comm
-        jdrc= comm.init(cfg, 'JdeRobotKids.Sim')
-        self.camera = jdrc.getCameraClient("JdeRobotKids.Sim.Camera")
-        self.motors = jdrc.getMotorsClient("JdeRobotKids.Sim.Motors")    
-        self.irLeft = jdrc.getIRClient("JdeRobotKids.Sim.IRLeft")    
-        self.irRight = jdrc.getIRClient("JdeRobotKids.Sim.IRRight") 
-        self.us = jdrc.getSonarClient("JdeRobotKids.Sim.Sonar")    
+        jdrc= comm.init(cfg, 'Kibotics.Sim')
+        self.camera = jdrc.getCameraClient("Kibotics.Sim.Camera")
+        self.motors = jdrc.getMotorsClient("Kibotics.Sim.Motors")    
+        self.irLeft = jdrc.getIRClient("Kibotics.Sim.IRLeft")    
+        self.irRight = jdrc.getIRClient("Kibotics.Sim.IRRight") 
+        self.us = jdrc.getSonarClient("Kibotics.Sim.Sonar")    
         
 
     def moverServo(self, *args):
@@ -187,6 +188,12 @@ class PiBot:
             cv2.imshow("image_filtered", image)
 
         return center, area
+
+    def mostrarImagen(self):
+        None
+
+    def dameSonarVisual(self):
+        None
 
     def quienSoy(self):
         print ("Yo soy un robot simulado PiBot")
