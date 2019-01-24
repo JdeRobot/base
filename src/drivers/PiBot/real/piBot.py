@@ -4,7 +4,7 @@ import numpy
 import threading
 import sys, time
 import jderobot_config
-import progeo
+#import progeo
 import cv2
 import time
 import math
