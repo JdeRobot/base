@@ -1,8 +1,10 @@
 #include <boost/bind.hpp>
-#include "gazebo.hh"
-#include "physics/physics.hh"
-#include "common/common.hh"
-#include "transport/transport.hh"
+#include <functional>
+#include <gazebo/gazebo.hh>
+#include <gazebo/physics/physics.hh>
+#include <gazebo/common/common.hh>
+#include <ignition/math/Vector3.hh>
+#include <ignition/math/Quaternion.hh>
 
 
 // ICE utils includes
@@ -41,7 +43,7 @@ namespace gazebo {
             float q2;
             float q3;
         };
-        math::Quaternion initial_q;
+        ignition::math::Quaterniond initial_q;
         pose3d_t robotPose3D;
         std::string namePose3D;
         
@@ -49,7 +51,7 @@ namespace gazebo {
         
         void OnUpdate();
         physics::ModelPtr model;
-        math::Pose position;
+        ignition::math::Pose3d position;
         event::ConnectionPtr updateConnection;
         
         

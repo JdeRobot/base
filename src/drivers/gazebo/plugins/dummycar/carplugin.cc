@@ -1,4 +1,5 @@
 #include <boost/bind.hpp>
+#include <functional>
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
@@ -9,7 +10,7 @@ namespace gazebo
 {
   	class ModelPush : public ModelPlugin {
 
-		private: math::Pose pose;
+		private: ignition::math::Pose3d pose;
 
   		public: void Load(physics::ModelPtr _parent, sdf::ElementPtr ) {
       			this->model = _parent;
@@ -19,21 +20,21 @@ namespace gazebo
 		}
 
     		public: void OnUpdate(const common::UpdateInfo & ) {
-			pose = this->model->GetWorldPose();
+			pose = this->model->WorldPose();
 		
   			
-  			if (pose.pos.y < 0){
-  			    this->model->SetLinearVel(math::Vector3(5, 0, 0));
-      			if ( pose.pos.x >=50 ) {
-			        pose.pos.x = -50;
+  			if (pose.Pos()[1] < 0){
+  			    this->model->SetLinearVel(ignition::math::Vector3d(5, 0, 0));
+      			if ( pose.Pos()[0] >=50 ) {
+			        pose.Pos()[0] = -50;
 			        this->model->SetWorldPose(pose);
 			    }
 			}
 			
-			if (pose.pos.y >= 0){
-			    this->model->SetLinearVel(math::Vector3(-5, 0, 0));
-      			if ( pose.pos.x <= -50 ) {
-			        pose.pos.x = 50;
+			if (pose.Pos()[1] >= 0){
+			    this->model->SetLinearVel(ignition::math::Vector3d(-5, 0, 0));
+      			if ( pose.Pos()[0] <= -50 ) {
+			        pose.Pos()[0] = 50;
 			        this->model->SetWorldPose(pose);
 			    }
 			}	
