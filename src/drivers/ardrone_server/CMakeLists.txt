@@ -11,7 +11,7 @@ if(ARDRONE_ALL_DEPS)
 	add_library(ardrone_server_msgs STATIC ${SLICE_OUTPUT}/navdatagps.cpp)
 
 
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -lIce -lIceUtil")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -lIce")
 
 	configure_file(
     include/ardrone_server/ardrone_driver.h.in
