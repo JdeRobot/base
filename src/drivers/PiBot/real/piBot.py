@@ -9,13 +9,19 @@ import cv2
 import time
 import math
 import yaml
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 from imutils.video import VideoStream
 import imutils
 
 ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
 ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
+
+class Angles:
+	def __init__(self):
+		prev = 0
+		actual = 0
+		dif = 0
 
 class PiBot(Kibotics):
 
@@ -44,7 +50,8 @@ class PiBot(Kibotics):
 		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
-			self._videostream = VideoStream(usePiCamera=False).start()
+			pass
+			#self._videostream = VideoStream(usePiCamera=False).start()
 		time.sleep(2)
 
 		self.lock = threading.Lock()
@@ -63,13 +70,6 @@ class PiBot(Kibotics):
 
 	def __del__(self):
 		self.fin()
-
-	class Angles:
-		def __init__(self):
-			prev = 0
-			actual = 0
-			dif = 0
-
 
 	def readOdometry(self, kill_event,d,r):
 		'''
@@ -91,8 +91,8 @@ class PiBot(Kibotics):
 		sample_time = 0.065 #Intervalo entre mediciones
 
 		#Creo los dos ojetos de la clase Angles
-		angleizq = self.Angles()
-		angledcho = self.Angles()
+		angleizq = Angles()
+		angledcho = Angles()
 
 		(angleizq.prev, angledcho.prev) = self._leerangulos(EncoderL, EncoderR) #Leo el angulo previo
 		time.sleep(sample_time)
