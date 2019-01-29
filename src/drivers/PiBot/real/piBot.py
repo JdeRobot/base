@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from jderobot_interfaces import JdeRobotKids
+from jderobot_interfaces import Kibotics
 import numpy
 import threading
 import sys, time
 import jderobot_config
-import progeo
+#import progeo
 import cv2
 import time
 import math
 import yaml
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
 from imutils.video import VideoStream
 import imutils
@@ -17,7 +17,7 @@ import imutils
 ORANGE_MIN = numpy.array([0, 123, 165],numpy.uint8)#numpy.array([48, 138, 138],numpy.uint8)
 ORANGE_MAX = numpy.array([179, 255, 255],numpy.uint8)#numpy.array([67, 177, 192],numpy.uint8)
 
-class PiBot:
+class PiBot(Kibotics):
 
 	'''
 	Controlador para el Robot PiBot de JdeRobot-Kids
@@ -25,23 +25,27 @@ class PiBot:
 	- damePosicionDeObjetoDeColor
 	- dameSonarVisual
 	'''
-	def __init__(self, camara):
+	def __init__(self, cfg):
 		# Libreria RPi.GPIO
 		print("real")
 		import pigpio # Libreria para manejar los servos
-		JdeRobotKids.__init__(self)
+		Kibotics.__init__(self)
+
 		self._GPIO = GPIO
 		self._tipo = "PiBot"
 		self._dit = pigpio.pi()
 		self._frame = None
 		self._odometry_interval = 0.032
 
+		cam = cfg.getProperty('Kibotics.Real.Camera')
+		d = cfg.getProperty('Kibotics.Real.Dist_ruedas')
+		r = cfg.getProperty('Kibotics.Real.Radio_ruedas')
+
 		if camara == "PiCam":
 			self._videostream = VideoStream(usePiCamera=True).start()
 		else:
 			self._videostream = VideoStream(usePiCamera=False).start()
 		time.sleep(2)
-
 
 		self.lock = threading.Lock()
 		#Variables de la posicion relativa del PiBot
@@ -53,8 +57,9 @@ class PiBot:
 		self.kill_event = threading.Event()
 
 		#Creo un nuevo hilo que ejecutara el metodo 'readOdometry'
-		self.hilo = threading.Thread(target=self.readOdometry, args=(self.kill_event,))
+		self.hilo = threading.Thread(target=self.readOdometry, args=(self.kill_event,d,r))
 		self.hilo.start()
+
 
 	def __del__(self):
 		self.fin()
@@ -65,16 +70,20 @@ class PiBot:
 			actual = 0
 			dif = 0
 
-	def readOdometry(self, kill_event):
+
+	def readOdometry(self, kill_event,d,r):
 		'''
 		Esta leyendo los angulos de ambos motores llamando a la funcion 'leerangulorueda'
 		y va modificando las variables posx, posy, postheta
 		'''
-		config = yaml.load(open('config.yml'))
+		#config = yaml.load(open('config.yml'))
 		#Constantes:
 		FullCircle = 2 * math.pi #radianes
-		DistRuedas = float(config['Dist_Ruedas']) #metros
-		Rrueda = float(config['Radio_Rueda']) #Radio de la rueda
+		#DistRuedas = float(config['Dist_Ruedas']) #metros
+		#Rrueda = float(config['Radio_Rueda']) #Radio de la rueda
+
+		DistRuedas = d
+		Rrueda = r
 
 		#Pines de los encoders:
 		EncoderL = 6
@@ -99,6 +108,7 @@ class PiBot:
 			(angleizq.prev, angledcho.prev) = (angleizq.actual, angledcho.actual) #los angulos actuales son los previos para la siguiente vuelta
 			time.sleep(sample_time)
 
+
 	def getOdometry(self):
 		self.lock.acquire()
 		aux1 = self.posx
@@ -107,8 +117,10 @@ class PiBot:
 		self.lock.release()
 		return (aux1, aux2, aux3)
 
+
 	def stopOdometry(self):
 		self.kill_event.set()
+
 
 	def moverServo(self, *args):
 		'''
@@ -130,6 +142,7 @@ class PiBot:
 		p.ChangeDutyCycle(angulo)
 		time.sleep(0.5)
 
+
 	def avanzar(self, vel):
 		'''
 		Función que hace avanzar al robot en línea recta a una velocidad dada como parámetro.
@@ -138,6 +151,7 @@ class PiBot:
 		'''
 		self.move(vel, 0)
 
+
 	def retroceder(self, vel):
 		'''
 		Función que hace retroceder al robot en línea recta a una velocidad dada como parámetro.
@@ -145,6 +159,7 @@ class PiBot:
 		@param vel: velocidad de retroceso del robot (máximo 255)
 		'''
 		self.move(-vel, 0)
+
 
 	def parar(self):
 		'''
@@ -155,7 +170,9 @@ class PiBot:
 		puertoR = 18
 		self._dit.set_servo_pulsewidth(puertoL, 1520) #parado 1525
 		self._dit.set_servo_pulsewidth(puertoR, 1520) #parado 1510
-	def girarIzquierda(self):
+
+
+	def girarIzquierda(self, vel=None):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la izquierda a una velocidad dada como parámetro.
 		@type vel: entero
@@ -163,13 +180,15 @@ class PiBot:
 		'''
 		self.move(0, 1)
 
-	def girarDerecha(self):
+
+	def girarDerecha(self, vel=None):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la derecha a una velocidad dada como parámetro.
 		@type vel: entero
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
 		self.move(0, -1)
+
 
 	def moverHasta(self, pos):
 		'''
@@ -209,12 +228,13 @@ class PiBot:
 		#self.fin()
 		self.parar()
 		time.sleep(0.12)
+
+
 	def girarHasta(self, angle):
 		'''
 		Gira el robot un angulo determinado en sentido horario o antihorario dependiendo
 		del signo de 'angle'
 		'''
-
 		ErrorRange = 0.2
 		Timeout = 10
 
@@ -277,6 +297,7 @@ class PiBot:
 
 		self.parar()
 		time.sleep(0.12)
+
 
 	def arcoHasta(self, x, y, theta):
 		'''
@@ -355,6 +376,7 @@ class PiBot:
 		self.parar()
 		self.stopOdometry()
 
+
 	def move(self, velV, velW):
 		'''
 		Función que hace avanzar y girar al robot al mismo tiempo, según las velocidades V,W dadas como parámetro.
@@ -395,7 +417,6 @@ class PiBot:
 			self._movermotordcho(-velmotorgiro)
 
 
-
 	def leerIRSigueLineas(self):
 		'''
 		devuelve el estado de los sensores IR
@@ -424,6 +445,7 @@ class PiBot:
 
 		return state
 
+  
 	def leerUltrasonido(self):
 		'''
 		devuelve la distancia a un objeto en metros
@@ -450,6 +472,7 @@ class PiBot:
 		elapsed = stop - start
 
 		return (elapsed * 343) / 2
+
 
 	def dameImagen (self):
 		'''
@@ -509,6 +532,7 @@ class PiBot:
 			cv2.imshow("mask", mask)
 
 		return center, area
+
 
 	def dameSonarVisual ():
 		'''
@@ -580,16 +604,56 @@ class PiBot:
 	def tipo(self, valor):
 		self._tipo = valor
 
-	#AQUI EMPIEZAN LOS METODOS PRIVADOS
-
 	def _esnegativo(self, n):
 		return n < 0
+
 
 	def _espositivo(self, n):
 		return n > 0
 
+
 	def _escero(self, n):
 		return n == 0
+
+
+	def _pulse_in(self, inp, bit):
+		'''
+		inp: pin digital de entrada
+		bit: Nivel que quiero testear. 1(nivel alto) o 0(nivel bajo)
+
+		Devuelve el ancho de pulso (en microsegundos) del estado especificado de la señal (alto o bajo)
+		'''
+
+		def readuntil(inp, bit):
+			rec = self._GPIO.input(inp)
+			if(rec == bit):
+				#esperar hasta terminar de leer unos
+				while(rec == bit):
+					rec = self._GPIO.input(inp)
+			#leer ceros hasta que me llegue el primer uno
+			if(bit == 1):
+				while(rec == 0):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer uno despues de los ceros
+			else:
+				while(rec == 1):
+					rec = self._GPIO.input(inp)
+				#ahora me acaba de llegar el primer cero despues de los unos
+
+		if(bit != 0 and bit != 1):
+			return 0
+		else:
+			readuntil(inp, bit) #leo hasta que me llega ese bit
+			start = time.time() #guardo la hora actual
+		if(bit == 1):
+			readuntil(inp, 0) #leo hasta que me llega un bit contrario al anterior
+		else:
+			readuntil(inp, 1)
+		finish = time.time()
+		elapsed = (finish - start) * 1000000 #tiempo en microsegundos
+
+		return elapsed
+
 
 	def _movermotorizq(self, vel):
 		'''
@@ -628,6 +692,7 @@ class PiBot:
 			else: #velocidad muy rapida
 				self._dit.set_servo_pulsewidth(puertoL, 500)
 
+
 	def _movermotordcho(self, vel):
 		'''
 		Mueve el motor derecho a la velicidad dada como parametro
@@ -664,6 +729,7 @@ class PiBot:
 				self._dit.set_servo_pulsewidth(puertoR, 1640)
 			else: #velocidad muy rapida
 				self._dit.set_servo_pulsewidth(puertoR, 1700)
+
 
 	def _leerangulorueda(self, Encoder):
 		'''
@@ -739,6 +805,7 @@ class PiBot:
 
 		return angle
 
+
 	def _leerangulos(self, l, r):
 		'''
 		l: Encoder del motor izquierdo
@@ -747,6 +814,7 @@ class PiBot:
 		Devuelve el angulo en el que se encuentran los motores izquierdo y derecho
 		'''
 		return (self._leerangulorueda(l), self._leerangulorueda(r))
+
 
 	def _diferenciaangulos(self, izq, dcho, fullcircle):
 		'''
@@ -768,6 +836,7 @@ class PiBot:
 			return dif
 
 		return (diferencia(izq.prev, izq.actual), diferencia(dcho.prev, dcho.actual))
+
 
 	def _calcularposicion(self, difizq, difdcho, rrueda, distruedas):
 		'''
@@ -805,6 +874,15 @@ class PiBot:
 		x = d * math.cos(dtheta)
 		y = d * math.sin(dtheta)
 		guardarposicion(x, y, dtheta)
+
+	@property
+	def tipo(self):
+		return self._tipo
+
+
+	@tipo.setter
+	def tipo(self, valor):
+		self._tipo = valor
 
 	def _pulse_in(self, inp, bit):
 		'''

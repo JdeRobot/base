@@ -1,9 +1,11 @@
-JdeRobotKids:
+Kibotics:
     Robot: pibot  #pibot, mbot or gazebo
 
     Real:
         Port: /dev/ttyUSB0
         Camera: PiCam
+        Dist_ruedas: 1
+        Radio_ruedas: 1
 
     Sim:
         Motors:

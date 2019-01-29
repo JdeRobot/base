@@ -1,7 +1,7 @@
 #!/bin/python2
 
 import sys, time
-import PiBot 
+import PiBot
 
 if __name__ == "__main__":
 
