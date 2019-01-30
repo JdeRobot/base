@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<sdf version="1.4">
-<model name='quadrotor'>
+<sdf version="1.5">
+  <model name='quadrotor'>
     <plugin name='ardroneplugin' filename='libquadrotorplugin2.so'>
       <alwaysOn>1</alwaysOn>
       <updateRate>10.0</updateRate>
@@ -31,7 +31,7 @@
       <velocityZDifferentialGain>0.5</velocityZDifferentialGain>
       <velocityZIntegralGain>0.0</velocityZIntegralGain>
       <!-- Ice configuration -->
-      <iceConfigFile>quadrotorplugin2_red.cfg</iceConfigFile>
+      <iceConfigFile>quadrotorplugin2.cfg</iceConfigFile>
       <!--iceAdapterPort>9000</iceAdapterPort-->
   </plugin>
     <link name='base_link'>
@@ -51,7 +51,7 @@
         <pose>0 0 0 0 -0 0.00000</pose>
         <geometry>
           <mesh>
-            <uri>model://RedArDrone2/meshes/quadrotor/red_quadrotorbm.stl</uri>
+            <uri>model://ArDrone2/meshes/quadrotor/quadrotor_4.stl</uri>
         </mesh>
       </geometry>
         <surface>
@@ -86,7 +86,7 @@
         <transparency>0</transparency>
         <geometry>
           <mesh>
-            <uri>model://RedArDrone2/meshes/quadrotor/red_quadrotor.dae</uri>
+            <uri>model://RedArDrone2/meshes/quadrotor/quadrotor_4.dae</uri>
         </mesh>
       </geometry>
     </visual>
@@ -317,19 +317,19 @@
         <pose>-0.150000 0 0 3.141590 1.570790 3.141590</pose>
         <geometry>
           <mesh>
-            <uri>model://RedArDrone2/meshes/sonar_sensor/max_sonar_ez4.dae</uri>
+            <uri>model://ArDrone2/meshes/sonar_sensor/max_sonar_ez4.dae</uri>
         </mesh>
       </geometry>
     </visual>
       <sensor name='cam_sensor_ventral' type='camera'>
         <always_on>0</always_on>
         <update_rate>60</update_rate>
-	  <visualize>false</visualize>
+        <visualize>false</visualize>
         <pose>0.15 0 0 0 1.570793 0</pose>
         <camera>
           <horizontal_fov>1.413717</horizontal_fov>
           <image>
-		<width>320</width>
+            <width>320</width>
             <height>240</height>
             <format>R8G8B8</format>
         </image>
@@ -342,7 +342,7 @@
       <sensor name='cam_sensor_frontal' type='camera'>
         <always_on>0</always_on>
         <update_rate>60</update_rate>
-	  <visualize>false</visualize>
+        <visualize>false</visualize>
         <pose>0.21 0 0.01 0 -0 0</pose>
         <camera>
           <horizontal_fov>1.413717</horizontal_fov>
@@ -356,37 +356,37 @@
             <far>100</far>
         </clip>
       </camera>
-	</sensor>
-	<sensor name='sonar' type='ray'>
-	  <always_on>0</always_on>
-	  <update_rate>10</update_rate>
-	  <visualize>false</visualize>
-	  <pose>-0.150000 0 0 3.141593 1.570793 3.141593</pose>
-	  <ray>
-	    <scan>
-		<horizontal>
-		  <samples>3</samples>
-		  <resolution>1</resolution>
-		  <min_angle>-0.349066</min_angle>
-		  <max_angle>0.349066</max_angle>
-		</horizontal>
-		<vertical>
-		  <samples>3</samples>
-		  <resolution>1</resolution>
-		  <min_angle>-0.349066</min_angle>
-		  <max_angle>0.349066</max_angle>
-		</vertical>
-	  </scan>
-	    <range>
-		<min>0.010000</min>
-		<max>3</max>
-		<resolution>0.010000</resolution>
-	  </range>
-	</ray>
-	</sensor>
+    </sensor>
+      <sensor name='sonar' type='ray'>
+        <always_on>0</always_on>
+        <update_rate>10</update_rate>
+        <visualize>false</visualize>
+        <pose>-0.150000 0 0 3.141593 1.570793 3.141593</pose>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>3</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.349066</min_angle>
+              <max_angle>0.349066</max_angle>
+          </horizontal>
+            <vertical>
+              <samples>3</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.349066</min_angle>
+              <max_angle>0.349066</max_angle>
+          </vertical>
+        </scan>
+          <range>
+            <min>0.010000</min>
+            <max>3</max>
+            <resolution>0.010000</resolution>
+        </range>
+      </ray>
+    </sensor>
       <sensor name="imu_sensor" type="imu">
         <update_rate>20</update_rate>
-	</sensor>
+    </sensor>
   </link>
 </model>
 </sdf>
