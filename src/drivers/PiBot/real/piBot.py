@@ -172,22 +172,22 @@ class PiBot(Kibotics):
 		self._dit.set_servo_pulsewidth(puertoR, 1520) #parado 1510
 
 
-	def girarIzquierda(self, vel=None):
+	def girarIzquierda(self, velW):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la izquierda a una velocidad dada como parámetro.
 		@type vel: entero
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
-		self.move(0, 1)
+		self.move(0, velW)
 
 
-	def girarDerecha(self, vel=None):
+	def girarDerecha(self, velW):
 		'''
 		Función que hace rotar al robot sobre sí mismo hacia la derecha a una velocidad dada como parámetro.
 		@type vel: entero
 		@param vel: velocidad de giro del robot (máximo 255)
 		'''
-		self.move(0, -1)
+		self.move(0, -velW)
 
 
 	def moverHasta(self, pos):
@@ -225,7 +225,6 @@ class PiBot(Kibotics):
 			if(timeout_excedido(elapsed)):
 				print("No se pudo alcanzar la posicion deseada")
 				finish = True
-		#self.fin()
 		self.parar()
 		time.sleep(0.12)
 
@@ -391,12 +390,8 @@ class PiBot(Kibotics):
 			velmotorgiro = abs(velV) + rcir #Velocidad a la que tiene que girar el motor encargado del giro del robot
 		if(self._escero(velV) and not self._escero(velW)):
 			#Motor izquierdo hacia atras y motor derecho hacia adelante a velocidad maxima
-			if(self._espositivo(velW)):
-				self._movermotordcho(0.08)
-				self._movermotorizq(-0.08)
-			else:
-				self._movermotordcho(-0.08)
-				self._movermotorizq(0.08)
+			self._movermotordcho(velW / 16)
+			self._movermotorizq(-velW / 16)
 
 		elif(not self._escero(velV) and self._escero(velW)):
 			#Avanza hacia el frente a la velocidad lineal dada
@@ -445,7 +440,7 @@ class PiBot(Kibotics):
 
 		return state
 
-  
+
 	def leerUltrasonido(self):
 		'''
 		devuelve la distancia a un objeto en metros
