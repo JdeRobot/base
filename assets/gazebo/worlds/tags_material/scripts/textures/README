@@ -1,3 +1,0 @@
-The images are rotated 90º anticlockwise from the original position so the textures
-in Gazebo are loaded with the correct orientation. Keep this in mind if you are going
-to use AprilTags markers images in this folder for any other purpose than Gazebo simulation.
