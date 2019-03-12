@@ -1,3 +1,18 @@
+jderobot (5.6.7) unstable; urgency=low
+
+  * release 5.6.7
+  * Solved some bugs related with installation and other minor bugs in components.
+  * [PR #1312] Unified Pibot model, now it has all its sensors active.
+  * [PR #1313] Added support for MavRos, added iris drone and gazebo infraestructure for MavROS drones
+  * [PR #1317] Refactorization of PiBot real driver, added odometry and documentation.
+  * [PR #1321] Added printable pieces of Pibot in freecad format
+  * [PR #1323] Solved texture loading of F1 cars for gzweb
+  * [PR #1326] Added support for real turtlebot 
+  * [PR #1328] Little refactorization of PiBot real driver
+  * [PR #1338] Added a refactored picam printable piece 
+
+-- Francisco Perez <f.perez475@gmail.com>, Tue, 12 Mar 2019 13:00:00 +0100
+
 jderobot (5.6.6) unstable; urgency=low
 
   * release 5.6.6
