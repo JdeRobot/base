@@ -21,7 +21,6 @@ if(Boost_FOUND)
                 execute_process(COMMAND readlink -f ${_LIB} OUTPUT_VARIABLE _LIB OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
                 execute_process(COMMAND dpkg -S ${_LIB} OUTPUT_VARIABLE _PKG)
                 string(REGEX REPLACE "^([^:]+):.*" \\1 _PKG "${_PKG}")
-        
                 list(APPEND DEPS ${_PKG})
             endif(Boost_${COMPONENT}_LIBRARY)
 
