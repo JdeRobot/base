@@ -46,7 +46,7 @@ For other dependencies, like the `GTK` stuff, refer to the [Installation Manual]
 # Download source code
 
 ```sh
-$ git clone https://github.com/RoboticsURJC/JdeRobot
+$ git clone https://github.com/JdeRobot/base.git
 ```
 # Compilation
 ```sh
