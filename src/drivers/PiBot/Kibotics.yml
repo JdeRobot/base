@@ -3,7 +3,11 @@ Kibotics:
 
     Real:
         Port: /dev/ttyUSB0
-        Camera: PiCam
+        Camera: PiCam   # != PiCam -> deactivate
+        FPS: 10
+        Width: 160
+        Height: 128
+        Colour: ORANGE #BLUE, RED, GREEN, PINK, ...
         Dist_ruedas: 1
         Radio_ruedas: 1
 
