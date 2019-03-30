@@ -36,7 +36,7 @@ set_target_properties(roombaplugin PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FLAGS}
 # Ice
 target_link_libraries(roombaplugin
         Ice
-        IceUtil
+        # IceUtil
         JderobotInterfaces
         ${ZeroCIce_LIBRARIES}
         ${easyiceconfig_LIBRARIES}

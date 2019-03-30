@@ -25,7 +25,7 @@ GZ_REGISTER_MODEL_PLUGIN(roomba::RoombaPlugin)
 
 using namespace roomba;
 using namespace gazebo::physics;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::event;
 using namespace gazebo::common;
 

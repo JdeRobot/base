@@ -79,7 +79,7 @@ private:
 public:
     cv::Mat img[NUM_CAMS];
     std::vector<float> laserValues;
-    gazebo::math::Pose pose;
+    ignition::math::Pose3d pose;
 
     double position;
 };

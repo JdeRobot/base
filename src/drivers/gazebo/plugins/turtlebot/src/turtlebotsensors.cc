@@ -58,7 +58,7 @@ TurtlebotSensors::Load(ModelPtr model){
             bumper = std::static_pointer_cast<ContactSensor>(s);
         }
 
-        pose = model->GetWorldPose();
+        pose = model->WorldPose();
     }
 }
 
@@ -87,7 +87,7 @@ TurtlebotSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.Pos()[0] << ", " << pose.Pos()[1] << ", " << pose.Pos()[2] << std::endl;)
 
     //Pose3d
     updatePose = gazebo::event::Events::ConnectWorldUpdateBegin(
@@ -128,7 +128,7 @@ TurtlebotSensors::_on_cam(int id){
         uint32_t w = cam[id]->ImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
+        // cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
      }
 }
 
@@ -185,5 +185,5 @@ TurtlebotSensors::_on_bumper(){
 
 void
 TurtlebotSensors::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
-    pose = model->GetWorldPose();
+    pose = model->WorldPose();
 }

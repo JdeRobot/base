@@ -9,7 +9,7 @@ namespace gazebo
 {
 	class Wall3 : public ModelPlugin {
 
-		private: math::Pose pose;
+		private: ignition::math::Pose3d pose;
 		private: bool flag;
 		private: double vel1; 
 		private: double vel2; 
@@ -26,21 +26,21 @@ namespace gazebo
 		}
 
 		public: void OnUpdate(const common::UpdateInfo & ) {
-			pose = this->model->GetWorldPose();
+			pose = this->model->WorldPose();
 
 			if  (flag) {
-				this->model->SetLinearVel(math::Vector3(this->vel1, 0, 0));
+				this->model->SetLinearVel(ignition::math::Vector3d(this->vel1, 0, 0));
 			}
-			if ( pose.pos.x >=4 ) {
-				pose.pos.x = 4;
+			if ( pose.Pos()[0] >=4 ) {
+				pose.Pos()[0] = 4;
 				this->model->SetWorldPose(pose);
 				flag = false;
 			}
 			if (!flag) {
-				this->model->SetLinearVel(math::Vector3(this->vel2, 0, 0));
+				this->model->SetLinearVel(ignition::math::Vector3d(this->vel2, 0, 0));
 			}	
-			if ( pose.pos.x <= 1.25 ) {
-				pose.pos.x = 1.25;
+			if ( pose.Pos()[0] <= 1.25 ) {
+				pose.Pos()[0] = 1.25;
 				this->model->SetWorldPose(pose);
 				flag = true;
 			}

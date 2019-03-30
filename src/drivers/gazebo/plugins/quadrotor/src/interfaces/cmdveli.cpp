@@ -19,11 +19,11 @@
 
 
 #include "quadrotor/interfaces/cmdveli.h"
-
+// #include "quadrotor/control/twist.hh"
 
 using namespace quadrotor::interfaces;
 using namespace jderobot;
-using namespace gazebo::math;
+using namespace ignition::math;
 
 CMDVelI::CMDVelI (QuadrotorControl *control):
     control(control)
@@ -36,8 +36,8 @@ CMDVelI::~CMDVelI ()
 Ice::Int
 CMDVelI::setCMDVelData(const jderobot::CMDVelDataPtr& data, const Ice::Current&){
 	Twist twist_cmd;
-	twist_cmd.linear = Vector3(data->linearX, data->linearY, data->linearZ);
-	twist_cmd.angular = Vector3(data->angularX, data->angularY, data->angularZ);
+	twist_cmd.linear = Vector3d(data->linearX, data->linearY, data->linearZ);
+	twist_cmd.angular = Vector3d(data->angularX, data->angularY, data->angularZ);
 
 	control->setTargetVelocity(twist_cmd);
 

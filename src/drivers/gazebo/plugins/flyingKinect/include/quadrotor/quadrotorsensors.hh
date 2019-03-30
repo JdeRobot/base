@@ -84,7 +84,7 @@ private:
 
 public:
     cv::Mat img[NUM_CAMS];
-    gazebo::math::Pose pose;
+    ignition::math::Pose3d pose;
     double altitude;
 
 };

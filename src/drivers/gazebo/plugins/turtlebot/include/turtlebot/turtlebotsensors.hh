@@ -104,7 +104,7 @@ public:
     cv::Mat img[NUM_CAMS];
     LaserD laserData;
     BumperD bumperData;
-    gazebo::math::Pose pose;
+    ignition::math::Pose3d pose;
 
     double position;
 };

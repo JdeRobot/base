@@ -90,7 +90,7 @@ private:
 public:
     LaserD laserData;
     BumperD bumperData;
-    gazebo::math::Pose pose;
+    ignition::math::Pose3d pose;
 
     double position;
 };
