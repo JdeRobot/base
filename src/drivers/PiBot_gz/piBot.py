@@ -26,8 +26,8 @@ class PiBot(Kibotics):
     '''
     Controlador para el Robot PiBot de JdeRobot-Kids
     '''
-    def __init__(self, cfg):
-	 
+    def __init__(self):
+        cfg = config.load("Kibotics.yml")
         print("En constructor")
         Kibotics.__init__(self)
         #cfg = config.load(cfg)
