@@ -44,7 +44,7 @@ JdeRobot is a project developed by Robotics Group of Universidad Rey Juan Carlos
 * [Installing from docker image](#dim)
 * [Manual installation](#manual)
   * [Dependencies](#deps)
-  * [Compiling from source](#source)
+  * [Install from source](#source)
 
 
 
@@ -135,11 +135,13 @@ For more information follow [this link](https://hub.docker.com/r/jderobot/jderob
 
 
 <a name="manual"/>
+
 ### Manual installation
 
 Downloading the source code from the GitHub is strongly NOT RECOMMENDED for new users unless you know what you are doing. 
 
 <a name="deps"/>
+
 #### Dependencies
 
 You have two options here:
