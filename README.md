@@ -34,31 +34,303 @@ JdeRobot is a project developed by Robotics Group of Universidad Rey Juan Carlos
 
 * Official Web Page: http://jderobot.org
 
-# Dependencies
+# Installation
 
-```sh
-$ sudo aptitude install build-essential libtinyxml-dev libtbb-dev libxml2-dev libqt4-dev pkg-config libprotoc-dev libfreeimage-dev libprotobuf-dev protobuf-compiler libboost-all-dev freeglut3-dev cmake libogre-dev libtar-dev libcurl4-openssl-dev libcegui-mk2-dev libswscale-dev libavformat-dev libavcodec-dev 
+## Table of Contents
+
+* [Getting environment ready](#env )
+* [Installing from debian packages](#deb)
+  * [Updating pakcages](#upd)
+* [Installing from docker image](#dim)
+* [Manual installation](#manual)
+  * [Dependencies](#deps)
+  * [Compiling from source](#source)
+
+
+
+<a name="env"/>
+
+### Getting environment ready
+
+* Add the lastest ROS sources:
+
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 ```
 
-For Ubuntu 14.04, `libogre-dev` is not present, so to install Ogre 1.9 you need to install `libogre-1.9-dev` .
-For other dependencies, like the `GTK` stuff, refer to the [Installation Manual](http://jderobot.org/Manual-5#Installing_JdeRobot_5). You may want to install the missing dependencies according to your `cmake` output.
+* Add the lastest Gazebo sources:
 
-# Download source code
-
-```sh
-$ git clone https://github.com/JdeRobot/base.git
 ```
-# Compilation
-```sh
-$ cmake .
-$ make 
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 ```
 
-### Compilation by components
+* Add the lastest zeroc-ice sources:
 
-```sh
-$ cmake -Dbuild-default=OFF -Dbuild_introrob=ON .
-$ make
+```
+sudo apt-add-repository "deb http://zeroc.com/download/apt/ubuntu$(lsb_release -rs) stable main"
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 5E6DA83306132997
+```
+* Add JdeRobot repository (using dedicated file /etc/apt/sources.list.d/jderobot.list) For Ubuntu Xenial(16.04):
+
+```
+sudo sh -c 'cat<<EOF>/etc/apt/sources.list.d/jderobot.list
+# for ubuntu 16.04 LTS (64 bit)
+
+deb [arch=amd64] http://jderobot.org/apt xenial main
+EOF'
+```
+
+* Get and add the public key from the JdeRobot repository
+
+```
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 24E521A4
+```
+
+* Update the repositories
+```
+sudo apt update
+```
+
+
+
+<a name="deb"/>
+### Installing from debian packages (RECOMMENDED)
+
+* Install JdeRobot:
+
+```
+sudo apt install jderobot
+sudo apt install jderobot-gazebo-assets
+```
+
+* After installing the package, you can close the terminal and reopen it to source the environment variables, OR just type: 
+
+```
+source ~/.bashrc
+```
+<a name="upd"/>
+
+#### Updating packages
+
+* If you already have a previous version of the packages installed, you only have to do:
+```
+sudo apt update && sudo apt upgrade
+```
+
+
+
+<a name="dim"/>
+
+### Installing from docker image
+
+If you want to run JdeRobot in MS-Windows, MacOS or other Linux distributions you can use Docker containers. We have created a [Docker image](https://www.docker.com/) with current JdeRobot Release and all the necessary components to be used with [JdeRobot-Academy](http://jderobot.org/JdeRobot-Academy). To download it, use: 
+
+```
+docker pull jderobot/jderobot
+```
+
+For more information follow [this link](https://hub.docker.com/r/jderobot/jderobot/)  
+
+
+<a name="manual"/>
+### Manual installation
+
+Downloading the source code from the GitHub is strongly NOT RECOMMENDED for new users unless you know what you are doing. 
+
+<a name="deps"/>
+#### Dependencies
+
+You have two options here:
+1. Install all the dependencies from a binary package
+2. Install all the dependencies manually  (**NOT RECOMMENDED**)
+
+For first one, you only have to type the following:
+
+```
+sudo apt install jderobot-deps-dev
+```
+and skip to the next section of this README.
+
+For the second one... keep reading
+
+JdeRobot has different external dependencies to build its structure. There are two types of dependencies: necessary dependencies and other dependencies. The firsts are needed to compile and install the basics of JdeRobot, that is, all its libraries and interfaces that are needed for the components or to develop components that use JdeRobot. The seconds are needed just for some components, but are not really necessary unless you want to use that components. For instance, the component gazeboserver uses Gazebo, a 3D robot simulator, so to use this component you may install Gazebo first.
+
+First of all repeat the step [Getting environment ready](#env )
+
+Some libraries are required to compile, link or run JdeRobot. Just type the following commands:
+
+* **Basic libraries:**
+
+```sudo apt install build-essential libtool cmake g++ gcc git make```
+
+* **OpenGL libraries:**
+
+```sudo apt install freeglut3 freeglut3-dev libgl1-mesa-dev libglu1-mesa```
+
+* **GTK2 libraries:**
+
+```
+sudo apt install libgtk2.0-0 libgtk2.0-bin libgtk2.0-cil libgtk2.0-common libgtk2.0-dev libgtkgl2.0-1
+sudo apt install libgtkgl2.0-dev libgtkglext1 libgtkglext1-dev libglademm-2.4-dev libgtkmm-2.4-dev 
+sudo apt install libgnomecanvas2-0 libgnomecanvas2-dev  libgtkglext1-doc libgnomecanvasmm-2.6-dev
+sudo apt install libgnomecanvasmm-2.6-1v5 libgtkglextmm-x11-1.2-0v5 libgtkglextmm-x11-1.2-dev
+```
+
+* **Gtk3 libraries:**
+
+```sudo apt install libgoocanvasmm-2.0-6 libgoocanvasmm-2.0-dev```
+
+* **GSL libraries:**
+
+```sudo apt install libgsl2 gsl-bin libgsl-dev```
+
+* **LibXML:**
+
+```sudo apt install libxml++2.6-2v5 libxml++2.6-dev libtinyxml-dev```
+
+* **Eigen:**
+
+```sudo apt install libeigen3-dev```
+
+* **Fireware:**
+
+```sudo apt install libdc1394-22 libdc1394-22-dev```
+
+* **USB:**
+
+```sudo apt install libusb-1.0-0 libusb-1.0-0-dev```
+
+* **CWIID:**
+
+```sudo apt install libcwiid-dev```
+
+* **Python components:**
+
+```sudo apt install python-matplotlib python-pyqt5 python-pip python-numpy python-pyqt5.qtsvg```
+
+* **Qfi**
+
+It can be compiled and installed from source: https://github.com/JdeRobot/ThirdParty/tree/master/qflightinstruments
+
+* **Qt 5**
+
+```sudo apt install qtbase5-dev libqt5declarative5 libqt5script5 libqt5svg5-dev```
+
+* **Boost**
+
+```sudo apt install libboost-system-dev libboost-filesystem-dev```
+
+* **ROS**
+
+```
+sudo apt install ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-kobuki-gazebo
+```
+
+Once all ros packages are installed, install the script that tunes the environment variables ROS in your .bashrc configuration file, and run it for the current shell:
+
+```
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc 
+source ~/.bashrc 
+```
+
+* **Google glog (logging)**
+
+```sudo apt install libgoogle-glog-dev```
+
+* **GStreamer**
+
+```sudo apt-get install libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev```
+
+* **ICE**
+
+```sudo apt install libdb5.3-dev libdb5.3++-dev libssl-dev libbz2-dev libmcpp-dev```
+
+compile ice:
+
+```
+git clone -b 3.6 https://github.com/zeroc-ice/ice.git 
+cd ice/cpp
+make CPP11=yes OPTIMIZE=yes
+make install
+```
+Configure ICE for Python with pip
+```
+sudo pip2 install --upgrade pip
+sudo pip2 install zeroc-ice
+```
+
+* **OpenNI 2**
+
+```sudo apt-get install libopenni2-dev libopenni-dev```
+
+* **Point Cloud Library**
+
+```sudo apt-get install libpcl-dev```
+
+* **OpenCV**
+
+```sudo apt-get install ros-kinetic-opencv3```
+
+* **NodeJS**
+
+```sudo apt-get install nodejs```
+
+* **Kobuki robot libraries**
+
+You can find the source code in our git repository (http://github.com/jderobot/thirdparty.git)
+
+* **SDK Parrot for ArDrone**
+
+If you want to install it manually from our third party repository, you only have to:
+
+1. Create a folder to compile the code
+```mkdir ardronelib-build && cd ardronelib-build```
+
+2. Download the installer, a CMakeLists.txt file
+```
+wget https://raw.githubusercontent.com/RoboticsURJC/JdeRobot-ThirdParty/master/ardronelib/CMakeLists.txt
+wget https://raw.githubusercontent.com/RoboticsURJC/JdeRobot-ThirdParty/master/ardronelib/ffmpeg-0.8.pc.in
+wget https://raw.githubusercontent.com/RoboticsURJC/JdeRobot-ThirdParty/master/ardronelib/ardronelib.pc.in
+```
+3. Compile and install as usual:
+```
+cmake .
+make
+sudo make install
+```
+
+<a href="#source"/>
+
+#### Install from source
+
+After installing all the dependencies you can compile the project, you can clone this repo and build it doing the following:
+
+-  Download the source code from git:
+
+```
+git clone http://github.com/RoboticsURJC/JdeRobot.git
+cd JdeRobot/
+```
+
+- Check system and dependencies
+
+```
+mkdir build && cd build
+cmake ..
+```
+
+- Compile
+
+```
+make
+```
+
+- Install
+
+```
+sudo make install
 ```
 
 # How To Contribute
@@ -68,17 +340,17 @@ To see the collaborate workflow and coding style of `JdeRobot` community, please
 
 
     Copyright 2015 - JderRobot Developers
-
+    
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+    
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+    
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 =======
