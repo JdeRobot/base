@@ -22,7 +22,7 @@
 #include "formula1/formula1control.hh"
 
 using namespace formula1;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::physics;
 using namespace gazebo::common;
 using namespace gazebo::transport;
@@ -43,7 +43,7 @@ Formula1Control::Load(ModelPtr model, sdf::ElementPtr _sdf){
 
     this->model = model;
     this->node = NodePtr(new Node());
-    this->node->Init(this->model->GetWorld()->GetName());
+    this->node->Init(this->model->GetWorld()->Name());
 
     if (!_sdf->HasElement("drive_right_joint"))
         gzerr << "motors plugin missing <drive_right_joint> element\n";
@@ -84,25 +84,25 @@ Formula1Control::Init(Formula1Sensors *sensors){
     this->sensors = sensors;
 
 
-    this->wheelSeparation = this->driveLeftJoint->GetAnchor(0).Distance(this->driveRightJoint->GetAnchor(0));
+    this->wheelSeparation = this->driveLeftJoint->Anchor(0).Distance(this->driveRightJoint->Anchor(0));
     //std::cout << "Motors Separation:" << this->frontmotorseparation << std::endl;
     EntityPtr parent = boost::dynamic_pointer_cast<Entity > (this->driveLeftJoint->GetChild());
 
-    Box bb = parent->GetBoundingBox();
+    Box bb = parent->BoundingBox();
 
-    this->wheelRadius = bb.GetSize().GetMax() * 0.5;
+    this->wheelRadius = bb.Size().Max() * 0.5;
     std::cout << "motors Diameter:" << this->wheelRadius * 2 << std::endl;
 
     robotMotors.v = 0;
     robotMotors.w = 0;
-    robotMotors.wheelMin= steeringLeftJoint->GetLowerLimit(0).Radian();
-    robotMotors.wheelMax= steeringLeftJoint->GetUpperLimit(0).Radian();
+    robotMotors.wheelMin= steeringLeftJoint->LowerLimit(0);
+    robotMotors.wheelMax= steeringLeftJoint->UpperLimit(0);
     robotMotors.targetRightSteerPos=robotMotors.targetLeftSteerPos=0;
 
-    this->steeringRightJoint->SetHighStop(0,robotMotors.wheelMax);
-    this->steeringRightJoint->SetLowStop(0,robotMotors.wheelMin);
-    this->steeringLeftJoint->SetHighStop(0,robotMotors.wheelMax);
-    this->steeringLeftJoint->SetLowStop(0,robotMotors.wheelMin);
+    this->steeringRightJoint->SetUpperLimit(0,robotMotors.wheelMax);
+    this->steeringRightJoint->SetLowerLimit(0,robotMotors.wheelMin);
+    this->steeringLeftJoint->SetUpperLimit(0,robotMotors.wheelMax);
+    this->steeringLeftJoint->SetLowerLimit(0,robotMotors.wheelMin);
 
     updateConnection = gazebo::event::Events::ConnectWorldUpdateBegin(
         boost::bind(&Formula1Control::OnUpdate, this, _1));
@@ -113,8 +113,8 @@ Formula1Control::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 
             pthread_mutex_lock(&mutex);
 
-            robotMotors.targetRightSteerPos=robotMotors.w*0.145-this->steeringRightJoint->GetAngle(0).Radian();
-            robotMotors.targetLeftSteerPos=robotMotors.w*0.145-this->steeringLeftJoint->GetAngle(0).Radian();
+            robotMotors.targetRightSteerPos=robotMotors.w*0.145-this->steeringRightJoint->Position(0);
+            robotMotors.targetLeftSteerPos=robotMotors.w*0.145-this->steeringLeftJoint->Position(0);
 
             this->motorspeed = robotMotors.v*10;
 
@@ -124,10 +124,10 @@ Formula1Control::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
             this->driveLeftJoint->SetVelocity(0, motorspeed);
             this->driveRightJoint->SetVelocity(0, motorspeed);
 
-            if(this->steeringRightJoint->GetAngle(0).Radian() >= robotMotors.wheelMax
-                    || this->steeringLeftJoint->GetAngle(0).Radian() >= robotMotors.wheelMax
-                    || this->steeringRightJoint->GetAngle(0).Radian() <= robotMotors.wheelMin
-                    || this->steeringLeftJoint->GetAngle(0).Radian() <= robotMotors.wheelMin)
+            if(this->steeringRightJoint->Position(0) >= robotMotors.wheelMax
+                    || this->steeringLeftJoint->Position(0) >= robotMotors.wheelMax
+                    || this->steeringRightJoint->Position(0) <= robotMotors.wheelMin
+                    || this->steeringLeftJoint->Position(0) <= robotMotors.wheelMin)
             {
                 this->steeringLeftJoint->SetForce(0,0.00000);
                 this->steeringRightJoint->SetForce(0,0.00000);
@@ -142,6 +142,6 @@ Formula1Control::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 }
 
 void
-Formula1Control::teleport(gazebo::math::Pose pose){
+Formula1Control::teleport(ignition::math::Pose3d pose){
     this->model->SetWorldPose(pose);
 }

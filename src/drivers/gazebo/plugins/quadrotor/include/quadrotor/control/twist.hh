@@ -21,14 +21,14 @@
 #ifndef TWIST_HH
 #define TWIST_HH
 
-#include <gazebo/math/Vector3.hh>
+#include <ignition/math/Vector3.hh>
 
-namespace gazebo{
+namespace ignition{
 namespace math{
 
 typedef struct Twist_{
-    gazebo::math::Vector3 linear;
-    gazebo::math::Vector3 angular;
+    ignition::math::Vector3d linear;
+    ignition::math::Vector3d angular;
 }Twist;
 
 }}//NS

@@ -29,7 +29,7 @@ GZ_REGISTER_MODEL_PLUGIN(turtlebot::TurtlebotPlugin)
 
 using namespace turtlebot;
 using namespace gazebo::physics;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::event;
 using namespace gazebo::common;
 

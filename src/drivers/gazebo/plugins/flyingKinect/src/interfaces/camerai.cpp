@@ -41,7 +41,7 @@ CameraI::onCameraSensorBoostrap(){
 
     std::cout<<"CameraI::onCameraSensorBoostrap()"<<std::endl;
 
-    sensor->cam[cam_id]->DisconnectUpdated(cameraSensorConnection);
+    // sensor->cam[cam_id]->DisconnectUpdated(cameraSensorConnection);
 
     imgCached = sensor->img[cam_id].clone();
 

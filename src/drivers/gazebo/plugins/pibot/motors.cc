@@ -25,7 +25,7 @@ namespace gazebo
     {
         this->model = _model;
         this->node = transport::NodePtr(new transport::Node());
-        this->node->Init(this->model->GetWorld()->GetName());
+        this->node->Init(this->model->GetWorld()->Name());
 
         this->updateConnection = event::Events::ConnectWorldUpdateBegin(
                                     boost::bind(&Motors::OnUpdate, this));
@@ -65,7 +65,7 @@ namespace gazebo
 
         }
 
-        float z = model->GetRelativeLinearVel().z;
+        float z = model->RelativeLinearVel()[2];
         pthread_mutex_lock(&mutexMotor);
         if ((now - robotMotors.lastVtime) < 2){
             v = robotMotors.v;
@@ -74,13 +74,14 @@ namespace gazebo
             w = robotMotors.w;
         }
         pthread_mutex_unlock(&mutexMotor);
-        math::Vector3 vel(v,0,z);
+        ignition::math::Vector3d vel(v,0,z);
 
-        math::Quaternion rot = model->GetWorldPose().rot;
-        vel = rot.GetAsMatrix3()*vel;
+        ignition::math::Quaternion<double> rot = model->WorldPose().Rot();
+        ignition::math::Matrix3d inter_mat(rot);
+        vel = inter_mat*vel;
 
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(math::Vector3(0,0,w));
+        this->model->SetAngularVel(ignition::math::Vector3d(0,0,w));
     }
 
     class MotorsI : virtual public jderobot::Motors {

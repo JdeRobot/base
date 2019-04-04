@@ -42,7 +42,7 @@ set_target_properties(turtlebotplugin PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FLA
 # Ice
 target_link_libraries(turtlebotplugin
         Ice
-        IceUtil
+        # IceUtil
         JderobotInterfaces
         ${ZeroCIce_LIBRARIES}
         ${easyiceconfig_LIBRARIES}

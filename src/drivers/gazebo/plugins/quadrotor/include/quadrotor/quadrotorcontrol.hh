@@ -45,8 +45,8 @@ public:
 public:
     void takeoff();
     void land();
-    void setTargetVelocity(gazebo::math::Twist twist);
-    void teleport(gazebo::math::Pose pose);
+    void setTargetVelocity(ignition::math::Twist twist);
+    void teleport(ignition::math::Pose3d pose);
 
     std::string _log_prefix;
 
@@ -60,7 +60,7 @@ protected:
     QuadrotorState my_state;
     Controllers controllers;
     gazebo::common::Time last_simTime;
-    gazebo::math::Twist velocity_command;
+    ignition::math::Twist velocity_command;
 
     std::pair<double,double> fly_state_thresholds;
     double takeoff_speed;

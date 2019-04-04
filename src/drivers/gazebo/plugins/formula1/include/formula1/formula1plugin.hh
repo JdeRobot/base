@@ -24,7 +24,7 @@
 
 #include <gazebo/gazebo.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo/math/Pose.hh>
+#include <ignition/math/Pose3.hh>
 
 #include <formula1/formula1sensors.hh>
 #include <formula1/formula1control.hh>

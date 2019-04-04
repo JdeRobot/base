@@ -41,7 +41,7 @@ namespace gazebo {
             float q2;
             float q3;
         };
-        math::Quaternion initial_q;
+        ignition::math::Quaternion<double> initial_q;
         pose3d_t robotPose3D;
         std::string namePose3D;
         
@@ -49,7 +49,7 @@ namespace gazebo {
         
         void OnUpdate();
         physics::ModelPtr model;
-        math::Pose position;
+        ignition::math::Pose3d position;
         event::ConnectionPtr updateConnection;
         
         

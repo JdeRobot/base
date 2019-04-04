@@ -43,7 +43,7 @@ set_target_properties(formula1plugin PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FLAG
 # Ice
 target_link_libraries(formula1plugin
         Ice
-        IceUtil
+        # IceUtil
         JderobotInterfaces
         ${ZeroCIce_LIBRARIES}
         ${easyiceconfig_LIBRARIES}

@@ -25,7 +25,7 @@ GZ_REGISTER_MODEL_PLUGIN(quadrotor::QuadrotorPlugin)
 
 using namespace quadrotor;
 using namespace gazebo::physics;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::event;
 using namespace gazebo::common;
 
