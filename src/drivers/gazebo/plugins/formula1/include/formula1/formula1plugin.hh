@@ -33,6 +33,8 @@
 
 #include <formula1/debugtools.h>
 
+using namespace ignition;
+
 namespace formula1{
 
 class Formula1Plugin : public gazebo::ModelPlugin {

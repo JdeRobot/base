@@ -60,7 +60,7 @@ QuadRotorSensors::Load(ModelPtr model){
     }
 
     // weak-fix for sonar value at boostrap (1/2)
-    altitude = model->WorldPose().Pos()[2];
+    altitude = model->WorldPose().Pos().Z();
 }
 
 

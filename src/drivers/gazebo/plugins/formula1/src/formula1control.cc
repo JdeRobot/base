@@ -142,6 +142,6 @@ Formula1Control::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 }
 
 void
-Formula1Control::teleport(ignition::math::Pose3d pose){
+Formula1Control::teleport(math::Pose3d pose){
     this->model->SetWorldPose(pose);
 }

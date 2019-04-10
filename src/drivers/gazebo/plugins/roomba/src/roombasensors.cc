@@ -72,7 +72,7 @@ RoombaSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.Pos()[0] << ", " << pose.Pos()[1] << ", " << pose.Pos()[2] << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.Pos().X() << ", " << pose.Pos().Y() << ", " << pose.Pos().Z() << std::endl;)
 
     //Pose3d
     updatePose = gazebo::event::Events::ConnectWorldUpdateBegin(

@@ -19,6 +19,8 @@
 #ifndef POSE3DPIONEER_H
 #define	POSE3DPIONEER_H
 
+using namespace ignition;
+
 namespace gazebo {
     
     
@@ -43,7 +45,7 @@ namespace gazebo {
             float q2;
             float q3;
         };
-        ignition::math::Quaterniond initial_q;
+        math::Quaterniond initial_q;
         pose3d_t robotPose3D;
         std::string namePose3D;
         
@@ -51,7 +53,7 @@ namespace gazebo {
         
         void OnUpdate();
         physics::ModelPtr model;
-        ignition::math::Pose3d position;
+        math::Pose3d position;
         event::ConnectionPtr updateConnection;
         
         
