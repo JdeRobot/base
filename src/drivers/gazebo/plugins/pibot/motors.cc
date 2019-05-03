@@ -7,6 +7,8 @@ enum {
 };
 */
 
+using namespace ignition;
+
 namespace gazebo
 {
     void *motorsICE(void* v);
@@ -65,7 +67,7 @@ namespace gazebo
 
         }
 
-        float z = model->RelativeLinearVel()[2];
+        float z = model->RelativeLinearVel().Z();
         pthread_mutex_lock(&mutexMotor);
         if ((now - robotMotors.lastVtime) < 2){
             v = robotMotors.v;
@@ -74,14 +76,13 @@ namespace gazebo
             w = robotMotors.w;
         }
         pthread_mutex_unlock(&mutexMotor);
-        ignition::math::Vector3d vel(v,0,z);
+        math::Vector3d vel(v,0,z);
 
-        ignition::math::Quaternion<double> rot = model->WorldPose().Rot();
-        ignition::math::Matrix3d inter_mat(rot);
-        vel = inter_mat*vel;
+        math::Quaterniond rot = model->WorldPose().Rot();
+        vel = rot*vel;
 
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(ignition::math::Vector3d(0,0,w));
+        this->model->SetAngularVel(math::Vector3d(0,0,w));
     }
 
     class MotorsI : virtual public jderobot::Motors {

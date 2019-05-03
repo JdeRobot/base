@@ -115,6 +115,6 @@ TurtlebotControl::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 }
 
 void
-TurtlebotControl::teleport(ignition::math::Pose3d pose){
+TurtlebotControl::teleport(math::Pose3d pose){
     this->model->SetWorldPose(pose);
 }

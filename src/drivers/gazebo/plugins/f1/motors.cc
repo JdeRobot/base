@@ -111,7 +111,7 @@ namespace gazebo
             //std::cout << "Model name " << name << std::endl;
 
             //nameMotors = std::string("--Ice.Config=" + name +"motors.cfg");
-            nameMotors = std::string("--Ice.Config=carMotors.cfg");
+            nameMotors = std::string("--Ice.Config=f1Motors.cfg");
             pthread_t thr_gui;
             pthread_create(&thr_gui, NULL, &motorsICE, (void*) this);
 
@@ -149,14 +149,14 @@ namespace gazebo
         this->steerRightJoint->SetForce(0,580*robotMotors.targetRightSteerPos);
         this->steerLeftJoint->SetForce(0,580*robotMotors.targetLeftSteerPos);
 #else
-        float z = model->RelativeLinearVel()[2];
-        ignition::math::Vector3d vel(0,-robotMotors.v/10.0,z);
+        float z = model->RelativeLinearVel().Z();
+        math::Vector3d vel(0,-robotMotors.v/1.0,z);
 
-        ignition::math::Quaterniond rot = model->WorldPose().Rot();
+        math::Quaterniond rot = model->WorldPose().Rot();
         vel = rot*vel;
-        
+
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(ignition::math::Vector3d(0,0,robotMotors.w));
+        this->model->SetAngularVel(math::Vector3d(0,0,robotMotors.w));
 #endif
 
     }

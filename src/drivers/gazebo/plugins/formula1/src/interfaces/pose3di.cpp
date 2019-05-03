@@ -22,6 +22,7 @@
 
 using namespace formula1::interfaces;
 using namespace jderobot;
+using namespace ignition;
 
 Pose3DI::Pose3DI (const formula1::Formula1Sensors *sensor, formula1::Formula1Control *control):
     data(new Pose3DData(0,0,0,0,0,0,0,0)),
@@ -34,12 +35,11 @@ Pose3DI::~Pose3DI ()
 
 Pose3DDataPtr
 Pose3DI::getPose3DData ( const Ice::Current& ){
-    // ignition::math::Pose3<double> pose(sensor->pose.pos.x,sensor->pose.pos.y,sensor->pose.pos.z,sensor->pose.rot.w,sensor->pose.rot.x,sensor->pose.rot.y,sensor->pose.rot.z);
-    ignition::math::Pose3d pose(sensor->pose);
+    math::Pose3d pose = sensor->pose;
 
-    data->x = pose.Pos()[0];
-    data->y = pose.Pos()[1];
-    data->z = pose.Pos()[2];
+    data->x = pose.Pos().X();
+    data->y = pose.Pos().Y();
+    data->z = pose.Pos().Z();
     data->h = 1;
     data->q0 = pose.Rot().W();
     data->q1 = pose.Rot().X();
@@ -51,7 +51,7 @@ Pose3DI::getPose3DData ( const Ice::Current& ){
 
 Ice::Int
 Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data, const Ice::Current& ){
-    ignition::math::Pose3d pose(data->x, data->y, data->z,data->q0, data->q1, data->q2, data->q3);
+    math::Pose3d pose(data->x, data->y, data->z, data->q0, data->q1, data->q2, data->q3);
     control->teleport(pose);
     return 0;
 }

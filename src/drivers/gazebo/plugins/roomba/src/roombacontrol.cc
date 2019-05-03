@@ -111,6 +111,6 @@ RoombaControl::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 }
 
 void
-RoombaControl::teleport(ignition::math::Pose3d pose){
+RoombaControl::teleport(math::Pose3d pose){
     this->model->SetWorldPose(pose);
 }

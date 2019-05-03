@@ -101,7 +101,7 @@ QuadrotorControl::setTargetVelocity(Twist twist){
 }
 
 void
-QuadrotorControl::teleport(ignition::math::Pose3d pose){
+QuadrotorControl::teleport(math::Pose3d pose){
     base_link->GetModel()->SetWorldPose(pose);
 }
 
@@ -151,15 +151,15 @@ QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & /*_info
     /// quadrotor will fall.
 
     // getting gravity dynamically to allow on-demand changes.
-    ignition::math::Vector3d gravity = base_link->GetWorld()->Gravity();
-    ignition::math::Vector3d counter_gravity = mass*-gravity;
+    Vector3d gravity = base_link->GetWorld()->Gravity();
+    Vector3d counter_gravity = mass*-gravity;
     //base_link->AddForce(counter_gravity);
 
-    ignition::math::Pose3d pose = base_link->WorldPose();
+    Pose3d pose = base_link->WorldPose();
 
-    ignition::math::Vector3d vel_model = base_link->RelativeLinearVel();
-    ignition::math::Vector3d vel_world = base_link->WorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
-    ignition::math::Vector3d up_down_vel(0,0,0.001);
+    Vector3d vel_model = base_link->RelativeLinearVel();
+    Vector3d vel_world = base_link->WorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
+    Vector3d up_down_vel = Vector3d(0,0,0.001);
 
 
     switch(my_state){

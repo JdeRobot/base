@@ -6,7 +6,7 @@ enum {
     LEFT
 };
 
-
+using namespace ignition;
 
 namespace gazebo {
 
@@ -71,7 +71,7 @@ namespace gazebo {
         std::cout << "Wheel Separation:" << this->wheelSeparation << std::endl;
         physics::EntityPtr parent = boost::dynamic_pointer_cast<physics::Entity > (this->leftJoint->GetChild());
 
-        ignition::math::Box bb = parent->BoundingBox();
+        math::Box bb = parent->BoundingBox();
 
         this->wheelRadius = bb.Size().Max() * 0.5;
         std::cout << "Wheel Diameter:" << this->wheelRadius * 2 << std::endl;

@@ -19,7 +19,7 @@
 
 
 #include "quadrotor/interfaces/cmdveli.h"
-// #include "quadrotor/control/twist.hh"
+
 
 using namespace quadrotor::interfaces;
 using namespace jderobot;

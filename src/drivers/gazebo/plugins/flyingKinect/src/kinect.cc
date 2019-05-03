@@ -38,6 +38,7 @@
 // debug
 #include <quadrotor/debugtools.h>
 
+using namespace ignition;
 
 GZ_REGISTER_MODEL_PLUGIN(kinect::KinectPlugin)
 
@@ -139,8 +140,8 @@ KinectPlugin::LoadSensors(gazebo::physics::ModelPtr _model){
 
 void
 KinectPlugin::_on_pose_update(){
-	ignition::math::Pose3d pose = model->WorldPose();
-	ice_pose3ddata = new jderobot::Pose3DData(pose.Pos()[0], pose.Pos()[1], pose.Pos()[2], 1, pose.Rot().W(), pose.Rot().X(), pose.Rot().Y(), pose.Rot().Z());
+	math::Pose3d pose = model->WorldPose();
+	ice_pose3ddata = new jderobot::Pose3DData(pose.Pos().X(), pose.Pos().Y(), pose.Pos().Z(), 1, pose.Rot().W(), pose.Rot().X(), pose.Rot().Y(), pose.Rot().Z());
 }
 
 #ifdef PARENT_SENSOR_GETS_UPDATES
@@ -282,9 +283,9 @@ KinectPlugin::getPose3DData ( const Ice::Current& ){
 Ice::Int
 KinectPlugin::setPose3DData ( const jderobot::Pose3DDataPtr & pose3dData,
                                      const Ice::Current& ){
-	ignition::math::Pose3d pose(
-		ignition::math::Vector3d(pose3dData->x, pose3dData->y, pose3dData->z),
-		ignition::math::Quaterniond(pose3dData->q0, pose3dData->q1, pose3dData->q2, pose3dData->q3)
+	math::Pose3d pose(
+		math::Vector3d(pose3dData->x, pose3dData->y, pose3dData->z),
+		math::Quaterniond(pose3dData->q0, pose3dData->q1, pose3dData->q2, pose3dData->q3)
 	);
 
 	model->SetWorldPose(pose);

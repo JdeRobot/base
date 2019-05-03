@@ -34,11 +34,11 @@ Pose3DI::~Pose3DI ()
 
 Pose3DDataPtr
 Pose3DI::getPose3DData ( const Ice::Current& ){
-    ignition::math::Pose3d pose = sensor->pose;
+    math::Pose3d pose = sensor->pose;
 
-    data->x = pose.Pos()[0];
-    data->y = pose.Pos()[1];
-    data->z = pose.Pos()[2];
+    data->x = pose.Pos().X();
+    data->y = pose.Pos().Y();
+    data->z = pose.Pos().Z();
     data->h = 1;
     data->q0 = pose.Rot().W();
     data->q1 = pose.Rot().X();
@@ -50,8 +50,8 @@ Pose3DI::getPose3DData ( const Ice::Current& ){
 
 Ice::Int
 Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data, const Ice::Current& ){
-    ignition::math::Pose3d pose(ignition::math::Vector3d(data->x, data->y, data->z),
-                            ignition::math::Quaternion<double>(data->q0, data->q1, data->q2, data->q3));
+    math::Pose3d pose(math::Vector3d(data->x, data->y, data->z),
+                            math::Quaterniond(data->q0, data->q1, data->q2, data->q3));
     control->teleport(pose);
     return 0;
 }
