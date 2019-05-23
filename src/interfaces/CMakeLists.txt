@@ -145,6 +145,8 @@ endif(NOT DEFINED SLICE_NEW_STYLE)
 #                 #
 ###################
 
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/python/Kibotics.py DESTINATION ${JDEROBOT_PYTHON_MODULE_PATH} COMPONENT interfaces)
+
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libJderobotInterfaces.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib COMPONENT interfaces )
 
 # Install python files
