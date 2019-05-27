@@ -8,4 +8,4 @@ else()
  message("*** kobuki_gazebo NOT FOUND")
 endif()
 ]]
-list(APPEND DEPS ros-kinetic-kobuki-gazebo)
+list(APPEND DEPS ros-melodic-turtlebot3-gazebo)

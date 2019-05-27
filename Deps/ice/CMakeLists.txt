@@ -23,7 +23,7 @@ FIND_PACKAGE(ZeroCIce)
 			include_directories(${ZeroCIce_INCLUDE_DIR})
 			link_directories(${ZeroCIce_LIBRARIES})
 
-			list(APPEND DEPS libzeroc-ice3.6 zeroc-ice-utils libzeroc-icestorm3.6)
+			list(APPEND DEPS libzeroc-ice3.7 zeroc-ice-utils libzeroc-icestorm3.7)
 			list(APPEND DEPS_DEV zeroc-ice-slice libzeroc-ice-dev)
 			
 

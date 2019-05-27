@@ -17,4 +17,4 @@ else(kobuki_core_FOUND)
  message("*** kobuki_core NOT FOUND")
 endif(kobuki_core_FOUND)
 ]]
-list(APPEND DEPS ros-kinetic-kobuki ros-kinetic-kobuki-core)
+list(APPEND DEPS ros-melodic-kobuki-driver ros-melodic-kobuki-core)
