@@ -1,0 +1,41 @@
+SET( SOURCE_FILES cameraCalibrator.cpp )
+
+
+include_directories(
+    ${INTERFACES_CPP_DIR}
+    ${LIBS_DIR}/
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${gtkmm_INCLUDE_DIRS}
+    ${libglademm_INCLUDE_DIRS}
+    ${easyiceconfig_INCLUDE_DIRS}
+)
+
+link_directories(
+	${easyiceconfig_LIBRARY_DIRS}
+)
+
+add_executable (cameraCalibrator  ${SOURCE_FILES})
+
+    TARGET_LINK_LIBRARIES(cameraCalibrator
+        ${OpenCV_LIBRARIES}
+        ${OpenCVGUI_LIBRARIES}
+        ${gtkmm_LIBRARIES}
+        ${libglademm_LIBRARIES}
+        colorspacesmm
+        JderobotInterfaces
+		parallelIce
+        jderobotutil
+        ${ZLIB_LIBRARIES}
+        #    ${Gearbox_LIBRARIES}
+	${easyiceconfig_LIBRARIES} 
+        ${ZeroCIce_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+			${GLOG_LIBRARIES}
+)
+
+install(TARGETS cameraCalibrator
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/
+    COMPONENT cameracalibrator
+    )
+    
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/cameraCalibrator.cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/conf COMPONENT cameracalibrator)
