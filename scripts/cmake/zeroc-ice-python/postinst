@@ -1,5 +1,4 @@
 #!/bin/sh
 
-pip2 install --upgrade pip
-pip2 install zeroc-ice==3.6.3
+pip2 install zeroc-ice
 pip2 install imutils
