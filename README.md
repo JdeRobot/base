@@ -69,8 +69,8 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 * Add the lastest zeroc-ice sources:
 
 ```
-sudo apt-add-repository "deb http://zeroc.com/download/apt/ubuntu$(lsb_release -rs) stable main"
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 5E6DA83306132997
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv B6391CB2CFBA643D
+sudo apt-add-repository "deb http://zeroc.com/download/Ice/3.7/ubuntu18.04 stable main"
 ```
 * Add JdeRobot repository (using dedicated file /etc/apt/sources.list.d/jderobot.list) For Ubuntu Xenial(16.04):
 
@@ -78,7 +78,7 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 5E6DA83306132997
 sudo sh -c 'cat<<EOF>/etc/apt/sources.list.d/jderobot.list
 # for ubuntu 16.04 LTS (64 bit)
 
-deb [arch=amd64] http://jderobot.org/apt xenial main
+deb [arch=amd64] http://jderobot.org/apt bionic main
 EOF'
 ```
 
@@ -186,7 +186,7 @@ sudo apt install libgnomecanvasmm-2.6-1v5 libgtkglextmm-x11-1.2-0v5 libgtkglextm
 
 * **GSL libraries:**
 
-```sudo apt install libgsl2 gsl-bin libgsl-dev```
+```sudo apt install libgsl23 gsl-bin libgsl-dev```
 
 * **LibXML:**
 
@@ -218,7 +218,7 @@ It can be compiled and installed from source: https://github.com/JdeRobot/ThirdP
 
 * **Qt 5**
 
-```sudo apt install qtbase5-dev libqt5declarative5 libqt5script5 libqt5svg5-dev```
+```sudo apt install qtbase5-dev libqt5script5 libqt5svg5-dev```
 
 * **Boost**
 
@@ -227,7 +227,7 @@ It can be compiled and installed from source: https://github.com/JdeRobot/ThirdP
 * **ROS**
 
 ```
-sudo apt install ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-kobuki-gazebo
+sudo apt install ros-melodic-roscpp ros-melodic-std-msgs ros-melodic-cv-bridge ros-melodic-image-transport ros-melodic-roscpp-core ros-melodic-rospy ros-melodic-nav-msgs ros-melodic-geometry-msgs ros-melodic-mavros ros-melodic-gazebo-plugins
 ```
 
 Once all ros packages are installed, install the script that tunes the environment variables ROS in your .bashrc configuration file, and run it for the current shell:
@@ -243,7 +243,7 @@ source ~/.bashrc
 
 * **GStreamer**
 
-```sudo apt-get install libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev```
+```sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev```
 
 * **ICE**
 
@@ -252,7 +252,7 @@ source ~/.bashrc
 compile ice:
 
 ```
-git clone -b 3.6 https://github.com/zeroc-ice/ice.git 
+git clone -b 3.7.2 https://github.com/zeroc-ice/ice.git 
 cd ice/cpp
 make CPP11=yes OPTIMIZE=yes
 make install
@@ -260,7 +260,7 @@ make install
 Configure ICE for Python with pip
 ```
 sudo pip2 install --upgrade pip
-sudo pip2 install zeroc-ice
+sudo pip2 install zeroc-ice==3.7.2
 ```
 
 * **OpenNI 2**
@@ -273,7 +273,7 @@ sudo pip2 install zeroc-ice
 
 * **OpenCV**
 
-```sudo apt-get install ros-kinetic-opencv3```
+```sudo apt-get install libopencv-dev```
 
 * **NodeJS**
 
