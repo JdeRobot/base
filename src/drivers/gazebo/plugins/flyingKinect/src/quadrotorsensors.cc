@@ -60,7 +60,7 @@ QuadRotorSensors::Load(ModelPtr model){
     }
 
     // weak-fix for sonar value at boostrap (1/2)
-    altitude = model->GetWorldPose().pos.z;
+    altitude = model->WorldPose().Pos().Z();
 }
 
 
@@ -123,7 +123,7 @@ QuadRotorSensors::_on_cam(int id){
         uint32_t w = cam[id]->ImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
+        //cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
     }
 }
 
@@ -146,7 +146,7 @@ QuadRotorSensors::_on_sonar(){
 
 void
 QuadRotorSensors::_on_imu(){
-    pose = model->GetWorldPose();
-    pose.rot = imu->Orientation();
+    pose = model->WorldPose();
+    pose.Rot() = imu->Orientation();
 //    std::cout<<pose<<std::endl;
 }

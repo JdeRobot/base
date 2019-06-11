@@ -35,6 +35,8 @@
 
 #include <roomba/debugtools.h>
 
+using namespace ignition;
+
 namespace roomba{
 
 class LaserD
@@ -90,7 +92,7 @@ private:
 public:
     LaserD laserData;
     BumperD bumperData;
-    gazebo::math::Pose pose;
+    math::Pose3d pose;
 
     double position;
 };

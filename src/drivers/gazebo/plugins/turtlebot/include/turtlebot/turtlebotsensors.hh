@@ -39,6 +39,8 @@
 
 #include <turtlebot/debugtools.h>
 
+using namespace ignition;
+
 namespace turtlebot{
 
 class LaserD
@@ -104,7 +106,7 @@ public:
     cv::Mat img[NUM_CAMS];
     LaserD laserData;
     BumperD bumperData;
-    gazebo::math::Pose pose;
+    math::Pose3d pose;
 
     double position;
 };

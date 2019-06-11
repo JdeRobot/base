@@ -81,7 +81,7 @@ void
 CameraProxy::_on_cam_bootstrap(){
     lock.lock();
 
-    cameras[active_camera]->DisconnectUpdated(active_sub);
+    // cameras[active_camera]->DisconnectUpdated(active_sub);
 
     img = _createImageWrapper(cameras[active_camera], active_camera);
 

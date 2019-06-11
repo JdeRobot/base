@@ -54,7 +54,7 @@ Formula1Sensors::Load(ModelPtr model){
         if (name.find("cam_formula1_right") != std::string::npos)
             cam[CAM_RIGHT] = std::static_pointer_cast<CameraSensor>(s);
 
-        pose = model->GetWorldPose();
+        pose = model->WorldPose();
     }
 }
 
@@ -75,7 +75,7 @@ Formula1Sensors::Init(){
     }else
         std::cerr << _log_prefix << "\t laser was not connected (NULL pointer)" << std::endl;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.Pos().X() << ", " << pose.Pos().Y() << ", " << pose.Pos().Z() << std::endl;)
 
     //Pose3d
     updatePose = gazebo::event::Events::ConnectWorldUpdateBegin(
@@ -115,7 +115,7 @@ Formula1Sensors::_on_cam(int id){
         uint32_t w = cam[id]->ImageWidth();
         img[id] = cv::Mat(h, w, CV_8UC3, (uint8_t*)data);
 
-        cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
+        // cam[id]->DisconnectUpdated(sub_cam[id]); // close connection
      }
 }
 
@@ -142,5 +142,5 @@ Formula1Sensors::_on_laser(){
 
 void
 Formula1Sensors::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
-    pose = model->GetWorldPose();
+    pose = model->WorldPose();
 }

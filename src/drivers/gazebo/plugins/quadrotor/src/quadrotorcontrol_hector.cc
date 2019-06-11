@@ -45,7 +45,7 @@
 #define VELOCITY_BASED_TAKEOFF
 
 using namespace quadrotor;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::physics;
 using namespace gazebo::common;
 
@@ -60,45 +60,45 @@ QuadrotorControl::_control_loop_hector(const gazebo::common::UpdateInfo & _info)
     //double max_force_ = mass*10/dt;
 
     // Get kinematics
-    Pose pose = base_link->GetWorldPose();
-    Vector3 euler = pose.rot.GetAsEuler();
-    Vector3 linear_velocity = base_link->GetWorldLinearVel();
-    Vector3 angular_velocity = base_link->GetWorldAngularVel();
-    Vector3 acceleration = base_link->GetWorldLinearAccel();
-    Vector3 inertia = inertia = inertial->GetPrincipalMoments();
+    Pose3d pose = base_link->WorldPose();
+    Vector3d euler = pose.Rot().Euler();
+    Vector3d linear_velocity = base_link->WorldLinearVel();
+    Vector3d angular_velocity = base_link->WorldAngularVel();
+    Vector3d acceleration = base_link->WorldLinearAccel();
+    Vector3d inertia = inertia = inertial->PrincipalMoments();
 
-    double velocity_command_linear_z = velocity_command.linear.z;
+    double velocity_command_linear_z = velocity_command.linear.Z();
 #ifdef VELOCITY_BASED_TAKEOFF
     // Inject landing/takingoff
     if (my_state == QuadrotorState::Landing)
-        velocity_command_linear_z = std::min(velocity_command.linear.z, -land_speed);
+        velocity_command_linear_z = std::min(velocity_command.linear.Z(), -land_speed);
     if (my_state == QuadrotorState::TakingOff)
-        velocity_command_linear_z = std::max(velocity_command.linear.z, +takeoff_speed);
+        velocity_command_linear_z = std::max(velocity_command.linear.Z(), +takeoff_speed);
 #endif
 
     // Get gravity
-    Vector3 gravity = base_link->GetWorld()->GetPhysicsEngine()->GetGravity();
-    Vector3 gravity_body = pose.rot.RotateVector(gravity);
-    double gravity_module = gravity_body.GetLength();
+    Vector3d gravity = base_link->GetWorld()->Gravity();
+    Vector3d gravity_body = pose.Rot().RotateVector(gravity);
+    double gravity_module = gravity_body.Length();
     double load_factor = gravity_module * gravity_module / gravity.Dot(gravity_body);  // Get gravity
 
     // Rotate vectors to coordinate frames relevant for control
-    Quaternion heading_quaternion(cos(euler.z/2),0,0,sin(euler.z/2));
-    Vector3 velocity_xy = heading_quaternion.RotateVectorReverse(linear_velocity);
-    Vector3 acceleration_xy = heading_quaternion.RotateVectorReverse(acceleration);
-    Vector3 angular_velocity_body = pose.rot.RotateVectorReverse(angular_velocity);
+    Quaterniond heading_quaternion(cos(euler.Z()/2),0,0,sin(euler.Z()/2));
+    Vector3d velocity_xy = heading_quaternion.RotateVectorReverse(linear_velocity);
+    Vector3d acceleration_xy = heading_quaternion.RotateVectorReverse(acceleration);
+    Vector3d angular_velocity_body = pose.Rot().RotateVectorReverse(angular_velocity);
 
     // update controllers
-    Vector3 force(Vector3::Zero), torque(Vector3::Zero);
+    Vector3d force(Vector3d::Zero), torque(Vector3d::Zero);
 
-    double pitch_command =  controllers.velocity_x.update(velocity_command.linear.x, velocity_xy.x, acceleration_xy.x, dt) / gravity_module;
-    double roll_command  = -controllers.velocity_y.update(velocity_command.linear.y, velocity_xy.y, acceleration_xy.y, dt) / gravity_module;
-    torque.x = inertia.x *  controllers.roll.update(roll_command, euler.x, angular_velocity_body.x, dt);
-    torque.y = inertia.y *  controllers.pitch.update(pitch_command, euler.y, angular_velocity_body.y, dt);
-    torque.z = inertia.z *  controllers.yaw.update(velocity_command.angular.z, angular_velocity.z, 0, dt);
-    force.z  = mass      * (controllers.velocity_z.update(velocity_command_linear_z,  linear_velocity.z, acceleration.z, dt) + load_factor * gravity_module);
-    //if (max_force_ > 0.0 && force.z > max_force_) force.z = max_force_;
-    if (force.z < 0.0) force.z = 0.0;
+    double pitch_command =  controllers.velocity_x.update(velocity_command.linear.X(), velocity_xy.X(), acceleration_xy.X(), dt) / gravity_module;
+    double roll_command  = -controllers.velocity_y.update(velocity_command.linear.Y(), velocity_xy.Y(), acceleration_xy.Y(), dt) / gravity_module;
+    torque.X() = inertia.X() *  controllers.roll.update(roll_command, euler.X(), angular_velocity_body.X(), dt);
+    torque.Y() = inertia.Y() *  controllers.pitch.update(pitch_command, euler.Y(), angular_velocity_body.Y(), dt);
+    torque.Z() = inertia.Z() *  controllers.yaw.update(velocity_command.angular.Z(), angular_velocity.Z(), 0, dt);
+    force.Z()  = mass      * (controllers.velocity_z.update(velocity_command_linear_z,  linear_velocity.Z(), acceleration.Z(), dt) + load_factor * gravity_module);
+    //if (max_force_ > 0.0 && force.Z() > max_force_) force.Z() = max_force_;
+    if (force.Z() < 0.0) force.Z() = 0.0;
 
     if (my_state != QuadrotorState::Landed){
         base_link->AddRelativeForce(force);

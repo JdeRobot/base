@@ -16,4 +16,4 @@ else()
  message("*** HOKUYO NOT FOUND")
 endif()
 ]]
-list(APPEND DEPS ros-kinetic-rplidar-ros ros-kinetic-urg-node)
+list(APPEND DEPS ros-melodic-rplidar-ros ros-melodic-urg-node)

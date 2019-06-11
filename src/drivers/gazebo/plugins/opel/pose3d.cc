@@ -37,17 +37,17 @@ namespace gazebo {
             pthread_create(&thr_gui, NULL, &Pose3DICE, (void*) this);
         }
 
-        position = model->GetWorldPose();
-        this->initial_q = position.rot;
+        position = model->WorldPose();
+        this->initial_q = position.Rot();
 
 
         pthread_mutex_lock(&mutex);
-        robotPose3D.x = position.pos.x;
-        robotPose3D.y = position.pos.y;
-        robotPose3D.q0 = position.rot.w;
-        robotPose3D.q1 = position.rot.x;
-        robotPose3D.q2 = position.rot.y;
-        robotPose3D.q3 = position.rot.z;
+        robotPose3D.x = position.Pos().X();
+        robotPose3D.y = position.Pos().Y();
+        robotPose3D.q0 = position.Rot().W();
+        robotPose3D.q1 = position.Rot().X();
+        robotPose3D.q2 = position.Rot().Y();
+        robotPose3D.q3 = position.Rot().Z();
         pthread_mutex_unlock(&mutex);
 
     }
@@ -61,21 +61,21 @@ namespace gazebo {
 
         virtual ~Pose3DI() {
         };
-        
+
         virtual int setPose3DData(const jderobot::Pose3DDataPtr&  Pose3DData,
         						     const Ice::Current&) {
-             math::Pose position = this->pose->getModel()->GetWorldPose();
-             
+             math::Pose3d position = this->pose->getModel()->WorldPose();
 
 
-             position.pos.x = Pose3DData->x / Pose3DData->h;
-             position.pos.y = Pose3DData->y / Pose3DData->h;
-             position.pos.z = Pose3DData->z / Pose3DData->h;
 
-             position.rot.w = Pose3DData->q0;
-             position.rot.x = Pose3DData->q1;
-             position.rot.y = Pose3DData->q2;
-             position.rot.z = Pose3DData->q3;
+             position.Pos().X() = Pose3DData->x / Pose3DData->h;
+             position.Pos().Y() = Pose3DData->y / Pose3DData->h;
+             position.Pos().Z() = Pose3DData->z / Pose3DData->h;
+
+             position.Rot().W() = Pose3DData->q0;
+             position.Rot().X() = Pose3DData->q1;
+             position.Rot().Y() = Pose3DData->q2;
+             position.Rot().Z() = Pose3DData->q3;
 
              this->pose->getModel()->SetWorldPose(position);
 

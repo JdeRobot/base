@@ -66,7 +66,7 @@ set_target_properties(quadrotorplugin2 PROPERTIES COMPILE_FLAGS "${GAZEBO_CXX_FL
 # Ice
 target_link_libraries(quadrotorplugin2
 	Ice
-	IceUtil
+	# IceUtil
 	JderobotInterfaces
 	${ZeroCIce_LIBRARIES}
 	${easyiceconfig_LIBRARIES}

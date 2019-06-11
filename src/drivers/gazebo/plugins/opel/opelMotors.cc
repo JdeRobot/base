@@ -7,6 +7,8 @@ enum {
 };
 */
 
+using namespace ignition;
+
 namespace gazebo
 {
     void *motorsICE(void* v);
@@ -24,7 +26,7 @@ namespace gazebo
     {
         this->model = _model;
         this->node = transport::NodePtr(new transport::Node());
-        this->node->Init(this->model->GetWorld()->GetName());
+        this->node->Init(this->model->GetWorld()->Name());
 
         this->updateConnection = event::Events::ConnectWorldUpdateBegin(
                                     boost::bind(&Motors::OnUpdate, this));
@@ -63,14 +65,14 @@ namespace gazebo
 
         }
 
-        float z = model->GetRelativeLinearVel().z;
-        math::Vector3 vel(0,-robotMotors.v/10.0,0);
+        float z = model->RelativeLinearVel().Z();
+        math::Vector3d vel(0,-robotMotors.v/10.0,0);
 
-        math::Quaternion rot = model->GetWorldPose().rot;
-        vel = rot.GetAsMatrix3()*vel;
+        math::Quaterniond rot = model->WorldPose().Rot();
+        vel = rot*vel;
 
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(math::Vector3(0,0,robotMotors.w));
+        this->model->SetAngularVel(math::Vector3d(0,0,robotMotors.w));
 
     }
 

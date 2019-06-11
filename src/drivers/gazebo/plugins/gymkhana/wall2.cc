@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include <iostream>
 
+using namespace ignition;
+
 namespace gazebo
 {
 	class Wall2 : public ModelPlugin {
 
-		private: math::Pose pose;
+		private: math::Pose3d pose;
 		private: bool flag;
 		private: double vel1; 
 		private: double vel2; 
@@ -25,21 +27,21 @@ namespace gazebo
 		}
 
 		public: void OnUpdate(const common::UpdateInfo & ) {
-			pose = this->model->GetWorldPose();
+			pose = this->model->WorldPose();
 
 			if  (flag) {
-				this->model->SetLinearVel(math::Vector3(0, 0, this->vel1));
+				this->model->SetLinearVel(math::Vector3d(0, 0, this->vel1));
 			}
-			if ( pose.pos.z >= 2.8 ) {
-				pose.pos.z = 2.8;
+			if ( pose.Pos().Z() >= 2.8 ) {
+				pose.Pos().Z() = 2.8;
 				this->model->SetWorldPose(pose);
 				flag = false;
 			}
 			if (!flag) {
-				this->model->SetLinearVel(math::Vector3(0, 0, this->vel2));
+				this->model->SetLinearVel(math::Vector3d(0, 0, this->vel2));
 			}	
-			if ( pose.pos.z <= 0) {
-				pose.pos.z = 0;
+			if ( pose.Pos().Z() <= 0) {
+				pose.Pos().Z() = 0;
 				this->model->SetWorldPose(pose);
 				flag = true;
 			}

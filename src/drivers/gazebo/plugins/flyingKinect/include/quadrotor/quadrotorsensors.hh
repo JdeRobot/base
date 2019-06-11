@@ -37,6 +37,7 @@
 
 #define BROKEN_SonarSensor
 
+using namespace ignition;
 
 namespace quadrotor{
 
@@ -84,7 +85,7 @@ private:
 
 public:
     cv::Mat img[NUM_CAMS];
-    gazebo::math::Pose pose;
+    math::Pose3d pose;
     double altitude;
 
 };

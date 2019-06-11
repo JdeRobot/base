@@ -25,7 +25,7 @@ namespace gazebo
     {
         this->model = _model;
         this->node = transport::NodePtr(new transport::Node());
-        this->node->Init(this->model->GetWorld()->GetName());
+        this->node->Init(this->model->GetWorld()->Name());
 
 #ifdef USE_REAL_WHEELS
         if (!_sdf->HasElement("front_right_joint"))
@@ -149,14 +149,14 @@ namespace gazebo
         this->steerRightJoint->SetForce(0,580*robotMotors.targetRightSteerPos);
         this->steerLeftJoint->SetForce(0,580*robotMotors.targetLeftSteerPos);
 #else
-        float z = model->GetRelativeLinearVel().z;
-        math::Vector3 vel(0,-robotMotors.v/10.0,z);
+        float z = model->RelativeLinearVel().Z();
+        math::Vector3d vel(0,-robotMotors.v/10.0,z);
 
-        math::Quaternion rot = model->GetWorldPose().rot;
-        vel = rot.GetAsMatrix3()*vel;
+        math::Quaterniond rot = model->WorldPose().Rot();
+        vel = rot*vel;
 
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(math::Vector3(0,0,robotMotors.w));
+        this->model->SetAngularVel(math::Vector3d(0,0,robotMotors.w));
 #endif
 
     }

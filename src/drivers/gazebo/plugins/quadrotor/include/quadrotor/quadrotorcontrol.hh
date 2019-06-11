@@ -29,6 +29,7 @@
 
 #include <quadrotor/quadrotorsensors.hh>
 
+using namespace ignition;
 
 namespace quadrotor{
 
@@ -45,8 +46,8 @@ public:
 public:
     void takeoff();
     void land();
-    void setTargetVelocity(gazebo::math::Twist twist);
-    void teleport(gazebo::math::Pose pose);
+    void setTargetVelocity(math::Twist twist);
+    void teleport(math::Pose3d pose);
 
     std::string _log_prefix;
 
@@ -60,7 +61,7 @@ protected:
     QuadrotorState my_state;
     Controllers controllers;
     gazebo::common::Time last_simTime;
-    gazebo::math::Twist velocity_command;
+    math::Twist velocity_command;
 
     std::pair<double,double> fly_state_thresholds;
     double takeoff_speed;

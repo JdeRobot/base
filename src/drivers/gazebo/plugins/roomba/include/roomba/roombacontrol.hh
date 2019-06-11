@@ -60,7 +60,7 @@ public:
     void Load(gazebo::physics::ModelPtr model, sdf::ElementPtr _sdf);
     void Init(RoombaSensors* sensors);
     void OnUpdate(const gazebo::common::UpdateInfo & _info);
-    void teleport(gazebo::math::Pose pose);
+    void teleport(math::Pose3d pose);
 
 private:
     gazebo::event::ConnectionPtr updateConnection;

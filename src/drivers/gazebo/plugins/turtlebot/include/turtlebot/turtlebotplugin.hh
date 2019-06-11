@@ -28,7 +28,7 @@
 
 #include <gazebo/gazebo.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo/math/Pose.hh>
+#include <ignition/math/Pose3.hh>
 
 #include <turtlebot/turtlebotsensors.hh>
 #include <turtlebot/turtlebotcontrol.hh>

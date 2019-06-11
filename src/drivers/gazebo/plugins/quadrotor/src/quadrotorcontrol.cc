@@ -25,7 +25,7 @@ const std::string quadrotor::QuadrotorStateDescription[] = {"Unknown", "Flying",
 
 
 using namespace quadrotor;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::physics;
 using namespace gazebo::common;
 
@@ -45,7 +45,7 @@ void
 QuadrotorControl::Load(LinkPtr _base_link, sdf::ElementPtr _sdf){
     base_link = _base_link;
     inertial = _base_link->GetInertial();
-    mass = inertial->GetMass();
+    mass = inertial->Mass();
 
     fly_state_thresholds.first = sdf2value<double>(_sdf, "landCompletedAt", 0.2);
     fly_state_thresholds.second = sdf2value<double>(_sdf, "takeoffCompletedAt", 1.5);
@@ -101,7 +101,7 @@ QuadrotorControl::setTargetVelocity(Twist twist){
 }
 
 void
-QuadrotorControl::teleport(gazebo::math::Pose pose){
+QuadrotorControl::teleport(math::Pose3d pose){
     base_link->GetModel()->SetWorldPose(pose);
 }
 
@@ -151,15 +151,15 @@ QuadrotorControl::_control_loop_novel(const gazebo::common::UpdateInfo & /*_info
     /// quadrotor will fall.
 
     // getting gravity dynamically to allow on-demand changes.
-    Vector3 gravity = base_link->GetWorld()->GetPhysicsEngine()->GetGravity();
-    Vector3 counter_gravity = mass*-gravity;
+    Vector3d gravity = base_link->GetWorld()->Gravity();
+    Vector3d counter_gravity = mass*-gravity;
     //base_link->AddForce(counter_gravity);
 
-    Pose pose = base_link->GetWorldPose();
+    Pose3d pose = base_link->WorldPose();
 
-    Vector3 vel_model = base_link->GetRelativeLinearVel();
-    Vector3 vel_world = base_link->GetWorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
-    Vector3 up_down_vel = Vector3(0,0,0.001);
+    Vector3d vel_model = base_link->RelativeLinearVel();
+    Vector3d vel_world = base_link->WorldLinearVel(); //pose.rot.RotateVectorReverse(vel_model);
+    Vector3d up_down_vel = Vector3d(0,0,0.001);
 
 
     switch(my_state){

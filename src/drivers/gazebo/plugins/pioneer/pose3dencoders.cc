@@ -95,7 +95,7 @@ namespace gazebo {
 
         //          ----------ENCODERS----------
         //GET pose3dencoders data from left_camera (PAN&TILT)
-        this->cameraLeft.encoder.pan = this->cameraLeft.camera_link_pan->GetRelativePose().rot.GetAsEuler().z * 180.0 / M_PI;
+        this->cameraLeft.encoder.pan = this->cameraLeft.camera_link_pan->RelativePose().Rot().Euler().Z() * 180.0 / M_PI;
         if (this->cameraLeft.encoder.pan > 0) {
             this->cameraLeft.encoder.pan = 180 - this->cameraLeft.encoder.pan;
         }
@@ -104,13 +104,13 @@ namespace gazebo {
         }
 
         //std::cout << this->cameraLeft.encoder.pan << std::endl;
-        this->cameraLeft.encoder.tilt = this->cameraLeft.camera_link_tilt->GetRelativePose().rot.GetAsEuler().y * 180.0 / M_PI;
+        this->cameraLeft.encoder.tilt = this->cameraLeft.camera_link_tilt->RelativePose().Rot().Euler().Y() * 180.0 / M_PI;
         //std::cout << this->cameraLeft.encoder.tilt << std::endl;
 
 
         //GET pose3dencoders data from left_camera (PAN&TILT)
 
-        this->cameraRight.encoder.pan = this->cameraRight.camera_link_pan->GetRelativePose().rot.GetAsEuler().z * 180.0 / M_PI;
+        this->cameraRight.encoder.pan = this->cameraRight.camera_link_pan->RelativePose().Rot().Euler().Z() * 180.0 / M_PI;
         if (this->cameraRight.encoder.pan > 0) {
             this->cameraRight.encoder.pan = 180 - this->cameraRight.encoder.pan;
         }
@@ -119,7 +119,7 @@ namespace gazebo {
         }
 
         //std::cout << this->cameraRight.pan << std::endl;
-        this->cameraRight.encoder.tilt = this->cameraRight.camera_link_tilt->GetRelativePose().rot.GetAsEuler().y * 180.0 / M_PI;
+        this->cameraRight.encoder.tilt = this->cameraRight.camera_link_tilt->RelativePose().Rot().Euler().Y() * 180.0 / M_PI;
         //std::cout << this->cameraRight.encoder.tilt << std::endl;
 
         // double setPanRight = -50;

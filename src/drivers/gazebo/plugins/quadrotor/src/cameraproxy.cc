@@ -49,7 +49,7 @@ CameraProxy::setActive(int id){
     /// deactivate previous
     if (active_camera != -1){
         cameras[active_camera]->SetActive(false);
-        cameras[active_camera]->DisconnectUpdated(active_sub);
+        // cameras[active_camera]->DisconnectUpdated(active_sub);
     }
 
     /// active new
@@ -78,7 +78,7 @@ void
 CameraProxy::_on_cam_bootstrap(){
     lock.lock();
 
-    cameras[active_camera]->DisconnectUpdated(active_sub);
+    // cameras[active_camera]->DisconnectUpdated(active_sub);
 
     img = _createImageWrapper(cameras[active_camera], active_camera);
 

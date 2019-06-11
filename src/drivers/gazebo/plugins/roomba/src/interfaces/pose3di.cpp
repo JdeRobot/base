@@ -34,24 +34,24 @@ Pose3DI::~Pose3DI ()
 
 Pose3DDataPtr
 Pose3DI::getPose3DData ( const Ice::Current& ){
-    gazebo::math::Pose pose = sensor->pose;
+    math::Pose3d pose = sensor->pose;
 
-    data->x = pose.pos.x;
-    data->y = pose.pos.y;
-    data->z = pose.pos.z;
+    data->x = pose.Pos().X();
+    data->y = pose.Pos().Y();
+    data->z = pose.Pos().Z();
     data->h = 1;
-    data->q0 = pose.rot.w;
-    data->q1 = pose.rot.x;
-    data->q2 = pose.rot.y;
-    data->q3 = pose.rot.z;
+    data->q0 = pose.Rot().W();
+    data->q1 = pose.Rot().X();
+    data->q2 = pose.Rot().Y();
+    data->q3 = pose.Rot().Z();
 
     return data;
 }
 
 Ice::Int
 Pose3DI::setPose3DData ( const jderobot::Pose3DDataPtr & data, const Ice::Current& ){
-    gazebo::math::Pose pose(gazebo::math::Vector3(data->x, data->y, data->z),
-                            gazebo::math::Quaternion(data->q0, data->q1, data->q2, data->q3));
+    math::Pose3d pose(math::Vector3d(data->x, data->y, data->z),
+                            math::Quaterniond(data->q0, data->q1, data->q2, data->q3));
     control->teleport(pose);
     return 0;
 }

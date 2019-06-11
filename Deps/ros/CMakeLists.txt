@@ -7,7 +7,7 @@ if (ENABLE_ROS)
 	
 	    MESSAGE("*** ROS LIBRARIES FOUND : ${roscpp_INCLUDE_DIRS}")
 	
-	    SET (CMAKE_PREFIX_PATH /opt/ros/kinetic)
+	    SET (CMAKE_PREFIX_PATH /opt/ros/$ENV{ROS_DISTRO})
 	
 	    usePython(2)
 	    set (CATKIN_BUILD_BINARY_PACKAGE 1) #doesn't add ROS environment files to package
@@ -21,7 +21,7 @@ if (ENABLE_ROS)
 	      geometry_msgs
 	    )
 	
-		list(APPEND DEPS ros-kinetic-roscpp ros-kinetic-std-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport ros-kinetic-roscpp-core ros-kinetic-rospy ros-kinetic-nav-msgs ros-kinetic-geometry-msgs ros-kinetic-mavros)
+		list(APPEND DEPS ros-melodic-roscpp ros-melodic-std-msgs ros-melodic-cv-bridge ros-melodic-image-transport ros-melodic-roscpp-core ros-melodic-rospy ros-melodic-nav-msgs ros-melodic-geometry-msgs ros-melodic-mavros ros-melodic-gazebo-plugins)
 
 		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/laser)
 		ADD_SUBDIRECTORY (${CMAKE_CURRENT_SOURCE_DIR}/Deps/ros/kobuki-real)

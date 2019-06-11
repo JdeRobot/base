@@ -22,7 +22,7 @@
 #include "roomba/roombacontrol.hh"
 
 using namespace roomba;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::physics;
 using namespace gazebo::common;
 using namespace gazebo::transport;
@@ -44,7 +44,7 @@ RoombaControl::Load(ModelPtr model, sdf::ElementPtr _sdf){
     this->model = model;
 
     this->node = NodePtr(new Node());
-    this->node->Init(this->model->GetWorld()->GetName());
+    this->node->Init(this->model->GetWorld()->Name());
 
     //this->velSub = this->node->Subscribe(std::string("~/") + this->model->GetName() + "/vel_cmd", &Motors::OnVelMsg, this);
     if (!_sdf->HasElement("left_joint"))
@@ -75,12 +75,12 @@ void
 RoombaControl::Init(RoombaSensors *sensors){
     this->sensors = sensors;
 
-    this->wheelSeparation = this->leftJoint->GetAnchor(0).Distance(this->rightJoint->GetAnchor(0));
+    this->wheelSeparation = this->leftJoint->Anchor(0).Distance(this->rightJoint->Anchor(0));
     EntityPtr parent = boost::dynamic_pointer_cast<Entity > (this->leftJoint->GetChild());
 
-    Box bb = parent->GetBoundingBox();
+    Box bb = parent->BoundingBox();
 
-    this->wheelRadius = bb.GetSize().GetMax() * 0.5;
+    this->wheelRadius = bb.Size().Max() * 0.5;
 
     updateConnection = gazebo::event::Events::ConnectWorldUpdateBegin(
         boost::bind(&RoombaControl::OnUpdate, this, _1));
@@ -111,6 +111,6 @@ RoombaControl::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
 }
 
 void
-RoombaControl::teleport(gazebo::math::Pose pose){
+RoombaControl::teleport(math::Pose3d pose){
     this->model->SetWorldPose(pose);
 }

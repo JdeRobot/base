@@ -50,7 +50,7 @@ RoombaSensors::Load(ModelPtr model){
             bumper = std::static_pointer_cast<ContactSensor>(s);
         }
 
-        pose = model->GetWorldPose();
+        pose = model->WorldPose();
     }
 }
 
@@ -72,7 +72,7 @@ RoombaSensors::Init(){
     }else
         std::cerr << _log_prefix << "\t bumper was not connected (NULL pointer)" << std::endl;
 
-    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.pos.x << ", " << pose.pos.y << ", " << pose.pos.z << std::endl;)
+    ONDEBUG_INFO(std::cout << _log_prefix << "Initial Pose [x,y,z] " << pose.Pos().X() << ", " << pose.Pos().Y() << ", " << pose.Pos().Z() << std::endl;)
 
     //Pose3d
     updatePose = gazebo::event::Events::ConnectWorldUpdateBegin(
@@ -136,5 +136,5 @@ RoombaSensors::_on_bumper(){
 
 void
 RoombaSensors::OnUpdate(const gazebo::common::UpdateInfo & /*_info*/){
-    pose = model->GetWorldPose();
+    pose = model->WorldPose();
 }

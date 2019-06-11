@@ -6,7 +6,7 @@ enum {
     LEFT
 };
 
-
+using namespace ignition;
 
 namespace gazebo {
 
@@ -30,7 +30,7 @@ namespace gazebo {
         this->model = _model;
 
         this->node = transport::NodePtr(new transport::Node());
-        this->node->Init(this->model->GetWorld()->GetName());
+        this->node->Init(this->model->GetWorld()->Name());
 
         //this->velSub = this->node->Subscribe(std::string("~/") + this->model->GetName() + "/vel_cmd", &Motors::OnVelMsg, this);
         if (!_sdf->HasElement("left_joint"))
@@ -67,13 +67,13 @@ namespace gazebo {
     // Called by the world update start event
 
     void Motors::Init() {
-        this->wheelSeparation = this->leftJoint->GetAnchor(0).Distance(this->rightJoint->GetAnchor(0));
+        this->wheelSeparation = this->leftJoint->Anchor(0).Distance(this->rightJoint->Anchor(0));
         std::cout << "Wheel Separation:" << this->wheelSeparation << std::endl;
         physics::EntityPtr parent = boost::dynamic_pointer_cast<physics::Entity > (this->leftJoint->GetChild());
 
-        math::Box bb = parent->GetBoundingBox();
+        math::Box bb = parent->BoundingBox();
 
-        this->wheelRadius = bb.GetSize().GetMax() * 0.5;
+        this->wheelRadius = bb.Size().Max() * 0.5;
         std::cout << "Wheel Diameter:" << this->wheelRadius * 2 << std::endl;
     }
 

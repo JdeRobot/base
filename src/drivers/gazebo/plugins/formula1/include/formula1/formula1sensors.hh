@@ -35,6 +35,8 @@
 
 #include <formula1/debugtools.h>
 
+using namespace ignition;
+
 namespace formula1{
 
 class Formula1Sensors
@@ -79,7 +81,7 @@ private:
 public:
     cv::Mat img[NUM_CAMS];
     std::vector<float> laserValues;
-    gazebo::math::Pose pose;
+    math::Pose3d pose;
 
     double position;
 };

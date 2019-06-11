@@ -25,7 +25,7 @@ GZ_REGISTER_MODEL_PLUGIN(formula1::Formula1Plugin)
 
 using namespace formula1;
 using namespace gazebo::physics;
-using namespace gazebo::math;
+using namespace ignition::math;
 using namespace gazebo::event;
 using namespace gazebo::common;
 
