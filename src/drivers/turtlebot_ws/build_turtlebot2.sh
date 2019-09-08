@@ -18,6 +18,10 @@ rm -rf yujin_ocs
 
 sudo apt-get install ros-melodic-kobuki-* -y
 sudo apt-get install ros-melodic-ecl-streams -y
+sudo apt-get install ros-melodic-gazebo-ros -y
+sudo apt-get install ros-melodic-gazebo-plugins -y
+sudo apt-get install ros-melodic-urdf ros-melodic-xacro -y
+
 cd ..
 catkin_make
 source devel/setup.bash
