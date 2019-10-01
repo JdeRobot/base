@@ -78,7 +78,7 @@ sudo apt-add-repository "deb http://zeroc.com/download/Ice/3.7/ubuntu18.04 stabl
 sudo sh -c 'cat<<EOF>/etc/apt/sources.list.d/jderobot.list
 # for ubuntu 16.04 LTS (64 bit)
 
-deb [arch=amd64] http://jderobot.org/apt bionic main
+deb [arch=amd64] http://wiki.jderobot.org/apt bionic main
 EOF'
 ```
 
@@ -125,7 +125,7 @@ sudo apt update && sudo apt upgrade
 
 ### Installing from docker image
 
-If you want to run JdeRobot in MS-Windows, MacOS or other Linux distributions you can use Docker containers. We have created a [Docker image](https://www.docker.com/) with current JdeRobot Release and all the necessary components to be used with [JdeRobot-Academy](http://jderobot.org/JdeRobot-Academy). To download it, use: 
+If you want to run JdeRobot in MS-Windows, MacOS or other Linux distributions you can use Docker containers. We have created a [Docker image](https://www.docker.com/) with current JdeRobot Release and all the necessary components to be used with [JdeRobot-Academy](http://wiki.jderobot.org/JdeRobot-Academy). To download it, use: 
 
 ```
 docker pull jderobot/jderobot
