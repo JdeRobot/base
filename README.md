@@ -2,7 +2,8 @@
 JdeRobot
 ========
 
-[![Build Status](http://jenkins.jderobot.org/buildStatus/icon?job=JdeRobot-GitHub)](http://jenkins.jderobot.org/job/JdeRobot-GitHub/)
+<!--[![Build Status](http://jenkins.jderobot.org/buildStatus/icon?job=JdeRobot-GitHub)](http://jenkins.jderobot.org/job/JdeRobot-GitHub/)-->
+[![Current Release Version](https://img.shields.io/github/release/jderobot/base?style=flat-square&logo=github)](https://github.com/explosion/spaCy/releases)
 
 # Introduction
 
