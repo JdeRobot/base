@@ -73,11 +73,10 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv B6391CB2CFBA643D
 sudo apt-add-repository "deb http://zeroc.com/download/Ice/3.7/ubuntu18.04 stable main"
 ```
-* Add JdeRobot repository (using dedicated file /etc/apt/sources.list.d/jderobot.list) For Ubuntu Xenial(16.04):
+* Add JdeRobot repository (using dedicated file /etc/apt/sources.list.d/jderobot.list):
 
 ```
 sudo sh -c 'cat<<EOF>/etc/apt/sources.list.d/jderobot.list
-# for ubuntu 16.04 LTS (64 bit)
 
 deb [arch=amd64] http://wiki.jderobot.org/apt bionic main
 EOF'
