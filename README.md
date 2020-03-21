@@ -252,7 +252,7 @@ source ~/.bashrc
 compile ice:
 
 ```
-git clone -b 3.7.2 https://github.com/zeroc-ice/ice.git 
+git clone -b 3.7 https://github.com/zeroc-ice/ice.git 
 cd ice/cpp
 make CPP11=yes OPTIMIZE=yes
 make install
