@@ -1,7 +1,7 @@
-find_package(VTK)
+find_package(VTK QUIET)
 
 if (VTK_FOUND)
-	message("***VTK FOUND ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+	message(STATUS "VTK v.${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION} found")
 else()
-	message ("*** VTK NOT FOUND")
+	message (STATUS"${BoldYellow}VTK NOT FOUND${ColourReset}")
 endIF()

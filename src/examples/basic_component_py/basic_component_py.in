@@ -1,3 +1,0 @@
-#!/bin/bash
-
-python @CMAKE_INSTALL_PREFIX@/share/jderobot/python/basic_component_py/basic_component.py $*

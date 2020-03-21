@@ -10,8 +10,8 @@ link_directories(${GAZEBO_LIBRARY_DIRS}
     ${easyiceconfig_LIBRARY_DIRS}
 )
 
-add_library(motorsMBOT SHARED motors.cc)
-target_link_libraries(motorsMBOT 
+add_library(motorsPIBOT SHARED motors.cc)
+target_link_libraries(motorsPIBOT 
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
 	colorspacesmm
@@ -19,8 +19,8 @@ target_link_libraries(motorsMBOT
     	${easyiceconfig_LIBRARIES}
 )   
 
-add_library(sonarMBOT SHARED sonar.cc)
-target_link_libraries(sonarMBOT 
+add_library(sonarPIBOT SHARED sonar.cc)
+target_link_libraries(sonarPIBOT 
 	SonarPlugin 
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
@@ -29,8 +29,8 @@ target_link_libraries(sonarMBOT
 	${easyiceconfig_LIBRARIES}
 ) 
 
-add_library(pose3dMBOT SHARED pose3d.cc)
-target_link_libraries(pose3dMBOT
+add_library(pose3dPIBOT SHARED pose3d.cc)
+target_link_libraries(pose3dPIBOT
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
 	colorspacesmm
@@ -38,8 +38,8 @@ target_link_libraries(pose3dMBOT
 	${easyiceconfig_LIBRARIES}
 ) 
 
-add_library(camera_dumpMBOT SHARED camera_dump.cc)
-target_link_libraries(camera_dumpMBOT ${GAZEBO_libraries} 
+add_library(camera_dumpPIBOT SHARED camera_dump.cc)
+target_link_libraries(camera_dumpPIBOT ${GAZEBO_libraries} 
 	CameraPlugin 	
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
@@ -48,8 +48,8 @@ target_link_libraries(camera_dumpMBOT ${GAZEBO_libraries}
 	${easyiceconfig_LIBRARIES}
 )
 
-add_library(irMBOT SHARED ir.cc)
-target_link_libraries(irMBOT ${GAZEBO_libraries} 
+add_library(irPIBOT SHARED ir.cc)
+target_link_libraries(irPIBOT ${GAZEBO_libraries} 
 	CameraPlugin 	
 	${GAZEBO_libraries} 
 	${ZeroCIce_LIBRARIES} 
@@ -58,7 +58,7 @@ target_link_libraries(irMBOT ${GAZEBO_libraries}
 	${easyiceconfig_LIBRARIES}
 )
  
-INSTALL (TARGETS motorsMBOT sonarMBOT pose3dMBOT camera_dumpMBOT irMBOT
+INSTALL (TARGETS motorsPIBOT sonarPIBOT pose3dPIBOT camera_dumpPIBOT irPIBOT
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot/gazebo/plugins/pibot/ 
 	COMPONENT gazebo)
 

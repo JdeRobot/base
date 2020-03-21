@@ -132,7 +132,7 @@ namespace gazebo {
                     ic->createObjectAdapterWithEndpoints("Pose3D", Endpoints);
             Ice::ObjectPtr object = new Pose3DI(base);
 
-            adapter->add(object, ic->stringToIdentity("Pose3D"));
+            adapter->add(object, Ice::stringToIdentity("Pose3D"));
 
             adapter->activate();
             ic->waitForShutdown();

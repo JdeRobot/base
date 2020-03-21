@@ -146,7 +146,7 @@ void *mainLaser(void* v)
         Ice::ObjectAdapterPtr adapter =
             ic->createObjectAdapterWithEndpoints("Laser", Endpoints);
         Ice::ObjectPtr object = new LaserI(laser);
-        adapter->add(object, ic->stringToIdentity("Laser"));
+        adapter->add(object, Ice::stringToIdentity("Laser"));
         adapter->activate();
         ic->waitForShutdown();
     } catch (const Ice::Exception& e) {

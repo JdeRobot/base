@@ -94,27 +94,27 @@ void QuadrotorIce::bootstrap(){
     std::string name;
     name = prop->getProperty("Quadrotor.Pose3D.Name");
     ObjectPtr posei = new Pose3DI(sensor, control);
-    adapter->add(posei, ic->stringToIdentity(name));
+    adapter->add(posei, Ice::stringToIdentity(name));
 
     ObjectPtr posei_alt = new Pose3DI_altitude(sensor, control);
 #if 0 /// Facet
-    adapter->addFacet(posei_alt, ic->stringToIdentity(name), "altitude");
+    adapter->addFacet(posei_alt, Ice::stringToIdentity(name), "altitude");
     // client side MUST do jderobot::Pose3D::checkedCast(baseprx, "altitude");
 #else
-    adapter->add(posei_alt, ic->stringToIdentity(name+"_altitude"));
+    adapter->add(posei_alt, Ice::stringToIdentity(name+"_altitude"));
 #endif
 
     ObjectPtr navdatai = new NavdataI(sensor);
     name = prop->getProperty("Quadrotor.Navdata.Name");
-    adapter->add(navdatai, ic->stringToIdentity(name));
+    adapter->add(navdatai, Ice::stringToIdentity(name));
 
     ObjectPtr dronecontroli = new DroneControlI(control, camproxy);
     name = prop->getProperty("Quadrotor.Extra.Name");
-    adapter->add(dronecontroli, ic->stringToIdentity(name));
+    adapter->add(dronecontroli, Ice::stringToIdentity(name));
 
     ObjectPtr cmdveli = new CMDVelI(control);
     name = prop->getProperty("Quadrotor.CMDVel.Name");
-    adapter->add(cmdveli, ic->stringToIdentity(name));
+    adapter->add(cmdveli, Ice::stringToIdentity(name));
 
     //ObjectPtr camerai = new CameraI(sensor);
     ObjectPtr camerai;
@@ -124,7 +124,7 @@ void QuadrotorIce::bootstrap(){
         camerai = ObjectPtr(_camerai);
     }
     name = prop->getProperty("Quadrotor.Camera.Name");
-    adapter->add(camerai, ic->stringToIdentity(name));
+    adapter->add(camerai, Ice::stringToIdentity(name));
 
     adapter->activate();
 

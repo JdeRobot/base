@@ -103,7 +103,7 @@ namespace gazebo
 	        Ice::ObjectAdapterPtr adapter =
 	            ic->createObjectAdapterWithEndpoints("Sonar", Endpoints);
 	        Ice::ObjectPtr object = new SonarI(sonar);
-	        adapter->add(object, ic->stringToIdentity("Sonar"));
+	        adapter->add(object, Ice::stringToIdentity("Sonar"));
 	        adapter->activate();
 	        ic->waitForShutdown();
 	    } catch (const Ice::Exception& e) {

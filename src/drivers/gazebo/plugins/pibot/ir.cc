@@ -160,7 +160,7 @@ namespace gazebo
 	        Ice::ObjectAdapterPtr adapter =
 	            ic->createObjectAdapterWithEndpoints("IR", Endpoints);
 	        Ice::ObjectPtr object = new IRI(ir);
-	        adapter->add(object, ic->stringToIdentity(irname));
+	        adapter->add(object, Ice::stringToIdentity(irname));
 	        adapter->activate();
 	        ic->waitForShutdown();
 	    } catch (const Ice::Exception& e) {

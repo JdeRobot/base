@@ -6,11 +6,12 @@ FIND_PATH(dc_INCLUDE_DIR  NAMES dc1394.h  PATHS ENV C++LIB ENV PATH PATH_SUFFIXE
 FIND_LIBRARY( with_fireware NAMES dc1394 raw1394 PATHS ENV C++LIB ENV PATH PATH_SUFFIXES lib lib64 /usr/lib)
 
 IF(NOT with_fireware)
-    MESSAGE ("*** Fireware libraries: dc1394 or raw1394 not found") 
+    MESSAGE ("-- ${BoldYellow}Fireware libraries: dc1394 or raw1394 not found${ColourReset}") 
+
 ENDIF()
 
 IF(with_fireware)
-    MESSAGE ("*** Fireware ok") 
+    MESSAGE ("-- Fireware found") 
     include_directories(/usr/include)
     link_directories(/usr/lib)
     list(APPEND DEPS libdc1394-22)

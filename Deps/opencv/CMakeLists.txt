@@ -122,7 +122,7 @@ IF (NOT DEFINED OpenCV_VERSION)
 
 ENDIF()
 
-message("***OpenCV Version: ${OpenCV_VERSION}")
-message("***OpenCV CORE LIBS: ${OpenCV_LIBRARIES}")
-message("***OpenCV GUI LIBS: ${OpenCVGUI_LIBRARIES}")
-message("***OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")
+message("-- OpenCV Version: ${OpenCV_VERSION}")
+message("--	  OpenCV CORE LIBS: ${OpenCV_LIBRARIES}")
+message("--	  OpenCV GUI LIBS: ${OpenCVGUI_LIBRARIES}")
+message("--	  OpenCV EXTRA LIBS: ${OpenCV_EXTRA_LIBS}")

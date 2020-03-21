@@ -94,15 +94,15 @@ void Formula1Ice::bootstrap(){
 
     name = prop->getProperty("F1.Motors.Name");
     ObjectPtr motorsi = new MotorsI(control);
-    adapter->add(motorsi, ic->stringToIdentity(name));
+    adapter->add(motorsi, Ice::stringToIdentity(name));
 
     name = prop->getProperty("F1.Pose3D.Name");
     ObjectPtr posei = new Pose3DI(sensor, control);
-    adapter->add(posei, ic->stringToIdentity(name));
+    adapter->add(posei, Ice::stringToIdentity(name));
 
     ObjectPtr laseri = new LaserI(sensor);
     name = prop->getProperty("F1.Laser.Name");
-    adapter->add(laseri, ic->stringToIdentity(name));
+    adapter->add(laseri, Ice::stringToIdentity(name));
 
     //ObjectPtr camerai = new CameraI(sensor);
     ObjectPtr cameraiL;
@@ -112,7 +112,7 @@ void Formula1Ice::bootstrap(){
         cameraiL = ObjectPtr(_cameraiL);
     }
     name = prop->getProperty("F1.CameraL.Name");
-    adapter->add(cameraiL, ic->stringToIdentity(name));
+    adapter->add(cameraiL, Ice::stringToIdentity(name));
 
     ObjectPtr cameraiR;
     {
@@ -121,7 +121,7 @@ void Formula1Ice::bootstrap(){
         cameraiR = ObjectPtr(_cameraiR);
     }
     name = prop->getProperty("F1.CameraR.Name");
-    adapter->add(cameraiR, ic->stringToIdentity(name));
+    adapter->add(cameraiR, Ice::stringToIdentity(name));
 
     adapter->activate();
 
