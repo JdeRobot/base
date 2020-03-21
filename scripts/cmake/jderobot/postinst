@@ -1,8 +1,8 @@
-#!/bin/sh
-# Extract CMake macros during configure 
+#!/bin/bash
+# Extract CMake macros during configure jderobot main package
 
 echo "/opt/jderobot/lib/jderobot/" > /etc/ld.so.conf.d/jderobot.conf
 echo "source /opt/jderobot/setup.bash" >> ~/.bashrc
 echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-echo "source ~/.bashrc"
+source ~/.bashrc 
 ldconfig
