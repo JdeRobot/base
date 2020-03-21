@@ -25,7 +25,7 @@ SET (CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
 
 # CPack version numbers for release tarball name.
 SET (CPACK_PACKAGE_VERSION_MAJOR 6)
-SET (CPACK_PACKAGE_VERSION_MINOR 0)
+SET (CPACK_PACKAGE_VERSION_MINOR 1)
 SET (CPACK_PACKAGE_VERSION_PATCH 0)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 
@@ -75,7 +75,7 @@ SET (CPACK_MONOLITHIC_INSTALL OFF)
 #include(cmake/cpack_metainfo/rgbdcalibrator.cmake)
 #include(cmake/cpack_metainfo/rgbdviewer.cmake)
 #include(cmake/cpack_metainfo/uav-viewer.cmake)
-include(cmake/cpack_metainfo/tools.cmake)
+# include(cmake/cpack_metainfo/tools.cmake)
 include(cmake/cpack_metainfo/drivers.cmake)
 include(cmake/cpack_metainfo/libs.cmake)
 
@@ -136,9 +136,9 @@ set(PACKAGE_DEPENDS "${DEPS_DEV}")
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-deps-dev.info.in ${CMAKE_BINARY_DIR}/jderobot-deps-dev_${PACKAGE_VERSION}_all.info)
 
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-libs.info.in ${CMAKE_BINARY_DIR}/jderobot-libs_${PACKAGE_VERSION}_all.info)
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-tools.info.in ${CMAKE_BINARY_DIR}/jderobot-tools_${PACKAGE_VERSION}_all.info)
+# configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-tools.info.in ${CMAKE_BINARY_DIR}/jderobot-tools_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-drivers.info.in ${CMAKE_BINARY_DIR}/jderobot-drivers_${PACKAGE_VERSION}_all.info)
-configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-examples.info.in ${CMAKE_BINARY_DIR}/jderobot-examples_${PACKAGE_VERSION}_all.info)
+# configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-examples.info.in ${CMAKE_BINARY_DIR}/jderobot-examples_${PACKAGE_VERSION}_all.info)
 configure_file(${MAKE_PACKAGE_CONFIG_DIR}/jderobot-zeroc-ice-python.info.in ${CMAKE_BINARY_DIR}/jderobot-zeroc-ice-python_${PACKAGE_VERSION}_all.info)
 
 execute_process(

@@ -33,7 +33,7 @@ do
 	dr=${pkginfo%_*_*.info}
 	drname=$(echo $dr | sed 's/jderobot-//')
 #	echo $pkgname
-	echo $drname
+	# echo $drname
 	target=$build/$pkgname/DEBIAN
 	mkdir -p $target
 	cp $pkginfo $target/control

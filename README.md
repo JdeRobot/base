@@ -102,7 +102,7 @@ sudo apt update
 
 ```
 sudo apt install jderobot
-sudo apt install jderobot-gazebo-assets
+sudo apt install jderobot-assets
 ```
 
 * After installing the package, you can close the terminal and reopen it to source the environment variables, OR just type: 
@@ -233,7 +233,7 @@ sudo apt install ros-melodic-roscpp ros-melodic-std-msgs ros-melodic-cv-bridge r
 Once all ros packages are installed, install the script that tunes the environment variables ROS in your .bashrc configuration file, and run it for the current shell:
 
 ```
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc 
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
 source ~/.bashrc 
 ```
 
@@ -252,7 +252,7 @@ source ~/.bashrc
 compile ice:
 
 ```
-git clone -b 3.7.2 https://github.com/zeroc-ice/ice.git 
+git clone -b 3.7 https://github.com/zeroc-ice/ice.git 
 cd ice/cpp
 make CPP11=yes OPTIMIZE=yes
 make install

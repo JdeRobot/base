@@ -276,7 +276,7 @@ void *myMain(void* v)
         ic->createObjectAdapterWithEndpoints("CameraGazebo", Endpoints);
 		
         Ice::ObjectPtr object = new CameraI(std::string("CameraGazebo"),  camera);
-        adapter->add(object, ic->stringToIdentity(camera->nameCamera));
+        adapter->add(object, Ice::stringToIdentity(camera->nameCamera));
         adapter->activate();
         ic->waitForShutdown();
     } catch (const Ice::Exception& e) {

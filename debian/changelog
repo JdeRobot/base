@@ -1,3 +1,12 @@
+jderobot (6.1.0) unstable; urgency=low
+
+  * release 6.1.0
+  * Major cleanup of the repo. Unused or moved tools and drivers are removed. If you want to rescue them, go to tag 6.0.0
+  * Fix compilation issues
+  * Fix packages dependencies and minor ROS version issues.
+
+-- Francisco Perez <f.perez475@gmail.com>, Tue, 12 Mar 2019 13:00:00 +0100
+
 jderobot (5.6.7) unstable; urgency=low
 
   * release 5.6.7

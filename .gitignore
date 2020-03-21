@@ -15,7 +15,8 @@ src/interfaces/python/
 *.qrc.depends
 
 .dpkg_pkgs/
-
+build/
+build_clean/
 
 # Python
 __pycache__/

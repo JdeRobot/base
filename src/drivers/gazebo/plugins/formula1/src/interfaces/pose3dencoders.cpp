@@ -466,10 +466,10 @@ namespace gazebo {
 
 
 
-            adapter1->add(object1, ic->stringToIdentity("Pose3DEncoders1"));
-            adapter2->add(object2, ic->stringToIdentity("Pose3DEncoders2"));
-            adapter3->add(object3, ic->stringToIdentity("Pose3DMotors1"));
-            adapter4->add(object4, ic->stringToIdentity("Pose3DMotors2"));
+            adapter1->add(object1, Ice::stringToIdentity("Pose3DEncoders1"));
+            adapter2->add(object2, Ice::stringToIdentity("Pose3DEncoders2"));
+            adapter3->add(object3, Ice::stringToIdentity("Pose3DMotors1"));
+            adapter4->add(object4, Ice::stringToIdentity("Pose3DMotors2"));
 
             adapter1->activate();
             adapter2->activate();

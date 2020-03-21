@@ -93,19 +93,19 @@ void RoombaIce::bootstrap(){
 
     name = prop->getProperty("Roomba.Motors.Name");
     ObjectPtr motorsi = new MotorsI(control);
-    adapter->add(motorsi, ic->stringToIdentity(name));
+    adapter->add(motorsi, Ice::stringToIdentity(name));
 
     name = prop->getProperty("Roomba.Pose3D.Name");
     ObjectPtr posei = new Pose3DI(sensor, control);
-    adapter->add(posei, ic->stringToIdentity(name));
+    adapter->add(posei, Ice::stringToIdentity(name));
 
     ObjectPtr laseri = new LaserI(sensor);
     name = prop->getProperty("Roomba.Laser.Name");
-    adapter->add(laseri, ic->stringToIdentity(name));
+    adapter->add(laseri, Ice::stringToIdentity(name));
 
     ObjectPtr bumperi = new BumperI(sensor);
     name = prop->getProperty("Roomba.Bumper.Name");
-    adapter->add(bumperi, ic->stringToIdentity(name));
+    adapter->add(bumperi, Ice::stringToIdentity(name));
 
     adapter->activate();
 

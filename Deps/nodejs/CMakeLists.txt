@@ -5,10 +5,10 @@ FIND_PATH( NODEJS_DIR nodejs node
 SET(NODEJS_COMPILE TRUE)
 
 IF(NOT NODEJS_DIR)
-	MESSAGE("*** NodeJS not found")
+	MESSAGE("-- ${BoldYellow}NodeJS not found${ColourReset}")
 	SET(NODEJS_COMPILE FALSE)
 ELSE()
-	MESSAGE( STATUS " NodeJS found" )
+	MESSAGE( STATUS "NodeJS found" )
 	list(APPEND DEPS nodejs)
 	list(APPEND DEPS_DEV nodejs)
 ENDIF()

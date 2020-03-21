@@ -5,7 +5,7 @@ if (ENABLE_ROS)
 	
 	if(roscpp_FOUND)
 	
-	    MESSAGE("*** ROS LIBRARIES FOUND : ${roscpp_INCLUDE_DIRS}")
+	    MESSAGE(STATUS "ROS libraries found")
 	
 	    SET (CMAKE_PREFIX_PATH /opt/ros/$ENV{ROS_DISTRO})
 	
@@ -30,7 +30,7 @@ if (ENABLE_ROS)
 
 	#	list(APPEND DEPS_DEV )
 	else()
-		MESSAGE(WARNING "*** ROS LIBRARIES NOT FOUND. ROS SUPPORT WILL BE DISABLED")
+		MESSAGE(STATUS "${BoldYellow}ROS libraries not found. ${BoldRed}ROS SUPPORT WILL BE DISABLED${ColourReset}")
 	endif()
 else()
 	SET(roscpp_FOUND FALSE)

@@ -157,7 +157,7 @@ namespace gazebo
                     ic->createObjectAdapterWithEndpoints("Motors", Endpoints);
             Ice::ObjectPtr object = new MotorsI(base);
 
-            adapter->add(object, ic->stringToIdentity("Motors"));
+            adapter->add(object, Ice::stringToIdentity("Motors"));
 
             adapter->activate();
             ic->waitForShutdown();

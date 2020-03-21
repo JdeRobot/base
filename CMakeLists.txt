@@ -1,3 +1,24 @@
+if(NOT WIN32)
+  string(ASCII 27 Esc)
+  set(ColourReset "${Esc}[m")
+  set(ColourBold  "${Esc}[1m")
+  set(Red         "${Esc}[31m")
+  set(Green       "${Esc}[32m")
+  set(Yellow      "${Esc}[33m")
+  set(Blue        "${Esc}[34m")
+  set(Magenta     "${Esc}[35m")
+  set(Cyan        "${Esc}[36m")
+  set(White       "${Esc}[37m")
+  set(BoldRed     "${Esc}[1;31m")
+  set(BoldGreen   "${Esc}[1;32m")
+  set(BoldYellow  "${Esc}[1;33m")
+  set(BoldBlue    "${Esc}[1;34m")
+  set(BoldMagenta "${Esc}[1;35m")
+  set(BoldCyan    "${Esc}[1;36m")
+  set(BoldWhite   "${Esc}[1;37m")
+endif()
+
+
 IF(NOT DEFINED ENABLE_ROS)
   SET(ENABLE_ROS ON)
 ENDIF(NOT DEFINED ENABLE_ROS)
@@ -35,7 +56,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	include(CheckCXXCompilerFlag)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-	message (version: ${CMAKE_CXX_COMPILER_VERSION})
+	message ("-- Compiler version: " ${CMAKE_CXX_COMPILER_VERSION})
 	if(COMPILER_SUPPORTS_CXX11)
     	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	elseif(COMPILER_SUPPORTS_CXX0X)
@@ -154,7 +175,7 @@ include(FindPkgConfig)
 link_directories(${INTERFACES_CPP_DIR}/jderobot)
 FOREACH(LibFile ${LIBS_NEEDED})
     link_directories(${LIBS_DIR}/${LibFile})
-    MESSAGE("${LIBS_DIR}/${LibFile}")
+    # MESSAGE("${LIBS_DIR}/${LibFile}")
 ENDFOREACH(LibFile)
 
   # FIND AND CHECK OTHER DEPENDENCES
@@ -190,20 +211,16 @@ configure_file(
 
 # Install Executables
 list_subdirectories2( LIST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ 1)
-list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)
+# list_subdirectories2( LIST_TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ 1)
 
 # Install Deps cmake's tree
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot COMPONENT setup)
+# INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Deps DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot COMPONENT setup)
 
 # Install ROS Launch files
 #INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/assets/gazebo/launch DESTINATION ${CMAKE_INSTALL_PREFIX}/share/jderobot COMPONENT setup)
 
 # Install setup.bash
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/setup.bash DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT setup)
-
-
-
-
 
 
 

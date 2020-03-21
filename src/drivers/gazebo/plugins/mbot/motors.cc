@@ -7,6 +7,8 @@ enum {
 };
 */
 
+using namespace ignition;
+
 namespace gazebo
 {
     void *motorsICE(void* v);
@@ -25,7 +27,7 @@ namespace gazebo
     {
         this->model = _model;
         this->node = transport::NodePtr(new transport::Node());
-        this->node->Init(this->model->GetWorld()->GetName());
+        this->node->Init(this->model->GetWorld()->Name());
 
         this->updateConnection = event::Events::ConnectWorldUpdateBegin(
                                     boost::bind(&Motors::OnUpdate, this));
@@ -44,7 +46,8 @@ namespace gazebo
 
     void Motors::OnUpdate()
     {
-
+        float v=0, w=0;
+        std::time_t now = std::time(nullptr);
         if (count == 0) {
 
             robotMotors.v = 0;
@@ -64,14 +67,22 @@ namespace gazebo
 
         }
 
-        float z = model->GetRelativeLinearVel().z;
-        math::Vector3 vel(robotMotors.v,0,z);
+        float z = model->RelativeLinearVel().Z();
+        pthread_mutex_lock(&mutexMotor);
+        if ((now - robotMotors.lastVtime) < 2){
+            v = robotMotors.v;
+        }
+        if ((now - robotMotors.lastWtime) < 2){
+            w = robotMotors.w;
+        }
+        pthread_mutex_unlock(&mutexMotor);
+        math::Vector3d vel(v,0,z);
 
-        math::Quaternion rot = model->GetWorldPose().rot;
-        vel = rot.GetAsMatrix3()*vel;
+        math::Quaterniond rot = model->WorldPose().Rot();
+        vel = rot*vel;
 
         this->model->SetLinearVel(vel);
-        this->model->SetAngularVel(math::Vector3(0,0,robotMotors.w));
+        this->model->SetAngularVel(math::Vector3d(0,0,w));
     }
 
     class MotorsI : virtual public jderobot::Motors {
@@ -111,6 +122,7 @@ namespace gazebo
                 pthread_mutex_lock(&base->mutexMotor);
                 //base->vel = v;
                 base->robotMotors.v = v;
+                base->robotMotors.lastVtime = std::time(nullptr);
                 pthread_mutex_unlock(&base->mutexMotor);
                 return 0;
             };
@@ -119,6 +131,7 @@ namespace gazebo
                 pthread_mutex_lock(&base->mutexMotor);
                 //base->w = _w;
                 base->robotMotors.w = _w;
+                base->robotMotors.lastWtime = std::time(nullptr);
                 pthread_mutex_unlock(&base->mutexMotor);
                 return 0;
             };
@@ -155,7 +168,7 @@ namespace gazebo
                     ic->createObjectAdapterWithEndpoints("Motors", Endpoints);
             Ice::ObjectPtr object = new MotorsI(base);
 
-            adapter->add(object, ic->stringToIdentity("Motors"));
+            adapter->add(object, Ice::stringToIdentity("Motors"));
 
             adapter->activate();
             ic->waitForShutdown();

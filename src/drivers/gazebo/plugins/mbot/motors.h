@@ -1,10 +1,11 @@
 #include <boost/bind.hpp>
 #include <gazebo/gazebo.hh>
-#include <gazebo/math/Angle.hh>
+#include <ignition/math/Angle.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
 #include <gazebo/transport/transport.hh>
 #include <stdio.h>
+#include <ctime>
 
 // JDErobot general ice component includes
 #include <jderobot/motors.h>
@@ -35,6 +36,8 @@ namespace gazebo {
                 double wheelMax;
                 double wheelMin;
                 double targetRightSteerPos,targetLeftSteerPos;
+                std::time_t lastVtime;
+                std::time_t lastWtime;
             };
             motor_t robotMotors;
 

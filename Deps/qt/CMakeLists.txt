@@ -31,12 +31,12 @@ SET(QT5_LIBRARIES_JDE ${Qt5Widgets_LIBRARIES}
 
 if (QT5_LIBRARIES_JDE)
     SET(QT5_COMPILE TRUE)
-                MESSAGE("*** QT LIBRARIES Found ${QT5_LIBRARIES_JDE}")
+                MESSAGE(STATUS "QT libraries Found")
 
         list(APPEND DEPS libqt5core5a libqt5opengl5 libqt5gui5 libqt5svg5 libqt5widgets5)
         list(APPEND DEPS_DEV libqt5opengl5-dev libqt5svg5-dev qtbase5-dev)
 else()
     SET(QT5_COMPILE FALSE)
-		MESSAGE("*** QT LIBRARIES NOT FOUND")
+		MESSAGE(STATUS "${BoldYellow}QT libraries not found${ColourReset}")
 endif()
 

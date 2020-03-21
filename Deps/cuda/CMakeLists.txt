@@ -2,7 +2,7 @@
 find_package(CUDA QUIET)
 IF (CUDA_LIBRARIES)
 	include_directories(${CUDA_INCLUDE_DIRS})
-	message ("   -- CUDA detected")
+	message ("-- CUDA detected")
 	#find cuda link directories:
 	if (WIN32)
 		add_definitions(-DHAVE_OPENCV_GPU)
@@ -15,6 +15,6 @@ IF (CUDA_LIBRARIES)
 		endif()
 	endif()
 ELSE()
-	message ("   -- CUDA not found!!")
+	MESSAGE ("-- ${BoldYellow}CUDA not found${ColourReset}")
 ENDIF()
 
