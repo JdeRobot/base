@@ -8,7 +8,7 @@ JdeRobot
 # Introduction
 
 
-JdeRobot is a software development suite for robotics, home-automation and computer vision applications. These domains include sensors (for instance, cameras), actuators, and intelligent software in between. It has been designed to help in programming with such intelligent softwares. It is mainly written in C++ language and provides a distributed component-based programming environment where the application program is made up of a collection of several concurrent asynchronous components. Each component may run in different computers and they are connected using Ice communication middleware. Components may be written in C++, python, Java... and all of them interoperate through explicit Ice interfaces.
+JdeRobot is a software development suite for robotics, home-automation and computer vision applications. These domains include sensors for instance, cameras, actuators, and intelligent software in between. It has been designed to help in programming with such intelligent softwares. It is mainly written in C++ language and provides a distributed component-based programming environment where the application program is made up of a collection of several concurrent asynchronous components. Each component may run in different computers and they are connected using Ice communication middleware. Components may be written in C++, python, Java... and all of them interoperate through explicit Ice interfaces.
 
 JdeRobot simplifies the access to hardware devices from the control program. Getting sensor measurements is as simple as calling a local function, and ordering motor commands as easy as calling another local function. The platform attaches those calls to the remote invocation on the components connected to the sensor or the actuator devices. They can be connected to real sensors and actuators or simulated ones, both locally or remotely using the network. Those functions build the API for the Hardware Abstraction Layer. The robotic application get the sensor readings and order the actuator commands using it to unfold its behavior. Several driver components have been developed to support different physical sensors, actuators and simulators. The drivers are used as components installed at will depending on your configuration. They are included in the official release. Currently supported robots and devices:
 
@@ -25,7 +25,7 @@ JdeRobot simplifies the access to hardware devices from the control program. Get
 * Wiimote
 * X10 home automation devices
 
-JdeRobot includes several robot programming tools and libraries. First, viewers and teleoperators for several robots, its sensors and motors. Second, a camara calibration component and a tunning tool for color filters. Third, VisualStates tool for programming robot behavior using hierarchical finite state machines. It includes many sample components using OpenCV, PCL, OpenGL, etc.. In addition, it also provides a library to develop fuzzy controllers, a library for projective geometry and some computer vision processing.
+JdeRobot includes several robot programming tools and libraries. First, viewers and teleoperators for several robots, its sensors and motors. Second, a camera calibration component and a tuning tool for color filters. Third, VisualStates tool for programming robot behavior using hierarchical finite state machines. It includes many sample components using OpenCV, PCL, OpenGL, etc.. In addition, it also provides a library to develop fuzzy controllers, a library for projective geometry and some computer vision processing.
 
 Each component may have its own independent Graphical User Interface or none at all. Currently, GTK and Qt libraries are supported, and several examples of OpenGL for 3D graphics with both libraries are included.
 
@@ -53,21 +53,21 @@ JdeRobot is a project developed by Robotics Group of Universidad Rey Juan Carlos
 
 ### Getting environment ready
 
-* Add the lastest ROS sources:
+* Add the latest ROS sources:
 
 ```
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 ```
 
-* Add the lastest Gazebo sources:
+* Add the latest Gazebo sources:
 
 ```
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 67170598AF249743
 ```
 
-* Add the lastest zeroc-ice sources:
+* Add the latest zeroc-ice sources:
 
 ```
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv B6391CB2CFBA643D
@@ -76,10 +76,7 @@ sudo apt-add-repository "deb http://zeroc.com/download/Ice/3.7/ubuntu18.04 stabl
 * Add JdeRobot repository (using dedicated file /etc/apt/sources.list.d/jderobot.list):
 
 ```
-sudo sh -c 'cat<<EOF>/etc/apt/sources.list.d/jderobot.list
-
-deb [arch=amd64] http://wiki.jderobot.org/apt bionic main
-EOF'
+sudo sh -c 'echo "deb [arch=amd64] http://wiki.jderobot.org/apt `lsb_release -cs` main" > /etc/apt/sources.list.d/jderobot.list''
 ```
 
 * Get and add the public key from the JdeRobot repository
@@ -96,6 +93,7 @@ sudo apt update
 
 
 <a name="deb"/>
+
 ### Installing from debian packages (RECOMMENDED)
 
 * Install JdeRobot:
@@ -148,7 +146,7 @@ You have two options here:
 1. Install all the dependencies from a binary package
 2. Install all the dependencies manually  (**NOT RECOMMENDED**)
 
-For first one, you only have to type the following:
+For the first one, you only have to type the following:
 
 ```
 sudo apt install jderobot-deps-dev
@@ -227,7 +225,7 @@ It can be compiled and installed from source: https://github.com/JdeRobot/ThirdP
 * **ROS**
 
 ```
-sudo apt install ros-melodic-roscpp ros-melodic-std-msgs ros-melodic-cv-bridge ros-melodic-image-transport ros-melodic-roscpp-core ros-melodic-rospy ros-melodic-nav-msgs ros-melodic-geometry-msgs ros-melodic-mavros ros-melodic-gazebo-plugins
+sudo apt install ros-melodic-roscpp ros-melodic-std-msgs ros-melodic-cv-bridge ros-melodic-image-transport ros-melodic-roscpp-core ros-melodic-rospy ros-melodic-nav-msgs ros-melodic-geometry-msgs ros-melodic-mavros ros-melodic-gazebo-plugins ros-melodic-kobuki-msgs
 ```
 
 Once all ros packages are installed, install the script that tunes the environment variables ROS in your .bashrc configuration file, and run it for the current shell:
@@ -247,7 +245,10 @@ source ~/.bashrc
 
 * **ICE**
 
-```sudo apt install libdb5.3-dev libdb5.3++-dev libssl-dev libbz2-dev libmcpp-dev```
+```bash
+sudo apt install libdb5.3-dev libdb5.3++-dev libssl-dev libbz2-dev libmcpp-dev \
+            libzeroc-ice3.7 libzeroc-icestorm3.7 zeroc-ice-slice libzeroc-ice-dev
+```
 
 compile ice:
 
@@ -341,7 +342,7 @@ To see the collaborate workflow and coding style of `JdeRobot` community, please
 # Copyright and license
 
 
-    Copyright 2015 - JderRobot Developers
+    Copyright 2015 - JdeRobot Developers
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
