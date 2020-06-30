@@ -1,8 +1,10 @@
-import rospy
-from nav_msgs.msg import Odometry
 import threading
 from math import asin, atan2, pi
+
+import rospy
 from jderobotTypes import Pose3d
+from nav_msgs.msg import Odometry
+
 
 def quat2Yaw(qw, qx, qy, qz):
     '''
@@ -15,12 +17,13 @@ def quat2Yaw(qw, qx, qy, qz):
     @return Yaw value translated from Quaternion
 
     '''
-    rotateZa0=2.0*(qx*qy + qw*qz)
-    rotateZa1=qw*qw + qx*qx - qy*qy - qz*qz
-    rotateZ=0.0
-    if(rotateZa0 != 0.0 and rotateZa1 != 0.0):
-        rotateZ=atan2(rotateZa0,rotateZa1)
+    rotateZa0 = 2.0 * (qx * qy + qw * qz)
+    rotateZa1 = qw * qw + qx * qx - qy * qy - qz * qz
+    rotateZ = 0.0
+    if (rotateZa0 != 0.0 and rotateZa1 != 0.0):
+        rotateZ = atan2(rotateZa0, rotateZa1)
     return rotateZ
+
 
 def quat2Pitch(qw, qx, qy, qz):
     '''
@@ -34,18 +37,19 @@ def quat2Pitch(qw, qx, qy, qz):
 
     '''
 
-    rotateYa0=-2.0*(qx*qz - qw*qy)
-    rotateY=0.0
-    if(rotateYa0 >= 1.0):
-        rotateY = pi/2.0
-    elif(rotateYa0 <= -1.0):
-        rotateY = -pi/2.0
+    rotateYa0 = -2.0 * (qx * qz - qw * qy)
+    rotateY = 0.0
+    if (rotateYa0 >= 1.0):
+        rotateY = pi / 2.0
+    elif (rotateYa0 <= -1.0):
+        rotateY = -pi / 2.0
     else:
         rotateY = asin(rotateYa0)
 
     return rotateY
 
-def quat2Roll (qw, qx, qy, qz):
+
+def quat2Roll(qw, qx, qy, qz):
     '''
     Translates from Quaternion to Roll. 
 
@@ -56,12 +60,12 @@ def quat2Roll (qw, qx, qy, qz):
     @return Roll value translated from Quaternion
 
     '''
-    rotateXa0=2.0*(qy*qz + qw*qx)
-    rotateXa1=qw*qw - qx*qx - qy*qy + qz*qz
-    rotateX=0.0
+    rotateXa0 = 2.0 * (qy * qz + qw * qx)
+    rotateXa1 = qw * qw - qx * qx - qy * qy + qz * qz
+    rotateX = 0.0
 
-    if(rotateXa0 != 0.0 and rotateXa1 != 0.0):
-        rotateX=atan2(rotateXa0, rotateXa1)
+    if (rotateXa0 != 0.0 and rotateXa1 != 0.0):
+        rotateX = atan2(rotateXa0, rotateXa1)
     return rotateX
 
 
@@ -82,12 +86,12 @@ def odometry2Pose3D(odom):
     pose.x = odom.pose.pose.position.x
     pose.y = odom.pose.pose.position.y
     pose.z = odom.pose.pose.position.z
-    #pose.h = odom.pose.pose.position.h
+    # pose.h = odom.pose.pose.position.h
     pose.yaw = quat2Yaw(ori.w, ori.x, ori.y, ori.z)
     pose.pitch = quat2Pitch(ori.w, ori.x, ori.y, ori.z)
     pose.roll = quat2Roll(ori.w, ori.x, ori.y, ori.z)
     pose.q = [ori.w, ori.x, ori.y, ori.z]
-    pose.timeStamp = odom.header.stamp.secs + (odom.header.stamp.nsecs *1e-9)
+    pose.timeStamp = odom.header.stamp.secs + (odom.header.stamp.nsecs * 1e-9)
 
     return pose
 
@@ -96,6 +100,7 @@ class ListenerPose3d:
     '''
         ROS Pose3D Subscriber. Pose3D Client to Receive pose3d from ROS nodes.
     '''
+
     def __init__(self, topic):
         '''
         ListenerPose3d Constructor.
@@ -110,8 +115,8 @@ class ListenerPose3d:
         self.sub = None
         self.lock = threading.Lock()
         self.start()
- 
-    def __callback (self, odom):
+
+    def __callback(self, odom):
         '''
         Callback function to receive and save Pose3d. 
 
@@ -125,7 +130,7 @@ class ListenerPose3d:
         self.lock.acquire()
         self.data = pose
         self.lock.release()
-        
+
     def stop(self):
         '''
         Stops (Unregisters) the client.
@@ -133,13 +138,13 @@ class ListenerPose3d:
         '''
         self.sub.unregister()
 
-    def start (self):
+    def start(self):
         '''
         Starts (Subscribes) the client.
 
         '''
         self.sub = rospy.Subscriber(self.topic, Odometry, self.__callback)
-        
+
     def getPose3d(self):
         '''
         Returns last Pose3d. 
@@ -150,7 +155,5 @@ class ListenerPose3d:
         self.lock.acquire()
         pose = self.data
         self.lock.release()
-        
+
         return pose
-
-

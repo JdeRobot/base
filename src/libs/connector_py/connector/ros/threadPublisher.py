@@ -41,6 +41,6 @@ class ThreadPublisher(threading.Thread):
 
             dt = finish_Time - start_time
             ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
-            #print (ms)
+            # print (ms)
             if (ms < time_cycle):
                 time.sleep((time_cycle - ms) / 1000.0)

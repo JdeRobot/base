@@ -1,10 +1,10 @@
+import threading
+
 import rospy
 from geometry_msgs.msg import TwistStamped
-import threading
-from math import pi as PI
 from jderobotTypes import CMDVel
-from .threadPublisher import ThreadPublisher
 
+from .threadPublisher import ThreadPublisher
 
 
 def cmdvel2Twist(vel):
@@ -28,10 +28,12 @@ def cmdvel2Twist(vel):
 
     return tw
 
+
 class PublisherCMDVel:
     '''
         ROS CMDVel Publisher. CMDVel Client to Send CMDVel to ROS nodes.
     '''
+
     def __init__(self, topic, jdrc):
         '''
         PublisherCMDVel Constructor.
@@ -55,8 +57,8 @@ class PublisherCMDVel:
 
         self.thread.daemon = True
         self.start()
- 
-    def publish (self):
+
+    def publish(self):
         '''
         Function to publish cmdvel. 
         '''
@@ -65,7 +67,7 @@ class PublisherCMDVel:
         self.lock.release()
         if (self.jdrc.getState() == "flying"):
             self.pub.publish(tw)
-        
+
     def stop(self):
         '''
         Stops (Unregisters) the client. If client is stopped you can not start again, Threading.Thread raised error
@@ -74,15 +76,13 @@ class PublisherCMDVel:
         self.kill_event.set()
         self.pub.unregister()
 
-    def start (self):
+    def start(self):
         '''
         Starts (Subscribes) the client. If client is stopped you can not start again, Threading.Thread raised error
 
         '''
         self.kill_event.clear()
         self.thread.start()
-        
-        
 
     def sendVelocities(self):
         '''
@@ -94,9 +94,8 @@ class PublisherCMDVel:
 
         '''
         self.lock.acquire()
-        #self.vel = vel
+        # self.vel = vel
         self.lock.release()
-
 
     def setVX(self, vx):
         '''
@@ -124,8 +123,7 @@ class PublisherCMDVel:
         self.vel.vy = vy
         self.lock.release()
 
-
-    def setVZ(self,vz):
+    def setVZ(self, vz):
         '''
         Sends VZ velocity.
 
@@ -135,9 +133,9 @@ class PublisherCMDVel:
 
         '''
         self.lock.acquire()
-        self.vel.vz=vz
+        self.vel.vz = vz
         self.lock.release()
-    
+
     def setAngularZ(self, az):
         '''
         Sends AZ velocity.
@@ -151,7 +149,7 @@ class PublisherCMDVel:
         self.vel.az = az
         self.lock.release()
 
-    def setAngularX(self,ax):
+    def setAngularX(self, ax):
         '''
         Sends AX velocity.
 
@@ -161,10 +159,10 @@ class PublisherCMDVel:
 
         '''
         self.lock.acquire()
-        self.vel.ax=ax
+        self.vel.ax = ax
         self.lock.release()
-        
-    def setAngularY(self,ay):
+
+    def setAngularY(self, ay):
         '''
         Sends AY velocity.
 
@@ -174,19 +172,19 @@ class PublisherCMDVel:
 
         '''
         self.lock.acquire()
-        self.vel.ay=ay
+        self.vel.ay = ay
         self.lock.release()
 
-    def setYaw(self,yaw):
-       self.setAngularZ(yaw)
+    def setYaw(self, yaw):
+        self.setAngularZ(yaw)
 
-    def setRoll(self,roll):
+    def setRoll(self, roll):
         self.setAngularX(roll)
-        
-    def setPitch(self,pitch):
+
+    def setPitch(self, pitch):
         self.setAngularY(pitch)
 
-    def sendCMD (self, vel):
+    def sendCMD(self, vel):
         '''
         Sends CMDVel.
 
@@ -199,14 +197,12 @@ class PublisherCMDVel:
         self.vel = vel
         self.lock.release()
 
-    def sendCMDVel (self, vx,vy,vz,ax,ay,az):
+    def sendCMDVel(self, vx, vy, vz, ax, ay, az):
         self.lock.acquire()
-        self.vel.vx=vx
-        self.vel.vy=vy
-        self.vel.vz=vz
-        self.vel.ax=ax
-        self.vel.ay=ay
-        self.vel.az=az
+        self.vel.vx = vx
+        self.vel.vy = vy
+        self.vel.vz = vz
+        self.vel.ax = ax
+        self.vel.ay = ay
+        self.vel.az = az
         self.lock.release()
-
-

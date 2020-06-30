@@ -1,10 +1,10 @@
+import threading
+
 import rospy
 from geometry_msgs.msg import Twist
-import threading
-from math import pi as PI
 from jderobotTypes import CMDVel
-from .threadPublisher import ThreadPublisher
 
+from .threadPublisher import ThreadPublisher
 
 
 def cmdvel2Twist(vel):
@@ -28,10 +28,12 @@ def cmdvel2Twist(vel):
 
     return tw
 
+
 class PublisherMotors:
     '''
         ROS Motors Publisher. Motors Client to Send CMDVel to ROS nodes.
     '''
+
     def __init__(self, topic, maxV, maxW):
         '''
         ListenerMotors Constructor.
@@ -54,8 +56,8 @@ class PublisherMotors:
 
         self.thread.daemon = True
         self.start()
- 
-    def publish (self):
+
+    def publish(self):
         '''
         Function to publish cmdvel. 
         '''
@@ -63,7 +65,7 @@ class PublisherMotors:
         tw = cmdvel2Twist(self.data)
         self.lock.release()
         self.pub.publish(tw)
-        
+
     def stop(self):
         '''
         Stops (Unregisters) the client. If client is stopped you can not start again, Threading.Thread raised error
@@ -72,22 +74,19 @@ class PublisherMotors:
         self.kill_event.set()
         self.pub.unregister()
 
-    def start (self):
+    def start(self):
         '''
         Starts (Subscribes) the client. If client is stopped you can not start again, Threading.Thread raised error
 
         '''
         self.kill_event.clear()
         self.thread.start()
-        
-
 
     def getMaxW(self):
         return self.maxW
 
     def getMaxV(self):
         return self.maxV
-        
 
     def sendVelocities(self, vel):
         '''
@@ -173,5 +172,3 @@ class PublisherMotors:
         self.lock.acquire()
         self.data.az = az
         self.lock.release()
-
-
